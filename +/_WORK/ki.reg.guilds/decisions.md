@@ -275,3 +275,9 @@ Kris, on the card: "Take all six (recommended, high confidence)". Read back as t
 ## 2026-11-07 02:04 GMT · ROLES cluster answered
 
 Kris, on the card: "Take all four (recommended, high confidence)". Read back as taken: STAGE-C-SPLIT a), SEATS-VS-SUBPACKAGES a), CAPTURE-ASSISTANT a) and LIBRARY-OPEN a).
+
+## 2026-11-07 02:12 GMT · OWNERSHIP cluster answered
+
+Kris: "Looking at your ownership questions in the highness scope, I think all I want to understand is how each of the guilds map to those skills, and I can see that in the Agora Atlas. But for now, I think go ahead on that. Talk about absorbing steward. I think what that means is the entirety of what's going on in the ways of working is effectively all about how we develop skills that document our behaviors and stuff. And so that is absolutely guild-centric. Yep, about the SOP queries, yeah. Yes, about the Ocker Home. Yes, I'll get the coordination to send you a version of where things are currently at. I'm just discussing that with it now as it happens. I'm not sure about the aquarium. I think we don't need to talk about that now. We can come back to that later."
+
+Read back as taken: HARNESS-SCOPE a), the guilds being the harness skill folders (acquire, agentic-systems, change-management, design, environment, governance, keystone, repo-structure), their skill map visible in the Agora Atlas; the D12 and knowledge-graph specs go ahead under the acquire guild, its naming left open. ABSORB-STEWARD a): all of ki.prj.ways-of-working is guild work. TRANSFER-SOP-QUERIES a). ORCA-HOME a). COORD-OVERLAP a): Kris is asking personal.reg.inbox-sol himself to send the guild where things stand, so the guild sends no line. ACQUIRE-ROUTE ("aquarium") parked for later.
