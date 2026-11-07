@@ -1,12 +1,15 @@
 import { expect, test } from 'bun:test'
-import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { generate } from '../../../change-management/ki-coordination/scripts/generate/index.ts'
 
 const root = resolve(import.meta.dir, '../../../..')
 const promptPath = 'skills/governance/ki-delegation/assets/run-prompt.md'
-const standardPath = 'skills/change-management/ki-coordination/references/standards-coordination.md'
+const standardRoot = 'skills/change-management/ki-coordination/references'
+const standardPaths = readdirSync(join(root, standardRoot))
+  .filter((name) => /^standards-.*\.md$/.test(name))
+  .map((name) => `${standardRoot}/${name}`)
 const read = (path: string): string => readFileSync(join(root, path), 'utf8')
 
 test('the worker instruction survives report generation and every other output stays unchanged', () => {
@@ -22,7 +25,7 @@ test('the worker instruction survives report generation and every other output s
 
   // Exercise an actual stale report replacement, retaining all other authored prompt bytes.
   const fixture = mkdtempSync(join(tmpdir(), 'ki-worker-inbox-'))
-  for (const path of [standardPath, ...surfaces.map((surface) => surface.path)]) {
+  for (const path of [...standardPaths, ...surfaces.map((surface) => surface.path)]) {
     const target = join(fixture, path)
     mkdirSync(dirname(target), { recursive: true })
     const content = read(path)

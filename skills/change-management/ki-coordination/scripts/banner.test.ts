@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test'
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { generate } from './generate/index.ts'
 
@@ -20,7 +20,19 @@ import { generate } from './generate/index.ts'
 
 const skillRoot = resolve(import.meta.dir, '..')
 const harnessRoot = resolve(skillRoot, '..', '..', '..')
-const standard = readFileSync(resolve(skillRoot, 'references', 'standards-coordination.md'), 'utf8')
+const references = resolve(skillRoot, 'references')
+/** The standard's reference files, core first, so an assertion holds wherever its rule lands. */
+const standardFiles = readdirSync(references)
+  .filter((name) => /^standards-.*\.md$/.test(name))
+  .sort(
+    (a, b) =>
+      Number(b === 'standards-coordination.md') - Number(a === 'standards-coordination.md') || a.localeCompare(b)
+  )
+const readReference = (name: string): string => readFileSync(resolve(references, name), 'utf8')
+const core = readReference('standards-coordination.md')
+/** Joins the reference files so a fenced block never runs on from one file into the next. */
+const FILE_BREAK = '\n<!-- ki-coordination:file -->\n'
+const standard = standardFiles.map(readReference).join(FILE_BREAK)
 const outputStyle = readFileSync(resolve(harnessRoot, 'output-styles', 'ki-coordinator.md'), 'utf8')
 const hook = readFileSync(resolve(harnessRoot, 'hooks', 'coordinator-reminder', 'coordinator-reminder.sh'), 'utf8')
 
@@ -93,10 +105,12 @@ const withoutSources = (text: string): string =>
 
 /** Every fenced `markdown` block in a document, as lines. */
 const markdownBlocks = (text: string): string[][] =>
-  withoutSources(text)
-    .split('```markdown\n')
-    .slice(1)
-    .map((block) => block.split('\n```')[0]?.split('\n') ?? [])
+  text.split(FILE_BREAK).flatMap((file) =>
+    withoutSources(file)
+      .split('```markdown\n')
+      .slice(1)
+      .map((block) => block.split('\n```')[0]?.split('\n') ?? [])
+  )
 
 /** The blocks that open with a `#` report heading. */
 const headings = (text: string): string[][] =>
@@ -360,8 +374,8 @@ test('a thread listens only when the owner asks it to, and a Rig host sync threa
 // point of being clean". A thread may hold listening and host sync, each switched on only by express word or an agreed
 // role; host sync repeats each pass until clean and level, stays quiet on quiet passes and implies listening.
 test('a thread may hold listening and host sync, and the banner shows only the listening line', () => {
-  expect(standard).toContain('### Thread capabilities')
-  expect(standard).toContain('[Thread capabilities](#thread-capabilities)')
+  expect(standard).toContain('## Thread capabilities')
+  expect(standard).toContain('[Thread capabilities](standards-listening.md#thread-capabilities)')
   for (const name of ['THREAD-CAPABILITIES', 'SYNC-UNTIL-CLEAN', 'SYNC-QUIET', 'Host sync implies listening.'])
     expect(standard).toContain(name)
   for (const text of [standard, outputStyle]) {
@@ -485,9 +499,9 @@ test('every banner closes with its work identity and never emits a send or resum
       expect(surface.content).toContain('using the work you report to')
     }
   }
-  expect(standard).toContain('### Putting work on hold')
-  expect(standard).toContain('### Picking work up')
-  expect(standard).toContain('### Pushing beneath other sessions')
+  expect(standard).toContain('## Putting work on hold')
+  expect(standard).toContain('## Picking work up')
+  expect(standard).toContain('## Pushing beneath other sessions')
 })
 
 test('the standard and the output style retire the reply block and the block-letter frames', () => {
@@ -546,8 +560,10 @@ test('the Summary runs Summary since, the two-column status table, the queries i
   expect(outputStyle).not.toContain('What I heard')
 })
 
-test('the authoritative standard retains all five hard rules', () => {
-  const line = standard
+test('the core retains all five hard rules and lists every purpose file', () => {
+  for (const name of standardFiles.filter((file) => file !== 'standards-coordination.md'))
+    expect(core).toContain(`](${name})`)
+  const line = core
   expect(line).toContain(
     'Follow the coordinating-work standard (skills/change-management/ki-coordination/references/standards-coordination.md) and the Work Process note it cites'
   )

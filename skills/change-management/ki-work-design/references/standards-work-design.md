@@ -40,7 +40,7 @@ Start each artefact from its template in `assets/`.
 - **Decisions.** The owner's own words, keyed by the report's decision tags, kept verbatim. It records any authority grant with its completion target, and the push and prune scope. Where the owner's words differ from the report, the decisions win.
 - **Rollout.** Records are captured through `ki-next` from the decisions. One pilot is delivered before any parallel wave. The pilot's lessons are written into each wave's brief before it starts, and authority is exercised through a frozen wave under `ki-coordination` or through `ki-accept`, quoting the grant.
 
-Decision tags follow Kris's 14 October 2026 rule, carried by the [coordination decisions life cycle](../../ki-coordination/references/standards-coordination.md#decisions-life-cycle): entries carry no running numbers. The brief's reflection points and the reviews' references to them remain numbered claims.
+Decision tags follow Kris's 14 October 2026 rule, carried by the [coordination decisions life cycle](../../ki-coordination/references/standards-decisions.md#decisions-life-cycle): entries carry no running numbers. The brief's reflection points and the reviews' references to them remain numbered claims.
 
 ## Rollout hand-off
 

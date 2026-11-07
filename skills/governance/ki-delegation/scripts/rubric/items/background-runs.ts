@@ -65,7 +65,7 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
       title: 'reports take the owner-report shape',
       description:
         "Every agent report and coordinator Summary is an owner report, omitting routine push state and other sessions' stacked commits and reporting a failed push that prevented publication of the run's own unit with its unit and reason, opening with the `ki-coordination` report heading, one `#` heading of the work's title with its theme and Project linked, a run report adding `› <run name>` and the form `Run report`, then the bold glyph form line and one rule, with the sections `## Done`, `## In Progress` and `## Queries` in that order, each query under a stable Needs tag, never a number, with **Context**, **Query** and **Options**, the options lettered a), b) and so on with no bullet and a) always marked `(recommended, confidence <level> - <reason>)`, closing with the glyph banner of the work's state and no reply block, the owner answering in speech, and no output style, proxy shaping block or communication level shortens it; a report written before 18 October 2026 keeps its earlier heading, footer frame and reply block.",
-      sources: ['../../../change-management/ki-coordination/references/standards-coordination.md#owner-report'],
+      sources: ['../../../change-management/ki-coordination/references/standards-reporting.md#owner-report'],
       judgment: {
         scope: 'Background-agent reports and coordinator Summaries the owner selects for review.',
         prompt:

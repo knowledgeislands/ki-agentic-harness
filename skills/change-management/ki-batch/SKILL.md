@@ -15,7 +15,7 @@ argument-hint: 'batch <work>... | batch outcome <outcome> | run <batch-authorisa
 
 **Kind:** process. Coordinates one exact set of repository-local Ready records under reviewed-item or explicit outcome authority.
 
-**Retired.** Kris took BATCH-RETIRE a) on 7 November 2026: an unattended window's grant in the decisions log is the one authority record, a wave is frozen before its delivery starts under `ki-coordination`'s [unattended window](../ki-coordination/references/standards-coordination.md#unattended-windows) rule, and `ki-accept` closes a wave's records only where that grant names closure. Start no new batch. The rest of this skill stays only until its removal lands, under [the adapter migration file](../ki-work/references/standards-change-management-adapters-migration.md).
+**Retired.** Kris took BATCH-RETIRE a) on 7 November 2026: an unattended window's grant in the decisions log is the one authority record, a wave is frozen before its delivery starts under `ki-coordination`'s [unattended window](../ki-coordination/references/standards-unattended.md#unattended-windows) rule, and `ki-accept` closes a wave's records only where that grant names closure. Start no new batch. The rest of this skill stays only until its removal lands, under [the adapter migration file](../ki-work/references/standards-change-management-adapters-migration.md).
 
 Read [the batch procedure](references/standards-batch.md) before acting, and read [the outcome-authority procedure](references/standards-outcome-authority.md) when autonomous delivery is requested. Use the [reviewed-item example](references/exemplars.md), [outcome-authority example](references/standards-outcome-authority-example.md), and [source notes](references/sources.md) as needed.
 

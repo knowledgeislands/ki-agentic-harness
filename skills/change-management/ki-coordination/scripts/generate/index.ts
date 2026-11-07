@@ -1,14 +1,14 @@
 /**
- * Renders the runtime surfaces that carry the owner-report shape from the `ki-coordination` standard's Generated surfaces
- * section, so the standard is their one source: the coordinator hook's `line` and `pointer`, the whole
+ * Renders the runtime surfaces that carry the owner-report shape from the marked source blocks of the `ki-coordination`
+ * standard's reference files, so the standard is their one source: the coordinator hook's `line` and `pointer`, the whole
  * `ki-coordinator` output style, the run-prompt skeleton's Report paragraph and each authority footer's report rule, and
  * the review-independence line of the run-prompt skeleton and the `ki-work-design` brief template.
  *
- * Boundary: reads the standard and the current surfaces under the harness root and returns each surface's rendered
+ * Boundary: reads the standard's reference files and the current surfaces under the harness root and returns each surface's rendered
  * bytes; it never writes. `ki dev skill generate ki-coordination` compares or publishes them, and the banner test checks the
  * committed surfaces against them.
  */
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 export type GeneratedSurface = { readonly path: string; readonly content: string }
@@ -19,7 +19,8 @@ export type SkillGeneration = {
   readonly generate: (harnessRoot: string) => readonly GeneratedSurface[]
 }
 
-const STANDARD = 'skills/change-management/ki-coordination/references/standards-coordination.md'
+const REFERENCES = 'skills/change-management/ki-coordination/references'
+const STANDARD = `${REFERENCES}/standards-*.md`
 const HOOK = 'hooks/coordinator-reminder/coordinator-reminder.sh'
 const OUTPUT_STYLE = 'output-styles/ki-coordinator.md'
 const DELEGATION_ASSETS = 'skills/governance/ki-delegation/assets'
@@ -38,7 +39,7 @@ const BANNER_BLOCKS = [
 
 type Marked = { readonly block: string; readonly body: string }
 
-/** The fenced block directly after `<!-- ki-coordination:<kind> <name> -->` and one blank line: whole, and its body alone. */
+/** The fenced block directly after `<!-- ki-coordination:<kind> <name> -->` and one blank line, across the reference set: whole, and its body alone. */
 export const markedBlock = (standard: string, kind: 'source' | 'block', name: string): Marked => {
   const marker = `<!-- ki-coordination:${kind} ${name} -->\n\n`
   const at = standard.indexOf(marker)
@@ -69,7 +70,11 @@ const shellValue = (name: string, value: string): string => {
 
 export const generate = (harnessRoot: string): readonly GeneratedSurface[] => {
   const read = (path: string): string => readFileSync(join(harnessRoot, path), 'utf8')
-  const standard = read(STANDARD)
+  const standard = readdirSync(join(harnessRoot, REFERENCES))
+    .filter((name) => /^standards-.*\.md$/.test(name))
+    .sort()
+    .map((name) => read(`${REFERENCES}/${name}`))
+    .join('\n')
   const source = (name: string): string => markedBlock(standard, 'source', name).body
 
   let hook = read(HOOK)

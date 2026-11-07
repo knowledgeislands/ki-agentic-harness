@@ -18,7 +18,7 @@ This is the one release-timing policy for every Knowledge Islands tooling projec
 
 ## Release notice
 
-After an authorised release, the releasing territory owner or coordinator sends affected owning work a release notice in its `messages.md`, or the receiving State of play's queue where no clear work owner exists. Name the released version, relevant change, compatibility, adoption steps and any reply needed. Follow the existing sender and cross-territory authority boundaries; the receiver owns adoption and any genuinely deferred record. This is a notice obligation, not release authority, consumer selection, rollout execution or foreign-record creation. Follow the `ki-coordination` [message procedure](../../../change-management/ki-coordination/references/standards-coordination.md#messages-between-work).
+After an authorised release, the releasing territory owner or coordinator sends affected owning work a release notice in its `messages.md`, or the receiving State of play's queue where no clear work owner exists. Name the released version, relevant change, compatibility, adoption steps and any reply needed. Follow the existing sender and cross-territory authority boundaries; the receiver owns adoption and any genuinely deferred record. This is a notice obligation, not release authority, consumer selection, rollout execution or foreign-record creation. Follow the `ki-coordination` [message procedure](../../../change-management/ki-coordination/references/standards-messages.md#messages-between-work).
 
 ## 1. Establish the candidate
 

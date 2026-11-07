@@ -7,7 +7,7 @@
 set -u
 
 line='Only if the owner explicitly opened or resumed coordination, follow ki-coordination (skills/change-management/ki-coordination/references/standards-coordination.md). Otherwise use its conversational Reply forms.'
-pointer='Context was compacted. Only if explicitly coordinating, follow Re-anchoring after compaction in ki-coordination (skills/change-management/ki-coordination/references/standards-coordination.md). Otherwise use its conversational Reply forms.'
+pointer='Context was compacted. Only if explicitly coordinating, follow Re-anchoring after compaction in ki-coordination (skills/change-management/ki-coordination/references/standards-bootstrap.md). Otherwise use its conversational Reply forms.'
 
 # `ki agent` marks each child with its run name; its Claude adapter has set the
 # print-mode ceiling since before the marker existed, so it serves as a second
