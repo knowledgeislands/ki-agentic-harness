@@ -26,18 +26,6 @@ a) (recommended, confidence high - reviewed: the blind reviewer chose the same, 
 
 b) Leave vega out of these checks.
 
-### STAGE-C-SPLIT - Write in the parts of the role catalogue you've already approved now
-
-**Context:** You've approved the role list and that every package records its role (ROLES-TIDY, 6 November), but none of it is in the shared skills. Packages are already adding a `role:` field the package format doesn't allow yet, so the `ki-work-package` audit flags them (RECORD-2, seen on this package in the hooks-stubs run). The seven open role questions only affect parts of the catalogue: seats, the assistant's name, Paperclip names and the library.
-
-**Query:** Should a run write the approved parts into the skills now, and leave the parts the open questions affect until you answer them?
-
-**Options:**
-
-a) (recommended, confidence high - it only carries out what you've already approved, and it fixes the audit problem the ROLE-FIX messages caused) Yes. Add the catalogue's roles, their glyphs, the `role` field and the guildmaster and quartermaster entries to `ki-work-package` and `ki-coordination` now, and add the rest once you've answered the seven questions.
-
-b) No, wait and do it all in one go after the seven questions are answered.
-
 ### ORCA-HOME - Who holds the Orca adapter's rules
 
 focus: _emerging
@@ -100,20 +88,6 @@ b) Kris opens ki.prj.ways-of-working once more, for one close-out session in ki-
 
 c) ki.sop.main takes assigned stewardship and runs the close-out, as the standard allows today, although rule 12 limits its governor to convening and recording.
 
-### SEATS-VS-SUBPACKAGES - Whether seats replace sub-packages
-
-focus: roles
-
-**Context:** On 2 November Kris set SUB-PACKAGE: a doer's short-lived package for one focus area, id `<parent>.<focus>`, a sibling folder, one worker and one inbox. `personal.reg.inbox-terra.kiv` is the live example. The brief's seat is "a role taking part in a package, addressed `package+role` ... its folder is a sibling ... and lives and dies with its package". Rule 6 has naming migrate incrementally. The directive's first part counts complexity as a defect. Two sibling-folder shapes for one doer would be that kind of complexity.
-
-**Query:** Should the seat replace the sub-package?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: one seat model removes overlapping sibling-folder machinery while keeping the doer's link to its parent) Yes. The sub-package rules retire into the seat rules, and `personal.reg.inbox-terra.kiv` becomes a seat of inbox-terra the next time it takes up its role, under rule 6.
-
-b) Keep both: a sub-package for a focus area's short-lived doer, and a seat for a role in the package.
-
 ### HARNESS-SCOPE - Does the guildmaster keep every skill set, as the brief's "guild" term implies?
 
 focus: roles
@@ -141,34 +115,6 @@ focus: roles
 a) (recommended, confidence high - reviewed: unanswered method decisions belong with the package that now owns the method, and moving them before asking costs you nothing) Yes. State of play sends both bundles and their two design notes here by message line. The guild asks them and lands the harness run.
 
 b) Kris answers them in State of play's pass, and State of play sends each answer here for the guild to land.
-
-### CAPTURE-ASSISTANT - Which "assistant" becomes gatekeeper
-
-focus: roles
-
-**Context:** The brief says: "Rename the capture skill's "assistant" to match gatekeeper", and "gatekeeper (replaces assistant; owns what comes in and goes out)". Under TOOLING-STAYS on 1 November, Kris kept `ki-acquire` and its provider skills' names ("acquiring goes to the assistant"), which reversed SKILL-NAME's `ki-assistant` rename. "The assistant" survives in two places. One is the harness acquire skills' wording, which calls the Inbox's executable route "the assistant's `ki-muninn`". The other is the Inbox's own capture guide and AGENTS.md, whose trigger is Kris's **"give it to my assistant"** and which sit in the Personal territory. The brief also says "whatever Kris is talking to is his point of contact in that capacity", so his spoken phrase is not a role name.
-
-**Query:** What does the rename cover?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: gatekeeper replaces a role, TOOLING-STAYS keeps the skill's name, and your spoken phrase stays ordinary speech) Rename the role word, not the skill. The harness acquire skills say "the gatekeeper" where they mean the Inbox's role. The guild sends one line asking personal.reg.inbox-terra to do the same in its capture guide and AGENTS.md, keeping "give it to my assistant" as Kris's words. `ki-acquire` keeps its name under TOOLING-STAYS.
-
-b) Rename the skill too, `ki-acquire` to a gatekeeper name with deprecated aliases, revisiting TOOLING-STAYS.
-
-### LIBRARY-OPEN - When to open `ki.reg.library`
-
-focus: roles
-
-**Context:** Rule 10 says "One library, `ki.reg.library`". Rule 9 says "the guildmaster and the librarian together carry islands, guilds and library into the Knowledge Islands concept". No `ki.reg.library` package exists. The concept, the Work Process note and GDR-KI-PRINCIPAL-009, lives in ki-principal, where the guild may only send message lines. The directive says "Reserved roles stay reserved until the work calls for them". The librarian is not reserved, but opening a package still needs Kris's word, as OPEN-GUILD did.
-
-**Query:** When should `ki.reg.library` open, and where?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: opening it at the concept step gives the guild its partner without an idle package) Open it in ki-principal, the Knowledge Base Capital, when Stage C reaches its concept step. ki.sop.main seeds it at Kris's word.
-
-b) Open it now in ki-principal, so that it can take the role catalogue's terminology into the Knowledge Base alongside the guild.
 
 ## Parked
 

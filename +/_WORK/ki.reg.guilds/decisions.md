@@ -271,3 +271,7 @@ Kris, on the card: "Take all six (recommended, high confidence)" and, for CORE-B
 ## 2026-11-07 02:02 GMT · CHANGE-MGMT cluster answered
 
 Kris, on the card: "Take all six (recommended, high confidence)". Read back as taken: CM-PARTS a), PART-HOME a), BATCH-RETIRE a), REMOTE-ADAPTERS a), RECAP-NARROW a) and HELD-VS-RECORD a), each in its reviewed wording, delivered under MIGRATION-OVERLAY.
+
+## 2026-11-07 02:04 GMT · ROLES cluster answered
+
+Kris, on the card: "Take all four (recommended, high confidence)". Read back as taken: STAGE-C-SPLIT a), SEATS-VS-SUBPACKAGES a), CAPTURE-ASSISTANT a) and LIBRARY-OPEN a).
