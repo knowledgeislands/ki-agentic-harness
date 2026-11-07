@@ -227,3 +227,7 @@ Answer to CM-REVIEW: the roadmap skills stay (about 3,190 roadmap commits in 30 
 ## 2026-11-07 00:30 GMT · cm-blind received
 
 The blind reviewer agreed with every recommendation: CM-PARTS, PART-HOME, BATCH-RETIRE, REMOTE-ADAPTERS and HELD-VS-RECORD rise to high, their options sharpened with its reframings (skill placement, catalogue field, frozen-set rule and footers, adapter value, a clearer deferred-work test).
+
+## 2026-11-07 00:33 GMT · hook-relax received
+
+FOOTER-HOOK-RELAX landed in `27af582d`: the footer hook blocks only a missing banner heading or closing thread line, and warns without blocking on anything else unusual; Snoozing, "at" headings and the Status forms pass. 1,603 tests and the type check pass; the focused audit fails only on this package's own RECORD-2 findings (`role:` in `work.md`, which STAGE-C-SPLIT settles, and the Outbound line shape). Outcome sent to personal.reg.household-terra.
