@@ -6,6 +6,7 @@
 
 ## Outbound
 
+- 2026-11-07 · MSG-fef220f9 ORCA-ENV · to ki.prj.tools-burndown · 04:52 GMT · drop the remaining Orca pane, tab, worktree and hook variables from `ki agent` runs, then check terra's Orca list · awaiting ACK
 - 2026-11-07 · MSG-31ac0873 PAPERCLIP-PURGE · to ki.prj.tools-burndown · 04:15 GMT · remove the Paperclip code in tools-ki, keep provider-neutral `task_links` · awaiting ACK
 - 2026-11-07 · MSG-4cf14cb8 REFRESH · to live-packages · IMPORTANT · 15 live packages · 02:55 GMT · role catalogue and key thread line at `a4da0db2`; ACKed so far by hnr.prj.5g-emerge-phase3, hnr.sop.main, ki.prj.chezmoi, ki.prj.agora, ki.sop.main, personal.reg.household-sol, personal.reg.inbox-sol, personal.reg.inbox-terra · awaiting ACK
 - 2026-11-07 · MSG-f3abdb7e ROLE-NAMES · to ki.prj.tools-burndown · 03:00 GMT · align the `ki agent` launch name with the role thread line `<glyph> 🔑 <work-id>` (STAGE-C-ROLES)

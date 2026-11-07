@@ -2,38 +2,6 @@
 
 ## Open
 
-### TRIAL-PUBLISH - how should Orca workers publish their notes
-
-from ki.prj.orca-evaluation (SCOPE-SPLIT method question)
-
-**Context:** how a worker commits in a repository whose pre-commit hook runs lint-staged, which made and dropped a backup stash; in plan069 a no-stash rule collided with it, `worker_done` read `failed` though the work succeeded, and Kris granted a bounded exception. Kris chose HOOK-STASH a), lint-staged with `--no-stash`, on 1 November, which may settle it. The blind reviewer found that with `--no-stash` no stash is made, so the clash is gone and the stash clause is no longer needed.
-
-**Query:** how should Orca workers publish their notes?
-
-**Options:**
-
-a) (recommended, confidence medium - reviewed: the blind reviewer proposed this, and HOOK-STASH a) removed the reason for the exception) the worker commits its own note by explicit path inside a write window granted by ask, under the ordinary rules, and never runs `git stash`; the coordinator pushes at receive
-
-c) each brief carries the bounded exception as first written, including that the hook may make and drop lint-staged's backup stash
-
-b) no worker commits; the worker writes note and report and the coordinator commits both at receive. Likely closable as overtaken by HOOK-STASH a); original text at ki-principal `04591e2b`, `+/_WORK/ki.prj.orca-evaluation/queries.md`
-
-### ORCA-IDENTITY-LEAK - should `ki agent` also drop the remaining Orca variables from runs it
-
-from ki.prj.orca-evaluation (SCOPE-SPLIT method question)
-
-**Context:** `ki agent` passed its whole environment, so a run started from an Orca chat coordinator carried the coordinator's Orca identity and could act as it in `orca orchestration` commands. tools-ki `2970714c` now drops `ORCA_AGENT_SESSION_ID`, `ORCA_AGENT_SESSION_SPAWN_TOKEN`, `ORCA_STRUCTURED_SESSION` and `ORCA_CHAT_SCRATCH_DIR`; the pane, tab, worktree and hook variables remain (`ORCA_PANE_KEY`, `ORCA_TAB_ID`, `ORCA_WORKTREE_ID`, `ORCA_AGENT_HOOK_*`), and terra's runs appear in Orca only through inherited pane variables, so removing them may drop runs from terra's list. The blind reviewer disagreed and preferred: holding until an attended terra check, because the variables that carried identity are already gone and the rest affect only how runs are listed; it also suggests dropping only `ORCA_AGENT_HOOK_*` now if they credit a run's hook events to the coordinator.
-
-**Query:** should `ki agent` also drop the remaining Orca variables from runs it starts?
-
-**Options:**
-
-a) (recommended, confidence medium - the leak is direct, but the effect on terra's list is unverified) yes, then check terra's list afterwards
-
-b) hold until an attended terra check shows how terra lists runs, then decide
-
-c) leave `ki agent` unchanged and add a rule that runs must not call `orca orchestration` commands. Original text at ki-principal `417546eb`
-
 ### STAGING-HOME - Who owns the staging knowledge base's structure
 
 **Context:** KNOWLEDGE-AS-KB a (6 November) makes the Inbox's `knowledge/` a declared staging knowledge base, using zone aliases that `ki-repo-kb` already supports. A staging base differs from an ordinary one: its ids can change, and it mirrors the islands it will dispatch to.
