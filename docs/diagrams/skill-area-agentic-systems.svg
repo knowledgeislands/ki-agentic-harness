@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg viewBox="0 0 824 556" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="classic" data-quality-profile="showcase" data-node-ui="" data-reader-fit="intrinsic-height" data-reader-min-text="7.5" data-reader-primary-text="14" style="--flow-cycle: 3.600s; width: 824px; height: 556px; min-width: 0px;" width="824" height="556" xmlns="http://www.w3.org/2000/svg"><style>
+<svg viewBox="0 0 568 556" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="classic" data-quality-profile="showcase" data-node-ui="" data-reader-fit="intrinsic-height" data-reader-min-text="7.5" data-reader-primary-text="14" style="--flow-cycle: 3.600s; width: 568px; height: 556px; min-width: 0px;" width="568" height="556" xmlns="http://www.w3.org/2000/svg"><style>
 /*
 JetBrains Mono variable WOFF2 subsets from Google Fonts service revision v24.
 These fixed bytes are shared by the viewer and its SVG/raster exports.
@@ -425,14 +425,14 @@ svg[data-preset="editorial"] { --flow-halo-peak: 0.07; --flow-glow-peak: 0.28; -
 }
 @keyframes archify-relay-comet-2 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  3.293% { opacity: var(--flow-peak, 0.9); }
-  16.465% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  20.91%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  2.48% { opacity: var(--flow-peak, 0.9); }
+  12.399% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  16.844%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-2 { 
   0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  16.465% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
-  41.465%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  12.399% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  37.399%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-node-0 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
@@ -482,7 +482,7 @@ svg[data-node-ui][data-preset="editorial"] :is([data-graph-role="structural-fram
 svg[data-theme="light"] { --bg: #f4f5f7; --grid: #e9edf2; --canvas-dot: #e2e7ec; --text: #111827; --text-muted: #5b6474; --text-dim: #9aa3b2; --text-faint: #6b7280; --panel: #ffffff; --panel-border: #e5e7eb; --lane-fill: rgba(248, 250, 252, 0.65); --lane-stroke: #cbd5e1; --arrow: #64748b; --arrow-emphasis: #059669; --mask: #ffffff; --frontend-fill: rgba(34, 211, 238, 0.15); --frontend-stroke: #0891b2; --backend-fill: rgba(52, 211, 153, 0.18); --backend-stroke: #059669; --database-fill: rgba(167, 139, 250, 0.2); --database-stroke: #7c3aed; --cloud-fill: rgba(251, 191, 36, 0.18); --cloud-stroke: #d97706; --security-fill: rgba(251, 113, 133, 0.15); --security-stroke: #e11d48; --messagebus-fill: rgba(251, 146, 60, 0.15); --messagebus-stroke: #ea580c; --external-fill: rgba(148, 163, 184, 0.18); --external-stroke: #64748b; --toolbar-bg: rgba(255, 255, 255, 0.92); --toolbar-border: #cbd5e1; --toolbar-text: #334155; --toolbar-hover: #ffffff; --toolbar-menu-bg: #ffffff; --flow-cycle: ; --flow-halo-peak: ; --flow-glow-peak: ; --flow-tail-peak: ; --flow-head-peak: ; --flow-wake-peak: ; --flow-ripple-peak: ; --flow-peak: ; }
 svg[data-theme="dark"] { --bg: #020617; --grid: #1e293b; --canvas-dot: rgba(148, 163, 184, 0.16); --text: #ffffff; --text-muted: #94a3b8; --text-dim: #475569; --text-faint: #7d8da1; --panel: rgba(15, 23, 42, 0.5); --panel-border: #1e293b; --lane-fill: rgba(15, 23, 42, 0.22); --lane-stroke: #334155; --arrow: #94a3b8; --arrow-emphasis: #34d399; --mask: #0f172a; --frontend-fill: rgba(8, 51, 68, 0.4); --frontend-stroke: #22d3ee; --backend-fill: rgba(6, 78, 59, 0.4); --backend-stroke: #34d399; --database-fill: rgba(76, 29, 149, 0.4); --database-stroke: #a78bfa; --cloud-fill: rgba(120, 53, 15, 0.3); --cloud-stroke: #fbbf24; --security-fill: rgba(136, 19, 55, 0.4); --security-stroke: #fb7185; --messagebus-fill: rgba(251, 146, 60, 0.3); --messagebus-stroke: #fb923c; --external-fill: rgba(30, 41, 59, 0.5); --external-stroke: #94a3b8; --toolbar-bg: rgba(15, 23, 42, 0.8); --toolbar-border: #334155; --toolbar-text: #e2e8f0; --toolbar-hover: rgba(15, 23, 42, 0.95); --toolbar-menu-bg: #0f172a; --flow-cycle: ; --flow-halo-peak: ; --flow-glow-peak: ; --flow-tail-peak: ; --flow-head-peak: ; --flow-wake-peak: ; --flow-ripple-peak: ; --flow-peak: ; }
 rect.c-bg-rect { fill: var(--bg); }
-</style><rect x="0" y="0" width="824" height="556" class="c-bg-rect"/>
+</style><rect x="0" y="0" width="568" height="556" class="c-bg-rect"/>
         <title id="archify-diagram-title">Knowledge Islands skills · Agentic systems</title>
         <desc id="archify-diagram-description">An architecture diagram generated by Archify.</desc>
         <!-- Definitions -->
@@ -531,7 +531,7 @@ rect.c-bg-rect { fill: var(--bg); }
         <!-- Boundaries (behind everything) -->
         <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" data-composition-frame-label="Fundamentals · Skills and harness" x="0" y="32" width="272" height="128" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="1" data-composition-frame-label="Agentic systems · 5 skills" x="0" y="236" width="784" height="252" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="1" data-composition-frame-label="Agentic systems · 3 skills" x="0" y="236" width="528" height="252" rx="12" class="c-region" stroke-width="1"/>
 
         <!-- Connection paths (before components for correct z-order) -->
         <g data-graph-role="automatic-crossover" style="--step:0">
@@ -543,8 +543,8 @@ rect.c-bg-rect { fill: var(--bg); }
           <path data-edge-from="ki-subagents-chatgpt" data-edge-to="ki-subagents" data-edge-key="1" data-edge-id="ki-subagents-chatgpt--ki-subagents" data-composition-points="136,392;136,344" data-composition-crossover="halo" data-composition-independent="true" d="M 136 392 L 136 344" class="a-default" data-animate="edge" style="--step: 1;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:2">
-          <path data-graph-role="automatic-crossover-underlay" d="M 288 430 L 272 430 Q 264 430 264 422 L 264 314 Q 264 306 256 306 L 240 306" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-subagents-claude" data-edge-to="ki-subagents" data-edge-key="2" data-edge-id="ki-subagents-claude--ki-subagents" data-composition-points="288,430;264,430;264,306;240,306" data-composition-crossover="halo" data-composition-independent="true" d="M 288 430 L 272 430 Q 264 430 264 422 L 264 314 Q 264 306 256 306 L 240 306" class="a-default" data-animate="edge" style="--step: 2;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 304 392 L 304 336 Q 304 328 296 328 L 240 328" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ki-subagents-claude" data-edge-to="ki-subagents" data-edge-key="2" data-edge-id="ki-subagents-claude--ki-subagents" data-composition-points="304,392;304,328;240,328" data-composition-crossover="halo" data-composition-independent="true" d="M 304 392 L 304 336 Q 304 328 296 328 L 240 328" class="a-default" data-animate="edge" style="--step: 2;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
 
         <!-- Components -->
@@ -561,34 +561,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="136" y="132" class="t-database" font-size="7" text-anchor="middle">R27 · CL · F4</text>
         </g>
 
-        <g id="node-ki-agent-coordination-paperclip" data-node-id="ki-agent-coordination-paperclip" data-node-label="ki-agent-coordination-paperclip" tabindex="0" role="button" aria-label="Focus ki-agent-coordination-paperclip, agentic systems · opt-in, Agentic systems · 5 skills" aria-pressed="false" data-node-kind="database" data-node-sublabel="agentic systems · opt-in" data-node-tag="R2 · CM · F2" data-node-context="Agentic systems · 5 skills">
-          <title>ki-agent-coordination-paperclip · agentic systems · opt-in · Agentic systems · 5 skills · R2 · CM · F2</title>
-          <rect x="288" y="268" width="208" height="76" rx="8" class="c-mask"/>
-          <rect x="288" y="268" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 1;" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(294 274) scale(0.6875)">
-            <ellipse cx="8" cy="4" rx="5" ry="2"/>
-            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
-          </g>
-          <text data-node-label="" x="392" y="304" class="t-primary" font-size="10.7" font-weight="600" text-anchor="middle">ki-agent-coordination-paperclip</text>
-        <text x="392" y="320" class="t-muted" font-size="9" text-anchor="middle">agentic systems · opt-in</text>
-        <text x="392" y="336" class="t-database" font-size="7" text-anchor="middle">R2 · CM · F2</text>
-        </g>
-
-        <g id="node-ki-delegation-paperclip" data-node-id="ki-delegation-paperclip" data-node-label="ki-delegation-paperclip" tabindex="0" role="button" aria-label="Focus ki-delegation-paperclip, agentic systems · opt-in, Agentic systems · 5 skills" aria-pressed="false" data-node-kind="database" data-node-sublabel="agentic systems · opt-in" data-node-tag="R2 · CM · F3" data-node-context="Agentic systems · 5 skills">
-          <title>ki-delegation-paperclip · agentic systems · opt-in · Agentic systems · 5 skills · R2 · CM · F3</title>
-          <rect x="544" y="268" width="208" height="76" rx="8" class="c-mask"/>
-          <rect x="544" y="268" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 2;" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(550 274) scale(0.6875)">
-            <ellipse cx="8" cy="4" rx="5" ry="2"/>
-            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
-          </g>
-          <text data-node-label="" x="648" y="304" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-delegation-paperclip</text>
-        <text x="648" y="320" class="t-muted" font-size="9" text-anchor="middle">agentic systems · opt-in</text>
-        <text x="648" y="336" class="t-database" font-size="7" text-anchor="middle">R2 · CM · F3</text>
-        </g>
-
-        <g id="node-ki-subagents" data-node-id="ki-subagents" data-node-label="ki-subagents" tabindex="0" role="button" aria-label="Focus ki-subagents, agentic systems · automatic, Agentic systems · 5 skills" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agentic systems · automatic" data-node-tag="R5 · CM · F3" data-node-context="Agentic systems · 5 skills">
-          <title>ki-subagents · agentic systems · automatic · Agentic systems · 5 skills · R5 · CM · F3</title>
+        <g id="node-ki-subagents" data-node-id="ki-subagents" data-node-label="ki-subagents" tabindex="0" role="button" aria-label="Focus ki-subagents, agentic systems · automatic, Agentic systems · 3 skills" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agentic systems · automatic" data-node-tag="R5 · CM · F3" data-node-context="Agentic systems · 3 skills">
+          <title>ki-subagents · agentic systems · automatic · Agentic systems · 3 skills · R5 · CM · F3</title>
           <rect x="32" y="268" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="32" y="268" width="208" height="76" rx="8" class="c-backend" data-animate="node" style="--step: 1; --flow-node-name: archify-relay-node-3;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(38 274) scale(0.6875)">
@@ -599,8 +573,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="136" y="336" class="t-backend" font-size="7" text-anchor="middle">R5 · CM · F3</text>
         </g>
 
-        <g id="node-ki-subagents-chatgpt" data-node-id="ki-subagents-chatgpt" data-node-label="ki-subagents-chatgpt" tabindex="0" role="button" aria-label="Focus ki-subagents-chatgpt, agentic systems · automatic, Agentic systems · 5 skills" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agentic systems · automatic" data-node-tag="R5 · CM · F3" data-node-context="Agentic systems · 5 skills">
-          <title>ki-subagents-chatgpt · agentic systems · automatic · Agentic systems · 5 skills · R5 · CM · F3</title>
+        <g id="node-ki-subagents-chatgpt" data-node-id="ki-subagents-chatgpt" data-node-label="ki-subagents-chatgpt" tabindex="0" role="button" aria-label="Focus ki-subagents-chatgpt, agentic systems · automatic, Agentic systems · 3 skills" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agentic systems · automatic" data-node-tag="R5 · CM · F3" data-node-context="Agentic systems · 3 skills">
+          <title>ki-subagents-chatgpt · agentic systems · automatic · Agentic systems · 3 skills · R5 · CM · F3</title>
           <rect x="32" y="392" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="32" y="392" width="208" height="76" rx="8" class="c-backend" data-animate="node" style="--step: 1; --flow-node-name: archify-relay-node-1;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(38 398) scale(0.6875)">
@@ -611,8 +585,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="136" y="460" class="t-backend" font-size="7" text-anchor="middle">R5 · CM · F3</text>
         </g>
 
-        <g id="node-ki-subagents-claude" data-node-id="ki-subagents-claude" data-node-label="ki-subagents-claude" tabindex="0" role="button" aria-label="Focus ki-subagents-claude, agentic systems · automatic, Agentic systems · 5 skills" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agentic systems · automatic" data-node-tag="R6 · CM · F4" data-node-context="Agentic systems · 5 skills">
-          <title>ki-subagents-claude · agentic systems · automatic · Agentic systems · 5 skills · R6 · CM · F4</title>
+        <g id="node-ki-subagents-claude" data-node-id="ki-subagents-claude" data-node-label="ki-subagents-claude" tabindex="0" role="button" aria-label="Focus ki-subagents-claude, agentic systems · automatic, Agentic systems · 3 skills" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agentic systems · automatic" data-node-tag="R6 · CM · F4" data-node-context="Agentic systems · 3 skills">
+          <title>ki-subagents-claude · agentic systems · automatic · Agentic systems · 3 skills · R6 · CM · F4</title>
           <rect x="288" y="392" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="288" y="392" width="208" height="76" rx="8" class="c-backend" data-animate="node" style="--step: 2; --flow-node-name: archify-relay-node-2;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(294 398) scale(0.6875)">
@@ -634,9 +608,9 @@ rect.c-bg-rect { fill: var(--bg); }
           <text data-boundary-label="" x="8" y="57" class="t-cloud" font-size="9" font-weight="600">Fundamentals · Skills and harness</text>
         </g>
 
-        <g data-graph-role="structural-frame-label" data-composition-frame-id="1" data-composition-frame-kind="region" data-composition-frame-label="Agentic systems · 5 skills">
+        <g data-graph-role="structural-frame-label" data-composition-frame-id="1" data-composition-frame-kind="region" data-composition-frame-label="Agentic systems · 3 skills">
           <rect data-graph-role="structural-frame-label-mask" x="144" y="248" width="150.4" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="148" y="261" class="t-cloud" font-size="9" font-weight="600">Agentic systems · 5 skills</text>
+          <text data-boundary-label="" x="148" y="261" class="t-cloud" font-size="9" font-weight="600">Agentic systems · 3 skills</text>
         </g>
 
         <!-- Legend -->

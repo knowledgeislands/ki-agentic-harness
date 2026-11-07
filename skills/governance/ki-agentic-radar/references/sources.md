@@ -28,9 +28,8 @@ This ledger records the primary and corroborating sources accepted into the agen
 ## Agent coordination tooling
 
 - **Gas City:** the [open-source orchestrator](https://github.com/gastownhall/gascity) supplies reference-implementation evidence; the [software-factory guide](https://gascity.com/guide/ai-software-factory/) describes Beads-backed durable work, configured coding workflows, routing, retries, and review gates.
-- **Paperclip:** the [open-source control plane](https://github.com/PaperclipAI/paperclip) supplies reference-implementation evidence; the [key concepts guide](https://docs.paperclip.ing/guides/welcome/key-concepts/) describes company boundaries, hierarchical agent roles, tasks, goals, budgets, and approvals. Latest release v2026.1012.0 (2026-10-12), which adds experimental connectivity for outside assistants including Claude Code, Codex, OpenCode, and MCP clients.
 
-These sources establish two implemented coordination tools with overlapping multi-agent concerns but different primary abstractions. They do not establish comparative fitness, cross-tool interoperability, or a Knowledge Islands adoption decision.
+These sources establish one implemented coordination tool and its primary abstraction. They do not establish comparative fitness, cross-tool interoperability, or a Knowledge Islands adoption decision.
 
 ## Agent-owned browser runtimes
 
@@ -69,6 +68,7 @@ Every source group below was re-fetched in the latest weekly review. The review 
 | Disposition | The 2026-09-26 AHP finding is closed: implementation multiplicity is recorded, interoperability remains unwitnessed, the assess stance is unchanged, and the open cross-implementation watch item carries the follow-up. | 2026-10-06 |
 | Weekly review | ACP schema v1.25.0 (2026-10-09) stabilizes session notices and session compaction on wire protocolVersion 1; v2.0.0 alpha 8 also released (pre-stable counter-evidence). Paperclip released v2026.1005.0 (Grok Build, agent directories, company skills from GitHub, Browser Use Cloud) and v2026.1012.0 (experimental outside-assistant connectivity for Claude Code, Codex, OpenCode, and MCP clients), firing the workspace-model return trigger; stance stays assess. MCP, AHP, A2A, AGENTS.md, W3C, Gas City, and Obscura unchanged. | 2026-10-19 |
 | Disposition | Kris retired Paperclip delegation on 2026-11-07: Paperclip moves to hold, outward, owned by ki-agentic-radar, and its open watch item is closed. | 2026-11-07 |
+| Disposition | Kris asked on 2026-11-07 for everything Paperclip to be purged: its subject, evidence and source entry are removed from the radar; the rows above stay as history. | 2026-11-07 |
 
 - Return triggers: new protocol release, governance transfer, independent implementation, published conformance result, cross-implementation demonstration, deprecation, or a Knowledge Islands use case requiring reassessment.
 - Agent Client Protocol is disambiguated from similarly named IBM and AGNTCY protocols; structural vocabulary remains outside the subject registry where the schema would misclassify it.

@@ -414,26 +414,6 @@ source_role = "corroborating"
 reviewed_on = "2026-10-19"
 notes = "The vendor describes a customer-owned coding factory where workflows materialise into a Beads work graph, ready steps route to configured agents, and review gates remain operator-controlled."
 
-[evidence.paperclip-reference-implementation]
-
-id = "paperclip-reference-implementation"
-title = "Paperclip open-source control plane"
-url = "https://github.com/PaperclipAI/paperclip"
-evidence_class = "reference-implementation"
-source_role = "primary"
-reviewed_on = "2026-10-19"
-notes = "The project publishes an MIT-licensed agent coordination control plane with companies, tasks, agent hierarchies, heartbeats, approvals, budgets, workspaces, and multiple runtime adapters. Latest release v2026.1012.0 on 2026-10-12, which adds experimental outside-assistant connectivity for Claude Code, Codex, OpenCode, and MCP clients. Releases v2026.1005.0 (Grok Build, agent directories, company skills from GitHub, Browser Use Cloud) and v2026.1001.0 (2026-10-02) preceded it."
-
-[evidence.paperclip-company-model]
-
-id = "paperclip-company-model"
-title = "Paperclip company and agent concepts"
-url = "https://docs.paperclip.ing/guides/welcome/key-concepts/"
-evidence_class = "vendor-claim"
-source_role = "corroborating"
-reviewed_on = "2026-10-19"
-notes = "The vendor describes a company-scoped organisational model comprising goals, hierarchical agent roles, tasks, budgets, approvals, and isolated company boundaries."
-
 [subjects]
 
 [subjects.mcp]
@@ -597,26 +577,8 @@ interoperability_state = "claimed"
 ki_stance = "assess"
 movement = "unchanged"
 owner = "ki-agentic-radar"
-uncertainty = "Gas City demonstrates configurable coding workflows over durable Beads state, but no bounded Knowledge Islands evaluation establishes fit, authority boundaries, or comparative value beside Paperclip."
+uncertainty = "Gas City demonstrates configurable coding workflows over durable Beads state, but no bounded Knowledge Islands evaluation establishes fit, authority boundaries, or comparative value beside other coordination tools."
 return_trigger = "A bounded Knowledge Islands coordination trial, stable shared multi-operator release, independently demonstrated runtime portability, or material trust-boundary change."
 reviewed_on = "2026-10-19"
 evidence = ["gas-city-reference-implementation", "gas-city-software-factory"]
-counter_evidence = []
-
-[subjects.paperclip]
-
-id = "paperclip"
-display_name = "Paperclip"
-subject_kind = "vendor-term"
-stewardship = "vendor"
-specification_maturity = "not-applicable"
-implementation_state = "reference-only"
-interoperability_state = "claimed"
-ki_stance = "hold"
-movement = "outward"
-owner = "ki-agentic-radar"
-uncertainty = "Kris retired Paperclip delegation on 2026-11-07, so Knowledge Islands neither governs nor evaluates it; the vendor evidence below is kept as landscape context only."
-return_trigger = "A new owner decision to use an organisational coordination plane for Knowledge Islands delegation."
-reviewed_on = "2026-11-07"
-evidence = ["paperclip-reference-implementation", "paperclip-company-model"]
 counter_evidence = []

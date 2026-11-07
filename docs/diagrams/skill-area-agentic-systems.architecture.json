@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "dabbddd97ebe2b52d1b86bc576d779a967b7cdcd"
+      "revision": "e52f799d26ba00dd52c852dc7ff44cc221fbbfad"
     },
     "legend": {
       "mode": "auto",
@@ -43,46 +43,6 @@
       "pos": [
         32,
         64
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
-      "id": "ki-agent-coordination-paperclip",
-      "type": "database",
-      "label": "ki-agent-coordination-paperclip",
-      "sublabel": "agentic systems · opt-in",
-      "sources": [
-        {
-          "path": "skills/agentic-systems/ki-agent-coordination-paperclip/SKILL.md"
-        }
-      ],
-      "tag": "R2 · CM · F2",
-      "pos": [
-        288,
-        268
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
-      "id": "ki-delegation-paperclip",
-      "type": "database",
-      "label": "ki-delegation-paperclip",
-      "sublabel": "agentic systems · opt-in",
-      "sources": [
-        {
-          "path": "skills/agentic-systems/ki-delegation-paperclip/SKILL.md"
-        }
-      ],
-      "tag": "R2 · CM · F3",
-      "pos": [
-        544,
-        268
       ],
       "size": [
         208,
@@ -161,13 +121,11 @@
     },
     {
       "kind": "region",
-      "label": "Agentic systems · 5 skills",
+      "label": "Agentic systems · 3 skills",
       "wraps": [
         "ki-subagents",
         "ki-subagents-claude",
-        "ki-subagents-chatgpt",
-        "ki-delegation-paperclip",
-        "ki-agent-coordination-paperclip"
+        "ki-subagents-chatgpt"
       ],
       "pad": 32
     }
@@ -207,7 +165,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "5 skills, 0 outside prerequisites, 1 outside dependent, 3 composition and 0 optional edges, read from SKILL.md frontmatter.",
+        "3 skills, 0 outside prerequisites, 1 outside dependent, 3 composition and 0 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

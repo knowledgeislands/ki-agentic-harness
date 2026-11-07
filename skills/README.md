@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 65 skills: 54 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 63 skills: 52 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -64,26 +64,6 @@ Capture a submitted link or scan bounded public sources, then triage current sig
 - **Runtime:** Portable
 
 ### Agentic Systems
-
-#### `ki-agent-coordination-paperclip`
-
-Retired Paperclip delegation skill, kept only so a repository still declaring `[skills.ki-agent-coordination-paperclip]` resolves while it removes the declaration. Its audit warns and asks for the declaration's removal; it owns no standard or procedure and nothing replaces it. Use `ki-delegation` for background-run delegation.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | help | conform | educate | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-delegation-paperclip`
-
-Retired Paperclip delegation skill, kept only so a repository still declaring `[skills.ki-delegation-paperclip]` resolves while it removes the declaration. Its audit warns and asks for the declaration's removal; it owns no standard or procedure and nothing replaces it. Use `ki-delegation` for background-run delegation.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | help | conform | educate | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
 
 #### `ki-subagents`
 

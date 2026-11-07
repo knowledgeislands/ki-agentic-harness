@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "8a9f740965a43b84b8ac929416bf1aa61c91751e"
+      "revision": "e52f799d26ba00dd52c852dc7ff44cc221fbbfad"
     },
     "legend": {
       "mode": "auto",
@@ -942,44 +942,6 @@
       ]
     },
     {
-      "id": "ki-agent-coordination-paperclip",
-      "type": "database",
-      "label": "ki-agent-coordination-paperclip",
-      "sublabel": "agentic · opt-in",
-      "sources": [
-        {
-          "path": "skills/agentic-systems/ki-agent-coordination-paperclip/SKILL.md"
-        }
-      ],
-      "pos": [
-        32,
-        1220
-      ],
-      "size": [
-        200,
-        60
-      ]
-    },
-    {
-      "id": "ki-delegation-paperclip",
-      "type": "database",
-      "label": "ki-delegation-paperclip",
-      "sublabel": "agentic · opt-in",
-      "sources": [
-        {
-          "path": "skills/agentic-systems/ki-delegation-paperclip/SKILL.md"
-        }
-      ],
-      "pos": [
-        240,
-        1220
-      ],
-      "size": [
-        200,
-        60
-      ]
-    },
-    {
       "id": "ki-binding",
       "type": "database",
       "label": "ki-binding",
@@ -991,7 +953,7 @@
       ],
       "pos": [
         32,
-        1392
+        1308
       ],
       "size": [
         200,
@@ -1010,7 +972,7 @@
       ],
       "pos": [
         240,
-        1392
+        1308
       ],
       "size": [
         200,
@@ -1029,7 +991,7 @@
       ],
       "pos": [
         448,
-        1392
+        1308
       ],
       "size": [
         200,
@@ -1048,7 +1010,7 @@
       ],
       "pos": [
         32,
-        1476
+        1392
       ],
       "size": [
         200,
@@ -1067,7 +1029,7 @@
       ],
       "pos": [
         32,
-        1616
+        1532
       ],
       "size": [
         200,
@@ -1086,7 +1048,7 @@
       ],
       "pos": [
         240,
-        1616
+        1532
       ],
       "size": [
         200,
@@ -1105,7 +1067,7 @@
       ],
       "pos": [
         448,
-        1616
+        1532
       ],
       "size": [
         200,
@@ -1124,7 +1086,7 @@
       ],
       "pos": [
         32,
-        1756
+        1672
       ],
       "size": [
         200,
@@ -1143,7 +1105,7 @@
       ],
       "pos": [
         240,
-        1756
+        1672
       ],
       "size": [
         200,
@@ -1161,8 +1123,8 @@
         }
       ],
       "pos": [
-        712,
-        1920
+        32,
+        1844
       ],
       "size": [
         200,
@@ -1180,8 +1142,8 @@
         }
       ],
       "pos": [
-        920,
-        1920
+        240,
+        1844
       ],
       "size": [
         200,
@@ -1199,8 +1161,8 @@
         }
       ],
       "pos": [
-        1128,
-        1920
+        448,
+        1844
       ],
       "size": [
         200,
@@ -1218,8 +1180,8 @@
         }
       ],
       "pos": [
-        712,
-        2060
+        32,
+        1984
       ],
       "size": [
         200,
@@ -1237,8 +1199,8 @@
         }
       ],
       "pos": [
-        32,
-        1928
+        712,
+        1920
       ],
       "size": [
         200,
@@ -1256,8 +1218,8 @@
         }
       ],
       "pos": [
-        240,
-        1928
+        920,
+        1920
       ],
       "size": [
         200,
@@ -1505,13 +1467,11 @@
     },
     {
       "kind": "region",
-      "label": "Agentic Systems · 5 skills",
+      "label": "Agentic Systems · 3 skills",
       "wraps": [
         "ki-subagents",
         "ki-subagents-chatgpt",
-        "ki-subagents-claude",
-        "ki-agent-coordination-paperclip",
-        "ki-delegation-paperclip"
+        "ki-subagents-claude"
       ],
       "pad": 24
     },
@@ -1616,7 +1576,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "65 skills in 8 concerns and 10 functional areas: 2 always on, 19 automatic, 33 opt-in, 11 commands.",
+        "63 skills in 8 concerns and 10 functional areas: 2 always on, 19 automatic, 31 opt-in, 11 commands.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills owns the kind and applicability fields it reads."
       ]
     }
