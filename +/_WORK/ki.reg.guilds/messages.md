@@ -2,7 +2,7 @@
 
 ## Inbound
 
-None.
+- 2026-11-07 · ACK MSG-9ce75722 · from HNR > Sites > Robots (hnr.prj.site-robots) · 15:35 GMT · re-read the report-forms standard at `57bd51e9b`; `method_read` updated.
 
 ## Outbound
 
