@@ -496,3 +496,7 @@ Four of tonight's lessons (CD-63, ILL-26) landed in `5a2030de`: ki-delegation Pr
 ## 2026-11-07 06:11 GMT · port-fix received; kg-blind tallied
 
 PORT-1 cleared (`602a7881`: "Claude Design" now "the design runtime" in two standards); `ki repo conform` publishes again. `ki-exchange-dynamics` landed in `skills/acquire/` (`a24e0527`, diagrams `5ec64a03`): method and rendering standards, schema, validator with tests, an invented example, migration overlay; 1,620 tests pass. No knowledge touched; the discovery line and Principal pointer note were left out under the window and raised as EDA-DISCOVERY, sent to blind review. kg-blind agreed on KEYSTONE and ATTACH-FORM (both now medium). `pkg-shape` started with HEADER-ESTATE.
+
+## 2026-11-07 06:28 GMT · pkg-shape received; eda-blind tallied
+
+`ki-repo-packages` landed in `skills/repo-structure/` as an overlay beside the general Project shape (`80fde15b`, diagrams `5ee005d8`); `packages-stoa` passes its checker read-only except the expected consumer-register warning, and its declaration is untouched. HEADER-ESTATE landed in `ki-repo-dotfiles-chezmoi` as a Script headers section with HEADER-1 and HEADER-J1 (`ccbe6904`, diagrams `23213d5b`); all 44 scripts pass and none was edited. Queries PKG-PRIMARY, PKG-DECLARE and PKG-GENERAL copied; PKG-PRIMARY and PKG-GENERAL sent to blind review. eda-blind agreed on EDA-DISCOVERY (now high). `method_read` moved to `602a7881`, the PORT-1 wording fix, with no change of rule.

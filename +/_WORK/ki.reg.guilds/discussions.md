@@ -2,15 +2,53 @@
 
 ## Open
 
+### PKG-PRIMARY - Should package repositories become a core repository shape?
+
+**Context:** `ki-repo` keeps a list of core shapes, the main kinds a Project repository can say it is, such as tools, MCP server or website. The new `ki-repo-packages` skill works as an add-on to the general Project shape and needs no place on that list. Putting it on the list would change `ki-repo`'s list, its automatic detection of declared skills and its per-shape commit hooks. Kris said on 7 November: "It seems like it's a new repo shape really, doesn't it?" Only one package repository exists, `packages-stoa`.
+
+**Query:** Should package repositories stay an add-on to the general Project shape, or join `ki-repo`'s core shapes?
+
+**Options:**
+
+a) (recommended, confidence medium - the add-on already does the whole job without touching `ki-repo`, and one repository is thin evidence for a new core kind) Keep it as an add-on for now, and revisit when a second package repository appears.
+
+b) Make it a core shape now: add it to `ki-repo`'s list, its detection and its commit hooks in a follow-up run, then let `packages-stoa` select it as its primary shape.
+
+### PKG-DECLARE - Ask the Stoa work to adopt the new skill
+
+**Context:** The away-window grant allows building the skills but nothing more: "don't do anything else with it". Stoa will benefit from the skill only once it is declared there. Today `packages-stoa` declares only the general Project shape, with a comment pointing to the tools shape, and it still keeps a consumer list that Kris asked on 1 November to retire (STOA-NO-CONSUMERS).
+
+**Query:** Once you are back, may a message go to the Stoa Project, `ki.prj.stoa`, asking it to add `[skills.ki-repo-packages] package = "stoa"` and to replace its consumer list with finding consumers by their lock file?
+
+**Options:**
+
+a) (recommended, confidence high - it is the receiver's own change, made through its own queue, and it closes two lines of the migration overlay) Yes: send one line to `ki.prj.stoa`'s `messages.md` naming the skill and both changes.
+
+b) Wait for the Stoa work to raise it itself.
+
+### PKG-GENERAL - Confirm two Stoa rules widened to every package repository
+
+**Context:** The skill applies two rules to every package repository. First, the standard says package releases follow the release-on-demand policy that `ki-repo-tools` keeps for tooling: hold releases by default, and release only when something needs it. Second, Kris's words of 1 November about Stoa, "There should be no reference out of Knowledge Islands to other territories", and the addendum, "It shouldn't have a finite list of them", become a rule that no package repository keeps a list of its consumers. Both are written as final state, so changing either later means editing the standard.
+
+**Query:** Should both rules apply to every package repository, as written?
+
+**Options:**
+
+a) (recommended, confidence medium - both follow from the words and policies as they stand, but each widens a rule beyond the case it was set for) Yes, keep both as written.
+
+b) Narrow them: keep release timing to Stoa's own rules and the no-list rule to repositories serving other territories, and edit the standard to match.
+
 ### EDA-DISCOVERY - Let people find the new skill beyond its description
 
 **Context:** The design note's plan has two more ways for people to find the skill. One is a line in the ways-of-working guidance. The other is a short "Exchange Dynamics Analysis" pointer note among Knowledge Islands Principal's Emerging Concepts, which would go through the Enactment Process. Both were left out because the away-window grant says "Don't introduce knowledge at top level anywhere". For now the skill is found only by its description. The migration overlay lists this gap and should be cleared once the gap is closed.
+
+The blind reviewer added two points: the overlay line should go only once both items have landed, not when the message is routed; and the two items differ in weight, since the ways-of-working line is cheap while the Principal pointer note goes through the Enactment Process and may be declined, so the line could go first and the note as its own proposal.
 
 **Query:** Should the ways-of-working line and the Principal pointer note now be written through their owners?
 
 **Options:**
 
-a) (recommended, confidence medium - the design note planned both, but the pointer note adds knowledge to Principal, which needs your word) Yes, after the away window: route a message to ki.sop.main for the pointer note and the ways-of-working line, then delete that line of the overlay.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same course, since the overlay's own release condition is that both land through their owners and a later review gives no trigger; the design note planned both, but the pointer note adds knowledge to Principal, which needs your word) Yes, after the away window: route a message to ki.sop.main for the pointer note and the ways-of-working line, then delete that line of the overlay.
 
 b) The skill's description is enough for now: keep the overlay line until the discovery guidance is next reviewed.
 
