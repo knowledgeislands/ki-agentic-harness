@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "6ee916974c811800e46e671ffa81910dce06bd29"
+      "revision": "940341c56fb8ee94c902f53a9ca80bd8dfd01eb1"
     },
     "legend": {
       "mode": "auto",
@@ -942,6 +942,25 @@
       ]
     },
     {
+      "id": "ki-delegation-orca",
+      "type": "frontend",
+      "label": "ki-delegation-orca",
+      "sublabel": "agentic · command",
+      "sources": [
+        {
+          "path": "skills/agentic-systems/ki-delegation-orca/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        1220
+      ],
+      "size": [
+        200,
+        60
+      ]
+    },
+    {
       "id": "ki-binding",
       "type": "database",
       "label": "ki-binding",
@@ -953,7 +972,7 @@
       ],
       "pos": [
         32,
-        1308
+        1392
       ],
       "size": [
         200,
@@ -972,7 +991,7 @@
       ],
       "pos": [
         240,
-        1308
+        1392
       ],
       "size": [
         200,
@@ -991,7 +1010,7 @@
       ],
       "pos": [
         448,
-        1308
+        1392
       ],
       "size": [
         200,
@@ -1010,7 +1029,7 @@
       ],
       "pos": [
         32,
-        1392
+        1476
       ],
       "size": [
         200,
@@ -1029,7 +1048,7 @@
       ],
       "pos": [
         32,
-        1532
+        1616
       ],
       "size": [
         200,
@@ -1048,7 +1067,7 @@
       ],
       "pos": [
         240,
-        1532
+        1616
       ],
       "size": [
         200,
@@ -1067,7 +1086,7 @@
       ],
       "pos": [
         448,
-        1532
+        1616
       ],
       "size": [
         200,
@@ -1086,7 +1105,7 @@
       ],
       "pos": [
         32,
-        1672
+        1756
       ],
       "size": [
         200,
@@ -1105,7 +1124,7 @@
       ],
       "pos": [
         240,
-        1672
+        1756
       ],
       "size": [
         200,
@@ -1123,8 +1142,8 @@
         }
       ],
       "pos": [
-        32,
-        1844
+        712,
+        1920
       ],
       "size": [
         200,
@@ -1142,8 +1161,8 @@
         }
       ],
       "pos": [
-        240,
-        1844
+        920,
+        1920
       ],
       "size": [
         200,
@@ -1161,8 +1180,8 @@
         }
       ],
       "pos": [
-        448,
-        1844
+        1128,
+        1920
       ],
       "size": [
         200,
@@ -1180,8 +1199,8 @@
         }
       ],
       "pos": [
-        32,
-        1928
+        712,
+        2004
       ],
       "size": [
         200,
@@ -1199,8 +1218,8 @@
         }
       ],
       "pos": [
-        32,
-        2068
+        712,
+        2144
       ],
       "size": [
         200,
@@ -1218,8 +1237,8 @@
         }
       ],
       "pos": [
-        712,
-        1920
+        32,
+        1928
       ],
       "size": [
         200,
@@ -1237,8 +1256,8 @@
         }
       ],
       "pos": [
-        920,
-        1920
+        240,
+        1928
       ],
       "size": [
         200,
@@ -1486,11 +1505,12 @@
     },
     {
       "kind": "region",
-      "label": "Agentic Systems · 3 skills",
+      "label": "Agentic Systems · 4 skills",
       "wraps": [
         "ki-subagents",
         "ki-subagents-chatgpt",
-        "ki-subagents-claude"
+        "ki-subagents-claude",
+        "ki-delegation-orca"
       ],
       "pad": 24
     },
@@ -1597,7 +1617,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "64 skills in 8 concerns and 10 functional areas: 2 always on, 19 automatic, 32 opt-in, 11 commands.",
+        "65 skills in 8 concerns and 10 functional areas: 2 always on, 19 automatic, 32 opt-in, 12 commands.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills owns the kind and applicability fields it reads."
       ]
     }
