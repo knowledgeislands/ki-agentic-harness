@@ -713,3 +713,7 @@ The held Personal lines were delivered by `route-personal`. personal.reg.househo
 ## 2026-11-07 08:50 GMT · ROUTE-HELD routed
 
 `route-personal` held AUTOSTASH-LEFTOVER and MISSING-TOOLS, whose subjects are not household matters. Routed by subject as its a) proposed, a routing act under the window: AUTOSTASH-LEFTOVER to personal.reg.inbox-terra (MSG-5d2e81c4), asking it to check terra's inbox checkout and report, with nothing dropped; MISSING-TOOLS stays parked here until the second hook convergence, when it goes to the three territories' State of play packages.
+
+## 2026-11-07 08:54 GMT · folder2-fix received; AUTOSTASH-LEFTOVER settled; plan exhausted
+
+AUDIT-FOLDER2 is fixed by `878d4287`: FOLDER-2 and FOLDER-3 now declare FAIL, with a test; 1,627 tests pass. Its finding PRINCIPAL-AUDIT (ki-principal's audits now run and report 157 and 193 FAIL, fleet layout findings) went to ki.sop.main as MSG-e19b4a07. personal.reg.inbox-terra ACKed MSG-5d2e81c4: terra's inbox has no stash and `314df11` is present, so AUTOSTASH-LEFTOVER is settled with nothing dropped. Every unit of the window plan is now landed or waits on a decision from Kris; the thread keeps listening and launches nothing new until Kris returns or a message arrives.
