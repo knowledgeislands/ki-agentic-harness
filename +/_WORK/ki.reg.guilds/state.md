@@ -5,7 +5,7 @@ since: 2026-11-06T18:54:52Z
 received: 2026-11-06T16:54:00Z
 beat: null
 mark: 2026-11-07T02:25:09Z
-method_read: 5c118279
+method_read: a4da0db2
 listening_enabled: true
 listening_status: on
 workers:
@@ -32,9 +32,9 @@ workers:
 
 - NO-WORKTREES for now (Kris, 02:55 GMT): guild runs edit in the primary checkout, one per repository at a time, until Kris lifts it.
 
-0. IMPORTANT STAGE-C-ROLES (Kris, 02:30 GMT) first: `roles-design` running, then `roles-blind`, `roles-land`, seat glyphs and REFRESH; one owner report when landed.
-1. Running: `drift-fix` (harness, DRIFT-FIRST), `d12-kg-design` (read-only), `terra-orca` (terra, TERRA-ORCA).
-2. Then, chained in the harness after STAGE-C-ROLES: `paperclip-drop` (PAPERCLIP-DROP), `cm-tidy` (CHANGE-MGMT cluster), then the staged standard split (STAGING), then the absorption of ki.prj.ways-of-working once ki.sop.main acknowledges MSG-a5ca3edb.
+0. STAGE-C-ROLES landed (`a4da0db2`, 03:03 GMT); REFRESH MSG-4cf14cb8 out to 15 packages, ACKs coming in; household-terra and household-sol switch their footers.
+1. Nothing running.
+2. Then, chained in the harness after STAGE-C-ROLES: `cm-tidy` (CHANGE-MGMT cluster), then the staged standard split (STAGING), then the absorption of ki.prj.ways-of-working once ki.sop.main acknowledges MSG-a5ca3edb.
 3. Waiting: Kris verifying vega's key (VEGA-KEY); personal.reg.inbox-sol's state of coordination (COORD-OVERLAP); ki.sop.main's bundles (MSG-da83a96f) and Orca items (MSG-8125375d).
 
 ## Held
