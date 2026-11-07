@@ -38,7 +38,7 @@ workers:
 4. `doer-lessons` (harness): DOER-LESSONS from ki.prj.agora CD-63 into the coordination skills. Medium.
 5. `kg-skill` (harness): `ki-knowledge-graph` in `skills/acquire/` (KG-NAME, HARNESS-SCOPE a)); no change to `ki-acquire`, no card dispatch. Medium.
 6. `eda-skill` (harness): `ki-exchange-dynamics` in `skills/acquire/` (SKILL-HOMES a), design note in ki.sop.main). Medium.
-7. `pkg-shape` (harness): package-repository shape skill (REPO-SHAPE-PACKAGES, STOA-SHAPE). Medium.
+7. `pkg-shape` (harness): package-repository shape skill (REPO-SHAPE-PACKAGES, STOA-SHAPE MSG-6adb77c9, STOA-TOOLCHAIN MSG-c0ddcf23 on applying `ki-engineering` to plain JavaScript with JSDoc). Medium.
 8. `header-estate` (harness): HEADER-ESTATE into `ki-repo-dotfiles-chezmoi`. Small.
 9. `cm-tidy` (harness): the CHANGE-MGMT cluster. Medium.
 10. `standard-split` (harness): the staged ki-coordination split, stage 2 onwards. Large.

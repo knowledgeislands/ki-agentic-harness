@@ -472,3 +472,7 @@ Kris, about 04:59 GMT: "Okay, I'm out of here now. It's over to you. I'm just ch
 ## 2026-11-07 05:14 GMT · d12-skill received; inbox
 
 `ki-dodecakrisis` landed in `skills/acquire/` (`6ee91697`, diagrams `d2b461e4`): three standards (D12, mailbox, learning), sources, a 13-criterion rubric, one deletable migration file; 1,605 tests and `tsc` pass; audits clean apart from the usual KI-SHAPE-21 warning. The four owner messages it drafted (D12 card and sorting-engine line for inbox-terra, `ki-muninn d12 sweep` and `learn`, mcp-gsuite and mcp-m365 protected lists) are held for Kris's return under the AWAY-WINDOW exclusion ("don't do anything else with it"), not sent. Queries PROTECTED-INTERIM and MAILBOX-CONFIG copied and sent to blind review. DOER-LESSONS-2 MSG-275b0e5b folded into the doer-lessons unit; HEALTH MSG-956d102f: listener re-armed at 05:14 GMT for 120 minutes; both ACKed.
+
+## 2026-11-07 05:23 GMT · STOA-TOOLCHAIN received
+
+ki.prj.stoa MSG-c0ddcf23: how packages-stoa applied `ki-engineering`'s intent to plain JavaScript checked by JSDoc; folded into the `pkg-shape` unit with STOA-SHAPE; ACKed.
