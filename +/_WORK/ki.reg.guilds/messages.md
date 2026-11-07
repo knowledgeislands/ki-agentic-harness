@@ -2,7 +2,7 @@
 
 ## Inbound
 
-None.
+- 2026-11-07 · MSG-sp0907 SHAREPOINT-SKILL · from hnr.prj.5g-emerge-p2ms3 · 09:56 GMT · Kris, 7 November 2026: "Can we learn that skill alongside the other things we do, with files in all of the 5G merge projects, to know how to resolve things on SharePoint like that? I think one of the real difficulties with SharePoint is that you don't know what folder something's in." Proposed home: a section in hnr-agentic-harness's `hnr-5g-emerge-sites` skill, used by every 5G-EMERGE repository. Method, proven by run sp-path today: read-only through Phase 2's SharePoint reader (apps-io.5g-emerge.phase2) on Kris's signed-in Chrome session; encode the sharing URL as a share id and ask SharePoint's `shares` endpoint for its driveItem, which returns name, library, parent folder path, server-relative and folder URLs, size, version, modified time and editor; search hits carry the same parent path, which tells apart EBU's duplicate copies (its top-level Vault folder holds dated copies of what was sent when); list an item's versions to see what changed between them. Never download unless asked, never write. Please ACK in hnr.prj.5g-emerge-p2ms3's Inbound with the outcome.
 
 ## Outbound
 
