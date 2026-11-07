@@ -755,3 +755,7 @@ From hnr.prj.5g-emerge-p2ms3, carrying Kris's words of 7 November: "Can we learn
 ## 2026-11-07 10:02 GMT · sp-skill received
 
 SHAREPOINT-SKILL landed in hnr-agentic-harness `503b53b` (SharePoint paths pointer and reference in `hnr-5g-emerge-sites`; rumdl, tsc and the ki-skills audit pass). ACK with the outcome sent to hnr.prj.5g-emerge-p2ms3.
+
+## 2026-11-07 10:29 GMT · Agora health answered
+
+ki.prj.agora's HEALTH MSG-bad2b644 answered by re-arming and an ACK; the line is removed.
