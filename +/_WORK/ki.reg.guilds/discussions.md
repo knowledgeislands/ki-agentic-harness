@@ -52,18 +52,6 @@ a) (recommended, confidence medium - reviewed: the blind reviewer chose this; th
 
 b) Retire it from the roadmap standard and the `tools-ki` validator now.
 
-### Z-HISTORY - Whether the published Z reports need a history rewrite
-
-**Context:** Deleting the two Z reports removes them from the current files, but they stay in ki-principal's public Git history from `7109c998` onwards. Removing them from history needs a force-push, which no agent may do and only you can authorise. The retirement report names a private archive path and lists archive and bundle file names, but no credentials. This part comes from the blind reviewer's reframing of Z-PUBLISHED.
-
-**Query:** Will you read the two reports and decide whether history needs rewriting?
-
-**Options:**
-
-a) (recommended, confidence medium - reviewed: the blind reviewer judged your read the step that matters; the content looks low-risk, but only you can judge it) Yes: you read them once; if nothing in them is sensitive, history stays as it is.
-
-b) Rewrite ki-principal's history to remove them now, which you would do yourself with a force-push.
-
 ### ONE-LAUNCHER - should one launcher per package per host become a rule
 
 from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November, differs)
