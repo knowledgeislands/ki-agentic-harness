@@ -528,3 +528,7 @@ ki.prj.agora's HEALTH MSG-4554660b answered by re-arming on the Agora call and d
 ## 2026-11-07 08:16 GMT · stage 5 landed; stage 6 and absorb started
 
 stage5-draft wrote all fourteen units; the independent Codex reviewer (stage5-review) found 14 issues (1 lost, 10 changed, 3 unclear); stage5-apply landed every unit with all fixes, core last (to `60b52443`, tick `1e7bf844`), restoring "agent" where a rule means one worker and the runtime-specific wording `ki-skills` requires; HOLD-DRAIN added to the register. Queries HOLD-RUNSTATE and STAGE5-DEPTH copied and sent to blind review. `stage6` launched on the plan's stage 6 as written, without any deeper cut while STAGE5-DEPTH is open. `absorb` launched in ki-principal as unit 11 under ABSORB-CLOSE, a different repository from the harness run.
+
+## 2026-11-07 08:21 GMT · stage6 received unlanded; s5-blind tallied; ILL-26 pointer sent
+
+stage6 changed nothing: the core's style part is about 5,000 words against CORE-BUDGET a)'s 4,000 limit, and the core lacks the mark words, query options, interactive pass and listening fields the style carries today; a switch would change every coordinator on this machine at commit through the chezmoi link, so it held. STAGE6-BUDGET and CORE-EVERY-TURN copied and sent to blind review; the split rests here until Kris answers them with STAGE5-DEPTH. s5-blind agreed on HOLD-RUNSTATE and STAGE5-DEPTH (both now high). ki.prj.agora sent the ILL-26 pointer to `5a2030de` it asked for.

@@ -2,15 +2,41 @@
 
 ## Open
 
+### STAGE6-BUDGET - The core is too long for the agreed size limit
+
+**Context:** Under CORE-BUDGET a) (Kris, 7 November 02:00 GMT), the core's word check warns above 3,500 words and fails above about 4,000. After the stage 5 rewrite, the part of the core that would become the always-loaded style is about 5,000 words. That is because stage 5 cut only about 6%, which is the open STAGE5-DEPTH question. This run was told to make no deeper cut, so stage 6 cannot add its size check without failing the tests.
+
+**Query:** Should the deeper cut of the core be done together with the style switch, before stage 6 lands?
+
+**Options:**
+
+a) (recommended, confidence medium - it is the only way to meet the agreed limit, and pinned sentences are best changed with their tests, as STAGE5-DEPTH a) proposes; but the cut is large, about 1,000 words) Answer STAGE5-DEPTH with a), and send stage 6 back to cut the core to under 4,000 words. Each reworded sentence changes with its test, and a blind section review checks the cut before the switch lands.
+
+b) Land the switch now with the core at about 5,000 words. The size check fails above the current size so the core cannot grow, and the limit drops to 4,000 once a later deeper cut lands.
+
+### CORE-EVERY-TURN - Rules the style would lose on every turn
+
+**Context:** The style will be generated from the core alone (STYLE-FROM-CORE a)). Today's style carries the mark words, the shape of a query's options, the interactive pass and the listening and sync fields. The current core has none of them. Each is in a purpose file that the coordinator would have to read when it needs it. The plan meant the mark words and a five-line rule for acting on messages to sit in the core. A switch would change every coordinator on this machine as soon as it is committed.
+
+**Query:** Before the switch, should the core gain a short every-turn summary of the rules that are not in it today?
+
+**Options:**
+
+a) (recommended, confidence medium - it keeps the rules every turn needs always loaded, as the plan meant, but it adds about 300 words against the size limit) Yes. Add one short paragraph each for the mark words, acting on messages, the query's lettered options and the listening fields, inside the markers, each pointing to its purpose file. The blind review checks these in the same stage 6 pass.
+
+b) No. Leave them in their purpose files and rely on the load table, accepting that a coordinator must read a purpose file before using them.
+
 ### HOLD-RUNSTATE - Where copied run state goes when work is put on hold
 
 **Context:** When work goes on hold, the rules say to copy into the work's package anything from a run's state folder (`~/.local/state/ki/agents/<run>/`) that is needed to resume. The drafter noticed that the package may only hold a fixed list of file kinds, set by `ki-work-package`. Copied run state may not be on that list. I kept the rule as it stands today, with the same meaning, so nothing changed. Neither the plan nor the earlier split decision settles where such files belong.
+
+The reviewer thinks the closed list may not need changing: the run state a resume needs is almost always a report, brief or design note, which `<focus-id>/` already admits, so a holds-rule-only edit ("copy it into the focus folder the run served as one of the closed-list kinds, usually its report") may suffice.
 
 **Query:** Should copied run state go to a named place in the package, such as the focus folder of the work it serves, so that it fits the package's list of allowed files?
 
 **Options:**
 
-a) (recommended, confidence medium - it fits the package's existing focus-folder rule, but the allowed-file list is in another skill and I have not tested it against this case) Name the focus folder the run served, or `findings/` for a finding, as the home for copied run state. Change the holds rule and, if needed, the `ki-work-package` list in stage 6 or a small follow-up.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same course, since the closed list admits only its kinds and FOLDER-1 is must-pass, so the holds rule as written steers a hold towards a rubric failure; it fits the package's existing focus-folder rule, but the allowed-file list is in another skill and I have not tested it against this case) Name the focus folder the run served, or `findings/` for a finding, as the home for copied run state. Change the holds rule and, if needed, the `ki-work-package` list in stage 6 or a small follow-up.
 
 b) Leave the rule as it is, and deal with any clash with the allowed-file list when a real hold runs into it.
 
@@ -18,11 +44,13 @@ b) Leave the rule as it is, and deal with any clash with the allowed-file list w
 
 **Context:** The terse rewrite now in the repository keeps every rule's meaning. Many tests pin exact sentences, and templates, tables and fixed tokens make up most of the remaining length, so the files are only about 6% shorter. A deeper cut means rewording the pinned sentences and changing their tests at the same time. That is stage 6's ground, where the tests and the generated style are rewritten anyway.
 
+The reviewer asked that a) name the deeper cut as an explicit stage 6 step, measured by the plan's size table (about 54% smaller reference set, 42% smaller style) and the word budget, since stage 5 gave 6%. The stage 6 run has since stopped on STAGE6-BUDGET, which depends on this answer.
+
 **Query:** Should any deeper cut wait for stage 6, alongside the test changes, rather than opening a second stage 5 pass?
 
 **Options:**
 
-a) (recommended, confidence medium - pinned wording is safest changed together with its tests, and stage 6 already rewrites both) Leave the deeper cut to stage 6, which may shorten pinned sentences while it changes their tests.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same course, since stage 6 already rewrites the banner test, generates the style and adds the word budget, so each pinned test changes once; pinned wording is safest changed together with its tests, and stage 6 already rewrites both) Leave the deeper cut to stage 6, which may shorten pinned sentences while it changes their tests.
 
 b) Send stage 5 back now for a deeper second pass, allowing pinned sentences to change and listing the test edits each one needs.
 
