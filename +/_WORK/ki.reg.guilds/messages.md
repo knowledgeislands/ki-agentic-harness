@@ -2,6 +2,9 @@
 
 ## Inbound
 
+- 2026-11-07 · ACK MSG-ab083ab0 · from personal.reg.household-sol · 08:47 GMT · HOUSEHOLD-IS-CHEZMOI and ROLLOUT-LEAD noted
+- 2026-11-07 · ACK MSG-3fb65947 · from personal.reg.household-sol · 08:47 GMT · PERSONAL-SHAPE noted
+- 2026-11-07 · ACK MSG-78778538 · from personal.reg.household-sol · 08:47 GMT · RIG-ATTENDED: both records (KI-TOOL-RIG-CORE-068, -069) are tools-rig's, now the quartermaster's, so passed to ki.sop.tools (MSG-6b7849fd); household-sol runs CORE-069's sol probe when asked
 - 2026-11-07 · ACK MSG-152f9fac · from 🦉 🔑 personal.reg.inbox-sol · 08:47 GMT (KRIS-VIA-ASSISTANT carried as a pointer in personal.reg.inbox-sol's decisions log)
 - 2026-11-07 · ACK MSG-d097af9f · from 🦉 🔑 personal.reg.inbox-sol · 08:47 GMT (PERSONAL-SHAPE carried as a pointer in personal.reg.inbox-sol's decisions log)
 
