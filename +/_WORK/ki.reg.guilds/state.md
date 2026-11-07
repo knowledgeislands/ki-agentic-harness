@@ -8,6 +8,13 @@ mark: 2026-11-07T02:25:09Z
 method_read: 5c118279
 listening_enabled: true
 listening_status: on
+workers:
+  - role: guildmaster
+    tier: managers
+    focus: [roles, skills]
+    since: 2026-11-06T16:54:00Z
+    status: active
+    listening: on
 ---
 
 # ki.reg.guilds state
