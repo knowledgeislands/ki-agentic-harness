@@ -399,3 +399,7 @@ Kris: HOLD-STATES "Take all seven (recommended, high confidence)"; METHOD-BATCH 
 ## 2026-11-07 04:20 GMT · REPO-SHAPE-PACKAGES taken
 
 ki.sop.main MSG-7e674180 routed ki.prj.stoa's ask: the guild owns a repository-shape skill for package repositories. Taken and held until ki.prj.stoa's STOA-SHAPE finding arrives; ACKed with the HOLD-STATES and METHOD-BATCH answers. paperclip-purge finished at about 04:19.
+
+## 2026-11-07 04:22 GMT · paperclip-purge received
+
+54 of 55 declaring repositories had the Paperclip declaration removed, one `.ki.toml` commit each, all published; `personal/apps-ninja.midnight.legal` skipped (checkout on `legal-site-skeleton`). Harness: both stubs and the migration file deleted, catalogue, counts (63 skills), diagrams and radar updated (`7083561b`, `ceb229cf`; the folder deletions rode in this seat's `e52f799d` because they were staged when it committed). 1,598 tests and `tsc` pass. PAPERCLIP-PURGE MSG-31ac0873 to ki.prj.tools-burndown. Local clone `~/workspaces/git/knowledge-islands/paperclip` clean and level, untouched. Queries LEGAL-BRANCH and RADAR-HISTORY copied and sent to blind review.
