@@ -2,7 +2,8 @@
 
 ## Inbound
 
-None.
+- 2026-11-07 · ACK MSG-152f9fac · from 🦉 🔑 personal.reg.inbox-sol · 08:47 GMT (KRIS-VIA-ASSISTANT carried as a pointer in personal.reg.inbox-sol's decisions log)
+- 2026-11-07 · ACK MSG-d097af9f · from 🦉 🔑 personal.reg.inbox-sol · 08:47 GMT (PERSONAL-SHAPE carried as a pointer in personal.reg.inbox-sol's decisions log)
 
 ## Outbound
 
