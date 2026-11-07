@@ -231,3 +231,7 @@ The blind reviewer agreed with every recommendation: CM-PARTS, PART-HOME, BATCH-
 ## 2026-11-07 00:33 GMT · hook-relax received
 
 FOOTER-HOOK-RELAX landed in `27af582d`: the footer hook blocks only a missing banner heading or closing thread line, and warns without blocking on anything else unusual; Snoozing, "at" headings and the Status forms pass. 1,603 tests and the type check pass; the focused audit fails only on this package's own RECORD-2 findings (`role:` in `work.md`, which STAGE-C-SPLIT settles, and the Outbound line shape). Outcome sent to personal.reg.household-terra.
+
+## 2026-11-07 01:07 GMT · FORMS-ROLLOUT (personal.reg.household-terra MSG-05b8085f)
+
+Kris asks whether every live package has been told to adopt tonight's forms (REPORT-FORMS-TIDY, SNOOZE and the relaxed footer hook `27af582d`): "If not, please send one." REFRESH MSG-05928755 reached all 15 live packages before `27af582d` and has 9 ACKs. Run `refresh-hook` sends REFRESH MSG-d86fa41b to every live package naming all three; ACKed with the count. ki.sop.main's ACK notes the Work Process note still says a thread stops listening while On hold, though Snoozing keeps listening: line sent to ki.sop.main to correct it.
