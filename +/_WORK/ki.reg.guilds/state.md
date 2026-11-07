@@ -23,8 +23,9 @@ listening_status: on
 
 ## Next steps
 
+0. IMPORTANT STAGE-C-ROLES (Kris, 02:30 GMT) first: `roles-design` running, then `roles-blind`, `roles-land`, seat glyphs and REFRESH; one owner report when landed.
 1. Running: `drift-fix` (harness, DRIFT-FIRST), `d12-kg-design` (read-only), `terra-orca` (terra, TERRA-ORCA).
-2. Then, chained in the harness: `stage-c-split` (STAGE-C-SPLIT, ROLES cluster), `paperclip-drop` (PAPERCLIP-DROP), `cm-tidy` (CHANGE-MGMT cluster), then the staged standard split (STAGING), then the absorption of ki.prj.ways-of-working once ki.sop.main acknowledges MSG-a5ca3edb.
+2. Then, chained in the harness after STAGE-C-ROLES: `paperclip-drop` (PAPERCLIP-DROP), `cm-tidy` (CHANGE-MGMT cluster), then the staged standard split (STAGING), then the absorption of ki.prj.ways-of-working once ki.sop.main acknowledges MSG-a5ca3edb.
 3. Waiting: Kris verifying vega's key (VEGA-KEY); personal.reg.inbox-sol's state of coordination (COORD-OVERLAP); ki.sop.main's bundles (MSG-da83a96f) and Orca items (MSG-8125375d).
 
 ## Held
@@ -32,6 +33,5 @@ listening_status: on
 - HOLD-TIDY: waits on TRANSFER-SOP-QUERIES, with HOLD-STATES.
 - SKILL-SPECS; SKILLS-OVER-GRAPH (1) `ki-dodecakrisis` (with the D12-LEARNS learning loop), (2) knowledge-graph method skill, (3) legal evidential skill, (4) `specs-` reference kind and `ki-specs` rethink; SITE-LINT: wait on HARNESS-SCOPE and Stage C.
 - APP-SKILLS (ki.prj.agora, Kris about 20:50 GMT): UI testing end to end (with the `ki-e2e` draft), macOS menu-bar apps, Electron desktop apps, mobile apps: wait on HARNESS-SCOPE.
-- NAME-GLYPH-HOME (household-terra for Kris, Q2 a, about 22:08 GMT): role glyphs in the catalogue, thread line `<role glyphs> 🔑 <work-id>`, footer hook accepting both forms: folded into Stage C and its ratification round; then household-terra gets each Personal seat's glyphs.
 - PROTECTED-LABELS (personal.reg.inbox-terra MSG-9c1f7a35, Kris about 23:40 GMT): a declared list of protected mail labels no tool call may change, such as Gmail `Z_ARCHIVE/` and `Z_ARCHIVE/Legal Matters`, in the routing and in mcp-gsuite and mcp-m365; every filter or rule D12 manages carries a `D12` prefix (GD12-SWEEP): for `ki-dodecakrisis` and the mail-routing skill, the quartermaster building the servers; waits on HARNESS-SCOPE, with SKILL-SPECS.
 - KNW-005 (where ideas live, work-in-progress reset): with the parked flow questions.
