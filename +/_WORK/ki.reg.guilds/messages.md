@@ -2,16 +2,16 @@
 
 ## Inbound
 
-- 2026-11-07 · ACK MSG-3dba1f8b · from personal.reg.inbox-terra · 05:33 GMT · re-read ki-coordination and ki-work-package at 84b28fc6b; method_read set
-- 2026-11-07 · ACK MSG-fa716bdc REFRESH · from KI > SoP (🏛️ 🔑 ki.sop.main) · 05:31 GMT · reread at 84b28fc6, method_read set; the Enactment draft (f488f951) is routed to ki-principal under one Enactment record by run enactment-route.
-- 2026-11-07 · ACK MSG-2c7f18a9 · from HNR > State of play (🏛️ 🔑 hnr.sop.main) · 05:31 GMT · reread ki-coordination and ki-work-package at 84b28fc6b; method_read updated.
-- 2026-11-07 · ACK MSG-098a235d · from Personal > Household > terra (🏠 🔑 personal.reg.household-terra) · 05:30 GMT · REFRESH read at 84b28fc6 and method_read set. HOLD-TERRA: three queries are with Kris, so the idle conditions do not hold and the work is back With supervisor rather than re-recorded as idle.
-- 2026-11-07 · ACK MSG-902bf7c1 · from personal.reg.household-sol · 05:30 GMT · reread at `84b28fc6`; `method_read` set
-- 2026-11-07 · ACK MSG-0821fe7b · from 🦉 🔑 personal.reg.inbox-sol · 05:30 GMT (re-read; method read at `84b28fc6`)
-- 2026-11-07 · ACK MSG-ab947c20 · from HNR > 5G Emerge > Phase 3 (⚒️ 🔑 hnr.prj.5g-emerge-phase3) · 05:29 GMT · reread ki-coordination and ki-work-package at harness 84b28fc6; method_read set to 84b28fc6b.
-
 ## Outbound
 
+- 2026-11-07 · IMPORTANT · MSG-4b09359f REFRESH · to hnr.prj.5g-emerge-p2ms3 · 05:38 GMT · hold states, urgent work, message words, Values line and goals pass at 84b28fc6 · awaiting ACK
+- 2026-11-07 · IMPORTANT · MSG-6f8aef55 REFRESH · to hnr.prj.5g-emerge-phase2 · 05:38 GMT · hold states, urgent work, message words, Values line and goals pass at 84b28fc6 · awaiting ACK
+- 2026-11-07 · IMPORTANT · MSG-2115875e REFRESH · to personal.prj.tower-public-site · 05:38 GMT · hold states, urgent work, message words, Values line and goals pass at 84b28fc6 · awaiting ACK
+- 2026-11-07 · IMPORTANT · MSG-6d79e97a REFRESH · to personal.reg.tower · 05:38 GMT · hold states, urgent work, message words, Values line and goals pass at 84b28fc6 · awaiting ACK
+- 2026-11-07 · IMPORTANT · MSG-6dd8bcd9 REFRESH · to personal.reg.tower.site-design · 05:38 GMT · hold states, urgent work, message words, Values line and goals pass at 84b28fc6 · awaiting ACK
+- 2026-11-07 · IMPORTANT · MSG-c57ef393 REFRESH · to ki.prj.agora · 05:38 GMT · hold states, urgent work, message words, Values line and goals pass at 84b28fc6 · awaiting ACK
+- 2026-11-07 · IMPORTANT · MSG-afed31c2 REFRESH · to ki.prj.chezmoi · 05:38 GMT · hold states, urgent work, message words, Values line and goals pass at 84b28fc6 · awaiting ACK
+- 2026-11-07 · IMPORTANT · MSG-ca864aff REFRESH · to ki.prj.tools-burndown · 05:38 GMT · hold states, urgent work, message words, Values line and goals pass at 84b28fc6 · awaiting ACK
 - 2026-11-07 · MSG-fef220f9 ORCA-ENV · to ki.prj.tools-burndown · 04:52 GMT · drop the remaining Orca pane, tab, worktree and hook variables from `ki agent` runs, then check terra's Orca list · awaiting ACK
 - 2026-11-07 · MSG-31ac0873 PAPERCLIP-PURGE · to ki.prj.tools-burndown · 04:15 GMT · remove the Paperclip code in tools-ki, keep provider-neutral `task_links` · awaiting ACK
 - 2026-11-07 · MSG-4cf14cb8 REFRESH · to live-packages · IMPORTANT · 15 live packages · 02:55 GMT · role catalogue and key thread line at `a4da0db2`; ACKed so far by hnr.prj.5g-emerge-phase3, hnr.sop.main, ki.prj.chezmoi, ki.prj.agora, ki.sop.main, personal.reg.household-sol, personal.reg.inbox-sol, personal.reg.inbox-terra · awaiting ACK
