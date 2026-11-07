@@ -30,7 +30,7 @@ The work model is the [Work Process](https://github.com/knowledgeislands/ki-prin
 - [Work identity and native sessions](#work-identity-and-native-sessions)
 - [Optional runtime reminder consumers](#optional-runtime-reminder-consumers)
 - [Update lifecycle](#update-lifecycle)
-  - [Recap-supplied hand-off evidence](#recap-supplied-hand-off-evidence)
+  - [Hand-off evidence](#hand-off-evidence)
 - [Resume lifecycle](#resume-lifecycle)
 - [Removal lifecycle](#removal-lifecycle)
 - [Prohibited payloads and claims](#prohibited-payloads-and-claims)
@@ -353,7 +353,7 @@ The body has exactly this heading sequence, territory work adding `## Queue` aft
 - **Now** - at most five lines: what is running, what lies with whom, since when. It holds the present only.
 - **Queue** - territory work only: its ordered Project-work queue and cap list.
 - **Next steps** - what the worker does when the work is next in its hands, numbered. Done items leave at the move that completes them; the commit message carries them.
-- **Held** - work waiting on a named release condition, one line each with its condition. Ideas go to the Project note's Notes or to a record through `ki-next`, not here.
+- **Held** - work waiting on a named decision or event, one line each with its release condition. Deferred deliverable work becomes an unadopted triage record in its home repository under `ki-next`'s [capture rule](../../../change-management/ki-next/references/standards-next-work.md#capture-substantive-prospective-work), as Kris took HELD-VS-RECORD a) on 7 November 2026, and ideas go to the Project note's Notes or to a record through `ki-next`; neither stays here.
 
 Each section says something, if only `None`. History stays out, as Kris answered STATE-HISTORY: the recap since the mark reads `git log -- +/_WORK/<id>/` and the run reports, so nothing needs a dated log in `## Now` or `## Next steps`. Evidence, such as commit identifiers, test counts and artefact hashes, lives in the run report and the commit; `state.md` may link one, not copy it.
 
@@ -481,11 +481,11 @@ Other work may add one line to a work's `messages.md` under [Messages lines](#me
 
 Write durable decisions, accepted work state, or reusable knowledge to their proper owners before referring to them from the package. The package may name those canonical artifacts; it must not become their only copy.
 
-### Recap-supplied hand-off evidence
+### Hand-off evidence
 
-An explicit `ki-recap checkpoint <id>` invocation may supply grounded evidence to this update lifecycle. The composition does not grant write authority or weaken validation: the repository must declare a valid `ki-work-package` capability, or its deprecated alias, the user must select exactly one piece of work and explicitly authorise its update, and the update procedure must refuse any repository mismatch, stale baseline, ambiguous work, interrupted update, or incomplete work state.
+An update that hands work to a fresh agent follows this lifecycle and nothing else. `ki-recap` supplies no package update and has no checkpoint composition, as Kris took RECAP-NARROW a) on 7 November 2026; the update procedure refuses any repository mismatch, stale baseline, ambiguous work, interrupted update or incomplete work state.
 
-The supplied hand-off names the physical repository identity, immutable committed baseline or one complete portable patch against that baseline, scoped authority, result destination, and expected verification. A transcript, runtime session, shared filesystem, or provider snapshot may be available to the caller but is never required evidence and cannot replace those portable inputs. The package records concise current state and references to durable owners; it does not embed the patch, become the result store, or take ownership of the delegated work.
+The hand-off names the physical repository identity, immutable committed baseline or one complete portable patch against that baseline, scoped authority, result destination, and expected verification. A transcript, runtime session, shared filesystem, or provider snapshot may be available but is never required evidence and cannot replace those portable inputs. The package records concise current state and references to durable owners; it does not embed the patch, become the result store, or take ownership of the delegated work.
 
 ## Resume lifecycle
 

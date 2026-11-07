@@ -6,62 +6,32 @@ Accepted user-observable behaviour for a portable hand-off from one governed age
 
 ## User-observable behaviours
 
-### AHO-001 — Complete hand-off inputs
+### AHO-001 — ~~Complete hand-off inputs~~ (deprecated)
 
-A portable agent hand-off MUST name the physical repository identity, exact human-selected thread, scoped authority, result destination, expected verification, and recoverable work state.
+Retired with the `ki-recap checkpoint` composition and its hand-off preflight, which Kris removed under RECAP-NARROW a) on 7 November 2026. `ki-work-package` owns every package write, and its update and resume procedures carry the hand-off.
 
-_Conformance:_ conforming
+### AHO-002 — ~~Checkpoint-owned composition~~ (deprecated)
 
-_Verify:_ run the focused checkpoint hand-off fixtures with every required input present and with each input removed in turn.
+Retired with the `ki-recap checkpoint` composition and its hand-off preflight, which Kris removed under RECAP-NARROW a) on 7 November 2026. `ki-work-package` owns every package write, and its update and resume procedures carry the hand-off.
 
-_Evidence:_ `skills/change-management/ki-recap/scripts/recap-grounding.test.ts` exercises complete and missing-input decisions through `evaluateCheckpointHandoff`.
+### AHO-003 — ~~Portable work state~~ (deprecated)
 
-### AHO-002 — Checkpoint-owned composition
+Retired with the `ki-recap checkpoint` composition and its hand-off preflight, which Kris removed under RECAP-NARROW a) on 7 November 2026. `ki-work-package` owns every package write, and its update and resume procedures carry the hand-off.
 
-`ki-recap checkpoint <work id>`, the old `checkpoint <thread>` accepted through the tolerance window, MUST invoke the existing `ki-work-package` update procedure only after the target repository declares a valid checkpoint capability and the user explicitly authorises the exact work id update.
+### AHO-004 — ~~Fail-closed interruption and mismatch~~ (deprecated)
 
-_Conformance:_ conforming
-
-_Verify:_ inspect both skill contracts and run focused fixtures for undeclared, malformed, unauthorised, missing-thread, and ambiguous-thread inputs.
-
-_Evidence:_ the `ki-recap` and `ki-work-package` standards retain separate ownership, while `recap-grounding.test.ts` proves the fail-closed preflight.
-
-### AHO-003 — Portable work state
-
-A hand-off MUST carry either the current immutable committed baseline or one complete portable patch whose base is that current immutable baseline when required work is uncommitted.
-
-_Conformance:_ conforming
-
-_Verify:_ run focused fixtures for clean committed state, complete portable patch state, stale baseline, and incomplete patch state.
-
-_Evidence:_ `evaluateCheckpointHandoff` accepts the two recoverable forms and refuses stale or incomplete forms in `recap-grounding.test.ts`.
-
-### AHO-004 — Fail-closed interruption and mismatch
-
-The composition MUST refuse without writing when repository identity differs, the baseline is stale, checkpoint validation fails, the update was interrupted, or any required hand-off input is missing or ambiguous.
-
-_Conformance:_ conforming
-
-_Verify:_ run every negative-path checkpoint hand-off fixture and confirm each returns `kind: refused` and `writes: false`.
-
-_Evidence:_ `recap-grounding.test.ts` covers repository mismatch, stale baseline, invalid capability, interrupted update, missing authority, incomplete work state, and ambiguous identity.
+Retired with the `ki-recap checkpoint` composition and its hand-off preflight, which Kris removed under RECAP-NARROW a) on 7 November 2026. `ki-work-package` owns every package write, and its update and resume procedures carry the hand-off.
 
 ### AHO-005 — Transcript-independent reconstruction
 
-A valid checkpoint hand-off MUST let a fresh agent identify the repository, work state, authority, destination, verification, and next step without access to the originating transcript, runtime session, shared filesystem, or provider snapshot.
+A valid work package MUST let a fresh agent identify the repository, work state, authority, destination, verification, and next step without access to the originating transcript, runtime session, shared filesystem, or provider snapshot.
 
 _Conformance:_ conforming
 
-_Verify:_ construct and audit a valid checkpoint containing only portable repository evidence and durable-owner references, then evaluate a valid hand-off input with no runtime-session fields.
+_Verify:_ construct and audit a valid package containing only portable repository evidence and durable-owner references, with no runtime-session fields.
 
-_Evidence:_ `skills/governance/ki-work-package/scripts/rubric/contexts/work-package.test.ts` proves the portable checkpoint passes schema and boundary checks, and the recap hand-off fixture succeeds without transcript state.
+_Evidence:_ `skills/governance/ki-work-package/scripts/rubric/contexts/checkpoint-handoff.test.ts` proves the portable record passes schema and boundary checks without transcript or runtime state.
 
-### AHO-006 — Result evidence return
+### AHO-006 — ~~Result evidence return~~ (deprecated)
 
-The receiving agent MUST return results to the named destination with the resulting work-state reference and outcomes of every expected verification gate.
-
-_Conformance:_ conforming
-
-_Verify:_ inspect the ready hand-off projection for a result destination, recoverable work-state reference, and non-empty verification list.
-
-_Evidence:_ the positive `evaluateCheckpointHandoff` fixtures assert the complete hand-off projection consumed by the receiving work cycle.
+Retired with the `ki-recap checkpoint` composition and its hand-off preflight, which Kris removed under RECAP-NARROW a) on 7 November 2026. `ki-work-package` owns every package write, and its update and resume procedures carry the hand-off.

@@ -34,7 +34,7 @@ Project notes and theme pages are not a home for status: a package says where wo
 
 `ki-work-package` remains the portable work-state record; `ki-recap` is the user-facing judgment-led session summary. A runtime-specific Stop reminder cannot invoke recap or its transcript-grounding helper: it may only address an already-selected valid package under `ki-work-package`'s separate opt-in contract. It cannot invent, select, update, or remove a record, fabricate recap prose, or infer a summary from vendor-session material.
 
-The optional `ki-recap checkpoint <id>` composition is a caller of the existing UPDATE procedure, never a second implementation. It may supply freshly grounded repository and work-state evidence only after explicit user authority and a valid declaration, exact work, immutable baseline or complete portable patch, scoped authority, result destination, and verification plan have all been established. `ki-work-package` still validates the package and owns every write or refusal.
+`ki-recap` writes no package: every package write, a hand-off's update included, goes through this skill's update procedure, as Kris took RECAP-NARROW a) on 7 November 2026.
 
 Project packages live in the Capital; member-repository regular work declares its home in `work.md`. The standard also owns [assigned stewardship](references/standards-work-package.md#assigned-package-stewardship), including the unresolved STEWARD-FIELD placeholder, `parent` and `covers` relations, and inventory-based host requirements. These rules add no unattended field.
 

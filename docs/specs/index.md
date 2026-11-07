@@ -31,7 +31,7 @@ Requirements are organised as user-observable behaviours or quality properties. 
 
 | File             | Prefix | Covers                                                                 |
 | ---------------- | ------ | ---------------------------------------------------------------------- |
-| agent-handoff.md | `AHO`  | Portable fresh-agent hand-off inputs, refusals, result evidence        |
+| agent-handoff.md | `AHO`  | Transcript-independent hand-off through the work package             |
 | bootstrap.md     | `BOOT` | User bootstrap, activation scopes, native repository operations        |
 | governance.md | `GOV`  | Universal modes, mechanical-first, severity, composition, checker root |
 | harness.md    | `HARN` | Four-part harness, root anchors, toolchain, skills naming              |
