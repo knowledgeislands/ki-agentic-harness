@@ -40,8 +40,8 @@ workers:
 6. Done: `eda-skill` with the PORT-1 fix (`602a7881`, `a24e0527`, `5ec64a03`). Was: `ki-exchange-dynamics` in `skills/acquire/` (SKILL-HOMES a), design note in ki.sop.main). Medium.
 7. Done: `pkg-shape` (`80fde15b`, `5ee005d8`). Was: `pkg-shape` (harness): package-repository shape skill (REPO-SHAPE-PACKAGES, STOA-SHAPE MSG-6adb77c9, STOA-TOOLCHAIN MSG-c0ddcf23 on applying `ki-engineering` to plain JavaScript with JSDoc). Medium.
 8. Done with `pkg-shape`: `header-estate` (`ccbe6904`, `23213d5b`). Was: `header-estate` (harness): HEADER-ESTATE into `ki-repo-dotfiles-chezmoi`. Small.
-9. Done: `cm-tidy` (`de2bf5ae`, `3b9c4dbe`, `ad9342d1`): RECAP-NARROW, HELD-VS-RECORD and the change-management part of BATCH-RETIRE. Running: `batch-finish` (harness), the rest of those three outside change-management. CM-PARTS, PART-HOME and REMOTE-ADAPTERS wait on PARTS-HOME and REMOTE-CONFIG.
-10. `standard-split` (harness): the staged ki-coordination split, stage 2 onwards. Large.
+9. Done: `cm-tidy` (`de2bf5ae`, `3b9c4dbe`, `ad9342d1`): RECAP-NARROW, HELD-VS-RECORD and the change-management part of BATCH-RETIRE. Done: `batch-finish` (`953c1e9a`, `5df48ab1`, `fe9b6cc9`, `9079a712`); the retired `ki-batch` folder stays until tools-ki drops it (BATCH-FOLDER a)); `batch-send` carries ten BATCH-RETIRE lines to their receivers. CM-PARTS, PART-HOME and REMOTE-ADAPTERS wait on PARTS-HOME and REMOTE-CONFIG.
+10. Running: `standard-split` (harness): the staged ki-coordination split, stage 2 onwards. Large.
 11. `absorb` (ki-principal, then the guild package): ways-of-working absorption under ABSORB-CLOSE. Large.
 
 Excluded: `legal-merge` (waits on LEGAL-ACCESS, Kris creating Cloudflare Access); GUILD-NAME, ACQUIRE-SPLIT, STAGING-HOME (Kris's unfinished pillar-structure thought); DOCKET-HOME (parked).

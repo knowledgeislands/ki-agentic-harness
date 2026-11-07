@@ -6,6 +6,8 @@
 
 **Context:** CM-PARTS a) and PART-HOME a) record the four parts in two places: the guild's work page and a field in the skills catalogue's generated data. The brief forbade editing `+/_WORK/ki.reg.guilds/`. A catalogue field needs a new frontmatter key accepted by `ki-skills`, plus a change to the `ki-repo-harness` catalogue generator, and both are outside change-management. The parts are Coordination, Work lifecycle, Work records and Design.
 
+The blind reviewer disagreed and preferred b): every skill frontmatter key today (`ki-kind`, `ki-applicability`, `ki-depends-on`, `ki-runtime-binding`) is a harness-wide contract enforced by `ki-skills` and parsed by `ki-repo-harness`, so a `ki-part` key serving one area's grouping is a schema change for the whole harness; the catalogue already groups skills by concern folder, and parts can be promoted later if other areas need them. It named a missing option, c) below, and noted that b) partly revisits CM-PARTS a) and PART-HOME a).
+
 **Query:** Should a run add the catalogue field and its generator support, with the coordinator writing the parts into the guild work page?
 
 **Options:**
@@ -13,6 +15,8 @@
 a) (recommended, confidence medium - the field name and generator change are small but are a schema change no one has reviewed) Yes. Add a `ki-part` frontmatter key, validated by `ki-skills` and published by the `ki-repo-harness` catalogue. Set it on the 12 named skills, and have the coordinator write the same list into `work.md`.
 
 b) Record the parts in the guild work page only, and leave the catalogue alone for now.
+
+c) Keep the four parts in a home change-management owns, the `ki-work` SKILL.md or its adapter reference, with no new catalogue key, and write the same list into the guild's `work.md`.
 
 ### REMOTE-CONFIG - Where the folded GitHub Issues and Linear settings live
 
@@ -23,11 +27,13 @@ b) Record the parts in the guild work page only, and leave the catalogue alone f
 
 `ki-repo` reads the GitHub Issues table to decide whether the Issues tab is on. The option does not say where these settings go once the skills are gone. The code that would change lives in `ki-work` and also in `ki-repo` and `ki-repo-harness`, the last two outside this brief. No repository declares either adapter, so nothing in use breaks. Nothing was landed, so that the old and new homes would not exist side by side.
 
+The reviewer called b) nearly as strong, since GitHub Issues remote execution is already described as unavailable, and noted that no repository declares either adapter, so a migration file would have nothing to migrate.
+
 **Query:** Where should a remote adapter's settings live after the fold?
 
 **Options:**
 
-a) (recommended, confidence medium - it keeps one table per adapter under its selector, but it is a new configuration shape) In a sub-table of `ki-work`, `[skills.ki-work.github-issues]` or `[skills.ki-work.linear]`. `ki-repo` reads `adapter = "github-issues"`, and one run lands the reference, the code in all three skills, and the deletion of the two skills, with a migration file.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same course, since a skill keeping settings in a sub-table of its own table is an established convention (`[skills.ki-repo.checks]`, `[skills.ki-tokenomics.budgets]`, `[skills.ki-repo-kb.zones]`) and dropping the settings would turn the fold into a removal; it keeps one table per adapter under its selector, but it is a new configuration shape) In a sub-table of `ki-work`, `[skills.ki-work.github-issues]` or `[skills.ki-work.linear]`. `ki-repo` reads `adapter = "github-issues"`, and one run lands the reference, the code in all three skills, and the deletion of the two skills, with a migration file.
 
 b) Drop the settings entirely. The two values become reserved and stop until a remote executor exists, and the Issues tab stays off everywhere.
 
