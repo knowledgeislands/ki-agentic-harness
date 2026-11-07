@@ -2,6 +2,164 @@
 
 ## Open
 
+### GLYPH-SET - The twelve role glyphs
+
+**Context:** Kris asked for one glyph per role, keeping the glyphs already in use (02:30 GMT, 7 November). In use today: 🏛️ for the governor (ki.sop.main), 🏠 for the housekeeper, 🦉 for both inbox seats, now gatekeepers, and 🧰 for the quartermaster (the guild's decision of 6 November). Agora's stand-in catalogue already shows ⚒️ for the warden and ⚖️ for the guildmaster. The 2 November glyph set gave 🐝 to the general doer and 🎨 to the designer, whose successors are the journeyman and the illustrator. That set also gave 🏛️ to the councillor, which clashes with the governor. Four roles have no glyph yet. Each glyph must differ from the banner's state glyphs.
+
+**Query:** Should the catalogue take this set: governor 🏛️, councillor 🗳️, warden ⚒️, steward 📋, housekeeper 🏠, gatekeeper 🦉, librarian 📚, guildmaster ⚖️, quartermaster 🧰, journeyman 🐝, illustrator 🎨, architect 📐?
+
+**Options:**
+
+a) (recommended, confidence medium - keeps every glyph already tied to a catalogue role and fills the four gaps with distinct, plain symbols, but the four new ones are taste) Take the set as listed.
+
+b) Take the kept and carried-over glyphs, but choose different new ones for councillor, steward, librarian and architect, for example 🪑, 🧭, 🗃️ and 🏗️.
+
+### SOP-MAIN-GOVERNOR - Every territory's main State of play is its governor
+
+**Context:** The brief says the governor "heads a territory; may be its only leader", and a councillor is "any further leader". Agora's stand-in maps every `<territory>.sop.main` to governor. Before the catalogue, lgl.sop.main (5 November) and hnr.sop.main (3 November) called their seats "councillor", under the 2 November glyph set where 🏛️ meant councillor.
+
+**Query:** Is every `<territory>.sop.main` seat the territory's governor, 🏛️, so that the two "councillor" seats become governors?
+
+**Options:**
+
+a) (recommended, confidence high - it follows the brief's definitions and Agora's mapping, and the old word came from a set the catalogue replaces) Yes: each `.sop.main` is its territory's governor; councillor is kept for any further leader.
+
+b) Let lgl.sop.main and hnr.sop.main stay councillors, with a governor to be named later for each territory.
+
+### ROLE-FIELDS - Where a package's role is recorded
+
+**Context:** Rule 11 of the role-catalogue brief (6 November) says "the package's `role` field names one and replaces the unofficial `workers:` block in state.md". On 6 November, under ROLES-TIDY, Kris approved recording `role: guildmaster` in this package's `work.md` and warden on Project packages. On 7 November at 02:30 GMT Kris asked for "the `role:` and `tier:` fields in state.md's `workers`" to be defined and checked. Today packages carry the role in three places: `work.md` (3 packages), the top level of `state.md` (2) and `workers` (5). Agora reads the top level of `state.md` first, then `workers`.
+
+**Query:** Where should the role live in the final state?
+
+**Options:**
+
+a) (recommended, confidence medium - it honours both of Kris's later words: a package's purpose belongs in its definition, and the sessions working it belong in its state) In two places with different meanings: `work.md` `role` is the package's primary role, and `state.md` `workers` lists each live seat with `role` and `tier`. A top-level `role` or `tier` in `state.md` is a migration warning.
+
+b) Only in `state.md` `workers`, with `role` removed from `work.md` again.
+
+c) Only `work.md` `role`, as rule 11 said, with `workers` retired.
+
+### WORKERS-URI - Session addresses in `workers`
+
+**Context:** Each `workers` entry carries a `uri` such as `orca+claude-code://sol/<session id>`; the id is the Claude Code session's own (checked for ki.sop.main). The ki-work-package standard says a package "has no vendor-session field, conversation URL, runtime identifier", and that a session's host "stays out" of packages. Agora reads the host from the `uri` to show which Mac a worker runs on. Kris asked for `role` and `tier` in `workers` (7 November); he did not mention `uri`.
+
+**Query:** Should `workers` entries keep the session address?
+
+**Options:**
+
+a) (recommended, confidence medium - Agora relies on it and the record exists only while the seat is live, but it reverses a standing rule) Keep `uri` as a defined optional field, cleared when the session ends, and narrow the prohibited-payloads rule to exclude it.
+
+b) Drop `uri` and keep the rule as it is. Agora learns the host another way, such as its own machine-local view.
+
+### WORKERS-SHAPE - The closed fields of a `workers` entry
+
+**Context:** The entries in use carry `uri`, `name` (the session name, such as `🏠 🔑 personal.reg.household-sol`), `role`, `tier`, `focus`, `since`, `status` and `listening`, and inbox-terra adds `designation: primary`. Values in use include `listening: agora-call` and `tier: enablers`. Once the catalogue gives each role its glyph, `name` repeats what the role already says.
+
+**Query:** Should an entry be closed to `role`, `tier`, `focus`, `since`, `status` (`active` or `idle`) and `listening` (`on` or `off`), plus `uri` if WORKERS-URI a), with `name` and `designation` dropped and the old values warned on during migration?
+
+**Options:**
+
+a) (recommended, confidence medium - one source for each fact, and the name can always be derived) Yes, as listed.
+
+b) Keep `name` too, checked against the derived thread line.
+
+### MULTI-ROLE - How a seat with several roles is written
+
+**Context:** Kris asked for "multi-role seats (several glyphs)" and said managers may also make. A seat's tier is one value.
+
+**Query:** For a multi-role seat, should `role` be a list with the primary first, the glyphs be written together in that order with no space (`🏛️⚖️ 🔑 ki.sop.main`), and `tier` be the primary role's tier?
+
+**Options:**
+
+a) (recommended, confidence medium - one token before the key keeps the line easy to read and to check) Yes.
+
+b) Separate the glyphs with spaces (`🏛️ ⚖️ 🔑 ki.sop.main`) and keep the rest.
+
+### MARKS-RETIRE - ⭐ and 🔧 in names
+
+**Context:** The 2 November glyph set added ⭐ after a role glyph for Kris's primary assistant (`🦉⭐ 🔑 personal.reg.inbox-terra`), and 🔧 for a doer working in someone else's package. Kris's 7 November form is `<role glyphs> 🔑 <work-id>`. The brief says "whatever Kris is talking to is his point of contact" and makes seats for doers.
+
+**Query:** Should ⭐ and 🔧 leave the thread line, so that inbox-terra becomes `🦉 🔑 personal.reg.inbox-terra`?
+
+**Options:**
+
+a) (recommended, confidence medium - neither is a role, and seats replace the doer form) Yes. Both are warned on during migration.
+
+b) Keep ⭐ as an optional mark after the glyphs for a designated primary seat.
+
+### RUN-THREAD-LINE - What background runs close with
+
+**Context:** Kris kept `🧵 <work-id>` "for a session with no role yet" (7 November). A background run takes no seat; it reports to the seat that launched it. Run reports and the four ki-delegation footers close today with `🧵 <work-id>` of the work they report to. The footer hook does not check launched agents.
+
+**Query:** Should runs keep closing with `🧵 <work-id>` of the work they report to?
+
+**Options:**
+
+a) (recommended, confidence medium - a run holds no seat, and the run prompts and footers need no change beyond wording) Yes.
+
+b) Runs close with their launching seat's key line, which every brief would then have to supply.
+
+### SEAT-ID - Seat addresses in the thread line
+
+**Context:** Under SEATS-VS-SUBPACKAGES a) (Kris, 7 November) seats replace sub-packages, addressed `package+role` with sibling folders. The seat rules land later in Stage C. Today's work-id checks accept dots and hyphens only.
+
+**Query:** Should the thread-line grammar and the hook accept a `+<role>` seat address now, or wait until the seat rules land?
+
+**Options:**
+
+a) (recommended, confidence medium - it avoids a second change to the hook and tests, and nothing produces a seat address until the seat rules land) Accept it now in the hook and the test patterns, while the standard describes it only when seats land.
+
+b) Wait until the seat rules land.
+
+### HOOK-ENGAGE - When the footer hook steps in on a bare owner word
+
+**Context:** On 6 November, under NAME-GLYPH-HOME, Kris said the hook "accepts both forms and engages for any session holding a work package, not only after a `🧵` line". The hook sees the working folder, the transcript and the session id, but not the session's name. A conversational session in the same checkout must stay quiet, and an existing test checks that.
+
+**Query:** For a bare owner word such as "mark", should the hook engage when an earlier reply closed with either thread-line form?
+
+**Options:**
+
+a) (recommended, confidence medium - it catches every coordinating session that has given one report and keeps conversational sessions quiet, but it falls short of Kris's broader words for a brand-new session) Yes: either form in an earlier reply engages it.
+
+b) Also engage when a package's `workers` entry in the checkout names this session's id. That needs WORKERS-URI a).
+
+### ROLE-REQUIRED - Whether every package must name its role
+
+**Context:** Only 3 of 46 packages carry `role` in `work.md` today. Rule 6 says naming migrates incrementally, and "each governor brings its territory's packages into line". MIGRATION-OVERLAY (Kris, 7 November) puts tolerance in a separate migration file.
+
+**Query:** Should `work.md` `role` be required in the final standard, with its absence only warned on through the migration file until the governors have brought their packages into line?
+
+**Options:**
+
+a) (recommended, confidence medium - it states the final state, as MIGRATION-OVERLAY asks, without failing 43 packages today) Yes.
+
+b) Keep `role` optional for good.
+
+### ROLES-HOME - Where the catalogue file lives
+
+**Context:** Kris named ki-work-package as the catalogue's home (7 November). ROLES-SLOT a) (7 November) reserved a `standards-roles.md` row in the planned load table of the split ki-coordination standard, to be created at Stage C. Rule 11 of the brief put role definitions "beside `subagents/`".
+
+**Query:** Should the catalogue be created now as `skills/governance/ki-work-package/references/standards-roles.md`, with its migration file `migration-roles.md` beside it, and the reserved ki-coordination row pointing to it?
+
+**Options:**
+
+a) (recommended, confidence high - it follows Kris's named home, and one file serves both skills) Yes.
+
+b) Create it in ki-coordination's references, as the split plan first placed it.
+
+### BOOTSTRAP-EDIT - One line outside the named homes
+
+**Context:** `skills/keystone/ki-bootstrap/references/standards-bootstrap.md:112` says the opener launches with `claude --name "🧵 <work-id>"`. Kris's list of homes for this unit does not name ki-bootstrap.
+
+**Query:** May `roles-land` change that one line to the new thread-line form?
+
+**Options:**
+
+a) (recommended, confidence high - otherwise two standards disagree about the launch name) Yes, with a one-line wording change.
+
+b) No; send it to the next ki-bootstrap edit.
+
 ### STALE-ROWS - Retire the two possibly stale items in the standard
 
 **Context:** Item 9 of the split plan says two parts of the standard "may be stale", so I left both unchanged rather than guess. The first is the standard's line about four supporting layers, which counts "the pilot's acceptance tests" as one; I found no current pilot or acceptance test behind it. The second is the `thread.status` row in the Surfaces table, the coordinator's one-line status file. That row says it lasts "until `ki work status` reads the work package directly". `ki work status` now does that, as the row just above it in the same table says, so the row's end condition has been met. However, the `ki-delegation` background-runs standard still lists `thread.status` among the coordinator's runtime files. Retiring it there would be a change of behaviour, not just a wording fix.

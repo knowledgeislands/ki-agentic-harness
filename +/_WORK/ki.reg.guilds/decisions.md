@@ -313,3 +313,7 @@ Designs for `ki-dodecakrisis` and a knowledge-graph method skill (proposed `ki-k
 ## 2026-11-07 02:37 GMT · MORE-LANES
 
 Kris: "So can you tell me what your focus is right now so I can just keep an eye on it, because I've got quite a lot of stuff I need to get articulated into skills basically. Maybe you need to go with a few more subagents." Taken as: STAGE-C-ROLES stays the focus and critical path; two lanes that touch none of its files start alongside it: `paperclip-drop` (harness subagents, AGENTS.md, the Paperclip skill) and `wow-absorb-plan` (read-only inventory and plan for absorbing ki.prj.ways-of-working). New skill items from Kris each get a read-only design run, about three or four running at once.
+
+## 2026-11-07 02:39 GMT · roles-design received
+
+Design kept as `roles/roles.design.md`: twelve glyphs, catalogue text, `workers` fields, the `🔑` thread line, live seats and the tools-ki line. Thirteen queries copied; the ten medium ones with STALE-ROWS go to blind review `roles-blind`, and the D12, knowledge-graph and unreviewed Orca mediums to `skills-blind`.
