@@ -296,18 +296,6 @@ a) (recommended, confidence high - reviewed: the blind reviewer chose the same, 
 
 b) Add no anchors: rewrite harness links only, and let other repositories' unpinned links open the core at the top.
 
-### LEGACY-FILE - Give past report shapes one file of their own
-
-**Context:** The standard holds about 25 clauses saying an older report keeps an older shape and readers accept both, plus the old thread-to-work mapping table. Only readers of old reports, the rubric's tolerance checks and migrations need them, yet every coordinator loads them now. Some cover windows that have already closed.
-
-**Query:** Should all past-shape rules move into one file that working coordinators never load?
-
-**Options:**
-
-a) (recommended, confidence high - no working coordinator needs them; the blind reviewer agreed and added that the rubric's tolerance checks repoint to the new file in the same delivery) Move them into `standards-past-shapes.md` as one table, repoint the rubric's tolerance checks there, and drop a row only when its window has closed and the rubric already fails the old shape.
-
-b) Keep each clause beside the rule it qualifies, cut to one line.
-
 ### ROLES-SLOT - When the role catalogue file appears
 
 **Context:** Stage C adds the role catalogue and the `role` field, and this package already records `role: guildmaster`. The skills standard does not allow a reference file that is only an empty placeholder.

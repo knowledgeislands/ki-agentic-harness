@@ -23,7 +23,7 @@ listening_status: on
 
 ## Next steps
 
-1. `report-forms` (`aa893528`) and `report-snooze` (`5c118279`) landed. `refresh-forms` sends REFRESH MSG-05928755; The split plan is in `skills/standard-split-plan.md`; its eight queries (DRIFT-FIRST, STAGING, STYLE-FROM-CORE, OWNER-WORD, LINK-STUBS, LEGACY-FILE, ROLES-SLOT, CORE-BUDGET) are with Kris after blind review.
+1. `report-forms` (`aa893528`) and `report-snooze` (`5c118279`) landed. `refresh-forms` sends REFRESH MSG-05928755; The split plan is in `skills/standard-split-plan.md`; its eight queries (DRIFT-FIRST, STAGING, STYLE-FROM-CORE, OWNER-WORD, LINK-STUBS, ROLES-SLOT, CORE-BUDGET) are with Kris after blind review; LEGACY-FILE was answered by MIGRATION-OVERLAY (00:24 GMT): a final-state standard plus a deletable migration file, also a `ki-skills` convention.
 2. Take Kris's answers; launch the worktree disposal, Stage B (absorb ki.prj.ways-of-working) and Stage C (catalogue skills) as authorised.
 3. Take the routed guild lines from ki.sop.main as they land.
 
