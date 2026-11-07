@@ -12,11 +12,13 @@
 
 79 of 81 recent reports already pass, and every repository uses the same Markdown configuration. Only three repositories have a `self:check` script, and only one of those runs the Markdown check.
 
+The reviewer added that the layers are complementary, and that report receipt must check after formatting and keep the source report if cleanup fails, since formatting alone does not prove a clean result.
+
 **Query:** Which layer should make Markdown clean before it reaches a commit?
 
 **Options:**
 
-a) (recommended, confidence medium - it fixes the source of this incident without reversing the 26 October choice, but no blind review has been run) Add a short writer's rule to `ki-authoring` that points to the `ki-git` rule. Have `ki agent` run the house Markdown fix on each report when it receives it. Add that rule to the run Rules footer. The hook stays check-only.
+a) (recommended, confidence high - reviewed: the blind Codex reviewer chose the same course, since it puts cleanup with writers and the shared report receiver, covers both runtimes and keeps a separate commit check) Add a short writer's rule to `ki-authoring` that points to the `ki-git` rule. Have `ki agent` run the house Markdown fix on each report when it receives it. Add that rule to the run Rules footer. The hook stays check-only.
 
 b) Let the commit hook fix Markdown files that are fully staged, then check them. This reverses the 26 October choice and changes the hook in every repository.
 

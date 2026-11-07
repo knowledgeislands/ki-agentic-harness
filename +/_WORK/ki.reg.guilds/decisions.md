@@ -739,3 +739,7 @@ Kris, via ki.prj.agora, on Markdown checked only at commit: "I'd like to discuss
 ## 2026-11-07 09:39 GMT · ack-chase received
 
 Of 41 direct Outbound lines, 3 are disposed (household-terra took TERRA-LOCAL-REPORTS, TERRA-PR-CHECK and TERRA-RECOVERY as queries in `bd8e783c`) and are cleared; MSG-a0a6f68e RIG-ATTENDED left terra's Inbound in that commit with no recorded disposition; 37 are pending in their receivers' Inbound; none is missing. The five broadcasts are each partly acknowledged; MSG-4cf14cb8 never reached hnr.prj.site-robots. Kris has the chase list by package; nothing is re-sent. Noted for the next tidy: the Outbound tallies are behind the receipts, and personal.reg.tower exists twice (apps-ninja.midnight.tower and personal-principal).
+
+## 2026-11-07 09:43 GMT · md-writer received; md-blind tallied
+
+The fact-finding run found a writer's rule already in `ki-git` (LINT-BEFORE-PUSH, 6 November), not pointed to by `ki-authoring` or the run Rules footer; `ki agent` copies reports unformatted; only three repositories have `self:check`, one with rumdl; no write hook formats Markdown. MD-WRITER opened; the blind Codex reviewer agreed with a) (now high) and added that report receipt checks after formatting and keeps the source on failure.
