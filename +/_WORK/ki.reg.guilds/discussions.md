@@ -16,44 +16,6 @@ b) Add a broadcast form to the standard and checker, `to <n> live packages`, wit
 
 c) Keep the `live-packages` placeholder convention.
 
-### STUB-KEEP - Keep the two retired skills as stubs until no repository declares them
-
-**Context:** The brief asked for both Paperclip skills to be removed. But the `ki` tool stops with an error in any repository that declares a skill no harness provides, and 55 repositories still declare one. Deleting both skills outright would stop every audit and setup command in all 55 until each one edits its `.ki.toml`. I kept them as empty stubs that only warn, and put the transition rules in one deletable migration file.
-
-**Query:** Do you accept the stubs as the transition, rather than deleting the skills now?
-
-**Options:**
-
-a) (recommended, confidence high - nothing breaks, and the stubs and their migration file are deleted together in one change once the declarations are gone) Keep the stubs until no repository declares either skill, then delete them.
-
-b) Delete both stubs now and accept that audits fail in the 55 repositories until each removes its declaration.
-
-### DECL-SWEEP - How the 55 repositories drop the retired declaration
-
-**Context:** Each of 56 repositories (the blind reviewer counted 56, not 55) needs to remove one `[skills.ki-delegation-paperclip]` or `[skills.ki-agent-coordination-paperclip]` table from its `.ki.toml`. Until it does, its audit carries one warning. Each repository owns its own `.ki.toml`, and this run had no authority to edit any of them.
-
-**Query:** Should the declarations be removed by one estate-wide run, or left to each repository's own owner?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: the blind reviewer chose the same course; one bounded run is quick and mechanical, but it writes in other repositories, so each territory has to agree to it) Ask State of play to route a single bounded estate run that removes the declaration in each repository, one commit per repository, under each territory's agreement.
-
-b) Send each territory a message and let its owners remove the declaration at their own pace.
-
-c) Fold the removal into each territory's next routine `ki repo` conform pass, which would need the stub's conform step changed to remove the declaration (the reviewer's suggested extra option).
-
-### TASK-LINKS-CODE - Retire the Paperclip code left in `tools-ki`
-
-**Context:** `tools-ki` still carries Paperclip-specific code, including a `paperclip` provider in its roadmap task-link display. Paperclip is retired, and nothing uses that code. The blind reviewer split the original TASK-LINKS question into this part and TASK-LINKS-FIELD.
-
-**Query:** Should the Paperclip code in `tools-ki` be retired?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: the blind reviewer judged this part clearly right; the code has no user) Yes: send ki.prj.tools-burndown a line to capture and remove it.
-
-b) Leave it until someone next works in that area.
-
 ### TASK-LINKS-FIELD - Whether to retire the `task_links` roadmap field
 
 **Context:** `task_links` is an optional roadmap-record field that links a record to tasks in another system. Paperclip was its main user. `tools-ki` already shows a `linear` provider beside `paperclip`, and Linear is a supported work adapter, so the field has a plausible use beyond Paperclip. The blind reviewer disagreed with retiring it and preferred keeping it as a general field, with its own triage record to test whether Linear or GitHub Issues linking will use it.
