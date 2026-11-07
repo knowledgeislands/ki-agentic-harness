@@ -359,3 +359,7 @@ Kris, about 03:00 GMT, relayed by household-sol: "Interesting. So the actual qua
 ## 2026-11-07 03:15 GMT · qm-leader and resolve-main received
 
 `qm-leader` moved the quartermaster (🧰) to the leaders tier at `ki.sop.tools` in `efa0a3e9`; its push was blocked because this seat's own two commits had not published (the coordinator's push errors were hidden; no longer). `resolve-main` merged `origin/main` (`c6bad839`), fixed the Outbound line form RECORD-2 rejected (`7b32ee9d`), published, and sent QUARTERMASTER-SOP MSG-1bdbf3cc to ki.sop.main, which ACKed at 03:14: run sop-tools is creating ki.sop.tools on hold, RIG-RETIRE first. hnr.sop.main ACKed MSG-4cf14cb8. QM-PUSH settled by the run.
+
+## 2026-11-07 03:40 GMT · HEALTH MSG-e53fe4e8 from ki.prj.agora
+
+Listener re-armed at 03:40 GMT for a fresh 120 minutes on `call/` and `doorbell/`; ACKed. broadcast-blind received: BROADCAST-FORM now recommends one Outbound line per receiver (reviewed, medium).
