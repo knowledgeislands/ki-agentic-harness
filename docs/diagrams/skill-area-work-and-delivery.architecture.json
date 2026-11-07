@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "1e679cd1b0d6c266989f2444cc4e6fbc6baf46e8"
+      "revision": "0b9d51d564a789437bb6d1e438d17d1ff2b4bae0"
     },
     "legend": {
       "mode": "auto",
@@ -121,7 +121,7 @@
       ],
       "tag": "R– · CS · F2",
       "pos": [
-        556,
+        300,
         704
       ],
       "size": [
@@ -161,8 +161,8 @@
       ],
       "tag": "R– · CS · F1",
       "pos": [
-        44,
-        580
+        556,
+        704
       ],
       "size": [
         208,
@@ -181,8 +181,8 @@
       ],
       "tag": "R– · CM · F2",
       "pos": [
-        300,
-        704
+        44,
+        580
       ],
       "size": [
         208,
@@ -199,7 +199,7 @@
           "path": "skills/change-management/ki-work/SKILL.md"
         }
       ],
-      "tag": "R2 · CM · F4",
+      "tag": "R2 · CM · F5",
       "pos": [
         44,
         392
@@ -290,26 +290,6 @@
       ]
     },
     {
-      "id": "ki-delegation",
-      "type": "database",
-      "label": "ki-delegation",
-      "sublabel": "governance · opt-in",
-      "sources": [
-        {
-          "path": "skills/governance/ki-delegation/SKILL.md"
-        }
-      ],
-      "tag": "R6 · CM · F4",
-      "pos": [
-        44,
-        908
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
       "id": "ki-authoring",
       "type": "security",
       "label": "ki-authoring",
@@ -320,6 +300,26 @@
         }
       ],
       "tag": "R4 · CM · F9",
+      "pos": [
+        44,
+        908
+      ],
+      "size": [
+        208,
+        76
+      ]
+    },
+    {
+      "id": "ki-delegation",
+      "type": "database",
+      "label": "ki-delegation",
+      "sublabel": "governance · opt-in",
+      "sources": [
+        {
+          "path": "skills/governance/ki-delegation/SKILL.md"
+        }
+      ],
+      "tag": "R6 · CM · F4",
       "pos": [
         364,
         908
@@ -349,17 +349,17 @@
     },
     {
       "kind": "region",
-      "label": "Coordination · Delegation and programme",
+      "label": "Fundamentals · Repository and writing",
       "wraps": [
-        "ki-delegation"
+        "ki-authoring"
       ],
       "pad": 32
     },
     {
       "kind": "region",
-      "label": "Fundamentals · Repository and writing",
+      "label": "Coordination · Delegation and programme",
       "wraps": [
-        "ki-authoring"
+        "ki-delegation"
       ],
       "pad": 32
     },
@@ -433,12 +433,6 @@
       "variant": "default"
     },
     {
-      "id": "ki-recap--ki-batch",
-      "from": "ki-recap",
-      "to": "ki-batch",
-      "variant": "dashed"
-    },
-    {
       "id": "ki-repo-harness--ki-work-roadmap",
       "from": "ki-repo-harness",
       "to": "ki-work-roadmap",
@@ -466,7 +460,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "11 skills, 2 outside prerequisites, 2 outside dependents, 2 composition and 5 optional edges, read from SKILL.md frontmatter.",
+        "11 skills, 2 outside prerequisites, 2 outside dependents, 2 composition and 4 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }
