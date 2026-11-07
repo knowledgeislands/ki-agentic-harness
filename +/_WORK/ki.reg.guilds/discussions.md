@@ -10,7 +10,7 @@
 
 **Options:**
 
-a) (recommended, confidence medium - keeps every glyph already tied to a catalogue role and fills the four gaps with distinct, plain symbols, but the four new ones are taste) Take the set as listed.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same; every kept glyph stays as it is) Take the set as listed.
 
 b) Take the kept and carried-over glyphs, but choose different new ones for councillor, steward, librarian and architect, for example 🪑, 🧭, 🗃️ and 🏗️.
 
@@ -34,7 +34,7 @@ b) Let lgl.sop.main and hnr.sop.main stay councillors, with a governor to be nam
 
 **Options:**
 
-a) (recommended, confidence medium - it honours both of Kris's later words: a package's purpose belongs in its definition, and the sessions working it belong in its state) In two places with different meanings: `work.md` `role` is the package's primary role, and `state.md` `workers` lists each live seat with `role` and `tier`. A top-level `role` or `tier` in `state.md` is a migration warning.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same; it honours both of Kris's approvals, ROLES-TIDY (the role recorded in `work.md`) and STAGE-C-ROLES (`role` and `tier` in `workers`)) In two places with different meanings: `work.md` `role` is the package's primary role, and `state.md` `workers` lists each live seat with `role` and `tier`. A top-level `role` or `tier` in `state.md` is a migration warning.
 
 b) Only in `state.md` `workers`, with `role` removed from `work.md` again.
 
@@ -42,7 +42,7 @@ c) Only `work.md` `role`, as rule 11 said, with `workers` retired.
 
 ### WORKERS-URI - Session addresses in `workers`
 
-**Context:** Each `workers` entry carries a `uri` such as `orca+claude-code://sol/<session id>`; the id is the Claude Code session's own (checked for ki.sop.main). The ki-work-package standard says a package "has no vendor-session field, conversation URL, runtime identifier", and that a session's host "stays out" of packages. Agora reads the host from the `uri` to show which Mac a worker runs on. Kris asked for `role` and `tier` in `workers` (7 November); he did not mention `uri`.
+**Context:** Each `workers` entry carries a `uri` such as `orca+claude-code://sol/<session id>`; the id is the Claude Code session's own (checked for ki.sop.main). The ki-work-package standard says a package "has no vendor-session field, conversation URL, runtime identifier", and that a session's host "stays out" of packages. Agora reads the host from the `uri` to show which Mac a worker runs on. Kris asked for `role` and `tier` in `workers` (7 November); he did not mention `uri`. The blind reviewer disagreed and preferred: "Drop `uri` and keep the rule as it is. Agora learns the host another way, such as its own machine-local view." (high confidence; the `uri` holds the Claude Code session id, which is exactly the vendor-session identifier that BOUNDARY-1 and the prohibited-payloads rule forbid).
 
 **Query:** Should `workers` entries keep the session address?
 
@@ -60,13 +60,13 @@ b) Drop `uri` and keep the rule as it is. Agora learns the host another way, suc
 
 **Options:**
 
-a) (recommended, confidence medium - one source for each fact, and the name can always be derived) Yes, as listed.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same; `name` is derived from `role` and the work id, so storing it invites drift that a check would then have to police) Yes, as listed.
 
 b) Keep `name` too, checked against the derived thread line.
 
 ### MULTI-ROLE - How a seat with several roles is written
 
-**Context:** Kris asked for "multi-role seats (several glyphs)" and said managers may also make. A seat's tier is one value.
+**Context:** Kris asked for "multi-role seats (several glyphs)" and said managers may also make. A seat's tier is one value. The blind reviewer disagreed and preferred: "Separate the glyphs with spaces (`🏛️ ⚖️ 🔑 ki.sop.main`) and keep the rest." (medium confidence; four of the glyphs carry the variation selector described under GLYPH-SET).
 
 **Query:** For a multi-role seat, should `role` be a list with the primary first, the glyphs be written together in that order with no space (`🏛️⚖️ 🔑 ki.sop.main`), and `tier` be the primary role's tier?
 
@@ -84,7 +84,7 @@ b) Separate the glyphs with spaces (`🏛️ ⚖️ 🔑 ki.sop.main`) and keep 
 
 **Options:**
 
-a) (recommended, confidence medium - neither is a role, and seats replace the doer form) Yes. Both are warned on during migration.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same; the brief says Kris's point of contact is whatever he is talking to, so a primary mark encodes nothing lasting, and seats take over the doer-elsewhere case that 🔧 covered) Yes. Both are warned on during migration.
 
 b) Keep ⭐ as an optional mark after the glyphs for a designated primary seat.
 
@@ -96,13 +96,13 @@ b) Keep ⭐ as an optional mark after the glyphs for a designated primary seat.
 
 **Options:**
 
-a) (recommended, confidence medium - a run holds no seat, and the run prompts and footers need no change beyond wording) Yes.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same; a run holds no seat or role, so `🧵 <work-id>`, the form Kris kept for sessions without a role, fits exactly) Yes.
 
 b) Runs close with their launching seat's key line, which every brief would then have to supply.
 
 ### SEAT-ID - Seat addresses in the thread line
 
-**Context:** Under SEATS-VS-SUBPACKAGES a) (Kris, 7 November) seats replace sub-packages, addressed `package+role` with sibling folders. The seat rules land later in Stage C. Today's work-id checks accept dots and hyphens only.
+**Context:** Under SEATS-VS-SUBPACKAGES a) (Kris, 7 November) seats replace sub-packages, addressed `package+role` with sibling folders. The seat rules land later in Stage C. Today's work-id checks accept dots and hyphens only. The blind reviewer disagreed and preferred: "Wait until the seat rules land." (medium confidence; accepting syntax the standard does not yet describe creates undocumented behaviour, and the hook's work-id character class is a one-line change to make in the same delivery as the seat rules).
 
 **Query:** Should the thread-line grammar and the hook accept a `+<role>` seat address now, or wait until the seat rules land?
 
@@ -120,7 +120,7 @@ b) Wait until the seat rules land.
 
 **Options:**
 
-a) (recommended, confidence medium - it catches every coordinating session that has given one report and keeps conversational sessions quiet, but it falls short of Kris's broader words for a brand-new session) Yes: either form in an earlier reply engages it.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same; this is what Kris said under NAME-GLYPH-HOME ("accepts both forms")) Yes: either form in an earlier reply engages it.
 
 b) Also engage when a package's `workers` entry in the checkout names this session's id. That needs WORKERS-URI a).
 
@@ -132,7 +132,7 @@ b) Also engage when a package's `workers` entry in the checkout names this sessi
 
 **Options:**
 
-a) (recommended, confidence medium - it states the final state, as MIGRATION-OVERLAY asks, without failing 43 packages today) Yes.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same; kris approved under ROLES-TIDY that every package records its role, and MIGRATION-OVERLAY places tolerance in a separate migration file, which is exactly this split) Yes.
 
 b) Keep `role` optional for good.
 
@@ -168,7 +168,7 @@ b) No; send it to the next ki-bootstrap edit.
 
 **Options:**
 
-a) (recommended, confidence medium - the row's own end condition is met, but whether any tool still reads `thread.status` was not checked beyond this harness and `tools-ki`) Remove the "pilot's acceptance tests" layer and retire the `thread.status` row in both ki-coordination and ki-delegation, as a small follow-up before the split.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same; no code in `tools-ki` or the harness hooks reads or writes `thread.status`, so retiring it changes only what coordinators are told to write) Remove the "pilot's acceptance tests" layer and retire the `thread.status` row in both ki-coordination and ki-delegation, as a small follow-up before the split.
 
 b) Fold both into the split's later stages, leaving them as they are until then.
 
