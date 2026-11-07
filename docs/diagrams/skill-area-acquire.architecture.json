@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "ae0a19442bb99d93011ca51363dbb64dec3126a9"
+      "revision": "a24e05270da551dedb03b5724edd7b44eefe99b0"
     },
     "legend": {
       "mode": "auto",
@@ -110,6 +110,26 @@
       ]
     },
     {
+      "id": "ki-exchange-dynamics",
+      "type": "database",
+      "label": "ki-exchange-dynamics",
+      "sublabel": "acquire · opt-in",
+      "sources": [
+        {
+          "path": "skills/acquire/ki-exchange-dynamics/SKILL.md"
+        }
+      ],
+      "tag": "R14 · CM · F5",
+      "pos": [
+        544,
+        64
+      ],
+      "size": [
+        208,
+        76
+      ]
+    },
+    {
       "id": "ki-knowledge-graph",
       "type": "database",
       "label": "ki-knowledge-graph",
@@ -122,7 +142,7 @@
       "tag": "R16 · CM · F4",
       "pos": [
         544,
-        64
+        188
       ],
       "size": [
         208,
@@ -133,13 +153,14 @@
   "boundaries": [
     {
       "kind": "region",
-      "label": "Acquire · 5 skills",
+      "label": "Acquire · 6 skills",
       "wraps": [
         "ki-dodecakrisis",
         "ki-acquire",
         "ki-acquire-chatgpt",
         "ki-acquire-granola",
-        "ki-knowledge-graph"
+        "ki-knowledge-graph",
+        "ki-exchange-dynamics"
       ],
       "pad": 32
     }
@@ -173,7 +194,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "5 skills, 0 outside prerequisites, 0 outside dependents, 2 composition and 0 optional edges, read from SKILL.md frontmatter.",
+        "6 skills, 0 outside prerequisites, 0 outside dependents, 2 composition and 0 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }
