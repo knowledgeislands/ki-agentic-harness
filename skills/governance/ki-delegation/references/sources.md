@@ -17,6 +17,8 @@
 
 ## Last review
 
+A 2026-11-07 in-house review under run `batch-finish` of `ki.reg.guilds` applies BATCH-RETIRE a), which Kris took that day: the four authority footers, the standard and the footer check replace the retired `ki-batch` authorisation with a recorded unattended-window grant that names closure for the record's frozen wave, under `ki-accept` and `ki-coordination`. No external source refreshed.
+
 A 2026-11-07 in-house review under run `doer-lessons` of `ki.reg.guilds` lands two of the lessons Kris asked to be made durable through Claude Design (CD-63) and the illustrator (ILL-26) to `ki.prj.agora`, routed as MSG-991aa6ad and MSG-275b0e5b. The prompt shape asks a run to look at rendered output before reporting and to report unsettled doubts as open questions, and Coordination gains Split, then join for parallel agents that would edit one file. Lessons the standards already carry are not restated, and the seat-to-seat protocol between makers in other sessions is left to Kris as a query.
 
 A 2026-11-06 in-house review under `ki.reg.guilds` lands two method lessons. CHECK-CONSUMERS, which Kris lifted on 3 November 2026 under LEARN-LOOP after a build token still named by Valle Armonia's ingress receiver was deleted on a check of only the markhowarth.com Worker, becomes [Retiring shared things](standards-background-runs.md#retiring-shared-things): list every consumer in every place that can name a shared thing before deleting or retiring it. LINT-BEFORE-PUSH, Kris's words of 6 November 2026, is owned by `ki-git`'s checks-before-committing rule, and the Commits line points to it. No external source was refreshed.

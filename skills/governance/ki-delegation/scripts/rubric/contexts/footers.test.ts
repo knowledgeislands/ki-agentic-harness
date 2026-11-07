@@ -105,8 +105,8 @@ test('every tier retains the independent approval-bound closure boundary', () =>
       for (const phrase of [
         'only as an independent actor',
         'exact explicit human-approved closure',
-        'frozen payload/set',
-        '`completion_target: done`',
+        'recorded unattended-window grant',
+        "names closure for the record's frozen wave",
         'This footer supplies no human approval',
         'Cancellation needs separate exact human approval'
       ]) {
