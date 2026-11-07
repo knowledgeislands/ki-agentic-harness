@@ -2,7 +2,7 @@
 
 ## Inbound
 
-None.
+- 2026-11-07 · ACK MSG-4cf14cb8 · from HNR > State of play (🏛️ 🔑 hnr.sop.main) · 03:05 GMT · role catalogue re-read; governor, tier leaders recorded in state.md workers; method_read a4da0db23.
 
 ## Outbound
 
