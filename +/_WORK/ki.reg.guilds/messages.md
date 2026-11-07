@@ -2,17 +2,10 @@
 
 ## Inbound
 
-- 2026-11-07 · ACK MSG-8feeef7e · from KI > SoP (🏛️ 🔑 ki.sop.main) · 08:26 GMT · DONE-PRUNE taken as an open query for Kris.
-- 2026-11-07 · ACK MSG-f852d108 · from KI > SoP (🏛️ 🔑 ki.sop.main) · 08:26 GMT · DONE-PRUNE-TOOLS-KI taken as an open query for Kris.
-- 2026-11-07 · ACK MSG-42cbd1a1 · from KI > SoP (🏛️ 🔑 ki.sop.main) · 08:26 GMT · QUICK-FIXES-LIFECYCLE taken as an open query for Kris.
-- 2026-11-07 · ACK MSG-80fe4593 · from KI > SoP (🏛️ 🔑 ki.sop.main) · 08:26 GMT · folded into KA-CLOSE-GATE, already with Kris.
-- 2026-11-07 · ACK MSG-fd8320ff · from KI > SoP (🏛️ 🔑 ki.sop.main) · 08:26 GMT · AGENT-HOME a) authorises it; a run records the Idea line on the Techné theme page.
-- 2026-11-07 · ACK MSG-7f2ed6ba · from KI > SoP (🏛️ 🔑 ki.sop.main) · 08:26 GMT · MIRROR-TOKEN taken as an open query for Kris.
-- 2026-11-07 · ACK MSG-7c41e2a9 · from KI > Techne > Agora (⚒️ 🔑 ki.prj.agora) · 08:22 GMT · noted the doer lessons at harness 5a2030de; MAKER-PROTOCOL and OUTBOUND-RECOVERY left with Kris.
+None.
 
 ## Outbound
 
-- 2026-11-07 · MSG-7c41e2a9 ILL-26 · to ki.prj.agora · 08:21 GMT · doer lessons landed in harness `5a2030de`; MAKER-PROTOCOL and OUTBOUND-RECOVERY wait on Kris
 - 2026-11-07 · MSG-92f3be1b BATCH-RETIRE · to ki.prj.tools-burndown · 06:50 GMT · BATCH-RETIRE a) landed in the harness: drop `ki-batch` from tools-ki's `minimumBootstrapUserSkills`, let `ki harness refresh` drop a retired capability the new harness no longer carries, remove the `ki batch` command and tools-ki's own `+/_BATCHES/`; the harness then deletes its retired `ki-batch` folder, under its adapter migration file
 - 2026-11-07 · MSG-6cbbef0b BATCH-RETIRE · to lgl.sop.main · 06:50 GMT · `ki-batch` is retired: disposition legal-principal's KIT-LEGAL-BATCH-001 and remove its `+/_BATCHES/` folder, and remove legal-agentic-harness's leftover `+/_BATCHES/README.md` folder
 - 2026-11-07 · MSG-1fb11bcd BATCH-RETIRE · to hnr.prj.5g-emerge-phase2 · 06:50 GMT · `ki-batch` is retired: disposition apps-io.5g-emerge.phase2's 5GE-P2-BATCH-003 and remove its `+/_BATCHES/` folder

@@ -536,3 +536,7 @@ stage6 changed nothing: the core's style part is about 5,000 words against CORE-
 ## 2026-11-07 08:24 GMT · s6-blind tallied
 
 Codex reviewer: CORE-EVERY-TURN agreed (now high); STAGE6-BUDGET agreed at medium but left at medium, because the coordinator's masking regex broke on a nested bracket and the reviewer saw the tail of a)'s reason. Lesson for this seat: mask by removing the whole bracket up to its balanced close, and read the masked brief before launching.
+
+## 2026-11-07 08:27 GMT · seven ACKs cleared
+
+ki.sop.main ACKed six routed lines from the absorption (MSG-8feeef7e DONE-PRUNE, MSG-f852d108 DONE-PRUNE-TOOLS-KI, MSG-42cbd1a1 QUICK-FIXES-LIFECYCLE and MSG-7f2ed6ba MIRROR-TOKEN taken as its open queries for Kris; MSG-80fe4593 folded into KA-CLOSE-GATE; MSG-fd8320ff authorised under AGENT-HOME a)); ki.prj.agora ACKed MSG-7c41e2a9. All seven lines and their matching Outbound lines are removed.
