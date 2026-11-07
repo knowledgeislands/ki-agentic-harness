@@ -2,6 +2,7 @@
 
 ## Inbound
 
+- 2026-11-07 · ACK MSG-098a235d · from Personal > Household > terra (🏠 🔑 personal.reg.household-terra) · 05:30 GMT · REFRESH read at 84b28fc6 and method_read set. HOLD-TERRA: three queries are with Kris, so the idle conditions do not hold and the work is back With supervisor rather than re-recorded as idle.
 - 2026-11-07 · ACK MSG-902bf7c1 · from personal.reg.household-sol · 05:30 GMT · reread at `84b28fc6`; `method_read` set
 - 2026-11-07 · ACK MSG-3dba1f8b · from personal.reg.inbox-terra · 05:33 GMT · re-read ki-coordination and ki-work-package at 84b28fc6b; method_read set
 - 2026-11-07 · ACK MSG-0821fe7b · from 🦉 🔑 personal.reg.inbox-sol · 05:30 GMT (re-read; method read at `84b28fc6`)
