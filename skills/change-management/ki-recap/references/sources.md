@@ -12,6 +12,8 @@
 
 ## Last review
 
+A 2026-11-07 in-house review under `cm-tidy` applies RECAP-NARROW, which Kris took that day as option a): the skill keeps only the conversational session recap and its learning routes. The `checkpoint <work id>` composition and its preflight model are removed, since `ki-work-package` owns every package write, and so is the batch-retention housekeeping, since `ki-batch` is retired under BATCH-RETIRE. The RECAP-NAME paragraph below records the argument's earlier name only.
+
 A 2026-10-26 in-house review under `wow-harness-a` applies RECAP-NAME, which Kris decided that day: the composition argument is `checkpoint <work id>`, because the work model made work the unit and the argument already resolves a work id; `checkpoint <thread>` is accepted through the tolerance window. Runtime sources were not re-fetched.
 
 A 2026-10-21 in-house review under `wow-day-push-reporting` applies Kris's instruction to omit routine push state and other sessions' stacked commits from reports, preserving a report of a failed push that prevented publication of the session's own unit. The recap now follows the aligned `ki-git` and `ki-coordination` rule. Runtime sources were not re-fetched; implementation history is in Git.

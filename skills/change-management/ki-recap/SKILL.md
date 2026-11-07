@@ -3,12 +3,11 @@ name: ki-recap
 ki-kind: process
 ki-applicability: invocation-only
 ki-depends-on: [ki-authoring]
-ki-optional-depends-on: [ki-batch]
 description: >
   Recap the live session by summarising changes, decisions, touched files, unfinished work, and durable
   learning routes. Use for a session recap or outstanding-work handoff; use `ki-next` to select backlog work
   and housekeeping skills for historical session acquisition.
-argument-hint: 'checkpoint <work id> | help | recap [--runtime detect|claude|codex] [--transcript <session-file>]'
+argument-hint: 'help | recap [--runtime detect|claude|codex] [--transcript <session-file>]'
 ---
 
 # ki-recap
@@ -27,8 +26,6 @@ During the learning harvest, raise any new reusable repository-review question, 
 
 Reconcile every material discussion point before claiming the thread is closed. When the user asks for coverage, or several materially different discussion points would otherwise be hard to trace, show the **Discussion coverage** matrix after the three legs and before Actions. The matrix is a reviewer aid, not proof that an unavailable transcript was complete; the full procedure fixes its four columns, closed dispositions, and evidence limits.
 
-Normal recap also applies the `ki-batch` “Batch retention” rule to eligible inactive records under `+/_BATCHES/`, reports exact removals, and refreshes Git grounding afterwards. This narrowly authorised housekeeping is separate from proposed recap Actions and never prunes roadmap records.
-
 The recap always closes with an **Actions** section: a concrete, imperative checklist of only the current thread's unfinished work (files to commit, gates to re-run, agreed follow-up to capture, approved learning routes to apply). When that evidence-led list is empty, section 6 of the procedure decides between a truthful one-line no-actions state and the fixed evidence-bearing completion banner; the banner appears only when every completion gate passes, and repeats for as long as they do. Do not turn a recorded roadmap deferral, its review or acceptance, peer state, or prospective work into an action; `ki-next` owns selecting or sequencing future work. Prefix each action with a short, unique, uppercase hyphenated label that names the work, rather than an arbitrary sequence number (for example, `FIX-AUTHORING-AUDIT`). It is a checklist for the user, not actions taken unprompted.
 
 When `ki-accept` asks for a work-record mini recap, use the same grounding and learning-routing boundary in the smaller item scope: delivered work, verification evidence, outstanding concerns, and proposed learning routes. Cite the item by its canonical `<REPO>-<NNN>` or area-qualified `<REPO>-<AREA>-<NNN>` identifier; in a KB, also cite its `Streams/Roadmap/` path. The roadmap item's `## Review` section is not permission to promote a learning outside that record.
@@ -41,13 +38,9 @@ The recap grounds every checkable claim in current reality, not in warm context 
 
 A mechanical **grounding helper**, [`scripts/recap-grounding.ts`](scripts/recap-grounding.ts), resolves one physical Git root before reporting staged, unstaged, and untracked evidence. Run it for each repository touched by this thread. If Git cannot establish a root or read its evidence, it reports `repository.status: unavailable`; never call that state clean. Inside an identified Claude Code session it selects that session's own transcript, or declines transcript evidence with a reason; it never substitutes another session or runtime. Otherwise it may parse a repository-matching Claude or Codex transcript, found through bounded header-only discovery, for advisory tool tally and historical markers. Such a match does not identify the invoking thread, and no selection limits the thread's scope. Those local JSONL formats are version-sensitive convenience evidence, not a stable runtime interface. On a later recap it compares a compatible prior marker and reports `unchanged`, `changed`, or `unavailable`; current Git state remains authoritative.
 
-When the user explicitly invokes `checkpoint <work id>`, follow the [portable checkpoint hand-off](references/standards-session-recap.md#9-create-a-portable-checkpoint-hand-off) procedure. This optional composition supplies grounded recap evidence to `ki-work-package`; it does not take ownership of checkpoint identity, schema, lifecycle, or writes. The pure [`checkpoint-handoff.ts`](scripts/internal/checkpoint-handoff.ts) model documents and tests the fail-closed preflight; it performs no live reads or writes.
-
 ## Invocation
 
 `help` / `-h` / `?` explains this skill and stops, taking no action. With no argument, run the three-leg procedure over the whole current thread, then preserve a carry-forward digest and compact unless a safety or minimum-footprint condition withholds it. Grounding uses `--runtime detect` by default: it prefers the live Claude Code session's transcript, and otherwise selects the newest repository-matching transcript of the identified runtime, or of either runtime when none is identified, as advisory evidence. Use `--runtime claude` or `--runtime codex` to force one runtime. `--transcript <session-file>` selects one eligible candidate by basename only when concurrent sessions make modification time ambiguous. Neither option changes the live thread's coverage boundary.
-
-`checkpoint <work id>` is available only when the user explicitly requests that exact human-selected work id, the `<id>` of a work package `+/_WORK/<id>/`, and the target repository declares a valid `ki-work-package` capability. It validates the portable hand-off inputs, then invokes the existing `ki-work-package` UPDATE procedure; it is not a host command and does not make a checkpoint automatically during ordinary recap. The argument was `checkpoint <thread>` until Kris chose `checkpoint <work id>` under RECAP-NAME on 26 October 2026, because the work model made work the unit and the argument already resolves a work id; the old word is accepted through the `ki-coordination` tolerance window and names the same work.
 
 ## Notes
 
