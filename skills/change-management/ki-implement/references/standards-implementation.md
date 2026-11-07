@@ -62,11 +62,11 @@ Then stop.
 
 `ki-accept` owns human review, terminal closure, retention, and explicit pruning.
 
-## Batch authority
+## Window authority
 
-`ki-batch` may authorise a named item to enter this procedure only when its bounded authorisation expressly grants that execution.
+An unattended window's recorded grant, under `ki-coordination`, may authorise a named record of a frozen wave to enter this procedure only when it expressly grants that delivery.
 
-It never makes a vague plan executable, and it does not make closure automatic unless the authorisation explicitly grants batched closure for the named record.
+It never makes a vague plan executable, and it does not make closure automatic unless the grant names closure for that wave, under `ki-accept`.
 
 ## Controlled preflight model
 

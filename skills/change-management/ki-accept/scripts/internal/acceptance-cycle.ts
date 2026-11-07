@@ -21,11 +21,11 @@ export type AcceptanceAdapter =
 export type ClosureAuthority =
   | { kind: 'human'; explicitApproval: boolean }
   | {
-      kind: 'batch'
-      approved: boolean
-      payloadMatchesApproval: boolean
-      runMatchesApproval: boolean
-      closureItemIds: readonly string[]
+      kind: 'grant'
+      recorded: boolean
+      namesClosure: boolean
+      waveUnchanged: boolean
+      waveItemIds: readonly string[]
     }
 
 export type HousekeepingCompletion =
@@ -125,10 +125,7 @@ const matchesReviewPacket = (headings: readonly string[]): boolean =>
 const closureAuthorised = (authority: ClosureAuthority, itemId: string): boolean =>
   authority.kind === 'human'
     ? authority.explicitApproval
-    : authority.approved &&
-      authority.payloadMatchesApproval &&
-      authority.runMatchesApproval &&
-      authority.closureItemIds.includes(itemId)
+    : authority.recorded && authority.namesClosure && authority.waveUnchanged && authority.waveItemIds.includes(itemId)
 
 /** An identifier names a record of this repository: its code and, when areas are declared, one declared area. */
 const isLocalIdentifier = (id: string, repository: { code: string; areas: readonly string[] }): boolean => {
@@ -256,7 +253,7 @@ export const evaluateAcceptanceCycle = ({
   if (!closureAuthorised(authority, item.id))
     return {
       kind: 'stop',
-      reason: 'explicit human or approval-bound named batch closure authority is required',
+      reason: 'explicit human approval or a recorded grant naming this closure is required',
       writes: false
     }
 

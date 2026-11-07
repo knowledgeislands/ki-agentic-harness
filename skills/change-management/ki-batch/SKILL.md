@@ -6,15 +6,16 @@ ki-depends-on: []
 ki-optional-depends-on: [ki-delegation]
 ki-shared-dependencies: [ki-work-roadmap:work-identifiers]
 description: >
-  Prepare and run one bounded authority envelope over an exact set of Ready work records in one repository.
-  Use for an approved autonomous roadmap window or synergistic independent set; individual planning, delivery,
-  and closure remain governed by `ki-plan`, `ki-implement`, and `ki-accept`.
+  Retired batch authority, kept only so existing batch records stay readable while its removal lands. Use only
+  to read an existing batch record; deliver new work as a frozen wave in a `ki-coordination` unattended window.
 argument-hint: 'batch <work>... | batch outcome <outcome> | run <batch-authorisation> | help'
 ---
 
 # ki-batch
 
 **Kind:** process. Coordinates one exact set of repository-local Ready records under reviewed-item or explicit outcome authority.
+
+**Retired.** Kris took BATCH-RETIRE a) on 7 November 2026: an unattended window's grant in the decisions log is the one authority record, a wave is frozen before its delivery starts under `ki-coordination`'s [unattended window](../ki-coordination/references/standards-coordination.md#unattended-windows) rule, and `ki-accept` closes a wave's records only where that grant names closure. Start no new batch. The rest of this skill stays only until its removal lands, under [the adapter migration file](../ki-work/references/standards-change-management-adapters-migration.md).
 
 Read [the batch procedure](references/standards-batch.md) before acting, and read [the outcome-authority procedure](references/standards-outcome-authority.md) when autonomous delivery is requested. Use the [reviewed-item example](references/exemplars.md), [outcome-authority example](references/standards-outcome-authority-example.md), and [source notes](references/sources.md) as needed.
 

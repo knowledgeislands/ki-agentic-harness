@@ -65,6 +65,8 @@ Any identifier named before publication is provisional. Immediately before alloc
 
 During the current interaction, capture a distinct prospective outcome, concern, dependency, or decision once it is substantive enough to state a plain-language Goal, Context, Boundary, and decision-useful Discussion, and it passes the [graduation test](../../ki-work-roadmap/references/standards-repository-roadmaps.md#ideas-and-graduation): it is actionable, a decision with an owner and a needed-by date, or must survive the session. Goal, Context, and Boundary alone are not enough. An idea that does not yet graduate goes to its Project note's `## Notes` section when the Project is known, otherwise to the repository's `_IDEAS.md`, as a plain bullet without identity. Capture is gated: Kris set the standing burn-down focus on 2026-10-14, "burn the roadmap down; no new feature records. Capture only blockers, defects or Kris-requested items; prefer closing, merging or rejecting. Applies to every Knowledge Islands thread and every agent brief", and took CAPTURE-GATE a) on 19 October, "runs never create records; the owning work's coordinator captures only a blocker, a defect seen failing or a Kris request; ideas go to Project notes; small audit fixes need no record". So a background run never creates a record and names any candidate in its report instead; in coordinating work only the owning work's coordinator captures; and a record is created only for a blocker, a defect seen failing or an item the owner asked for. A handoff or a rollout is never captured as a record in the receiving repository: it goes as a line in the receiving work's `messages.md`, as Kris set under HANDOFF-AS-MESSAGE on 2026-10-20, "Handoffs are not roadmap items ... A rollout that needs people to make those changes sooner rather than later must go as a message"; only work genuinely deferred, which the receiver owns, may become a record, captured by the receiver's own coordinator under this gate, and a declared `ki-trades` route keeps its trade records. Anything else that graduates goes to the Project note or `_IDEAS.md` as above, a small audit fix needs no record, and closing, merging or rejecting existing work is preferred to opening new. Within the gate no further prior approval is required. Allocate the next canonical identity, create one `status: triage` record with no horizon, a [`priority` and `size`](../../ki-work-roadmap/references/standards-work-item-format.md#priority-and-size) set by judgement as the [migration tolerance](../../ki-work-roadmap/references/standards-repository-roadmaps.md#migration-tolerance) allows, and matching timestamps, and report the capture after writing it. Capture creates durable intake only; it does not adopt, plan, implement, batch, accept, or prune work.
 
+Deferred work is the other route into capture, as Kris took HELD-VS-RECORD a) on 7 November 2026. Deliverable work that the run or session producing it did not deliver, and that outlives that session, becomes an unadopted triage record in its home repository, captured there through this skill; a background run still only names it in its report, and the coordinator of the work that owns that repository captures it at receive. A work package's `## Held` list keeps only items waiting on a named decision or event, never deferred deliverable work.
+
 Before creating a record, search the selected adapter for an existing owner. Do not capture rhetorical examples, already-resolved observations, or duplicates. If an existing triage record owns the same Goal and Boundary, new decision-useful detail within that boundary may enrich it automatically and must advance its timestamp. If an adopted record owns the concern, report that owner and require confirmation before changing it. Adoption requires explicit human approval and remains here: it sets `status: draft`, a horizon, and `kind`, and may set `purpose`, `project` or `theme`, and `component`, and revisit `priority` and `size`. Cancellation as obsolete, rejected, duplicate, merged, or superseded requires exact human approval and routes to `ki-accept`, which records `status: cancelled` before any later prune; it is never a direct deletion. Approval alone never bypasses the lifecycle or done-before-prune rules.
 
 ## 4. Select candidates
@@ -83,9 +85,9 @@ Selection follows one order, as the [work-item format](../../ki-work-roadmap/ref
 
 Use the same horizon vocabulary on flat `Streams/Roadmap/` records. A recurring Activity is the standing definition, not a delivery destination; due runs become linked roadmap records at the profile's declared horizon.
 
-### Roadmap batchability screen
+### Roadmap wave screen
 
-Before selecting one viable non-KB item, compare the whole dependency-ready candidate set for a **safe delivery synergy**. Do not promote a later-horizon item merely to create a batch: every candidate must first satisfy its normal route into immediate work. A group is a batch candidate only when all of the following are true:
+Before selecting one viable non-KB item, compare the whole dependency-ready candidate set for a **safe delivery synergy**. Do not promote a later-horizon item merely to create a wave: every candidate must first satisfy its normal route into immediate work. A group is a wave candidate only when all of the following are true:
 
 - every record remains distinct with its own lifecycle, verification, and review packet;
 - the items share a concrete delivery advantage, such as one bounded source surface, setup or verification pass, external coordination window, or coherent user outcome;
@@ -94,9 +96,9 @@ Before selecting one viable non-KB item, compare the whole dependency-ready cand
 
 Do not treat a shared Project or component, adjacent numbering, the same repository, or a desire for throughput as synergy. Related work that changes the same uncertain contract, needs a new decision, or would make a failure hard to isolate stays separate.
 
-For each safe candidate group, present the named items in proposed order, the concrete advantage, the evidence that keeps them independent, the shared verification where relevant, and the mandatory stops that `ki-batch` will enforce. Also state why any superficially related candidate was excluded.
+For each safe candidate group, present the named items in proposed order, the concrete advantage, the evidence that keeps them independent, the shared verification where relevant, and the mandatory stops the wave keeps. Also state why any superficially related candidate was excluded.
 
-Require confirmation of the exact candidate set and order before planning each member through `ki-plan`. Once every selected record is Ready, offer the set to `ki-batch`. This is a preparation handoff, not implementation authority: `ki-batch` re-validates scope, readiness, verification, and stops, then requires its own reviewed authorisation before any `ki-implement` cycle begins.
+Require confirmation of the exact candidate set and order before planning each member through `ki-plan`. Once every selected record is Ready, offer the set as a wave to the coordinating package whose unattended window will deliver it, under `ki-coordination`. This is a preparation handoff, not implementation authority: the wave is frozen and delivered only within the window's recorded grant, which re-validates scope, readiness, verification, and stops before any `ki-implement` cycle begins. Work outside a coordinating package that needs such delivery opens a package and a window first.
 
 If no group meets every condition, say so briefly and use the ordinary single-item selection path.
 
@@ -144,7 +146,7 @@ Two ready candidates can both be worthwhile: a narrow local repair may have low 
 
 Present those facts directly, choose only after the human confirms the order, and record neither candidate as objectively "higher value" once the unavailable dependency or chosen sequencing changes the decision.
 
-Before a selection, adoption, promotion, or deferral write, show selected items, any proposed batch set and order, exact frontmatter or wording changes, and dependency effects. The bounded triage capture rule above is the sole no-prior-confirmation exception.
+Before a selection, adoption, promotion, or deferral write, show selected items, any proposed wave and its order, exact frontmatter or wording changes, and dependency effects. The bounded triage capture rule above is the sole no-prior-confirmation exception.
 
 When an owner answer is needed, use the runtime's structured ask-user-questions interface if available. Put the item's current state, proposed change, consequence, and canonical record link in the question; use a clickable link only where that interface supports one, and otherwise place the link in adjacent prose. Offer the evidence-backed recommendation as the first selectable response with its reason in the option description where supported. For example, recommend moving a dependency-ready Soon item to Next when its scope is actionable, while offering to keep it in Soon. If evidence does not support a recommendation, say so. A preselected response is not an answer or approval. Use the same content in a concise prose question when no structured interface is available.
 
@@ -154,9 +156,9 @@ Invoke `ki-plan` only after a selected record is Now or Next.
 
 It shapes the same item through the stage-detail contract and stops for review before marking it Ready.
 
-`ki-batch` may coordinate a confirmed synergistic group only when every member is Ready and only within an approved preparation boundary.
+`ki-coordination` may deliver a confirmed synergistic group as a frozen wave only when every member is Ready and only within an unattended window's recorded grant.
 
-That handoff does not permit `ki-next` to infer batch, selection, or implementation authority.
+That handoff does not permit `ki-next` to infer wave, selection, or implementation authority.
 
 ## 7. Spawn due housekeeping work
 
@@ -175,8 +177,6 @@ Never implement a definition directly, spawn a duplicate active run, or leave a 
 For a newly captured local record, write one canonical UTC-second instant to both `created_at` and `updated_at`. For any confirmed promotion, deferral, spawned-run linkage, or other semantic work-item mutation, preserve `created_at` and advance `updated_at` to the later of the current UTC second or one second after its observed value. Stop before publication when either timestamp is absent or malformed, or when the source revision changed after inspection. Read-only inventory never advances a timestamp. Remote adapters project provider-native timestamps and do not duplicate them into remote bodies.
 
 ## 8. Finish
-
-During a normal next-work cycle, apply the `ki-batch` “Batch retention” rule to `+/_BATCHES/`. Remove inactive records as soon as useful outcomes and follow-up are dispositioned. Treat an incompletely dispositioned inactive record at or after seven days as overdue: route useful follow-up, record when none remains, then prune it. Report the exact removals. This routine maintenance is authorised without another confirmation; it does not select, accept, or prune roadmap work. No other working-area cleanup is implied.
 
 Report each confirmed handoff disposition, synergy decision (including excluded near-matches), files changed, selected work, and audit result.
 

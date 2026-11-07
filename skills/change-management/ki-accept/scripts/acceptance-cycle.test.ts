@@ -45,16 +45,16 @@ test('accepts one canonical awaiting-review record with explicit human authority
   })
 })
 
-test('accepts an approval-bound named batch closure and reconciles one successful housekeeping run', () => {
+test('accepts a recorded grant naming a frozen wave closure and reconciles one successful housekeeping run', () => {
   expect(
     evaluateAcceptanceCycle(
       input({
         authority: {
-          kind: 'batch',
-          approved: true,
-          payloadMatchesApproval: true,
-          runMatchesApproval: true,
-          closureItemIds: ['KI-HARNESS-001']
+          kind: 'grant',
+          recorded: true,
+          namesClosure: true,
+          waveUnchanged: true,
+          waveItemIds: ['KI-HARNESS-001']
         },
         housekeeping: {
           kind: 'accepted',
@@ -249,11 +249,11 @@ test('requires an open record, exact human authority and complete cancellation e
       input({
         item: cancelItem(),
         authority: {
-          kind: 'batch',
-          approved: true,
-          payloadMatchesApproval: true,
-          runMatchesApproval: true,
-          closureItemIds: ['KI-HARNESS-002']
+          kind: 'grant',
+          recorded: true,
+          namesClosure: true,
+          waveUnchanged: true,
+          waveItemIds: ['KI-HARNESS-002']
         }
       })
     )
@@ -325,18 +325,18 @@ test('stops without writes for unsupported adapters, invalid evidence, and unapp
     expect(evaluateAcceptanceCycle(input({ item }))).toMatchObject({ kind: 'stop', writes: false })
   expect(evaluateAcceptanceCycle(input({ authority: { kind: 'human', explicitApproval: false } }))).toMatchObject({
     kind: 'stop',
-    reason: 'explicit human or approval-bound named batch closure authority is required',
+    reason: 'explicit human approval or a recorded grant naming this closure is required',
     writes: false
   })
   expect(
     evaluateAcceptanceCycle(
       input({
         authority: {
-          kind: 'batch',
-          approved: true,
-          payloadMatchesApproval: true,
-          runMatchesApproval: false,
-          closureItemIds: ['KI-HARNESS-001']
+          kind: 'grant',
+          recorded: true,
+          namesClosure: true,
+          waveUnchanged: false,
+          waveItemIds: ['KI-HARNESS-001']
         }
       })
     )

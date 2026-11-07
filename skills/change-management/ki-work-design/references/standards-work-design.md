@@ -38,7 +38,7 @@ Start each artefact from its template in `assets/`.
 - **Reviews.** At least two independent reviews, on different models or runtimes, each read-only. A reviewer forms its own view before it reads any other review, fact-checks the brief against the sources and marks Agree, Differ or Add against every numbered point, with evidence for each Differ. It is free to challenge any earlier decision the brief names, listing each under **Challenges** with the decision's words and date and its reason, or `None`. Kris asked on 30 October 2026, under REVIEW-INDEPENDENCE, that blind reviews "must be able to challenge" earlier decisions, and took REVIEW-CHALLENGE a) under ACCEPT-BY-CRITERIA on 31 October 2026.
 - **Merged report.** The orchestrator settles disputes on cited evidence and the governing standards, never by counting votes. The report gives a summary, corrections to the brief, the proposed model, an agree-and-differ table, a rollout plan, at most about eight decisions each with options and a recommendation, and a changes-after-review log. Anything the evidence cannot settle goes to the owner as a decision. The report lists every review's challenges under **Challenges**, each put to the owner as a decision with an option to revisit the earlier one; the orchestrator never settles a challenge itself.
 - **Decisions.** The owner's own words, keyed by the report's decision tags, kept verbatim. It records any authority grant with its completion target, and the push and prune scope. Where the owner's words differ from the report, the decisions win.
-- **Rollout.** Records are captured through `ki-next` from the decisions. One pilot is delivered before any parallel wave. The pilot's lessons are written into each wave's brief before it starts, and authority is exercised through `ki-batch` or `ki-accept`, quoting the grant.
+- **Rollout.** Records are captured through `ki-next` from the decisions. One pilot is delivered before any parallel wave. The pilot's lessons are written into each wave's brief before it starts, and authority is exercised through a frozen wave under `ki-coordination` or through `ki-accept`, quoting the grant.
 
 Decision tags follow Kris's 14 October 2026 rule, carried by the [coordination decisions life cycle](../../ki-coordination/references/standards-coordination.md#decisions-life-cycle): entries carry no running numbers. The brief's reflection points and the reviews' references to them remain numbered claims.
 
@@ -46,7 +46,7 @@ Decision tags follow Kris's 14 October 2026 rule, carried by the [coordination d
 
 - `ki-next` captures each record the decisions call for, stating the relevant decisions in its Context and naming the Decision Record where one exists, and selects the pilot.
 - `ki-plan` readies each record against the decisions; a record that needs a choice the decisions did not make stops and returns it to the owner.
-- `ki-batch` runs each wave of independent Ready records under the grant's `completion_target`; `ki-accept` closes single records under the same grant.
+- `ki-coordination` delivers each frozen wave of independent Ready records under the grant in the decisions log; `ki-accept` closes records under the same grant where it names closure.
 - Delegation to background agents follows the delegation contract in force; a high-risk handoff uses `ki-delegation`'s packet when that skill is selected.
 
 ## Stops

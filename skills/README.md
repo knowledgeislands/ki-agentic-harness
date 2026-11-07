@@ -149,7 +149,7 @@ Close a reviewed local work record as done, cancel an open record with an approv
 
 #### `ki-batch`
 
-Prepare and run one bounded authority envelope over an exact set of Ready work records in one repository. Use for an approved autonomous roadmap window or synergistic independent set; individual planning, delivery, and closure remain governed by `ki-plan`, `ki-implement`, and `ki-accept`.
+Retired batch authority, kept only so existing batch records stay readable while its removal lands. Use only to read an existing batch record; deliver new work as a frozen wave in a `ki-coordination` unattended window.
 
 - **Kind:** Process
 - **Applicability:** Invocation Only
@@ -203,7 +203,7 @@ Recap the live session by summarising changes, decisions, touched files, unfinis
 
 - **Kind:** Process
 - **Applicability:** Invocation Only
-- **Arguments:** `checkpoint <work id> | help | recap [--runtime detect|claude|codex] [--transcript <session-file>]`
+- **Arguments:** `help | recap [--runtime detect|claude|codex] [--transcript <session-file>]`
 - **Dependencies:** `ki-authoring`
 - **Runtime:** Portable
 

@@ -17,11 +17,9 @@ argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 
 This governance skill selects one configured source of forward work; it never becomes a third tracker. The selected adapter owns record storage, identity allocation, and its local structural rules. Shared process skills use the adapter to locate a record, assess readiness, record delivery or review evidence, and apply an explicitly authorised close or prune selection.
 
-Read [the change-management adapter standard](references/standards-change-management-adapters.md) before selecting an adapter or changing shared lifecycle behaviour. Read [the generated rubric](references/rubric.md) for its checkable contract, and [the sources](references/sources.md) when refreshing it.
+Read [the change-management adapter standard](references/standards-change-management-adapters.md) before selecting an adapter or changing shared lifecycle behaviour. Read [the generated rubric](references/rubric.md) for its checkable contract, [the migration file](references/standards-change-management-adapters-migration.md) for the retired batch scaffold it still checks, and [the sources](references/sources.md) when refreshing it.
 
 ## Shared model
-
-The declaration also activates the retained `+/_BATCHES/README.md` capability scaffold. `ki-work` owns that boundary; `ki-batch` owns temporary batch record form and retention.
 
 `[skills.ki-work]` declares exactly one adapter and the matching adapter table is declared beside it. `roadmap` is the default for an ordinary Project repository; `kb-streams` is the default for a Knowledge Base; `github-issues` and `linear` are explicit alternatives. Resolution has no fallback: an absent, unknown, undeclared, or inapplicable declaration stops the process rather than guessing from a directory. This skill owns the abstract lifecycle and classification terms, while the owning adapter retains concrete status mapping, record storage, identity, and structural rules. The [Project registry standard](references/standards-project-registry.md) owns the portable shape of territory Projects and themes.
 
@@ -37,7 +35,7 @@ Run `ki repo audit --skill ki-work --repo <repo>`. It verifies that the local ta
 
 ### Mode CONFORM
 
-Run `ki repo conform --skill ki-work --repo <repo> --dry-run`. CONFORM may safely create or restore the exact retained batch scaffold. It makes no adapter selection, creates no tracker or batch record, and changes no work record. It never infers an adapter from repository shape; set the declaration deliberately, then audit the selected adapter.
+Run `ki repo conform --skill ki-work --repo <repo> --dry-run`. It makes no adapter selection, creates no tracker record, and changes no work record. It never infers an adapter from repository shape; set the declaration deliberately, then audit the selected adapter.
 
 ### Mode EDUCATE
 

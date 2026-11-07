@@ -44,7 +44,7 @@ The caller or `ki-accept` owns the next decision.
 
 Kris's coordinating-work rule requires detached background runs for every unit; an in-session subagent is not such a run. Conversational bounded work may proceed directly, and a background run may use bounded subagents within its approved plan. `ki-delegation`, when active, owns run and durable-packet contracts. The delivering agent retains authority boundaries, dependency ordering, integration, verification and the final account of its unit; the coordinator retains the owner's conversation.
 
-`ki-batch` may coordinate repeated independent runs only under an explicit bounded authorisation.
+`ki-coordination` may deliver a frozen wave of independent records only within an unattended window's recorded grant.
 
 It does not bypass readiness, baseline, scope, verification, or human-review gates.
 
