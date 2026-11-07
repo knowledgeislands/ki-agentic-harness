@@ -2,17 +2,17 @@
 
 ## Open
 
-### TASK-LINKS-FIELD - Whether to retire the `task_links` roadmap field
+### PURGE-ROWS - Three mixed history rows were edited rather than deleted
 
-**Context:** `task_links` is an optional roadmap-record field that links a record to tasks in another system. Paperclip was its main user. `tools-ki` already shows a `linear` provider beside `paperclip`, and Linear is a supported work adapter, so the field has a plausible use beyond Paperclip. The blind reviewer disagreed with retiring it and preferred keeping it as a general field, with its own triage record to test whether Linear or GitHub Issues linking will use it.
+**Context:** The brief said to remove every change-log row that names Paperclip. Three of those rows also hold the only record of other radar events: Gas City being added on 2026-09-26, AHP reaching version 1.0 on 2026-10-06, and ACP's stable schema changes on 2026-10-19. Deleting those rows would have lost that unrelated history. So I deleted only the two rows that were purely about Paperclip, and in the other three I removed just the Paperclip wording.
 
-**Query:** Should the `task_links` field itself be retired?
+**Query:** Should the edited rows stay as they are, or should those three rows be deleted completely?
 
 **Options:**
 
-a) (recommended, confidence medium - reviewed: the blind reviewer chose this; the field is provider-neutral and Linear already appears in the code) Keep it as a general field, and capture a triage record in the harness to test whether Linear or GitHub Issues linking will use it.
+a) (recommended, confidence medium - it fully removes Paperclip and keeps the unrelated AHP, ACP and Gas City history the radar still uses) Keep the edited rows as they are.
 
-b) Retire it from the roadmap standard and the `tools-ki` validator now.
+b) Delete the three rows completely, losing their AHP, ACP and Gas City entries.
 
 ### ONE-LAUNCHER - should one launcher per package per host become a rule
 

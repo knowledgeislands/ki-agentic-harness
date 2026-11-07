@@ -427,3 +427,7 @@ Every push to `main` in `apps-ninja.midnight.legal` deploys `legal.midnight.ninj
 ## 2026-11-07 04:38 GMT · LEGAL-WORKER-NAME and LEGAL-ACCESS (interactive pass, queries 10 and 11)
 
 Kris: "New name + protections (recommended, high confidence)" and "Access first (recommended, high confidence)". The merge keeps `ninja-midnight-legal` with `workers_dev: false` and `preview_urls: false`, updating the old name in `AGENTS.md` and the guide. Nothing reaches `main` until Kris has created the Cloudflare Access application for `legal.midnight.ninja` and given its name, login method and allow policy; then a follow-up run records them, merges, pushes `main` and deletes the merged branches. `f75e9dd` stays local until then.
+
+## 2026-11-07 04:41 GMT · TASK-LINKS-FIELD (interactive pass, query 12); radar-purge and STOA-SHAPE received
+
+Kris: "Keep it, test later (recommended, medium confidence)". `task_links` stays a general roadmap field; a triage record in the harness tests whether Linear or GitHub Issues linking will use it (captured with the next harness standards run). `radar-purge` removed the Paperclip change-log rows and remaining mentions outside `+/_WORK/`; its query PURGE-ROWS copied. ki.prj.stoa's STOA-SHAPE MSG-6adb77c9 received for REPO-SHAPE-PACKAGES and ACKed.
