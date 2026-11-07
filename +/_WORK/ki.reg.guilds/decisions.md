@@ -263,3 +263,7 @@ Removed 11 on sol: 4 tools-rig (RIG-SPENT), 2 tools-ki (LANDED-COPIES), 4 tools-
 Kris: "Can you just consolidate your issues and such, and then you can ask me some questions about them? I think maybe concentrate it into a cluster which has got a lot of high confidence, that would allow us to get the most progress and get this list down." Taken as: the open queries are grouped into clusters, each asked as one decision to take all its recommendations, largest high-confidence cluster first.
 
 Kris, mid-turn: "For example, anything to do with paperclip. We know that we don't need to be doing anything with that now." Read back as taken: PAPERCLIP-NAMES a), delete the four coordination-lane subagents and the harness AGENTS.md "Paperclip local delivery" section with its merge grant; and Paperclip is out of scope, so the parked PAPERCLIP-RETIRE and PAPERCLIP-GRANT take retirement of `ki-delegation-paperclip` and its declarations (through the migration file) and withdrawal of the grant. Delivery waits for the cluster pass to finish so it lands with the other authorised work.
+
+## 2026-11-07 02:00 GMT · SPLIT cluster answered
+
+Kris, on the card: "Take all six (recommended, high confidence)" and, for CORE-BUDGET, "Warn 3,500, fail ~4,000 (recommended, medium confidence)". Read back as taken: DRIFT-FIRST a), STAGING a), STYLE-FROM-CORE a), OWNER-WORD a), LINK-STUBS a), ROLES-SLOT a) and CORE-BUDGET a); with MIGRATION-OVERLAY, the staged split is authorised, starting with the nine-mismatch fix.
