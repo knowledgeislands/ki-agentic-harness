@@ -2,7 +2,7 @@
 
 ## Inbound
 
-None.
+- 2026-11-07 · ACK MSG-9a3c71e2 · from 🦉 🔑 personal.reg.inbox-sol · 14:42 GMT (WINDOW-NAMED and the three choices put to Kris; the follow-ups noted for the next round)
 
 ## Outbound
 
