@@ -12,6 +12,7 @@
 
 ## Last review
 
+- 2026-11-07 - Under run `doer-lessons` of `ki.reg.guilds`, from the lessons Kris asked to be made durable through Claude Design (CD-63) and the illustrator (ILL-26) to `ki.prj.agora`, routed as MSG-991aa6ad and MSG-275b0e5b: Messages lines gain the fresh-pull, keep-both-sides rule for `messages.md` and the writer's-clock rule for a line's time. The seat-to-seat protocol the two makers used is left to Kris as a query.
 - 2026-11-07 - Under run `orca-land` of `ki.reg.guilds`, after Kris took REPORT-HOME a) that day: the steward's entry point gains an Orca worker's report copied in at receive, the `ki-delegation` run packet's one named exception to the launcher as only writer.
 - 2026-11-07 - Under STAGE-C-ROLES, Kris at 02:30 GMT on 7 November 2026: "land the role catalogue and role glyphs first, end to end", with the catalogue in this skill. Added `standards-roles.md` and the deletable `standards-roles-migration.md`, `work.md`'s required `role` and `state.md`'s `workers`, checked by RECORD-2 against the catalogue table. Taken with the reviewed options under ROLES-WRITE the same night: one role per seat ("it isn't a multi-role"), no `uri` in `workers` (WORKERS-URI, "Drop it"), and no seat address yet. This is an in-house decision review; no external source refreshed.
 
