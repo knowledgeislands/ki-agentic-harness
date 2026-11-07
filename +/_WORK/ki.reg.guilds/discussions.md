@@ -10,11 +10,11 @@
 
 **Options:**
 
-a) (recommended, confidence medium - a broadcast is common and one line per package would bloat Outbound, but the shape of the form is a design choice) Add a broadcast form to the standard and the checker, such as `to <n> live packages`, and replace the `live-packages` placeholder lines with it.
+a) (recommended, confidence medium - reviewed: the blind reviewer chose this at high, because the send, ACK and prune rules and the banner all assume one receiver per line; the run that raised it preferred a count form) Log each broadcast as one Outbound line per receiving package, so each ACK clears its own line. Add one sentence to the work package standard's Prune rule: an ACK clears the line matching both the id and the receiver. Drop the `live-packages` placeholder.
 
-b) Log each broadcast as one Outbound line per receiving package, so each ACK clears its own line, and drop the placeholder.
+b) Add a broadcast form to the standard and checker, `to <n> live packages`, with new ACK-counting rules in the standard, checker and banner, and replace the placeholder lines with it.
 
-c) Keep the `live-packages` placeholder as the convention.
+c) Keep the `live-packages` placeholder convention.
 
 ### STUB-KEEP - Keep the two retired skills as stubs until no repository declares them
 
