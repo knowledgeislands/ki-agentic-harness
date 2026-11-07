@@ -10,7 +10,7 @@
 
 **Options:**
 
-a) (recommended, confidence medium - it is clean and its commit is published, but Orca's lock might mean Orca still tracks it) Yes: first check in Orca on terra that no workspace uses it, then remove it with `orca` or `git worktree remove`.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same, as Orca has not cleaned it up in a week) Yes: a run on terra re-checks that it is clean and its commit is on `main`, then removes it with Orca's own remove command, which also clears Orca's record; only if Orca no longer lists it, `git worktree unlock` then `git worktree remove`, never a forced `-f -f`. If Orca still lists it as in use, the run stops and asks you.
 
 b) Leave it for Orca to clean up itself.
 
@@ -22,7 +22,7 @@ b) Leave it for Orca to clean up itself.
 
 **Options:**
 
-a) (recommended, confidence medium - it is a one-time step, but only you can confirm the key is really vega's) You run `ssh vega` once on sol and accept the key after checking its fingerprint on vega. A later run then repeats the read-only check there.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same, as checking the fingerprint on vega itself is the safe way to trust a new key) You run `ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub` on vega, then `ssh vega` once on sol, accepting only if the two fingerprints match. A later run then repeats the read-only check there.
 
 b) Leave vega out of these checks.
 

@@ -253,3 +253,7 @@ household-sol's stuck sweep for Kris names six guild run worktrees in sol's harn
 ## 2026-11-07 01:50 GMT · worktree-disposal received
 
 Removed 11 on sol: 4 tools-rig (RIG-SPENT), 2 tools-ki (LANDED-COPIES), 4 tools-ki (SUPERSEDED-FIXES), 1 harness (OLD-DIAGRAMS); evidence saved under `~/.local/state/ki/agents/wow-open/worktree-disposal/`. The KI-TOOL-KI-CLI-145 link correction landed as tools-ki `76bbc752`. DRAFT-SKILLS kept. Other Macs: terra has one stale locked Orca worktree in apps-markhowarth.com; vega unreachable (unknown host key). Queries TERRA-ORCA and VEGA-KEY (medium) copied, to blind review `wt-blind`. Run `wt-landed` removes `footer-counts`, `footer-hook` and `lint-before-push`.
+
+## 2026-11-07 01:50 GMT · wt-landed and wt-blind received
+
+`footer-counts`, `footer-hook` and `lint-before-push` removed without force; sol now holds only the two DRAFT-SKILLS worktrees. The blind reviewer agreed on TERRA-ORCA and VEGA-KEY; both rise to high with its reframings.
