@@ -415,3 +415,7 @@ Kris: "One line per receiver (recommended, medium confidence)". A broadcast is l
 ## 2026-11-07 04:31 GMT · LEGAL-BRANCH (interactive pass, query 8)
 
 Kris: "Yes, get entirely rid of it, and can you also make sure that that repository is on the main line and everything's merged into it properly? We don't want to be dealing with branches for this, I don't think." Run `legal-main` merges `legal-site-skeleton` into `main` in `personal/apps-ninja.midnight.legal`, puts the checkout on `main`, removes the Paperclip declaration, publishes fast-forward only and deletes the merged branch; it stops and reports before any push that would deploy the site, and on uncommitted work of another session or a conflict.
+
+## 2026-11-07 04:34 GMT · RADAR-HISTORY (interactive pass, query 9)
+
+Kris: "Remove them too". Run `radar-purge` removes the dated Paperclip rows from `skills/governance/ki-agentic-radar/references/sources.md`'s change log, so Paperclip leaves the harness entirely outside `+/_WORK/` history.

@@ -2,18 +2,6 @@
 
 ## Open
 
-### RADAR-HISTORY - Paperclip rows in the radar's change log
-
-**Context:** I removed Paperclip's subject, evidence and source entry from the agentic radar. Its change log, the review history table in `skills/governance/ki-agentic-radar/references/sources.md`, still names Paperclip in four dated rows. I added one row recording today's purge. Rewriting those rows would change the history of past reviews.
-
-**Query:** Should the dated change-log rows that mention Paperclip stay as history?
-
-**Options:**
-
-a) (recommended, confidence medium - they record what past reviews found, like the work-folder notes the brief keeps) Keep them as history.
-
-b) Reword or remove them so that Paperclip disappears from the harness entirely.
-
 ### TASK-LINKS-FIELD - Whether to retire the `task_links` roadmap field
 
 **Context:** `task_links` is an optional roadmap-record field that links a record to tasks in another system. Paperclip was its main user. `tools-ki` already shows a `linear` provider beside `paperclip`, and Linear is a supported work adapter, so the field has a plausible use beyond Paperclip. The blind reviewer disagreed with retiring it and preferred keeping it as a general field, with its own triage record to test whether Linear or GitHub Issues linking will use it.
