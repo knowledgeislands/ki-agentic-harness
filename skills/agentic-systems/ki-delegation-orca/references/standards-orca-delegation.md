@@ -21,7 +21,7 @@ How a Knowledge Islands coordinator uses Orca orchestration as its launcher. It 
 
 ## Evidence and status
 
-Kris took ORCA-SKILL-NOW a) on 1 November 2026, "go with what you recommend on the Orca skills now", and named the adapter `ki-delegation-orca` under ORCH-NAME-DISPATCH a) the same day. The draft came from the Orca launcher proposal and the trial log of `ki.prj.orca-evaluation` in Knowledge Islands Principal, on sol with Orca 1.4.244 to 1.4.245. On 7 November 2026 Kris settled its open points in `ki.reg.guilds`, each taking its reviewed recommended option, and closed ONE-LAUNCHER with no rule.
+Kris took ORCA-SKILL-NOW a) on 1 November 2026, "go with what you recommend on the Orca skills now", and named the adapter `ki-delegation-orca` under ORCH-NAME-DISPATCH a) the same day. The draft came from the Orca launcher proposal and the trial log of `ki.prj.orca-evaluation` in Knowledge Islands Principal, on sol with Orca 1.4.244 to 1.4.245. On 7 November 2026 Kris settled its open points in `ki.reg.guilds`: each took its reviewed option a), except RUN-HANDOVER, which took b), a test in the next trial, and ONE-LAUNCHER, which closed with no rule.
 
 Every rule below rests on one of two grounds, named beside it: **proved**, Orca behaviour observed in Knowledge Islands use and recorded in the trial log, or **decided**, an owner decision held by its owning work or standard. A decided rule whose Orca behaviour is not yet exercised says so.
 
