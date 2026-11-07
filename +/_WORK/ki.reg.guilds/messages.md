@@ -2,6 +2,8 @@
 
 ## Inbound
 
+- 2026-11-07 · ACK MSG-1bdbf3cc · from KI > SoP (🏛️ 🔑 ki.sop.main) · 03:14 GMT · run sop-tools is creating ki.sop.tools on hold, RIG-RETIRE first
+
 - 2026-11-07 · ACK MSG-4cf14cb8 · from hnr.sop.main · HNR > State of play (🏛️ 🔑 hnr.sop.main) · 03:05 GMT · role catalogue re-read; governor, tier leaders recorded in state.md workers; method_read a4da0db23.
 
 ## Outbound
