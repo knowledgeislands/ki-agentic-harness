@@ -795,3 +795,5 @@ REFRESH ACKs: 1 more packages ACKed the reply-format REFRESH; 9 still awaited.
 19:28 GMT: Agora HEALTH MSG-a767afed answered. The watcher was re-armed and an ACK went to ki.prj.agora's Inbound; the line is removed here.
 
 20:48 GMT: Agora HEALTH MSG-c57b90eb answered. The watcher was re-armed and an ACK went to ki.prj.agora's Inbound; the line is removed here.
+
+- 2026-11-07 22:00 GMT · Health check MSG-af983c2e from ki.prj.agora answered: re-armed on the Agora call and doorbell paths for 120 minutes, ACK sent to ki.prj.agora.
