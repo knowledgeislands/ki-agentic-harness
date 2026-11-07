@@ -305,3 +305,7 @@ Split stage 1 landed in `0c498236`: eight of the nine mismatches fixed (COORD-13
 ## 2026-11-07 02:35 GMT · SOP-BUNDLES and ORCA-HOME received from ki.sop.main
 
 ki.sop.main ACKed MSG-da83a96f and MSG-8125375d and routed 22 queries here: HOLD-STATES (with HOLD-TIDY) and METHOD-BATCH as packed bundles with their design notes in `skills/`; the sixteen Orca adapter queries; SCOPE-SPLIT's four (TRIAL-PUBLISH, TRIAL-ASK, TRIAL-PRACTICE, ORCA-IDENTITY-LEAK). The `orca-adapter` branch is now the guild's, ADAPTER-MERGE settling it. All copied into `discussions.md`; the unreviewed medium ones go to blind review. Agora health MSG-5d01b77e ACKed.
+
+## 2026-11-07 02:41 GMT · d12-kg-design received
+
+Designs for `ki-dodecakrisis` and a knowledge-graph method skill (proposed `ki-knowledge-graph`), kept as `skills/d12-kg.design.md`. Ten queries copied: KG-NAME, GUILD-NAME, D12-CANON, D12-KIND, D12-RUNNER, PROTECTED-HOME, PROTECTED-READ, ACQUIRE-SPLIT, STAGING-HOME, DOCKET-HOME. Medium ones join the blind review after `roles-design`.

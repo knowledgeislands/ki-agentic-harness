@@ -330,6 +330,132 @@ b) hold until an attended terra check shows how terra lists runs, then decide
 
 c) leave `ki agent` unchanged and add a rule that runs must not call `orca orchestration` commands. Original text at ki-principal `417546eb`
 
+### KG-NAME - What to call the knowledge-graph method skill
+
+**Context:** The new skill covers how deposited material is curated into a semantic knowledge graph: the card format, curating one item at a time, tending the staging area, and sending finished cards to their owners. Kris asked about it as "the semantic knowledge graph". Its sibling for capture is `ki-acquire`.
+
+**Query:** What should the skill be called?
+
+**Options:**
+
+a) (recommended, confidence medium - it matches Kris's own words and the graph is the skill's centre) `ki-knowledge-graph`.
+
+b) `ki-curate`, a verb that pairs with `ki-acquire`, though dispatch and the card format sit less naturally under it.
+
+c) `ki-knowledge-funnel`, after the funnel card, though the funnel's capture stage belongs to `ki-acquire`.
+
+### GUILD-NAME - Keep the guild called "acquire", or rename it
+
+**Context:** HARNESS-SCOPE a) (Kris, 7 November) made each harness skill folder a guild and put both new skills under the acquire guild, leaving its name open. With D12 and the graph skill added, the guild runs from sorting through capture and curation to dispatch. Renaming the folder moves skill paths, the catalogue and links.
+
+**Query:** What should this guild be called?
+
+**Options:**
+
+a) (recommended, confidence medium - it names what the guild serves, not just its first step) `knowledge`.
+
+b) `knowledge-tending`, the name of the Pillar folder that holds all three cards; it is exact but long.
+
+c) Keep `acquire`; it costs nothing, but sorting and curation are not acquisition.
+
+### D12-CANON - Where D12's rules live once the skill exists
+
+**Context:** The D12 card, Kris's fundamental tenet of 5 November, holds the twelve Ds, the names and the ten rules, and currently says "change them there". SKILLS-OVER-GRAPH (6 November) says method moves into skills and the graph keeps "things that are".
+
+**Query:** Which holds the authoritative D12 rules, the card or the skill?
+
+**Options:**
+
+a) (recommended, confidence medium - it keeps the tenet as a concept and puts the method where it gets used) The card keeps the concept (the twelve Ds, the names and why) and links to the skill. The skill's standard holds the ten rules and how they run.
+
+b) The card stays the authority for everything, and the skill cites it.
+
+### D12-KIND - One D12 skill with working modes, or two skills
+
+**Context:** House governance skills share four modes: audit, conform, educate and refresh. D12 also needs working modes: sort arrivals, run the sweeps, and learn from corrections. Each writes only with an approval it cites.
+
+**Query:** Should one skill hold both the standard and the working modes?
+
+**Options:**
+
+a) (recommended, confidence medium - one place for Kris to look, and the working modes are small) One `ki-dodecakrisis` skill: the four standard modes plus SORT, SWEEP and LEARN.
+
+b) Two skills: `ki-dodecakrisis` for the standard and a separate process skill for running it.
+
+### D12-RUNNER - What runs the sweeps and the learning loop
+
+**Context:** Sweeps are simple, repeated label and age searches. The learning loop reads mail headers through the change history. Executable importers live outside the harness, in the Inbox's `ki-muninn`, which already holds the mailbox settings. Kris said on 6 November that the sweeps are D12's own runs.
+
+**Query:** What should execute D12's sweeps and learning?
+
+**Options:**
+
+a) (recommended, confidence medium - repeatable, cheap and uses existing mailbox settings) Code in `ki-muninn` (`ki-muninn d12 sweep`, `ki-muninn d12 learn`), governed by the skill. hnr-principal runs it too, for its own mailbox.
+
+b) A scheduled agent pass that uses the skill and the mail servers directly, with code later.
+
+### PROTECTED-HOME - Where the protected-label list lives
+
+**Context:** Kris, about 23:40 GMT on 6 November: some labels "must never be changed or touched", as "a capability of the routing and of the mail MCP servers". A list held by the caller can be forgotten or left out; a list held in each server's own configuration (managed by chezmoi) protects every caller, D12 or not.
+
+**Query:** Where should the protected list be declared?
+
+**Options:**
+
+a) (recommended, confidence high - only a server-side list protects against every caller) In each mail server's per-account configuration. The server refuses any change, and D12 reads the list from the server.
+
+b) In the D12 settings of the declaring repository, passed to the server on each call.
+
+### PROTECTED-READ - Does marking read count as touching
+
+**Context:** Z-ARCHIVE (Kris, 6 November): nothing "adds, removes, renames or deletes any label under it, or changes the messages it holds". Opening a protected message in the Gmail web app marks it read regardless; this only concerns tool calls.
+
+**Query:** Should the servers also refuse to mark protected messages read or unread?
+
+**Options:**
+
+a) (recommended, confidence high - it matches "never changed or touched") Yes, refuse every change, read state included.
+
+b) Allow read-state changes and refuse everything else.
+
+### ACQUIRE-SPLIT - Move curation and dispatch out of `ki-acquire`
+
+**Context:** The `ki-acquire` standard already contains "Staging and curation" and "Dispatch and authority" sections, and its description mentions curation and dispatch. The new graph skill covers the same ground. Two copies would drift apart.
+
+**Query:** Should `ki-acquire` be narrowed to capture, with its curation and dispatch text moved to the new skill?
+
+**Options:**
+
+a) (recommended, confidence high - one owner per rule is the house contract) Yes: `ki-acquire` keeps capture and hands off to the graph skill at curation.
+
+b) No: `ki-acquire` keeps them, and the graph skill covers only the card format and tending.
+
+### STAGING-HOME - Who owns the staging knowledge base's structure
+
+**Context:** KNOWLEDGE-AS-KB a (6 November) makes the Inbox's `knowledge/` a declared staging knowledge base, using zone aliases that `ki-repo-kb` already supports. A staging base differs from an ordinary one: its ids can change, and it mirrors the islands it will dispatch to.
+
+**Query:** Where is the staging base's shape set out?
+
+**Options:**
+
+a) (recommended, confidence medium - structure stays with the structure skill and method with the method skill) A staging profile in `ki-repo-kb` for the zones and aliases, with the graph skill covering how material moves through it.
+
+b) All of it in the graph skill.
+
+### DOCKET-HOME - Where D12's Docket items live
+
+**Context:** In D12, the Docket keeps actions that outlive the item they came from. The Gmail design has a `D12/12 Docket` label. The Inbox keeps Kris's life actions as cards in `knowledge/actions/`, which the KIV viewer reads. How the two relate is still open in the sorting-engine draft, and the standard can only describe a settled final state.
+
+**Query:** What is a Docket item?
+
+**Options:**
+
+a) (recommended, confidence low - it matches the existing viewer, but Kris has not discussed it) An action card in the declaring repository's actions area that points at the item. The `D12/12 Docket` label just marks the item as having one.
+
+b) Only the mailbox label; no card.
+
+c) Leave Docket out of the first version of the skill.
+
 ## Parked
 
 - ACQUIRE-ROUTE: acquisition items (GRANOLA-CAPTURED-SKIP MSG-6620cbb7, GRANOLA-COUNT, CHECKSUMS-SETTLED, ACQ-HOLD-WORDING, ACQ-SCAFFOLD-NOTE, ACQUISITION-PROCESS-APPROVE) to ki.reg.main via State of play; recommended a) high. Kris, 7 November: "We can come back to that later." None.
