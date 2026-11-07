@@ -777,3 +777,5 @@ Received reply-format, 14:42 GMT: changes 1 to 24 of the reply-format note all l
 14:44 GMT: personal.reg.inbox-sol ACKed MSG-9a3c71e2. It put WINDOW-NAMED and the three choices to Kris, and noted the follow-ups for its next round. MSG-9a3c71e2 had not been entered in Outbound, so the ACK closes it with nothing to remove.
 
 Received reply-format-refresh, 14:48 GMT: the REFRESH for the new reply format reached all 17 live packages on sol, one commit each, across six repositories, all pushed (MSG-e2ce264a done). ki.sop.main has ACKed; the other 16 are tracked on one Outbound line. Staged files from other sessions were left untouched: Agora reports in ki-principal, and tower reports in apps-ninja.midnight.tower.
+
+REFRESH ACKs, at the next wake: 3 more packages ACKed the reply-format REFRESH. 13 are still awaited, tracked on the Outbound line.
