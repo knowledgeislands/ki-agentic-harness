@@ -727,3 +727,11 @@ ki.prj.agora's HEALTH MSG-279a8a89 answered by re-arming and an ACK. ki-principa
 ## 2026-11-07 09:11 GMT · MSG-e19b4a07 ACKed
 
 ki.sop.main took PRINCIPAL-AUDIT: at its next mark a run reruns both audits and sends each flagged package one line. Both lines removed.
+
+## 2026-11-07 09:14 GMT · PARK-ALL and ACK-CHASE; MD-WRITER raised for discussion
+
+Kris: "Your foot to is quite big at the minute because you've got a lot of things that are with me and a lot of things that are waiting an act. So you could effectively think put everything that's waiting for me as parked, and then double check if those acts have happened or not. If they haven't happened, don't you tell me who it is to target, and I'll ask them to respond. Please."
+
+Taken as: every open query moves, whole, under `## Parked` (PARK-ALL); a read-only run checks each Outbound line awaiting ACK against its receiver's queue, the acknowledged ones are cleared, and the rest go to Kris as a list of who to chase (ACK-CHASE); nothing is re-sent.
+
+Kris, via ki.prj.agora, on Markdown checked only at commit: "I'd like to discuss the right approach before anything changes." Options as Agora put them: a) a writer's rule in ki-authoring (`rumdl fmt` then `rumdl check` before staging, `ki agent` formatting each run report as written, commit stays check-only), Agora's recommendation at medium; b) reverse COMMIT-VS-CI so the hook fixes staged Markdown; c) a Claude Code write hook. Also to check: whether package-backed repositories' `self:check` includes rumdl. Taken as MD-WRITER: a read-only fact-finding run first, then the query to Kris; nothing changes until he decides.

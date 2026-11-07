@@ -2,6 +2,12 @@
 
 ## Open
 
+None.
+
+## Parked
+
+Parked at Kris's word, 7 November 2026 09:14 GMT ("put everything that's waiting for me as parked"), in full as they stood.
+
 ### STAGE6-BUDGET - The core is too long for the agreed size limit
 
 **Context:** Under CORE-BUDGET a) (Kris, 7 November 02:00 GMT), the core's word check warns above 3,500 words and fails above about 4,000. After the stage 5 rewrite, the part of the core that would become the always-loaded style is about 5,000 words. That is because stage 5 cut only about 6%, which is the open STAGE5-DEPTH question. This run was told to make no deeper cut, so stage 6 cannot add its size check without failing the tests.
@@ -804,8 +810,6 @@ since 2026-11-07 · from run/absorb (ki.prj.ways-of-working absorption, ABSORB-S
 a) (recommended, confidence medium - not blind-reviewed; they belong to the same package, but their contents have not been inspected) Yes: the closing run inspects them, homes anything still live and closes them with `--repo` under the strict gate. Any it cannot clear are reported.
 
 b) Leave them out of this close-out and raise them separately.
-
-## Parked
 
 - DOCKET-HOME: what a D12 Docket item is; recommended a) (low) an action card in the declaring repository's actions area pointing at the item, the `D12/12 Docket` label marking it; the blind reviewer preferred leaving it out of the first version. Kris, 7 November: "not sure, come back later".
 - ACQUIRE-ROUTE: acquisition items (GRANOLA-CAPTURED-SKIP MSG-6620cbb7, GRANOLA-COUNT, CHECKSUMS-SETTLED, ACQ-HOLD-WORDING, ACQ-SCAFFOLD-NOTE, ACQUISITION-PROCESS-APPROVE) to ki.reg.main via State of play; recommended a) high. Kris, 7 November: "We can come back to that later." The full ACQ-HOLD-WORDING, ACQ-SCAFFOLD-NOTE, ACQUISITION-PROCESS-APPROVE, CHECKSUMS-SETTLED and GRANOLA-COUNT blocks, absorbed from ki.prj.ways-of-working, are below.
