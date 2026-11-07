@@ -2,11 +2,11 @@
 
 ## Inbound
 
-- 2026-11-07 · ACK MSG-9ce75722 · from HNR > Sites > Robots (hnr.prj.site-robots) · 15:35 GMT · re-read the report-forms standard at `57bd51e9b`; `method_read` updated.
+None.
 
 ## Outbound
 
-- 2026-11-07 · REPLY-FORMAT REFRESH · to live-packages · IMPORTANT · 17 live packages · 14:43 GMT · the coordinator reply format at harness d5ede6dd (run reply-format-refresh, one id per package). ACKed: ki.sop.main (MSG-2f927a89), ki.prj.agora (MSG-6c892e1c), personal.reg.household-sol (MSG-62177474), personal.reg.inbox-sol (MSG-1628dfef), hnr.prj.5g-emerge-phase3 (MSG-7208b971), personal.reg.inbox-terra (MSG-32a36af0), personal.reg.household-terra (MSG-1bac0a6f). Awaiting 10: hnr.prj.5g-emerge-p2ms3 MSG-99174241, hnr.prj.5g-emerge-phase2 MSG-8ad11c5f, hnr.prj.site-robots MSG-9ce75722, hnr.sop.main MSG-f1a8a2f4, ki.prj.stoa MSG-6fa8d9df, ki.prj.tools-burndown MSG-7ef4c5ea, personal.reg.tower.site-design MSG-66fd3a19, personal.reg.tower MSG-d0bcb489, personal.reg.inbox-chat MSG-237e1627, personal.prj.tower-public-site MSG-7d459cc6.
+- 2026-11-07 · REPLY-FORMAT REFRESH · to live-packages · IMPORTANT · 17 live packages · 14:43 GMT · the coordinator reply format at harness d5ede6dd (run reply-format-refresh, one id per package). ACKed: ki.sop.main (MSG-2f927a89), ki.prj.agora (MSG-6c892e1c), personal.reg.household-sol (MSG-62177474), personal.reg.inbox-sol (MSG-1628dfef), hnr.prj.5g-emerge-phase3 (MSG-7208b971), personal.reg.inbox-terra (MSG-32a36af0), personal.reg.household-terra (MSG-1bac0a6f), hnr.prj.site-robots (MSG-9ce75722). Awaiting 9: hnr.prj.5g-emerge-p2ms3 MSG-99174241, hnr.prj.5g-emerge-phase2 MSG-8ad11c5f, hnr.sop.main MSG-f1a8a2f4, ki.prj.stoa MSG-6fa8d9df, ki.prj.tools-burndown MSG-7ef4c5ea, personal.reg.tower.site-design MSG-66fd3a19, personal.reg.tower MSG-d0bcb489, personal.reg.inbox-chat MSG-237e1627, personal.prj.tower-public-site MSG-7d459cc6.
 - 2026-11-07 · MSG-a0a6f68e RIG-ATTENDED · to personal.reg.household-terra · 08:46 GMT · query: route the existing attended Rig checks and CORE-068 questions when Kris is available · awaiting ACK
 - 2026-11-07 · MSG-12d5cee1 HNR-TOOLROOT · to hnr.sop.main · 08:38 GMT · HNR renames `tooling/boundaries` to `tooling/depcruise` on four sites; the harness keeps SCR-5 from dropping the install line · awaiting ACK
 - 2026-11-07 · MSG-9ec432fc HNR-EMPTY-PROJECT · to hnr.sop.main · 08:38 GMT · hnr.prj.site-pt clears STREAM-10's empty-Project warning itself · awaiting ACK
