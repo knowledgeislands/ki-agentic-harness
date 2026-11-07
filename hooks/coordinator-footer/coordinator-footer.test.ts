@@ -100,6 +100,7 @@ interface Outcome {
   readonly status: number | null
   readonly stdout: string
   readonly reason?: string
+  readonly warning?: string
 }
 
 const run = (input: string, extraEnv: Record<string, string> = {}, shell = 'bash'): Outcome => {
@@ -110,7 +111,12 @@ const run = (input: string, extraEnv: Record<string, string> = {}, shell = 'bash
   const result = spawnSync(shell, [script], { input, encoding: 'utf8', env, cwd: ordinary })
   const stdout = result.stdout ?? ''
   if (stdout.trim() === '') return { status: result.status, stdout }
-  const parsed = JSON.parse(stdout) as { decision: string; reason: string }
+  const parsed = JSON.parse(stdout) as { decision?: string; reason?: string; systemMessage?: string }
+  if (parsed.systemMessage !== undefined) {
+    // A warning lets the reply through: it never blocks as well.
+    expect(parsed.decision).toBeUndefined()
+    return { status: result.status, stdout, warning: parsed.systemMessage }
+  }
   expect(parsed.decision).toBe('block')
   return { status: result.status, stdout, reason: parsed.reason }
 }
@@ -137,20 +143,24 @@ test('a Status takes the long footer, as a Summary does', () => {
       ...footer
     ].join('\n\n')
   expect(run(stop(status(art, heading, counts, roadmap, pkg, items, thread), plain))).toEqual(silent)
-  expect(run(stop(status(heading, counts, roadmap, pkg, items, thread), plain)).reason).toStartWith(
-    "This Summary's footer lacks the Knowledge Islands art above the banner, "
+  expect(run(stop(status(heading, counts, roadmap, pkg, items, thread), plain)).warning).toStartWith(
+    "Footer check: this Summary's footer has no Knowledge Islands art above the banner. "
   )
 })
 
-test('a Summary without the art is held back, naming it', () => {
+// Kris, relayed on 7 November 2026, asked that the hook "allow it but warn against it and feedback on it to make sure
+// it's intentional": only a lost banner or thread line holds a reply back.
+test('a Summary without the art passes with a warning naming it', () => {
   const outcome = run(stop(summary(heading, counts, roadmap, pkg, items, thread), plain))
   expect(outcome.status).toBe(0)
-  expect(outcome.reason).toStartWith("This Summary's footer lacks the Knowledge Islands art above the banner, ")
-  expect(outcome.reason).toContain('Give the reply again in full')
+  expect(outcome.reason).toBeUndefined()
+  expect(outcome.warning).toBe(
+    "Footer check: this Summary's footer has no Knowledge Islands art above the banner. It was let through; confirm it was intended, since ki-coordination's Banner section sets the usual form."
+  )
 })
 
 test('art drawn below the banner heading does not count', () => {
-  expect(run(stop(summary(heading, counts, roadmap, pkg, art, items, thread), plain)).reason).toContain('the Knowledge Islands art')
+  expect(run(stop(summary(heading, counts, roadmap, pkg, art, items, thread), plain)).warning).toContain('no Knowledge Islands art')
 })
 
 test('no art, asked for plainly or through the command, leaves the art out', () => {
@@ -162,27 +172,27 @@ test('no art, asked for plainly or through the command, leaves the art out', () 
 
 test('an unreadable transcript leaves the art unasked but still checks the rest', () => {
   expect(run(stop(summary(heading, counts, roadmap, pkg, items, thread), join(root, 'gone.jsonl')))).toEqual(silent)
-  expect(run(stop(summary(heading, counts, roadmap, items, thread), join(root, 'gone.jsonl'))).reason).toContain('the 📦 package line')
+  expect(run(stop(summary(heading, counts, roadmap, items, thread), join(root, 'gone.jsonl'))).warning).toContain('has no 📦 package line.')
 })
 
-test('a Summary without its roadmap and package lines is held back, naming both', () => {
+test('a Summary without its roadmap and package lines passes with a warning naming both', () => {
   const outcome = run(stop(summary(art, heading, counts, items, thread), plain))
-  expect(outcome.reason).toStartWith("This Summary's footer lacks the 🗺️ roadmap line and the 📦 package line, ")
+  expect(outcome.warning).toStartWith("Footer check: this Summary's footer has no 🗺️ roadmap line and no 📦 package line. ")
 })
 
 test('a repository without a roadmap needs no roadmap line', () => {
   expect(run(stop(summary(art, heading, counts, pkg, items, thread), plain, roadless))).toEqual(silent)
-  expect(run(stop(summary(art, heading, counts, items, thread), plain, roadless)).reason).toStartWith("This Summary's footer lacks the 📦 package line, ")
+  expect(run(stop(summary(art, heading, counts, items, thread), plain, roadless)).warning).toStartWith("Footer check: this Summary's footer has no 📦 package line. ")
 })
 
 test('footer lines above the banner heading do not count', () => {
-  expect(run(stop(summary(art, roadmap, pkg, heading, counts, items, thread), plain)).reason).toContain('the 🗺️ roadmap line and the 📦 package line')
+  expect(run(stop(summary(art, roadmap, pkg, heading, counts, items, thread), plain)).warning).toContain('no 🗺️ roadmap line and no 📦 package line')
 })
 
-test('a Summary whose banner is missing names every part', () => {
+test('a Summary whose banner is missing is held back, naming the lost structure and the rest', () => {
   const outcome = run(stop(summaryBody, plain))
-  expect(outcome.reason).toStartWith(
-    "This Summary's footer lacks the Knowledge Islands art above the banner, the ### state heading of the banner, the counts line beneath the state heading, the 🗺️ roadmap line, the 📦 package line and the 🧵 <work-id> thread line, last, "
+  expect(outcome.reason).toBe(
+    "This Summary's footer lacks the banner's ### state heading and the 🧵 <work-id> thread line, last, under ki-coordination's Banner section. Give the reply again in full with them, since the last text is what the owner reads. It also has no Knowledge Islands art above the banner, no 🗺️ roadmap line and no 📦 package line; keep that only where the owner asked for it."
   )
 })
 
@@ -192,15 +202,32 @@ test('the thread line must close the reply', () => {
 })
 
 test('a list straight after the heading is no counts line', () => {
-  expect(run(stop(summary(art, heading, items, roadmap, pkg, thread), plain)).reason).toContain('the counts line beneath the state heading')
+  expect(run(stop(summary(art, heading, items, roadmap, pkg, thread), plain)).warning).toContain('no counts line beneath the state heading')
+})
+
+test('an odd counts line or an unrecognised state heading passes with a warning', () => {
+  expect(run(stop(summary(art, heading, 'Two runs going', roadmap, pkg, items, thread), plain)).warning).toContain(
+    'a counts line opening with none of the counts glyphs'
+  )
+  const unknown = '### 🌙 Resting · at 21:10 GMT'
+  expect(run(stop(rebootstrap(unknown, counts, items, thread), plain)).warning).toStartWith(
+    "Footer check: this reply's banner has a state heading the table of states does not name. "
+  )
+})
+
+test('a query or finding heading is no state heading', () => {
+  expect(run(stop(rebootstrap('### FOOTER-HOOK - Relax the hook', thread), plain)).reason).toStartWith(
+    "This reply's banner lacks the banner's ### state heading, "
+  )
 })
 
 test('a re-bootstrap report needs the short banner only', () => {
   expect(run(stop(rebootstrap(shortBanner), plain))).toEqual(silent)
   const outcome = run(stop(rebootstrap(), plain))
   expect(outcome.reason).toStartWith(
-    "This reply's banner lacks the ### state heading of the banner, the counts line beneath the state heading and the 🧵 <work-id> thread line, last, "
+    "This reply's banner lacks the banner's ### state heading and the 🧵 <work-id> thread line, last, "
   )
+  expect(run(stop(rebootstrap(heading, items, thread), plain)).warning).toContain('no counts line')
 })
 
 test('a hold report and a Finished banner pass in their own shapes', () => {
@@ -215,7 +242,7 @@ test('a hold report and a Finished banner pass in their own shapes', () => {
   expect(run(stop(hold, plain))).toEqual(silent)
   // A Finished banner carries no counts line.
   expect(run(stop(['### 🏁 Finished · Demo closed at 18:00 GMT', '- [finished] 3 work items accepted', thread].join('\n\n'), plain))).toEqual(silent)
-  expect(run(stop(hold.replace('⏸️ drained · 🅿️ 2 queries parked\n\n', ''), plain)).reason).toContain('the counts line')
+  expect(run(stop(hold.replace('⏸️ drained · 🅿️ 2 queries parked\n\n', ''), plain)).warning).toContain('no counts line')
   // Snoozing, under SNOOZE, keeps listening, so its counts line waits for a message rather than saying drained.
   const snoozing = [
     '**💤 Snoozing (on hold) · Hold report at 21:10 GMT · mark 21:10 GMT**',
@@ -228,25 +255,42 @@ test('a hold report and a Finished banner pass in their own shapes', () => {
   ].join('\n\n')
   expect(run(stop(snoozing, plain))).toEqual(silent)
   expect(run(stop(snoozing.replace('### 💤 Snoozing (on hold) · at 21:10 GMT\n\n', ''), plain)).reason).toContain(
-    'the ### state heading'
+    "the banner's ### state heading"
   )
+  // A Snoozing banner closing a Status, at the owner's `mark, status only`, passes as any other state does.
+  const snoozingStatus = [
+    '**💤 Snoozing (on hold) · Status at 21:10 GMT · last mark 21:10 GMT**',
+    '## Status',
+    art,
+    '### 💤 Snoozing (on hold) · at 21:10 GMT',
+    '💤 waiting for a message · 🅿️ 2 queries parked',
+    roadmap,
+    pkg,
+    '- [parked] 2 queries in `discussions.md`',
+    '👂 listening',
+    thread
+  ].join('\n\n')
+  expect(run(stop(snoozingStatus, coordinated('mark, status only')))).toEqual(silent)
+  expect(run(stop(snoozingStatus, coordinated('status')))).toEqual(silent)
+  // A heading written before SNOOZE-HEADING, with `since`, passes too.
+  expect(run(stop(snoozing.replace('· at 21:10 GMT', '· since 21:10 GMT'), plain))).toEqual(silent)
 })
 
 test('a reply that opens a banner but leaves it unfinished is held back', () => {
   expect(run(stop(`Launched the run.\n\n${heading}\n\n${counts}`, plain)).reason).toStartWith("This reply's banner lacks the 🧵 <work-id> thread line, last, ")
-  expect(run(stop(`Launched the run.\n\n${thread}`, plain)).reason).toContain('the ### state heading')
+  expect(run(stop(`Launched the run.\n\n${thread}`, plain)).reason).toContain("the banner's ### state heading")
 })
 
 test("an owner's mark or state word in a coordinating session needs the banner", () => {
-  for (const word of ['mark', 'Mark.', 'mark only', 'mark, status only', 'pause', 'done for now', 'with me', 'status', 'summary since 14:00']) {
+  for (const word of ['mark', 'Mark.', 'mark only', 'mark, status only', 'pause', 'done for now', 'snooze', 'with me', 'status', 'summary since 14:00']) {
     const outcome = run(stop('Mark struck at 21:10.', coordinated(word)))
-    expect(outcome.reason).toStartWith("This reply's banner lacks the ### state heading of the banner, ")
+    expect(outcome.reason).toStartWith("This reply's banner lacks the banner's ### state heading and the 🧵 <work-id> thread line, last, ")
   }
   const command = '<command-name>/ki-coordination</command-name>\n<command-args>drain</command-args>'
-  expect(run(stop('Draining.', coordinated(command))).reason).toContain('the counts line')
+  expect(run(stop('Draining.', coordinated(command))).reason).toContain('the 🧵 <work-id> thread line')
   expect(run(stop(`Mark struck.\n\n${shortBanner}`, coordinated('mark')))).toEqual(silent)
   // A subdirectory of the coordinating checkout counts.
-  expect(run(stop('Mark noted.', coordinated('mark'), join(coordinating, '+', '_WORK'))).reason).toContain('the ### state heading')
+  expect(run(stop('Mark noted.', coordinated('mark'), join(coordinating, '+', '_WORK'))).reason).toContain('the banner')
 })
 
 test('the same words are quiet in a conversational session, an ordinary checkout or a launched agent', () => {
@@ -273,14 +317,19 @@ test('a launched agent never checks, under either signal', () => {
   expect(run(bare, { CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS: '0' })).toEqual(silent)
 })
 
-test('a session already continuing from a Stop hook is never held back again', () => {
-  expect(run(stop(summaryBody, plain, coordinating, { stop_hook_active: true }))).toEqual(silent)
-  expect(run(stop('Mark struck.', coordinated('mark'), coordinating, { stop_hook_active: true }))).toEqual(silent)
+test('a session already continuing from a Stop hook is never held back again, only warned', () => {
+  const outcome = run(stop(summaryBody, plain, coordinating, { stop_hook_active: true }))
+  expect(outcome.reason).toBeUndefined()
+  expect(outcome.warning).toStartWith(
+    "Footer check: this Summary's footer has a footer without the banner's ### state heading and the 🧵 <work-id> thread line, last, and no Knowledge Islands art"
+  )
+  expect(run(stop('Mark struck.', coordinated('mark'), coordinating, { stop_hook_active: true })).warning).toContain("a footer without the banner's")
+  expect(run(stop(fullSummary, plain, coordinating, { stop_hook_active: true }))).toEqual(silent)
 })
 
 test('without the reply text the hook reads the last reply from the transcript', () => {
   const path = transcript([{ owner: 'summary', reply: summary(art, heading, counts, items, thread) }])
-  expect(run(stop(undefined, path)).reason).toContain('the 🗺️ roadmap line and the 📦 package line')
+  expect(run(stop(undefined, path)).warning).toContain('no 🗺️ roadmap line and no 📦 package line')
   expect(run(stop(undefined, transcript([{ owner: 'summary', reply: fullSummary }])))).toEqual(silent)
   expect(run(stop(undefined, join(root, 'gone.jsonl')))).toEqual(silent)
   expect(run(stop('', plain))).toEqual(silent)
@@ -307,5 +356,6 @@ test('a missing jq fails open', () => {
 
 test('the system Bash runs the same checks', () => {
   expect(run(stop(fullSummary, plain), {}, '/bin/bash')).toEqual(silent)
-  expect(run(stop('Mark struck.', coordinated('mark')), {}, '/bin/bash').reason).toContain('the counts line')
+  expect(run(stop('Mark struck.', coordinated('mark')), {}, '/bin/bash').reason).toContain('the 🧵 <work-id> thread line')
+  expect(run(stop(summary(heading, counts, roadmap, pkg, items, thread), plain), {}, '/bin/bash').warning).toContain('no Knowledge Islands art')
 })

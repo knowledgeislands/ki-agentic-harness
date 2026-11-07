@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-# Stop: hold a coordinating reply back until it carries the footer ki-coordination
-# sets. A Summary or a Status needs the long form: the art, then the banner with its roadmap
-# and package lines; a re-bootstrap or hold report, a reply that already opens a
-# banner, and a reply to an owner's mark or state word need the short form: the
-# banner's state heading, its counts line (none when Finished) and the thread
-# line, last.
+# Stop: hold a coordinating reply back only when its footer has lost its structure,
+# and warn on anything else unusual. A Summary or a Status, a re-bootstrap or hold
+# report, a reply that already opens a banner, and a reply to an owner's mark or
+# state word must close with a banner: a ### state heading and the 🧵 <work-id>
+# thread line, last. An unrecognised state heading, a missing or odd counts line,
+# and in a Summary or Status missing art, roadmap or package line pass with a
+# warning, so the owner can confirm the form was intended.
 # Quiet for conversational replies and launched agents; never blocks twice in a
-# row; fails open on unusable input.
+# row, only warning then; fails open on unusable input.
 set -u
 
 [ -z "${KI_AGENT_RUN:-}" ] || exit 0
@@ -18,15 +19,13 @@ input=$(cat 2>/dev/null) || exit 0
 
 fields=$(printf '%s' "$input" | jq -r '
   select(type == "object" and .hook_event_name == "Stop")
-  | [(if (.stop_hook_active // false) == false then "false" else "true" end),
+  | [(.stop_hook_active // false | if . == false then "false" elif . == true then "true" else error end),
      (.cwd | strings // ""),
      (.transcript_path | strings // "")]
   | join("\u001f")' 2>/dev/null) || exit 0
 [ -n "$fields" ] || exit 0
 # A non-whitespace separator keeps an empty field in its place.
 IFS=$'\x1f' read -r active cwd transcript <<<"$fields"
-# The session is already continuing because of a Stop hook: never loop.
-[ "$active" = false ] || exit 0
 [ -n "$cwd" ] || cwd=$PWD
 [ -f "$transcript" ] || transcript=
 
@@ -78,7 +77,7 @@ if [ -z "$form" ]; then
   prompt=${prompt% no art}
   case "$prompt" in
     mark | 'mark only' | 'mark, status only' | 'mark status only' | summary | 'summary since '* | recap | 'recap and mark' | 'full summary' | 'summary in full' | status | \
-      pause | 'done for now' | drain | hold | resume | finish | send | receive | 'with me' | ack | 'got it' | seen) ;;
+      pause | 'done for now' | snooze | drain | hold | resume | finish | send | receive | 'with me' | ack | 'got it' | seen) ;;
     *) exit 0 ;;
   esac
   recent | LC_ALL=C grep -F '"type":"assistant"' | LC_ALL=C grep -Eq '(\\n|")🧵 [A-Za-z0-9][A-Za-z0-9._-]*(\\n|")' || exit 0
@@ -98,7 +97,14 @@ if [ "$form" = summary ]; then
   [ ! -d "$top/docs/roadmap" ] || roadmap=1
 fi
 
-missing=$(printf '%s\n' "$reply" | awk -v long="$([ "$form" = summary ] && echo 1 || echo 0)" -v art="$art" -v roadmap="$roadmap" '
+# Two lists, separated by a unit separator: the structural parts whose loss holds the
+# reply back, then the unusual parts that only warn.
+found=$(printf '%s\n' "$reply" | LC_ALL=C awk -v long="$([ "$form" = summary ] && echo 1 || echo 0)" -v art="$art" -v roadmap="$roadmap" '
+  function join(list, n,   i, out) {
+    out = ""
+    for (i = 1; i <= n; i++) out = out (i > 1 ? (i == n ? " and " : ", ") : "") list[i]
+    return out
+  }
   { sub(/\r$/, "") }
   # The art sits in a fence of its own; nothing else in a fence counts.
   index($0, "KNOWLEDGE  ISLANDS") { art_at = NR }
@@ -107,27 +113,47 @@ missing=$(printf '%s\n' "$reply" | awk -v long="$([ "$form" = summary ] && echo 
   fence { last = NR; next }
   {
     last = NR
-    if ($0 ~ /^### .*(With worker|Handoff to|With supervisor|On hold|Snoozing|Finished)/) { heading = NR; finished = index($0, "Finished") > 0; counts_seen = 0; counts = 0; road = 0; pack = 0; next }
-    if (heading && !counts_seen) { counts_seen = 1; if ($0 !~ /^(- \[|🧵|🗺|📦|👂|🔇|↪)/) counts = 1 }
+    # A state heading opens with its glyph or names a state; a query or finding heading opens with its tag.
+    state = $0 ~ /^### .*(With worker|Handoff to|With supervisor|On hold|Snoozing|Finished)/
+    if (state || $0 ~ /^### [^ -~]/) { heading = NR; known = state; finished = index($0, "Finished") > 0; counts_seen = 0; counts = 0; odd = 0; road = 0; pack = 0; next }
+    if (heading && !counts_seen) {
+      counts_seen = 1
+      if ($0 !~ /^(- \[|🧵|🗺|📦|👂|🔇|↪)/) { counts = 1; odd = $0 !~ /^(🤖|👤|⛔|🅿|⏸|💤|📥|🎯|⏳)/ }
+    }
     if (heading && $0 ~ /^🗺/ && index($0, "roadmap")) road = 1
     if (heading && $0 ~ /^📦/ && index($0, "package")) pack = 1
     if ($0 ~ /^🧵 [^ ]+ *$/) thread = NR
   }
   END {
-    n = 0
-    if (long && art && (!art_at || (heading && art_at > heading))) parts[++n] = "the Knowledge Islands art above the banner"
-    if (!heading) parts[++n] = "the ### state heading of the banner"
-    if (!finished && !counts) parts[++n] = "the counts line beneath the state heading"
-    if (long && roadmap && !road) parts[++n] = "the 🗺️ roadmap line"
-    if (long && !pack) parts[++n] = "the 📦 package line"
-    if (!thread) parts[++n] = "the 🧵 <work-id> thread line, last"
-    else if (thread != last) parts[++n] = "the 🧵 thread line as the very last line"
-    for (i = 1; i <= n; i++) printf "%s%s", (i > 1 ? (i == n ? " and " : ", ") : ""), parts[i]
+    b = 0; w = 0
+    if (!heading) block[++b] = "the banner\047s ### state heading"
+    if (!thread) block[++b] = "the 🧵 <work-id> thread line, last"
+    else if (thread != last) block[++b] = "the 🧵 thread line as the very last line"
+    if (heading && !known) warn[++w] = "a state heading the table of states does not name"
+    if (heading && !finished && !counts) warn[++w] = "no counts line beneath the state heading"
+    if (heading && counts && odd) warn[++w] = "a counts line opening with none of the counts glyphs"
+    if (long && art && (!art_at || (heading && art_at > heading))) warn[++w] = "no Knowledge Islands art above the banner"
+    if (long && roadmap && !road) warn[++w] = "no 🗺️ roadmap line"
+    if (long && !pack) warn[++w] = "no 📦 package line"
+    printf "%s\037%s\n", join(block, b), join(warn, w)
   }')
-[ -n "$missing" ] || exit 0
+IFS=$'\x1f' read -r missing unusual <<<"$found"
+# Already continuing because of a Stop hook: warn, never block again.
+if [ "$active" = true ] && [ -n "$missing" ]; then
+  unusual="a footer without $missing${unusual:+, and }$unusual"
+  missing=
+fi
+[ -n "$missing$unusual" ] || exit 0
 
-if [ "$form" = summary ]; then what="This Summary's footer lacks"; else what="This reply's banner lacks"; fi
-jq -cn --arg reason "$what $missing, under ki-coordination's Banner section. Give the reply again in full with them, since the last text is what the owner reads." \
-  '{decision: "block", reason: $reason}' 2>/dev/null || exit 0
+if [ "$form" = summary ]; then what="Summary's footer"; else what="reply's banner"; fi
+if [ -n "$missing" ]; then
+  note=
+  [ -z "$unusual" ] || note=" It also has $unusual; keep that only where the owner asked for it."
+  jq -cn --arg reason "This $what lacks $missing, under ki-coordination's Banner section. Give the reply again in full with them, since the last text is what the owner reads.$note" \
+    '{decision: "block", reason: $reason}' 2>/dev/null || exit 0
+else
+  jq -cn --arg message "Footer check: this $what has $unusual. It was let through; confirm it was intended, since ki-coordination's Banner section sets the usual form." \
+    '{systemMessage: $message}' 2>/dev/null || exit 0
+fi
 
 exit 0
