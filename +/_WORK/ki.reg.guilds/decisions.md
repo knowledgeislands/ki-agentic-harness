@@ -468,3 +468,7 @@ Kris, about 04:59 GMT: "Okay, I'm out of here now. It's over to you. I'm just ch
 - Wake and stop: a run finishing or a message wakes the coordinator; "stop the wake" or Kris's return ends the window.
 - Keep-awake: `caffeinate -dims -w 69227` on sol for this session, released when the window ends.
 - Revisions at entry: ki-agentic-harness origin/main `c55a28e0`, local main `c55a28e0`; ki-principal origin/main `eedb6959`, local main `eedb6959`.
+
+## 2026-11-07 05:14 GMT · d12-skill received; inbox
+
+`ki-dodecakrisis` landed in `skills/acquire/` (`6ee91697`, diagrams `d2b461e4`): three standards (D12, mailbox, learning), sources, a 13-criterion rubric, one deletable migration file; 1,605 tests and `tsc` pass; audits clean apart from the usual KI-SHAPE-21 warning. The four owner messages it drafted (D12 card and sorting-engine line for inbox-terra, `ki-muninn d12 sweep` and `learn`, mcp-gsuite and mcp-m365 protected lists) are held for Kris's return under the AWAY-WINDOW exclusion ("don't do anything else with it"), not sent. Queries PROTECTED-INTERIM and MAILBOX-CONFIG copied and sent to blind review. DOER-LESSONS-2 MSG-275b0e5b folded into the doer-lessons unit; HEALTH MSG-956d102f: listener re-armed at 05:14 GMT for 120 minutes; both ACKed.

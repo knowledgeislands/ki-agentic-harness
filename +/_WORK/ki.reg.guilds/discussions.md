@@ -2,6 +2,30 @@
 
 ## Open
 
+### PROTECTED-INTERIM - May D12 change a mailbox before the servers enforce the protected list
+
+**Context:** Under PROTECTED-HOME a) (Kris, 7 November 2026), each mail server holds and enforces the list of protected labels, and D12 reads the list from the server. Neither `mcp-gsuite` nor `mcp-m365` can do this yet. The new standard says D12 does not change a mailbox whose server does not report protection switched on. Until the servers are built, the migration file therefore stops SORT, SWEEP, LEARN and CONFORM from writing to any mailbox. Audits and dry runs continue. Work that inbox-terra's own approvals already cover, such as the Gmail legal move, is not run through the skill and is unaffected.
+
+**Query:** Should D12's writing modes stay switched off until the servers enforce the protected list?
+
+**Options:**
+
+a) (recommended, confidence medium - it matches "never changed or touched" and leaves no gap for a forgotten list, though it delays live sorting) Yes. D12 writes nothing to a mailbox until its server reports protection on.
+
+b) Allow writes in the meantime, but only with an approval that names the protected labels the run must leave alone, and check each target against them.
+
+### MAILBOX-CONFIG - Where a D12 mailbox's provider and server are declared
+
+**Context:** The skill reads its own `[skills.ki-dodecakrisis]` table, which gives each mailbox a provider, a server and a label root, following the design note. The Inbox already declares the same mailboxes for `ki-muninn` under `[muninn.mail.mailboxes]`, with provider and server. The house rule lets a skill check only its own table, so the two tables cannot be checked against each other, and the provider and server would be written twice.
+
+**Query:** Should the D12 table repeat each mailbox's provider and server?
+
+**Options:**
+
+a) (recommended, confidence medium - the skill's audit can check its own table, and this is the shape the design note proposed) Yes, keep provider, server and root in the D12 table, as built.
+
+b) The D12 table names only each mailbox and its root, and `ki-muninn`'s table stays the one place for provider and server.
+
 ### STAGING-HOME - Who owns the staging knowledge base's structure
 
 **Context:** KNOWLEDGE-AS-KB a (6 November) makes the Inbox's `knowledge/` a declared staging knowledge base, using zone aliases that `ki-repo-kb` already supports. A staging base differs from an ordinary one: its ids can change, and it mirrors the islands it will dispatch to.
