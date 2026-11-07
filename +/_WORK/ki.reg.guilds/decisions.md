@@ -339,3 +339,7 @@ Kris: "We don't need to use worktrees; we need to get work done." (opening words
 ## 2026-11-07 02:52 GMT · AGENTS-WORKTREE
 
 Kris: "Well, it seems like that information in agents.md is the problem, right?" Taken as: yes, and fix it at the source. Run `agents-worktree`, after `paperclip-drop` finishes (it also edits AGENTS.md), changes the harness AGENTS.md Git line so edits are made directly in the primary checkout, committed by explicit path, with worktrees only on an explicit ask; checks `ki-git`'s working-copy guidance for a worktree default and makes the primary checkout the default there; lists other repositories whose AGENTS.md carries the same line.
+
+## 2026-11-07 02:55 GMT · NO-WORKTREES is for now; AGENTS-WORKTREE withdrawn
+
+Kris: "It's not a no-worktrees forever, it's a no-worktrees for now, because we're trying to do so many changes." Taken as: NO-WORKTREES is a temporary suspension for the guild's runs while this wave of changes lands, not a rule change; AGENTS-WORKTREE is withdrawn and no AGENTS.md or `ki-git` text changes. The written source of the worktree default is `ki-git`'s GREEN-MAIN rule (Kris, 20 October: harness and tools-ki take every edit off the primary checkout in a linked worktree, fast-forwarded once tests and audit pass), echoed by the harness AGENTS.md. During the suspension the guild's editing runs go one at a time per repository in the primary checkout and commit only once gates pass; GREEN-MAIN resumes when Kris lifts the suspension.

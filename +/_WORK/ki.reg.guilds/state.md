@@ -23,7 +23,7 @@ listening_status: on
 
 ## Next steps
 
-- Queued: `agents-worktree` after `paperclip-drop` (AGENTS-WORKTREE).
+- NO-WORKTREES for now (Kris, 02:55 GMT): guild runs edit in the primary checkout, one per repository at a time, until Kris lifts it.
 
 0. IMPORTANT STAGE-C-ROLES (Kris, 02:30 GMT) first: `roles-design` running, then `roles-blind`, `roles-land`, seat glyphs and REFRESH; one owner report when landed.
 1. Running: `drift-fix` (harness, DRIFT-FIRST), `d12-kg-design` (read-only), `terra-orca` (terra, TERRA-ORCA).
