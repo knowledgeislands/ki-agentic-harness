@@ -2,6 +2,42 @@
 
 ## Open
 
+### MAKER-PROTOCOL - Make the night's seat-to-seat protocol a standard practice
+
+**Context:** On the night of 6 November, `ki.prj.agora` coordinated two makers working in their own sessions: Claude Design (architect) and ChatGPT Codex (illustrator). They wrote to each other through mailbox files. Both makers say a protocol made it work, agreed between the agents as CD-54:
+
+- each brief is marked "delegate; stay available"
+- one writer per direction
+- an ACK within 30 seconds, and escalation to Kris after 3 minutes without one
+- heartbeats only after 5 quiet minutes
+- the maker keeps its turn open with short polling loops, because it can only hear while its turn is open
+- explicit WINDOW-OPEN and WINDOW-CLOSED lines
+- a DESIGN or ART line for each finished set
+
+None of this is in the standards. Part of it conflicts with `ki-coordination` as written. A coordinator must never wait in the foreground, and a thread whose runtime cannot be woken counts as "not listening" rather than holding its turn open. Background runs, however, are allowed to wait in the foreground. Kris has not chosen these numbers, and Agora's own messaging may later replace file polling.
+
+**Query:** Should this protocol become a standard practice for makers working in another session, or stay local to `ki.prj.agora`?
+
+**Options:**
+
+a) (recommended, confidence medium - both makers reported it working, but Kris has not chosen the numbers and it bends a coordinator rule) Adopt it in `ki-coordination` as a "Makers in other sessions" practice. The timings above become the defaults. Holding a turn open is allowed for a maker seat only, never for a coordinator. A guilds run writes it and marks it to be revisited once Agora's messaging replaces file polling.
+
+b) Keep it as `ki.prj.agora`'s local protocol, recorded in that package's decisions log, and decide again when Agora's messaging lands.
+
+c) Adopt only the parts that do not conflict: the brief marker, the window lines and the finished-set line. The timings and holding the turn open stay with `ki.prj.agora`.
+
+### OUTBOUND-RECOVERY - Follow up messages left unacknowledged after an interruption
+
+**Context:** The illustrator noted that the next thing to settle is how to recover work after missing ACKs. On the night, one proposal got no reply in its 25-minute window, and three finished design sets went unacknowledged once the coordinator's session went quiet. Today, a line still waiting for an ACK only appears in the banner as `[awaiting ACK]`. No rule says when the sender follows it up.
+
+**Query:** Should a sender actively follow up a message that is still unacknowledged after an interruption?
+
+**Options:**
+
+a) (recommended, confidence medium - closes the gap seen on the night with a single resend before involving Kris) Add a `ki-work-package` rule to Messages lines: at bootstrap, re-anchoring and the return from an interruption, the sender reads its Outbound. For each line awaiting ACK whose receiver is not live, it re-sends once under the same id, and raises the line to Kris if it is still unacknowledged at the next bootstrap.
+
+b) Leave it as it is: the `[awaiting ACK]` banner items stay the only signal, and Kris or the coordinator follows up by judgement.
+
 ### IDLE-HEADING - Confirm how the idle hold's heading reads
 
 **Context:** HOLD-IDLE a), which Kris chose on 7 November, says the idle hold is "shown as `💤 On hold · idle`". That wording was written before the hold was renamed. On 6 November, Kris renamed the more-expected hold to Snoozing, with the heading `💤 Snoozing (on hold)`. To keep one heading per state, I landed the idle hold as `### 💤 Snoozing (on hold) · idle · at <time>`. Its counts line is the same as Snoozing's, `💤 waiting for a message`, rather than the design note's `💤 resting`.

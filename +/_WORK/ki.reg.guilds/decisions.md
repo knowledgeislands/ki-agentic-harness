@@ -484,3 +484,7 @@ HOLD-STATES with HOLD-TIDY landed in ki-coordination (`84b28fc6`) and ki-work-pa
 ## 2026-11-07 05:40 GMT · orca-land, refresh-method, kip-resolve and harness-resolve received
 
 The Orca adapter `ki-delegation-orca` landed on `main` with the fifteen ORCA-ADAPTER rules, RUN-RECOVERY, RUN-HANDOVER b) and TRIAL-PUBLISH (`940341c5`, diagrams `816b5426`, `643b73a2`); the `orca-adapter` branch is deleted. The method REFRESH went to all 15 live packages, one Outbound line each (ki-principal's four published by `kip-resolve` merge `4fb99406`); harness levelled by `harness-resolve`. PUSH-ORDER and KIP-DIVERGE settled by those runs. ki.sop.main is routing the Enactment as KI-PRINCIPAL-MOD-012. `doer-lessons` started.
+
+## 2026-11-07 05:47 GMT · doer-lessons received
+
+Four of tonight's lessons (CD-63, ILL-26) landed in `5a2030de`: ki-delegation Prompt shape (check rendered output, report doubts as open questions) and Coordination "Split, then join"; ki-work-package Messages lines (edit from a fresh pull and keep both sides; writer's own clock). The rest were covered already, belong to Rig or Agora, or went to queries MAKER-PROTOCOL and OUTBOUND-RECOVERY, copied and sent to blind review. ki.prj.agora to be told `5a2030de` for ILL-26's link.
