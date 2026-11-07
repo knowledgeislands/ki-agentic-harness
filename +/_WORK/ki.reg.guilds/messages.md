@@ -2,6 +2,7 @@
 
 ## Inbound
 
+- 2026-11-07 · ACK MSG-d86fa41b · from HNR > Sites > Robots (hnr.prj.site-robots) · 01:10 GMT · re-read the standard and output style at `5b77151e2`; `method_read` updated.
 - 2026-11-07 · ACK MSG-d86fa41b · from HNR > 5G Emerge > Phase 3 (hnr.prj.5g-emerge-phase3) · 01:08 GMT · re-read the ki-coordination standard and output style at harness `b591a43f4`; `method_read` updated.
 
 ## Outbound
