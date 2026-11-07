@@ -6,6 +6,23 @@ None.
 
 ## Outbound
 
+- 2026-11-07 · MSG-12d5cee1 HNR-TOOLROOT · to hnr.sop.main · 08:38 GMT · HNR renames `tooling/boundaries` to `tooling/depcruise` on four sites; the harness keeps SCR-5 from dropping the install line · awaiting ACK
+- 2026-11-07 · MSG-9ec432fc HNR-EMPTY-PROJECT · to hnr.sop.main · 08:38 GMT · hnr.prj.site-pt clears STREAM-10's empty-Project warning itself · awaiting ACK
+- 2026-11-07 · MSG-40956271 PERSONAL-KINDS · to personal.sop.main · 08:38 GMT · propose a kind for PERSONAL-PRINCIPAL-002, -004, -005 and -006 to Kris · awaiting ACK
+- 2026-11-07 · MSG-dfa0cc63 CLOSE-SPILL · to ki.prj.tools-burndown · 09:45 GMT · `ki agent close` moves a run's reports, as hnr.sop.main reported on 3 November; sent by run `absorb` · awaiting ACK
+- 2026-11-07 · MSG-b41e2c5d ORCA-REACH-VEGA · to ki.prj.agent-host · 08:20 GMT · for information under ORCA-REACH a), no release of its hold; sent by run `absorb` · awaiting ACK
+- 2026-11-07 · MSG-b591122a OBS-FEEDBACK-LINE · to ki.prj.observatory · 08:20 GMT · feedback travels as a message line, under FEEDBACK-AS-MESSAGE; sent by run `absorb` · awaiting ACK
+- 2026-11-07 · MSG-7f36e53d ANSWER-VECTOR · to ki.prj.observatory · 08:20 GMT · whether the answer slice writes the `messages.md` answer line; sent by run `absorb` · awaiting ACK
+- 2026-11-07 · MSG-254ed0ee DONE-PRUNE-OBSERVATORY · to ki.prj.observatory · 08:20 GMT · KI-OBSERVA-BRG-004 done and awaiting prune; sent by run `absorb` · awaiting ACK
+- 2026-11-07 · MSG-81d24dab SWEEP-NOTE-LINKS · to ki.prj.observatory · 08:20 GMT · pin the sweep note's links before the old folder goes; sent by run `absorb` · awaiting ACK
+- 2026-11-07 · MSG-303d3858 SWEEP-NOTE-LINKS · to ki.prj.mac-studio-setup · 08:20 GMT · KI-TOOL-RIG-CORE-070's sweep note links, for the tools-rig roadmap owner; sent by run `absorb` · awaiting ACK
+- 2026-11-07 · MSG-828c57e8 MGIT-CACHE-SCOPE · to ki.prj.tools-burndown · 08:20 GMT · the mgit cache, its concept first in plain language; sent by run `absorb` · awaiting ACK
+- 2026-11-07 · MSG-27b6b46d MGIT-CACHE-FAILED · to ki.prj.tools-burndown · 08:20 GMT · whether a failed checkout sweep goes into the cached set; sent by run `absorb` · awaiting ACK
+- 2026-11-07 · MSG-304ea1d7 SYNC-UNPUSHED-EXIT · to ki.prj.tools-burndown · 08:20 GMT · whether an unpushed branch leaves sync's exit status successful; sent by run `absorb` · awaiting ACK
+- 2026-11-07 · MSG-79acf5f4 REL-X64-TIMEOUT · to ki.prj.tools-burndown · 08:20 GMT · timeout-only repair delivered; release and pin stay deferred; sent by run `absorb` · awaiting ACK
+- 2026-11-07 · MSG-3dd4718d MD-STANDARD-REMAINDER · to ki.prj.tools-burndown · 08:20 GMT · writer, exclusion and staged-gate evidence accepted Done; the remainder; sent by run `absorb` · awaiting ACK
+- 2026-11-07 · MSG-2b8ce9d2 PERM-PROMPTS-SETTINGS · to ki.prj.chezmoi · 08:20 GMT · deferred by Kris on 25 October: chezmoi-managed permission settings; sent by run `absorb` · awaiting ACK
+- 2026-11-07 · MSG-0d9624f0 PROXY-SHAPER · to ki.prj.chezmoi · 08:20 GMT · deferred by Kris on 25 October: no proxy or chezmoi change; sent by run `absorb` · awaiting ACK
 - 2026-11-07 · MSG-92f3be1b BATCH-RETIRE · to ki.prj.tools-burndown · 06:50 GMT · BATCH-RETIRE a) landed in the harness: drop `ki-batch` from tools-ki's `minimumBootstrapUserSkills`, let `ki harness refresh` drop a retired capability the new harness no longer carries, remove the `ki batch` command and tools-ki's own `+/_BATCHES/`; the harness then deletes its retired `ki-batch` folder, under its adapter migration file
 - 2026-11-07 · MSG-6cbbef0b BATCH-RETIRE · to lgl.sop.main · 06:50 GMT · `ki-batch` is retired: disposition legal-principal's KIT-LEGAL-BATCH-001 and remove its `+/_BATCHES/` folder, and remove legal-agentic-harness's leftover `+/_BATCHES/README.md` folder
 - 2026-11-07 · MSG-1fb11bcd BATCH-RETIRE · to hnr.prj.5g-emerge-phase2 · 06:50 GMT · `ki-batch` is retired: disposition apps-io.5g-emerge.phase2's 5GE-P2-BATCH-003 and remove its `+/_BATCHES/` folder
