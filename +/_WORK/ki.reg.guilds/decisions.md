@@ -431,3 +431,7 @@ Kris: "New name + protections (recommended, high confidence)" and "Access first 
 ## 2026-11-07 04:41 GMT · TASK-LINKS-FIELD (interactive pass, query 12); radar-purge and STOA-SHAPE received
 
 Kris: "Keep it, test later (recommended, medium confidence)". `task_links` stays a general roadmap field; a triage record in the harness tests whether Linear or GitHub Issues linking will use it (captured with the next harness standards run). `radar-purge` removed the Paperclip change-log rows and remaining mentions outside `+/_WORK/`; its query PURGE-ROWS copied. ki.prj.stoa's STOA-SHAPE MSG-6adb77c9 received for REPO-SHAPE-PACKAGES and ACKed.
+
+## 2026-11-07 04:42 GMT · PURGE-ROWS settled under RADAR-HISTORY
+
+`radar-purge` (`2fa77be2`) deleted the two Paperclip-only change-log rows and removed only the Paperclip wording from three mixed rows (2026-09-26 Gas City, 2026-10-06 AHP 1.0, 2026-10-19 ACP), keeping that unrelated history. That carries out Kris's "Remove them too" in full, so PURGE-ROWS a) stands without a separate question. A radar refresh is due (subjects 19 days past review).

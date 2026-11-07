@@ -2,18 +2,6 @@
 
 ## Open
 
-### PURGE-ROWS - Three mixed history rows were edited rather than deleted
-
-**Context:** The brief said to remove every change-log row that names Paperclip. Three of those rows also hold the only record of other radar events: Gas City being added on 2026-09-26, AHP reaching version 1.0 on 2026-10-06, and ACP's stable schema changes on 2026-10-19. Deleting those rows would have lost that unrelated history. So I deleted only the two rows that were purely about Paperclip, and in the other three I removed just the Paperclip wording.
-
-**Query:** Should the edited rows stay as they are, or should those three rows be deleted completely?
-
-**Options:**
-
-a) (recommended, confidence medium - it fully removes Paperclip and keeps the unrelated AHP, ACP and Gas City history the radar still uses) Keep the edited rows as they are.
-
-b) Delete the three rows completely, losing their AHP, ACP and Gas City entries.
-
 ### ONE-LAUNCHER - should one launcher per package per host become a rule
 
 from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November, differs)
