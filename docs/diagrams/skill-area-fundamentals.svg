@@ -707,8 +707,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="148" y="132" class="t-frontend" font-size="7" text-anchor="middle">R– · CM · F2</text>
         </g>
 
-        <g id="node-ki-repo-dotfiles-chezmoi" data-node-id="ki-repo-dotfiles-chezmoi" data-node-label="ki-repo-dotfiles-chezmoi" tabindex="0" role="button" aria-label="Focus ki-repo-dotfiles-chezmoi, repository structure · opt-in, Repository types · Single-type repositories" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository structure · opt-in" data-node-tag="R8 · CM · F3" data-node-context="Repository types · Single-type repositories">
-          <title>ki-repo-dotfiles-chezmoi · repository structure · opt-in · Repository types · Single-type repositories · R8 · CM · F3</title>
+        <g id="node-ki-repo-dotfiles-chezmoi" data-node-id="ki-repo-dotfiles-chezmoi" data-node-label="ki-repo-dotfiles-chezmoi" tabindex="0" role="button" aria-label="Focus ki-repo-dotfiles-chezmoi, repository structure · opt-in, Repository types · Single-type repositories" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository structure · opt-in" data-node-tag="R9 · CM · F3" data-node-context="Repository types · Single-type repositories">
+          <title>ki-repo-dotfiles-chezmoi · repository structure · opt-in · Repository types · Single-type repositories · R9 · CM · F3</title>
           <rect x="364" y="64" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="364" y="64" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 3; --flow-node-name: archify-relay-node-2;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(370 70) scale(0.6875)">
@@ -717,7 +717,7 @@ rect.c-bg-rect { fill: var(--bg); }
           </g>
           <text data-node-label="" x="468" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo-dotfiles-chezmoi</text>
         <text x="468" y="116" class="t-muted" font-size="9" text-anchor="middle">repository structure · opt-in</text>
-        <text x="468" y="132" class="t-database" font-size="7" text-anchor="middle">R8 · CM · F3</text>
+        <text x="468" y="132" class="t-database" font-size="7" text-anchor="middle">R9 · CM · F3</text>
         </g>
 
         <g id="node-ki-authoring" data-node-id="ki-authoring" data-node-label="ki-authoring" tabindex="0" role="button" aria-label="Focus ki-authoring, governance · always on, Fundamentals · 7 skills › Repository and writing" aria-pressed="false" data-node-kind="security" data-node-sublabel="governance · always on" data-node-tag="R4 · CM · F9" data-node-context="Fundamentals · 7 skills › Repository and writing">

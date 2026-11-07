@@ -18,7 +18,7 @@ audience = "Skill authors and reviewers deciding where a new or changed skill si
 traced = ["skills/*/*/SKILL.md"]
 stale_when = "a skill joins or leaves the Fundamentals functional area, or one of its skills is moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from one of its skills changes"
 regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-fundamentals` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
-last_checked = "8a9f740965a43b84b8ac929416bf1aa61c91751e"
+last_checked = "ccbe690457da02b9d5ff7f6c07a94c4650b41ee5"
 commit_html = true
 
 [skill-area-records-and-code]
@@ -58,7 +58,7 @@ audience = "Skill authors and reviewers deciding where a new or changed skill si
 traced = ["skills/*/*/SKILL.md"]
 stale_when = "a skill joins or leaves the Repository types functional area, or one of its skills is moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from one of its skills changes"
 regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-repository-types` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
-last_checked = "8f4005240c3002a64af17add4bc8e878fd7e2ccd"
+last_checked = "ccbe690457da02b9d5ff7f6c07a94c4650b41ee5"
 commit_html = true
 
 [skill-area-agentic-systems]
@@ -78,7 +78,7 @@ audience = "Skill authors and reviewers deciding where a new or changed skill si
 traced = ["skills/*/*/SKILL.md"]
 stale_when = "a skill joins or leaves the Environment functional area, or one of its skills is moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from one of its skills changes"
 regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-environment` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
-last_checked = "8f4005240c3002a64af17add4bc8e878fd7e2ccd"
+last_checked = "ccbe690457da02b9d5ff7f6c07a94c4650b41ee5"
 commit_html = true
 
 [skill-area-acquire]
