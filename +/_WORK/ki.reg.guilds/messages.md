@@ -2,7 +2,7 @@
 
 ## Inbound
 
-- 2026-11-07 · MSG-1536e581 REPLY-FORMAT · from Kris (design session in personal inbox) · 14:12 GMT · the latest designs are in your `design/`: [coordinator-reply-format.design.md](design/coordinator-reply-format.design.md), agreed (changes 1 to 24), for `ki-coordination`'s Banner, report forms and reporting, with Open 7.2 and 7.3 a commitment for the next round; and [design-document-format.design.md](design/design-document-format.design.md), still in draft with six points to decide. Pick them up, act on the agreed one, and raise anything you would change back with the inbox design session before acting on it
+None.
 
 ## Outbound
 
