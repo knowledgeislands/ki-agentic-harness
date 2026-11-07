@@ -379,3 +379,7 @@ Kris, on the PAPERCLIP-ABSORB card: "We can purge everything to do with Papercli
 ## 2026-11-07 04:09 GMT · inbox at 04:09
 
 ki.sop.main ACKed KG-OWN-SKILL MSG-feae119e: KNOWLEDGE-PLAN phase 0 adopts the knowledge-graph skill rather than writing it into `ki-repo-kb`. ki.prj.chezmoi ACKed the five REFRESH and harvest lines (On hold, folded into the household works). DOER-LESSONS MSG-991aa6ad (ki.prj.agora) and HEADER-ESTATE MSG-8e93a86a (ki.sop.main for ki.prj.chezmoi) taken and queued in the harness behind `paperclip-purge`, one editing run at a time.
+
+## 2026-11-07 04:12 GMT · ABSORB-CLOSE (interactive pass, query 2)
+
+Kris: "Take all three (recommended, high confidence)". ABSORB-DROPS a): drop the 13 overtaken ways-of-working queries, each logged with its reason by the absorption run. CLOSE-WAIVER a): meet the strict close gate; a reconcile run records a home or class for every entry, then closes the group. Z-PUBLISHED a): delete the two Z reports with the folder at close-out, history untouched; Z-HISTORY stays open. All three ride with the queued absorption run.

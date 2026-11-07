@@ -28,42 +28,6 @@ a) (recommended, confidence medium - reviewed: the blind reviewer chose this; th
 
 b) Retire it from the roadmap standard and the `tools-ki` validator now.
 
-### ABSORB-DROPS - Drop the 13 overtaken ways-of-working queries
-
-**Context:** Of the 117 parked queries in ki.prj.ways-of-working, 13 no longer ask anything live. Seven are findings or duplicates in the folder being deleted (QUICK-FIXES, AGENDA-SHAPE, RECORD-2, FOLDER-1, COORD-7-REST, Z-FILES, Z-FILES-HOME). Two proposed their own closure and were reviewed at high confidence (PRINCIPAL-READOPT, PRINCIPAL-KIND-SIZE). SPLIT-COMMIT is history only. SWEEP-GATE guarded a rename sweep that has since run. PILOT-CONTRACT-LINE wanted checks added to a pilot that was answered on 1 November. PROTECTED-PUBLICATION protected a stack that has since been published, and is dropped only after one check. Every other query moves, merges, routes or is already settled, with no drop.
-
-**Query:** May the guild drop these 13 and keep the rest as planned?
-
-**Options:**
-
-a) (recommended, confidence high - each is overtaken by something checked directly in this run, and Git keeps the text) Yes: drop all 13, recording each with its reason in the guild's decisions log.
-
-b) Carry all 13 into the guild's Parked section too, and decide them later.
-
-### CLOSE-WAIVER - How to close the 92 finished runs
-
-**Context:** `ki agent close` retires the whole `ki-project-ways-of-working` run group, and passes only when every entry in the 1,313-line decisions log has a recorded home or class and the run folders are empty. 34 of those folders still hold files. The owner can waive the decisions check with `--reconciled`. On 1 November the recommended answer to CLOSE-GATE was to meet the gate rather than bypass it, and the standard says "keep the close gate strict with the reconciled waiver". About 85% of the entries can be recorded as struck or operational in bulk. The reviewer notes that only the decisions check can be waived; the 34 non-empty folders must be homed or emptied either way.
-
-**Query:** Should the absorption meet the close gate entry by entry, or should Kris waive it?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: the blind reviewer chose the same course; it keeps the gate strict as Kris settled, though recording about 300 entries is a long run) Meet it: a reconcile run records a home or class for every entry, then closes the group under the strict gate.
-
-b) Waive it: once the guild has moved the live entries, Kris authorises `--reconciled` for this group only.
-
-### Z-PUBLISHED - The two Z reports are already public
-
-**Context:** On 1 November, Z-FILES recommended keeping `reports/hold-request-20261030-z.md` and `reports/z-session-retirement-20261030.md` uncommitted until Kris said who the reports are for (PUBLIC-REPORT-AUDIENCE). Both were committed in ki-principal `7109c998` ("chore: baseline", 4 November) and are on `origin/main`, and ki-principal's `.ki.toml` declares it public. The retirement report describes private archives and recovery bundles by count; this run saw no secrets in it but did not judge its sensitivity. Rewriting published history needs a force-push, which no agent may do. The reviewer checked: no credentials, but the retirement report names a private archive path under `~/.local/state/ki/work-archives/` and lists archive and bundle file names. Waiting for an audience decision no longer protects anything, since they are already public; whether history needs rewriting is asked separately in Z-HISTORY.
-
-**Query:** What should happen to the two published Z reports?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: the blind reviewer chose the same course; it removes them from the current tree with the folder and touches no history, but nobody has judged how sensitive they are) Delete them with the folder at the close-out; Kris reads them once and says whether anything in history needs more than that.
-
-b) Remove them now in their own commit, ahead of the close-out, and leave history as it is.
-
 ### Z-HISTORY - Whether the published Z reports need a history rewrite
 
 **Context:** Deleting the two Z reports removes them from the current files, but they stay in ki-principal's public Git history from `7109c998` onwards. Removing them from history needs a force-push, which no agent may do and only you can authorise. The retirement report names a private archive path and lists archive and bundle file names, but no credentials. This part comes from the blind reviewer's reframing of Z-PUBLISHED.
