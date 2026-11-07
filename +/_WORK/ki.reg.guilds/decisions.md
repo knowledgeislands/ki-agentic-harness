@@ -375,3 +375,7 @@ Kris, in this thread: "I think the knowledge graph in itself is its own skill. I
 ## 2026-11-07 04:08 GMT · PAPERCLIP-PURGE (interactive pass, query 1)
 
 Kris, on the PAPERCLIP-ABSORB card: "We can purge everything to do with Paperclip because we will not be using it for now. I've got enough going on, and I'm really pleased with what I'm doing now with my whole knowledge islands and the Agora and stuff." Taken as: purge Paperclip from the estate. One bounded estate run removes the retired declaration from all 56 repositories, one commit each, then deletes both stub skills and their migration file in the harness; tools-ki's Paperclip code goes to ki.prj.tools-burndown to remove. This supersedes STUB-KEEP (stubs go once the declarations are gone, in the same sweep), settles DECL-SWEEP and TASK-LINKS-CODE; TASK-LINKS-FIELD stays open since Linear uses the field. Not touched without Kris's word: the local clone `~/workspaces/git/knowledge-islands/paperclip`. ABSORB-DROPS, CLOSE-WAIVER and Z-PUBLISHED were not answered and stay open as query 2.
+
+## 2026-11-07 04:09 GMT · inbox at 04:09
+
+ki.sop.main ACKed KG-OWN-SKILL MSG-feae119e: KNOWLEDGE-PLAN phase 0 adopts the knowledge-graph skill rather than writing it into `ki-repo-kb`. ki.prj.chezmoi ACKed the five REFRESH and harvest lines (On hold, folded into the household works). DOER-LESSONS MSG-991aa6ad (ki.prj.agora) and HEADER-ESTATE MSG-8e93a86a (ki.sop.main for ki.prj.chezmoi) taken and queued in the harness behind `paperclip-purge`, one editing run at a time.

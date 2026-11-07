@@ -39,6 +39,8 @@ workers:
 
 ## Held
 
+- DOER-LESSONS (ki.prj.agora MSG-991aa6ad, 04:03 GMT): Kris asked through Claude Design (CD-63) for tonight's doer-coordination lessons to become durable in the coordination skills; verbatim in `ki-principal/+/_WORK/ki.prj.agora/identity/claude-design/messages.md` (CD-63). Queued as harness run `doer-lessons` after `paperclip-purge`.
+- HEADER-ESTATE (ki.sop.main MSG-8e93a86a for ki.prj.chezmoi): Kris agreed every chezmoi script opens with a plain-English header comment and "we want to adopt the standard into the skill"; propose it in `ki-repo-dotfiles-chezmoi`, shape in personal-principal `ec08de88` `briefs/headers.md`. Queued after `doer-lessons`.
 - KG-CARDS (personal.reg.inbox-terra MSG-4479fedb, 02:40 GMT): 22 knowledge-graph cards in the inbox `+/_ACQUIRED/knowledge-graph/` for the `ki-knowledge-graph` skill; Kris suggests a keystone skill; `layered-graphs.md` adds shadow-node pruning. Feeds KG-NAME and GUILD-NAME.
 - ORCA-CODEX-WAKE (ki.sop.main, 02:33 GMT): the seventeenth Orca adapter query, parked in ki.prj.ways-of-working's `discussions.md`; comes with the absorption and joins the Orca set.
 - HOLD-TIDY: waits on TRANSFER-SOP-QUERIES, with HOLD-STATES.
