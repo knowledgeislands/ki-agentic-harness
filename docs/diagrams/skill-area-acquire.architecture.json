@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "37b7b3122dbe638e00716d5c0b34a988dd0a3d8f"
+      "revision": "6ee916974c811800e46e671ffa81910dce06bd29"
     },
     "legend": {
       "mode": "auto",
@@ -88,13 +88,34 @@
         208,
         76
       ]
+    },
+    {
+      "id": "ki-dodecakrisis",
+      "type": "database",
+      "label": "ki-dodecakrisis",
+      "sublabel": "acquire · opt-in",
+      "sources": [
+        {
+          "path": "skills/acquire/ki-dodecakrisis/SKILL.md"
+        }
+      ],
+      "tag": "R13 · CM · F6",
+      "pos": [
+        288,
+        64
+      ],
+      "size": [
+        208,
+        76
+      ]
     }
   ],
   "boundaries": [
     {
       "kind": "region",
-      "label": "Acquire · 3 skills",
+      "label": "Acquire · 4 skills",
       "wraps": [
+        "ki-dodecakrisis",
         "ki-acquire",
         "ki-acquire-chatgpt",
         "ki-acquire-granola"
@@ -131,7 +152,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "3 skills, 0 outside prerequisites, 0 outside dependents, 2 composition and 0 optional edges, read from SKILL.md frontmatter.",
+        "4 skills, 0 outside prerequisites, 0 outside dependents, 2 composition and 0 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }
