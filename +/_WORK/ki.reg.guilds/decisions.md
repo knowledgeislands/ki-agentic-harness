@@ -488,3 +488,7 @@ The Orca adapter `ki-delegation-orca` landed on `main` with the fifteen ORCA-ADA
 ## 2026-11-07 05:47 GMT · doer-lessons received
 
 Four of tonight's lessons (CD-63, ILL-26) landed in `5a2030de`: ki-delegation Prompt shape (check rendered output, report doubts as open questions) and Coordination "Split, then join"; ki-work-package Messages lines (edit from a fresh pull and keep both sides; writer's own clock). The rest were covered already, belong to Rig or Agora, or went to queries MAKER-PROTOCOL and OUTBOUND-RECOVERY, copied and sent to blind review. ki.prj.agora to be told `5a2030de` for ILL-26's link.
+
+## 2026-11-07 05:58 GMT · kg-skill received; lessons-blind tallied
+
+`ki-knowledge-graph` landed in `skills/acquire/` (`ae0a1944`, diagrams `bd18988b`): card format, one-at-a-time curation, tending, layered graphs with the shadow-node life cycle, dispatch by Git move; modes CURATE, TEND, DISPATCH; a 16-criterion rubric; one migration file noting ACQUIRE-SPLIT, STAGING-HOME and GUILD-NAME as open. No knowledge touched. Queries KEYSTONE and ATTACH-FORM copied and sent to blind review. Three PORT-1 runtime-wording failures in ki-delegation and ki-work-package block `ki repo conform`; run `port-fix` clears them. lessons-blind: OUTBOUND-RECOVERY agreed (high), MAKER-PROTOCOL disagreed (preferred c).

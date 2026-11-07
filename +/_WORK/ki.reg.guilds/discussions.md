@@ -2,9 +2,37 @@
 
 ## Open
 
+### KEYSTONE - Move `ki-knowledge-graph` to the keystone group
+
+**Context:** Kris suggested, in the note sent with the cards, that this become a keystone skill, under `skills/keystone/`. The keystone group holds `ki-repo`, `ki-bootstrap` and `ki-skills`, the skills the rest of the harness stands on. HARNESS-SCOPE a) on 7 November put the knowledge-graph skill in the acquire group, which is where it now sits. A move would change the skill's folder, its catalogue section, the functional-area table and two diagrams, and links to it would need updating. Its applicability would stay declaration-only, meaning a repository uses it only by declaring it.
+
+**Query:** Should the skill move to the keystone group?
+
+**Options:**
+
+a) (recommended, confidence low - only Kris knows whether he meant keystone as a load-bearing method or as a group, and this has had no blind review) Keep it in acquire for now and decide together with GUILD-NAME, since renaming that group may settle where the intake skills belong.
+
+b) Move it to keystone now, because the card format and layered graphs underlie every knowledge base and not just intake.
+
+c) Keep it in acquire for good, beside `ki-dodecakrisis` and `ki-acquire`, as one step of the intake path.
+
+### ATTACH-FORM - How a graph declares an attachment point and what a shadow node records
+
+**Context:** The layered-graphs card leaves two questions open: how a graph declares an attachment point (a front-matter flag, a register, or its index note), and exactly what a shadow node records about its subject. The standard says only that a graph declares its attachment points, and that a shadow records which card it shadows, where that card lives and when it was last checked. The Inbox's 22 new shadows already use one form: front-matter `shadow-of` with a path and an address, plus a `checked` date. Until this is settled, no mechanical check of shadows or attachment points can be written.
+
+**Query:** Should the standard adopt the Inbox's shadow form, and which way of declaring attachment points?
+
+**Options:**
+
+a) (recommended, confidence low - it matches what already exists, but Kris has not discussed either form) Adopt the Inbox's `shadow-of` path and address with a `checked` date for shadows, and a front-matter flag on each card for attachment points.
+
+b) Adopt the shadow form, and declare attachment points in a register in each graph's index note.
+
+c) Leave both open until more graphs are layered.
+
 ### MAKER-PROTOCOL - Make the night's seat-to-seat protocol a standard practice
 
-**Context:** On the night of 6 November, `ki.prj.agora` coordinated two makers working in their own sessions: Claude Design (architect) and ChatGPT Codex (illustrator). They wrote to each other through mailbox files. Both makers say a protocol made it work, agreed between the agents as CD-54:
+**Context:** On the night of 6 November, `ki.prj.agora` coordinated two makers working in their own sessions: Claude Design (architect) and ChatGPT Codex (illustrator). They wrote to each other through mailbox files. Both makers say a protocol made it work, agreed between the agents as CD-54: The blind reviewer disagreed and preferred c): the brief marker, the window lines and the finished-set line do not depend on how messages travel and fill a real gap for maker seats, while the timings rest on one night's evidence, are not your choice yet, and depend on file polling Agora may replace.
 
 - each brief is marked "delegate; stay available"
 - one writer per direction
@@ -34,7 +62,7 @@ c) Adopt only the parts that do not conflict: the brief marker, the window lines
 
 **Options:**
 
-a) (recommended, confidence medium - closes the gap seen on the night with a single resend before involving Kris) Add a `ki-work-package` rule to Messages lines: at bootstrap, re-anchoring and the return from an interruption, the sender reads its Outbound. For each line awaiting ACK whose receiver is not live, it re-sends once under the same id, and raises the line to Kris if it is still unacknowledged at the next bootstrap.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same course, adding that the follow-up first checks whether the line is still in the receiver's Inbound before re-sending; closes the gap seen on the night with a single resend before involving Kris) Add a `ki-work-package` rule to Messages lines: at bootstrap, re-anchoring and the return from an interruption, the sender reads its Outbound. For each line awaiting ACK whose receiver is not live, it re-sends once under the same id, and raises the line to Kris if it is still unacknowledged at the next bootstrap.
 
 b) Leave it as it is: the `[awaiting ACK]` banner items stay the only signal, and Kris or the coordinator follows up by judgement.
 
