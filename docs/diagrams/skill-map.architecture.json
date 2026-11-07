@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "940341c56fb8ee94c902f53a9ca80bd8dfd01eb1"
+      "revision": "ae0a19442bb99d93011ca51363dbb64dec3126a9"
     },
     "legend": {
       "mode": "auto",
@@ -1208,6 +1208,25 @@
       ]
     },
     {
+      "id": "ki-knowledge-graph",
+      "type": "database",
+      "label": "ki-knowledge-graph",
+      "sublabel": "acquire · opt-in",
+      "sources": [
+        {
+          "path": "skills/acquire/ki-knowledge-graph/SKILL.md"
+        }
+      ],
+      "pos": [
+        920,
+        2004
+      ],
+      "size": [
+        200,
+        60
+      ]
+    },
+    {
       "id": "ki-pulse",
       "type": "frontend",
       "label": "ki-pulse",
@@ -1567,7 +1586,8 @@
         "ki-acquire",
         "ki-acquire-chatgpt",
         "ki-acquire-granola",
-        "ki-dodecakrisis"
+        "ki-dodecakrisis",
+        "ki-knowledge-graph"
       ],
       "pad": 10
     },
@@ -1581,12 +1601,13 @@
     },
     {
       "kind": "region",
-      "label": "Acquire · 5 skills",
+      "label": "Acquire · 6 skills",
       "wraps": [
         "ki-acquire",
         "ki-acquire-chatgpt",
         "ki-acquire-granola",
         "ki-dodecakrisis",
+        "ki-knowledge-graph",
         "ki-pulse"
       ],
       "pad": 24
@@ -1617,7 +1638,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "65 skills in 8 concerns and 10 functional areas: 2 always on, 19 automatic, 32 opt-in, 12 commands.",
+        "66 skills in 8 concerns and 10 functional areas: 2 always on, 19 automatic, 33 opt-in, 12 commands.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills owns the kind and applicability fields it reads."
       ]
     }

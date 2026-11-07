@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "6ee916974c811800e46e671ffa81910dce06bd29"
+      "revision": "ae0a19442bb99d93011ca51363dbb64dec3126a9"
     },
     "legend": {
       "mode": "auto",
@@ -108,17 +108,38 @@
         208,
         76
       ]
+    },
+    {
+      "id": "ki-knowledge-graph",
+      "type": "database",
+      "label": "ki-knowledge-graph",
+      "sublabel": "acquire · opt-in",
+      "sources": [
+        {
+          "path": "skills/acquire/ki-knowledge-graph/SKILL.md"
+        }
+      ],
+      "tag": "R16 · CM · F4",
+      "pos": [
+        544,
+        64
+      ],
+      "size": [
+        208,
+        76
+      ]
     }
   ],
   "boundaries": [
     {
       "kind": "region",
-      "label": "Acquire · 4 skills",
+      "label": "Acquire · 5 skills",
       "wraps": [
         "ki-dodecakrisis",
         "ki-acquire",
         "ki-acquire-chatgpt",
-        "ki-acquire-granola"
+        "ki-acquire-granola",
+        "ki-knowledge-graph"
       ],
       "pad": 32
     }
@@ -152,7 +173,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "4 skills, 0 outside prerequisites, 0 outside dependents, 2 composition and 0 optional edges, read from SKILL.md frontmatter.",
+        "5 skills, 0 outside prerequisites, 0 outside dependents, 2 composition and 0 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }
