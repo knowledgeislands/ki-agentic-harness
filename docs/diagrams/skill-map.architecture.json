@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "a24e05270da551dedb03b5724edd7b44eefe99b0"
+      "revision": "80fde15b648d3a93ab4a0a16c46e4c0dcab05a1a"
     },
     "legend": {
       "mode": "auto",
@@ -885,6 +885,25 @@
       ]
     },
     {
+      "id": "ki-repo-packages",
+      "type": "database",
+      "label": "ki-repo-packages",
+      "sublabel": "repo types · opt-in",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-packages/SKILL.md"
+        }
+      ],
+      "pos": [
+        1128,
+        1748
+      ],
+      "size": [
+        200,
+        60
+      ]
+    },
+    {
       "id": "ki-subagents",
       "type": "backend",
       "label": "ki-subagents",
@@ -1514,13 +1533,14 @@
         "ki-repo-mcp",
         "ki-repo-specifications",
         "ki-repo-tools",
-        "ki-repo-dotfiles-chezmoi"
+        "ki-repo-dotfiles-chezmoi",
+        "ki-repo-packages"
       ],
       "pad": 10
     },
     {
       "kind": "region",
-      "label": "Repo Structure · 16 skills",
+      "label": "Repo Structure · 17 skills",
       "wraps": [
         "ki-repo-harness",
         "ki-repo-website",
@@ -1537,7 +1557,8 @@
         "ki-repo-mcp",
         "ki-repo-specifications",
         "ki-repo-tools",
-        "ki-repo-dotfiles-chezmoi"
+        "ki-repo-dotfiles-chezmoi",
+        "ki-repo-packages"
       ],
       "pad": 24
     },
@@ -1659,7 +1680,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "67 skills in 8 concerns and 10 functional areas: 2 always on, 19 automatic, 34 opt-in, 12 commands.",
+        "68 skills in 8 concerns and 10 functional areas: 2 always on, 19 automatic, 35 opt-in, 12 commands.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills owns the kind and applicability fields it reads."
       ]
     }

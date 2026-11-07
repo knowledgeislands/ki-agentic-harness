@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "5be78035afa02e30b557a20f5a95cc67011c0753"
+      "revision": "80fde15b648d3a93ab4a0a16c46e4c0dcab05a1a"
     },
     "legend": {
       "mode": "auto",
@@ -222,6 +222,26 @@
       "tag": "R14 · CL · F12",
       "pos": [
         588,
+        1200
+      ],
+      "size": [
+        208,
+        76
+      ]
+    },
+    {
+      "id": "ki-repo-packages",
+      "type": "database",
+      "label": "ki-repo-packages",
+      "sublabel": "repository structure · opt-in",
+      "sources": [
+        {
+          "path": "skills/repo-structure/ki-repo-packages/SKILL.md"
+        }
+      ],
+      "tag": "R9 · CM · F4",
+      "pos": [
+        588,
         1076
       ],
       "size": [
@@ -382,7 +402,7 @@
       "tag": "R2 · CM · F3",
       "pos": [
         44,
-        1280
+        1404
       ],
       "size": [
         208,
@@ -402,7 +422,7 @@
       "tag": "R37 · CL · F9",
       "pos": [
         364,
-        1280
+        1404
       ],
       "size": [
         208,
@@ -422,7 +442,7 @@
       "tag": "R63 · CL · F4",
       "pos": [
         684,
-        1280
+        1404
       ],
       "size": [
         208,
@@ -442,7 +462,7 @@
       "tag": "R4 · CM · F9",
       "pos": [
         1004,
-        1280
+        1404
       ],
       "size": [
         208,
@@ -530,6 +550,7 @@
         "ki-repo-mcp",
         "ki-repo-harness",
         "ki-repo-tools",
+        "ki-repo-packages",
         "ki-repo-homebrew-tap",
         "ki-repo-dotfiles-chezmoi"
       ],
@@ -537,7 +558,7 @@
     },
     {
       "kind": "region",
-      "label": "Repository types · 16 skills",
+      "label": "Repository types · 17 skills",
       "wraps": [
         "ki-repo-website",
         "ki-repo-website-content",
@@ -553,6 +574,7 @@
         "ki-repo-mcp",
         "ki-repo-harness",
         "ki-repo-tools",
+        "ki-repo-packages",
         "ki-repo-homebrew-tap",
         "ki-repo-dotfiles-chezmoi"
       ],
@@ -648,7 +670,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "16 skills, 4 outside prerequisites, 1 outside dependent, 11 composition and 1 optional edges, read from SKILL.md frontmatter.",
+        "17 skills, 4 outside prerequisites, 1 outside dependent, 11 composition and 1 optional edges, read from SKILL.md frontmatter.",
         "Home in another area: ki-repo-harness; only edges within this area are drawn for them here, and their home area's diagram draws the rest.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]

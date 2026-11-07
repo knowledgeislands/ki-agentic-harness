@@ -508,7 +508,7 @@ rect.c-bg-rect { fill: var(--bg); }
 
         <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="19" data-composition-frame-label="Repository types · Single-type repositories" x="702" y="1640" width="636" height="188" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="20" data-composition-frame-label="Repo Structure · 16 skills" x="688" y="894" width="664" height="934" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="20" data-composition-frame-label="Repo Structure · 17 skills" x="688" y="894" width="664" height="934" rx="12" class="c-region" stroke-width="1"/>
 
         <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="21" data-composition-frame-label="Agentic Systems · 4 skills" x="8" y="1112" width="664" height="188" rx="12" class="c-region" stroke-width="1"/>
 
@@ -892,8 +892,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="548" y="1008" class="t-muted" font-size="9" text-anchor="middle">work · command</text>
         </g>
 
-        <g id="node-ki-repo-harness" data-node-id="ki-repo-harness" data-node-label="ki-repo-harness" tabindex="0" role="button" aria-label="Focus ki-repo-harness, fundamentals + repo types · opt-in, Repo Structure · 16 skills › Fundamentals · Skills and harness" aria-pressed="false" data-node-kind="database" data-node-sublabel="fundamentals + repo types · opt-in" data-node-context="Repo Structure · 16 skills › Fundamentals · Skills and harness">
-          <title>ki-repo-harness · fundamentals + repo types · opt-in · Repo Structure · 16 skills › Fundamentals · Skills and harness</title>
+        <g id="node-ki-repo-harness" data-node-id="ki-repo-harness" data-node-label="ki-repo-harness" tabindex="0" role="button" aria-label="Focus ki-repo-harness, fundamentals + repo types · opt-in, Repo Structure · 17 skills › Fundamentals · Skills and harness" aria-pressed="false" data-node-kind="database" data-node-sublabel="fundamentals + repo types · opt-in" data-node-context="Repo Structure · 17 skills › Fundamentals · Skills and harness">
+          <title>ki-repo-harness · fundamentals + repo types · opt-in · Repo Structure · 17 skills › Fundamentals · Skills and harness</title>
           <rect x="712" y="936" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="712" y="936" width="200" height="60" rx="8" class="c-database" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(718 942) scale(0.6875)">
@@ -904,8 +904,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="812" y="980" class="t-muted" font-size="9" text-anchor="middle">fundamentals + repo types · opt-in</text>
         </g>
 
-        <g id="node-ki-repo-website" data-node-id="ki-repo-website" data-node-label="ki-repo-website" tabindex="0" role="button" aria-label="Focus ki-repo-website, repo types · automatic, Repo Structure · 16 skills › Repository types · Websites" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 16 skills › Repository types · Websites">
-          <title>ki-repo-website · repo types · automatic · Repo Structure · 16 skills › Repository types · Websites</title>
+        <g id="node-ki-repo-website" data-node-id="ki-repo-website" data-node-label="ki-repo-website" tabindex="0" role="button" aria-label="Focus ki-repo-website, repo types · automatic, Repo Structure · 17 skills › Repository types · Websites" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 17 skills › Repository types · Websites">
+          <title>ki-repo-website · repo types · automatic · Repo Structure · 17 skills › Repository types · Websites</title>
           <rect x="712" y="1076" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="712" y="1076" width="200" height="60" rx="8" class="c-backend" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(718 1082) scale(0.6875)">
@@ -915,8 +915,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="812" y="1120" class="t-muted" font-size="9" text-anchor="middle">repo types · automatic</text>
         </g>
 
-        <g id="node-ki-repo-website-app" data-node-id="ki-repo-website-app" data-node-label="ki-repo-website-app" tabindex="0" role="button" aria-label="Focus ki-repo-website-app, repo types · automatic, Repo Structure · 16 skills › Repository types · Websites" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 16 skills › Repository types · Websites">
-          <title>ki-repo-website-app · repo types · automatic · Repo Structure · 16 skills › Repository types · Websites</title>
+        <g id="node-ki-repo-website-app" data-node-id="ki-repo-website-app" data-node-label="ki-repo-website-app" tabindex="0" role="button" aria-label="Focus ki-repo-website-app, repo types · automatic, Repo Structure · 17 skills › Repository types · Websites" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 17 skills › Repository types · Websites">
+          <title>ki-repo-website-app · repo types · automatic · Repo Structure · 17 skills › Repository types · Websites</title>
           <rect x="920" y="1076" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="920" y="1076" width="200" height="60" rx="8" class="c-backend" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(926 1082) scale(0.6875)">
@@ -926,8 +926,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="1020" y="1120" class="t-muted" font-size="9" text-anchor="middle">repo types · automatic</text>
         </g>
 
-        <g id="node-ki-repo-website-cloudflare" data-node-id="ki-repo-website-cloudflare" data-node-label="ki-repo-website-cloudflare" tabindex="0" role="button" aria-label="Focus ki-repo-website-cloudflare, repo types · automatic, Repo Structure · 16 skills › Repository types · Websites" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 16 skills › Repository types · Websites">
-          <title>ki-repo-website-cloudflare · repo types · automatic · Repo Structure · 16 skills › Repository types · Websites</title>
+        <g id="node-ki-repo-website-cloudflare" data-node-id="ki-repo-website-cloudflare" data-node-label="ki-repo-website-cloudflare" tabindex="0" role="button" aria-label="Focus ki-repo-website-cloudflare, repo types · automatic, Repo Structure · 17 skills › Repository types · Websites" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 17 skills › Repository types · Websites">
+          <title>ki-repo-website-cloudflare · repo types · automatic · Repo Structure · 17 skills › Repository types · Websites</title>
           <rect x="1128" y="1076" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="1128" y="1076" width="200" height="60" rx="8" class="c-backend" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1134 1082) scale(0.6875)">
@@ -937,8 +937,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="1228" y="1120" class="t-muted" font-size="9" text-anchor="middle">repo types · automatic</text>
         </g>
 
-        <g id="node-ki-repo-website-content" data-node-id="ki-repo-website-content" data-node-label="ki-repo-website-content" tabindex="0" role="button" aria-label="Focus ki-repo-website-content, repo types · automatic, Repo Structure · 16 skills › Repository types · Websites" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 16 skills › Repository types · Websites">
-          <title>ki-repo-website-content · repo types · automatic · Repo Structure · 16 skills › Repository types · Websites</title>
+        <g id="node-ki-repo-website-content" data-node-id="ki-repo-website-content" data-node-label="ki-repo-website-content" tabindex="0" role="button" aria-label="Focus ki-repo-website-content, repo types · automatic, Repo Structure · 17 skills › Repository types · Websites" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 17 skills › Repository types · Websites">
+          <title>ki-repo-website-content · repo types · automatic · Repo Structure · 17 skills › Repository types · Websites</title>
           <rect x="712" y="1160" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="712" y="1160" width="200" height="60" rx="8" class="c-backend" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(718 1166) scale(0.6875)">
@@ -948,8 +948,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="812" y="1204" class="t-muted" font-size="9" text-anchor="middle">repo types · automatic</text>
         </g>
 
-        <g id="node-ki-repo-kb" data-node-id="ki-repo-kb" data-node-label="ki-repo-kb" tabindex="0" role="button" aria-label="Focus ki-repo-kb, repo types · automatic, Repo Structure · 16 skills › Repository types · Knowledge bases" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 16 skills › Repository types · Knowledge bases">
-          <title>ki-repo-kb · repo types · automatic · Repo Structure · 16 skills › Repository types · Knowledge bases</title>
+        <g id="node-ki-repo-kb" data-node-id="ki-repo-kb" data-node-label="ki-repo-kb" tabindex="0" role="button" aria-label="Focus ki-repo-kb, repo types · automatic, Repo Structure · 17 skills › Repository types · Knowledge bases" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 17 skills › Repository types · Knowledge bases">
+          <title>ki-repo-kb · repo types · automatic · Repo Structure · 17 skills › Repository types · Knowledge bases</title>
           <rect x="712" y="1300" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="712" y="1300" width="200" height="60" rx="8" class="c-backend" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(718 1306) scale(0.6875)">
@@ -959,8 +959,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="812" y="1344" class="t-muted" font-size="9" text-anchor="middle">repo types · automatic</text>
         </g>
 
-        <g id="node-ki-repo-kb-streams" data-node-id="ki-repo-kb-streams" data-node-label="ki-repo-kb-streams" tabindex="0" role="button" aria-label="Focus ki-repo-kb-streams, repo types · automatic, Repo Structure · 16 skills › Repository types · Knowledge bases" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 16 skills › Repository types · Knowledge bases">
-          <title>ki-repo-kb-streams · repo types · automatic · Repo Structure · 16 skills › Repository types · Knowledge bases</title>
+        <g id="node-ki-repo-kb-streams" data-node-id="ki-repo-kb-streams" data-node-label="ki-repo-kb-streams" tabindex="0" role="button" aria-label="Focus ki-repo-kb-streams, repo types · automatic, Repo Structure · 17 skills › Repository types · Knowledge bases" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 17 skills › Repository types · Knowledge bases">
+          <title>ki-repo-kb-streams · repo types · automatic · Repo Structure · 17 skills › Repository types · Knowledge bases</title>
           <rect x="920" y="1300" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="920" y="1300" width="200" height="60" rx="8" class="c-backend" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(926 1306) scale(0.6875)">
@@ -970,8 +970,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="1020" y="1344" class="t-muted" font-size="9" text-anchor="middle">repo types · automatic</text>
         </g>
 
-        <g id="node-ki-repo-kb-activities" data-node-id="ki-repo-kb-activities" data-node-label="ki-repo-kb-activities" tabindex="0" role="button" aria-label="Focus ki-repo-kb-activities, repo types · opt-in, Repo Structure · 16 skills › Repository types · Knowledge bases" aria-pressed="false" data-node-kind="database" data-node-sublabel="repo types · opt-in" data-node-context="Repo Structure · 16 skills › Repository types · Knowledge bases">
-          <title>ki-repo-kb-activities · repo types · opt-in · Repo Structure · 16 skills › Repository types · Knowledge bases</title>
+        <g id="node-ki-repo-kb-activities" data-node-id="ki-repo-kb-activities" data-node-label="ki-repo-kb-activities" tabindex="0" role="button" aria-label="Focus ki-repo-kb-activities, repo types · opt-in, Repo Structure · 17 skills › Repository types · Knowledge bases" aria-pressed="false" data-node-kind="database" data-node-sublabel="repo types · opt-in" data-node-context="Repo Structure · 17 skills › Repository types · Knowledge bases">
+          <title>ki-repo-kb-activities · repo types · opt-in · Repo Structure · 17 skills › Repository types · Knowledge bases</title>
           <rect x="1128" y="1300" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="1128" y="1300" width="200" height="60" rx="8" class="c-database" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(1134 1306) scale(0.6875)">
@@ -982,8 +982,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="1228" y="1344" class="t-muted" font-size="9" text-anchor="middle">repo types · opt-in</text>
         </g>
 
-        <g id="node-ki-repo-kb-live-artifacts" data-node-id="ki-repo-kb-live-artifacts" data-node-label="ki-repo-kb-live-artifacts" tabindex="0" role="button" aria-label="Focus ki-repo-kb-live-artifacts, repo types · opt-in, Repo Structure · 16 skills › Repository types · Knowledge bases" aria-pressed="false" data-node-kind="database" data-node-sublabel="repo types · opt-in" data-node-context="Repo Structure · 16 skills › Repository types · Knowledge bases">
-          <title>ki-repo-kb-live-artifacts · repo types · opt-in · Repo Structure · 16 skills › Repository types · Knowledge bases</title>
+        <g id="node-ki-repo-kb-live-artifacts" data-node-id="ki-repo-kb-live-artifacts" data-node-label="ki-repo-kb-live-artifacts" tabindex="0" role="button" aria-label="Focus ki-repo-kb-live-artifacts, repo types · opt-in, Repo Structure · 17 skills › Repository types · Knowledge bases" aria-pressed="false" data-node-kind="database" data-node-sublabel="repo types · opt-in" data-node-context="Repo Structure · 17 skills › Repository types · Knowledge bases">
+          <title>ki-repo-kb-live-artifacts · repo types · opt-in · Repo Structure · 17 skills › Repository types · Knowledge bases</title>
           <rect x="712" y="1384" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="712" y="1384" width="200" height="60" rx="8" class="c-database" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(718 1390) scale(0.6875)">
@@ -994,8 +994,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="812" y="1428" class="t-muted" font-size="9" text-anchor="middle">repo types · opt-in</text>
         </g>
 
-        <g id="node-ki-repo-kb-principal" data-node-id="ki-repo-kb-principal" data-node-label="ki-repo-kb-principal" tabindex="0" role="button" aria-label="Focus ki-repo-kb-principal, repo types · opt-in, Repo Structure · 16 skills › Repository types · Knowledge bases" aria-pressed="false" data-node-kind="database" data-node-sublabel="repo types · opt-in" data-node-context="Repo Structure · 16 skills › Repository types · Knowledge bases">
-          <title>ki-repo-kb-principal · repo types · opt-in · Repo Structure · 16 skills › Repository types · Knowledge bases</title>
+        <g id="node-ki-repo-kb-principal" data-node-id="ki-repo-kb-principal" data-node-label="ki-repo-kb-principal" tabindex="0" role="button" aria-label="Focus ki-repo-kb-principal, repo types · opt-in, Repo Structure · 17 skills › Repository types · Knowledge bases" aria-pressed="false" data-node-kind="database" data-node-sublabel="repo types · opt-in" data-node-context="Repo Structure · 17 skills › Repository types · Knowledge bases">
+          <title>ki-repo-kb-principal · repo types · opt-in · Repo Structure · 17 skills › Repository types · Knowledge bases</title>
           <rect x="920" y="1384" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="920" y="1384" width="200" height="60" rx="8" class="c-database" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(926 1390) scale(0.6875)">
@@ -1006,8 +1006,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="1020" y="1428" class="t-muted" font-size="9" text-anchor="middle">repo types · opt-in</text>
         </g>
 
-        <g id="node-ki-repo-project" data-node-id="ki-repo-project" data-node-label="ki-repo-project" tabindex="0" role="button" aria-label="Focus ki-repo-project, repo types · opt-in, Repo Structure · 16 skills › Repository types · Projects" aria-pressed="false" data-node-kind="database" data-node-sublabel="repo types · opt-in" data-node-context="Repo Structure · 16 skills › Repository types · Projects">
-          <title>ki-repo-project · repo types · opt-in · Repo Structure · 16 skills › Repository types · Projects</title>
+        <g id="node-ki-repo-project" data-node-id="ki-repo-project" data-node-label="ki-repo-project" tabindex="0" role="button" aria-label="Focus ki-repo-project, repo types · opt-in, Repo Structure · 17 skills › Repository types · Projects" aria-pressed="false" data-node-kind="database" data-node-sublabel="repo types · opt-in" data-node-context="Repo Structure · 17 skills › Repository types · Projects">
+          <title>ki-repo-project · repo types · opt-in · Repo Structure · 17 skills › Repository types · Projects</title>
           <rect x="712" y="1524" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="712" y="1524" width="200" height="60" rx="8" class="c-database" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(718 1530) scale(0.6875)">
@@ -1018,8 +1018,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="812" y="1568" class="t-muted" font-size="9" text-anchor="middle">repo types · opt-in</text>
         </g>
 
-        <g id="node-ki-repo-homebrew-tap" data-node-id="ki-repo-homebrew-tap" data-node-label="ki-repo-homebrew-tap" tabindex="0" role="button" aria-label="Focus ki-repo-homebrew-tap, repo types · automatic, Repo Structure · 16 skills › Repository types · Single-type repositories" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 16 skills › Repository types · Single-type repositories">
-          <title>ki-repo-homebrew-tap · repo types · automatic · Repo Structure · 16 skills › Repository types · Single-type repositories</title>
+        <g id="node-ki-repo-homebrew-tap" data-node-id="ki-repo-homebrew-tap" data-node-label="ki-repo-homebrew-tap" tabindex="0" role="button" aria-label="Focus ki-repo-homebrew-tap, repo types · automatic, Repo Structure · 17 skills › Repository types · Single-type repositories" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 17 skills › Repository types · Single-type repositories">
+          <title>ki-repo-homebrew-tap · repo types · automatic · Repo Structure · 17 skills › Repository types · Single-type repositories</title>
           <rect x="712" y="1664" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="712" y="1664" width="200" height="60" rx="8" class="c-backend" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(718 1670) scale(0.6875)">
@@ -1029,8 +1029,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="812" y="1708" class="t-muted" font-size="9" text-anchor="middle">repo types · automatic</text>
         </g>
 
-        <g id="node-ki-repo-mcp" data-node-id="ki-repo-mcp" data-node-label="ki-repo-mcp" tabindex="0" role="button" aria-label="Focus ki-repo-mcp, repo types · automatic, Repo Structure · 16 skills › Repository types · Single-type repositories" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 16 skills › Repository types · Single-type repositories">
-          <title>ki-repo-mcp · repo types · automatic · Repo Structure · 16 skills › Repository types · Single-type repositories</title>
+        <g id="node-ki-repo-mcp" data-node-id="ki-repo-mcp" data-node-label="ki-repo-mcp" tabindex="0" role="button" aria-label="Focus ki-repo-mcp, repo types · automatic, Repo Structure · 17 skills › Repository types · Single-type repositories" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 17 skills › Repository types · Single-type repositories">
+          <title>ki-repo-mcp · repo types · automatic · Repo Structure · 17 skills › Repository types · Single-type repositories</title>
           <rect x="920" y="1664" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="920" y="1664" width="200" height="60" rx="8" class="c-backend" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(926 1670) scale(0.6875)">
@@ -1040,8 +1040,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="1020" y="1708" class="t-muted" font-size="9" text-anchor="middle">repo types · automatic</text>
         </g>
 
-        <g id="node-ki-repo-specifications" data-node-id="ki-repo-specifications" data-node-label="ki-repo-specifications" tabindex="0" role="button" aria-label="Focus ki-repo-specifications, repo types · automatic, Repo Structure · 16 skills › Repository types · Single-type repositories" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 16 skills › Repository types · Single-type repositories">
-          <title>ki-repo-specifications · repo types · automatic · Repo Structure · 16 skills › Repository types · Single-type repositories</title>
+        <g id="node-ki-repo-specifications" data-node-id="ki-repo-specifications" data-node-label="ki-repo-specifications" tabindex="0" role="button" aria-label="Focus ki-repo-specifications, repo types · automatic, Repo Structure · 17 skills › Repository types · Single-type repositories" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 17 skills › Repository types · Single-type repositories">
+          <title>ki-repo-specifications · repo types · automatic · Repo Structure · 17 skills › Repository types · Single-type repositories</title>
           <rect x="1128" y="1664" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="1128" y="1664" width="200" height="60" rx="8" class="c-backend" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(1134 1670) scale(0.6875)">
@@ -1051,8 +1051,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="1228" y="1708" class="t-muted" font-size="9" text-anchor="middle">repo types · automatic</text>
         </g>
 
-        <g id="node-ki-repo-tools" data-node-id="ki-repo-tools" data-node-label="ki-repo-tools" tabindex="0" role="button" aria-label="Focus ki-repo-tools, repo types · automatic, Repo Structure · 16 skills › Repository types · Single-type repositories" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 16 skills › Repository types · Single-type repositories">
-          <title>ki-repo-tools · repo types · automatic · Repo Structure · 16 skills › Repository types · Single-type repositories</title>
+        <g id="node-ki-repo-tools" data-node-id="ki-repo-tools" data-node-label="ki-repo-tools" tabindex="0" role="button" aria-label="Focus ki-repo-tools, repo types · automatic, Repo Structure · 17 skills › Repository types · Single-type repositories" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repo types · automatic" data-node-context="Repo Structure · 17 skills › Repository types · Single-type repositories">
+          <title>ki-repo-tools · repo types · automatic · Repo Structure · 17 skills › Repository types · Single-type repositories</title>
           <rect x="712" y="1748" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="712" y="1748" width="200" height="60" rx="8" class="c-backend" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(718 1754) scale(0.6875)">
@@ -1062,8 +1062,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="812" y="1792" class="t-muted" font-size="9" text-anchor="middle">repo types · automatic</text>
         </g>
 
-        <g id="node-ki-repo-dotfiles-chezmoi" data-node-id="ki-repo-dotfiles-chezmoi" data-node-label="ki-repo-dotfiles-chezmoi" tabindex="0" role="button" aria-label="Focus ki-repo-dotfiles-chezmoi, repo types · opt-in, Repo Structure · 16 skills › Repository types · Single-type repositories" aria-pressed="false" data-node-kind="database" data-node-sublabel="repo types · opt-in" data-node-context="Repo Structure · 16 skills › Repository types · Single-type repositories">
-          <title>ki-repo-dotfiles-chezmoi · repo types · opt-in · Repo Structure · 16 skills › Repository types · Single-type repositories</title>
+        <g id="node-ki-repo-dotfiles-chezmoi" data-node-id="ki-repo-dotfiles-chezmoi" data-node-label="ki-repo-dotfiles-chezmoi" tabindex="0" role="button" aria-label="Focus ki-repo-dotfiles-chezmoi, repo types · opt-in, Repo Structure · 17 skills › Repository types · Single-type repositories" aria-pressed="false" data-node-kind="database" data-node-sublabel="repo types · opt-in" data-node-context="Repo Structure · 17 skills › Repository types · Single-type repositories">
+          <title>ki-repo-dotfiles-chezmoi · repo types · opt-in · Repo Structure · 17 skills › Repository types · Single-type repositories</title>
           <rect x="920" y="1748" width="200" height="60" rx="8" class="c-mask"/>
           <rect x="920" y="1748" width="200" height="60" rx="8" class="c-database" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(926 1754) scale(0.6875)">
@@ -1072,6 +1072,18 @@ rect.c-bg-rect { fill: var(--bg); }
           </g>
           <text data-node-label="" x="1020" y="1776" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo-dotfiles-chezmoi</text>
         <text x="1020" y="1792" class="t-muted" font-size="9" text-anchor="middle">repo types · opt-in</text>
+        </g>
+
+        <g id="node-ki-repo-packages" data-node-id="ki-repo-packages" data-node-label="ki-repo-packages" tabindex="0" role="button" aria-label="Focus ki-repo-packages, repo types · opt-in, Repo Structure · 17 skills › Repository types · Single-type repositories" aria-pressed="false" data-node-kind="database" data-node-sublabel="repo types · opt-in" data-node-context="Repo Structure · 17 skills › Repository types · Single-type repositories">
+          <title>ki-repo-packages · repo types · opt-in · Repo Structure · 17 skills › Repository types · Single-type repositories</title>
+          <rect x="1128" y="1748" width="200" height="60" rx="8" class="c-mask"/>
+          <rect x="1128" y="1748" width="200" height="60" rx="8" class="c-database" data-animate="node" style="--step: 12;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(1134 1754) scale(0.6875)">
+            <ellipse cx="8" cy="4" rx="5" ry="2"/>
+            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
+          </g>
+          <text data-node-label="" x="1228" y="1776" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo-packages</text>
+        <text x="1228" y="1792" class="t-muted" font-size="9" text-anchor="middle">repo types · opt-in</text>
         </g>
 
         <g id="node-ki-subagents" data-node-id="ki-subagents" data-node-label="ki-subagents" tabindex="0" role="button" aria-label="Focus ki-subagents, agentic · automatic, Agentic Systems · 4 skills" aria-pressed="false" data-node-kind="backend" data-node-sublabel="agentic · automatic" data-node-context="Agentic Systems · 4 skills">
@@ -1445,9 +1457,9 @@ rect.c-bg-rect { fill: var(--bg); }
           <text data-boundary-label="" x="710" y="1657" class="t-cloud" font-size="9" font-weight="600">Repository types · Single-type repositories</text>
         </g>
 
-        <g data-graph-role="structural-frame-label" data-composition-frame-id="20" data-composition-frame-kind="region" data-composition-frame-label="Repo Structure · 16 skills">
+        <g data-graph-role="structural-frame-label" data-composition-frame-id="20" data-composition-frame-kind="region" data-composition-frame-label="Repo Structure · 17 skills">
           <rect data-graph-role="structural-frame-label-mask" x="692" y="898" width="150.4" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="696" y="911" class="t-cloud" font-size="9" font-weight="600">Repo Structure · 16 skills</text>
+          <text data-boundary-label="" x="696" y="911" class="t-cloud" font-size="9" font-weight="600">Repo Structure · 17 skills</text>
         </g>
 
         <g data-graph-role="structural-frame-label" data-composition-frame-id="21" data-composition-frame-kind="region" data-composition-frame-label="Agentic Systems · 4 skills">
