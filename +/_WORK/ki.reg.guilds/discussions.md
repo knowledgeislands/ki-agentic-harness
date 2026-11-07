@@ -16,27 +16,41 @@ b) Delete both stubs now and accept that audits fail in the 55 repositories unti
 
 ### DECL-SWEEP - How the 55 repositories drop the retired declaration
 
-**Context:** Each of the 55 repositories listed under Done needs to remove one `[skills.ki-delegation-paperclip]` or `[skills.ki-agent-coordination-paperclip]` table from its `.ki.toml`. Until it does, its audit carries one warning. Each repository owns its own `.ki.toml`, and this run had no authority to edit any of them.
+**Context:** Each of 56 repositories (the blind reviewer counted 56, not 55) needs to remove one `[skills.ki-delegation-paperclip]` or `[skills.ki-agent-coordination-paperclip]` table from its `.ki.toml`. Until it does, its audit carries one warning. Each repository owns its own `.ki.toml`, and this run had no authority to edit any of them.
 
 **Query:** Should the declarations be removed by one estate-wide run, or left to each repository's own owner?
 
 **Options:**
 
-a) (recommended, confidence medium - one bounded run is quick and mechanical, but it writes in other repositories, so each territory has to agree to it) Ask State of play to route a single bounded estate run that removes the declaration in each repository, one commit per repository, under each territory's agreement.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same course; one bounded run is quick and mechanical, but it writes in other repositories, so each territory has to agree to it) Ask State of play to route a single bounded estate run that removes the declaration in each repository, one commit per repository, under each territory's agreement.
 
 b) Send each territory a message and let its owners remove the declaration at their own pace.
 
-### TASK-LINKS - Whether to retire the `task_links` roadmap field
+c) Fold the removal into each territory's next routine `ki repo` conform pass, which would need the stub's conform step changed to remove the declaration (the reviewer's suggested extra option).
 
-**Context:** `task_links` is an optional roadmap-record field that links a record to tasks in another system. Paperclip was its only user. I kept it, described in general terms, because the `tools-ki` validator still checks it. No repository now uses it for anything.
+### TASK-LINKS-CODE - Retire the Paperclip code left in `tools-ki`
 
-**Query:** Should `task_links` be retired from the roadmap standard and from `tools-ki`?
+**Context:** `tools-ki` still carries Paperclip-specific code, including a `paperclip` provider in its roadmap task-link display. Paperclip is retired, and nothing uses that code. The blind reviewer split the original TASK-LINKS question into this part and TASK-LINKS-FIELD.
+
+**Query:** Should the Paperclip code in `tools-ki` be retired?
 
 **Options:**
 
-a) (recommended, confidence medium - nothing uses the field now, but GitHub or Linear adapters might want it later) Capture a triage record in `ki-agentic-harness` and in `tools-ki` to retire the field, together with the Paperclip code left in `tools-ki`.
+a) (recommended, confidence high - reviewed: the blind reviewer judged this part clearly right; the code has no user) Yes: send ki.prj.tools-burndown a line to capture and remove it.
 
-b) Keep `task_links` as a general field for future task systems, and retire only the Paperclip code in `tools-ki`.
+b) Leave it until someone next works in that area.
+
+### TASK-LINKS-FIELD - Whether to retire the `task_links` roadmap field
+
+**Context:** `task_links` is an optional roadmap-record field that links a record to tasks in another system. Paperclip was its main user. `tools-ki` already shows a `linear` provider beside `paperclip`, and Linear is a supported work adapter, so the field has a plausible use beyond Paperclip. The blind reviewer disagreed with retiring it and preferred keeping it as a general field, with its own triage record to test whether Linear or GitHub Issues linking will use it.
+
+**Query:** Should the `task_links` field itself be retired?
+
+**Options:**
+
+a) (recommended, confidence medium - reviewed: the blind reviewer chose this; the field is provider-neutral and Linear already appears in the code) Keep it as a general field, and capture a triage record in the harness to test whether Linear or GitHub Issues linking will use it.
+
+b) Retire it from the roadmap standard and the `tools-ki` validator now.
 
 ### ABSORB-DROPS - Drop the 13 overtaken ways-of-working queries
 
@@ -52,29 +66,39 @@ b) Carry all 13 into the guild's Parked section too, and decide them later.
 
 ### CLOSE-WAIVER - How to close the 92 finished runs
 
-**Context:** `ki agent close` retires the whole `ki-project-ways-of-working` run group, and passes only when every entry in the 1,313-line decisions log has a recorded home or class and the run folders are empty. 34 of those folders still hold files. The owner can waive the decisions check with `--reconciled`. On 1 November the recommended answer to CLOSE-GATE was to meet the gate rather than bypass it, and the standard says "keep the close gate strict with the reconciled waiver". About 85% of the entries can be recorded as struck or operational in bulk.
+**Context:** `ki agent close` retires the whole `ki-project-ways-of-working` run group, and passes only when every entry in the 1,313-line decisions log has a recorded home or class and the run folders are empty. 34 of those folders still hold files. The owner can waive the decisions check with `--reconciled`. On 1 November the recommended answer to CLOSE-GATE was to meet the gate rather than bypass it, and the standard says "keep the close gate strict with the reconciled waiver". About 85% of the entries can be recorded as struck or operational in bulk. The reviewer notes that only the decisions check can be waived; the 34 non-empty folders must be homed or emptied either way.
 
 **Query:** Should the absorption meet the close gate entry by entry, or should Kris waive it?
 
 **Options:**
 
-a) (recommended, confidence medium - not blind-reviewed; it keeps the gate strict as Kris settled, though recording about 300 entries is a long run) Meet it: a reconcile run records a home or class for every entry, then closes the group under the strict gate.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same course; it keeps the gate strict as Kris settled, though recording about 300 entries is a long run) Meet it: a reconcile run records a home or class for every entry, then closes the group under the strict gate.
 
 b) Waive it: once the guild has moved the live entries, Kris authorises `--reconciled` for this group only.
 
 ### Z-PUBLISHED - The two Z reports are already public
 
-**Context:** On 1 November, Z-FILES recommended keeping `reports/hold-request-20261030-z.md` and `reports/z-session-retirement-20261030.md` uncommitted until Kris said who the reports are for (PUBLIC-REPORT-AUDIENCE). Both were committed in ki-principal `7109c998` ("chore: baseline", 4 November) and are on `origin/main`, and ki-principal's `.ki.toml` declares it public. The retirement report describes private archives and recovery bundles by count; this run saw no secrets in it but did not judge its sensitivity. Rewriting published history needs a force-push, which no agent may do.
+**Context:** On 1 November, Z-FILES recommended keeping `reports/hold-request-20261030-z.md` and `reports/z-session-retirement-20261030.md` uncommitted until Kris said who the reports are for (PUBLIC-REPORT-AUDIENCE). Both were committed in ki-principal `7109c998` ("chore: baseline", 4 November) and are on `origin/main`, and ki-principal's `.ki.toml` declares it public. The retirement report describes private archives and recovery bundles by count; this run saw no secrets in it but did not judge its sensitivity. Rewriting published history needs a force-push, which no agent may do. The reviewer checked: no credentials, but the retirement report names a private archive path under `~/.local/state/ki/work-archives/` and lists archive and bundle file names. Waiting for an audience decision no longer protects anything, since they are already public; whether history needs rewriting is asked separately in Z-HISTORY.
 
 **Query:** What should happen to the two published Z reports?
 
 **Options:**
 
-a) (recommended, confidence medium - not blind-reviewed; it removes them from the current tree with the folder and touches no history, but nobody has judged how sensitive they are) Delete them with the folder at the close-out; Kris reads them once and says whether anything in history needs more than that.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same course; it removes them from the current tree with the folder and touches no history, but nobody has judged how sensitive they are) Delete them with the folder at the close-out; Kris reads them once and says whether anything in history needs more than that.
 
 b) Remove them now in their own commit, ahead of the close-out, and leave history as it is.
 
-c) Leave them where they are until Kris has named the audience for public reports.
+### Z-HISTORY - Whether the published Z reports need a history rewrite
+
+**Context:** Deleting the two Z reports removes them from the current files, but they stay in ki-principal's public Git history from `7109c998` onwards. Removing them from history needs a force-push, which no agent may do and only you can authorise. The retirement report names a private archive path and lists archive and bundle file names, but no credentials. This part comes from the blind reviewer's reframing of Z-PUBLISHED.
+
+**Query:** Will you read the two reports and decide whether history needs rewriting?
+
+**Options:**
+
+a) (recommended, confidence medium - reviewed: the blind reviewer judged your read the step that matters; the content looks low-risk, but only you can judge it) Yes: you read them once; if nothing in them is sensitive, history stays as it is.
+
+b) Rewrite ki-principal's history to remove them now, which you would do yourself with a force-push.
 
 ### HOLD-STATES - take all seven as recommended, with HOLD-TIDY, landed in one run
 
