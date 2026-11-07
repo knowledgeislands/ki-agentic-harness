@@ -23,6 +23,8 @@ listening_status: on
 
 ## Next steps
 
+- Queued: `agents-worktree` after `paperclip-drop` (AGENTS-WORKTREE).
+
 0. IMPORTANT STAGE-C-ROLES (Kris, 02:30 GMT) first: `roles-design` running, then `roles-blind`, `roles-land`, seat glyphs and REFRESH; one owner report when landed.
 1. Running: `drift-fix` (harness, DRIFT-FIRST), `d12-kg-design` (read-only), `terra-orca` (terra, TERRA-ORCA).
 2. Then, chained in the harness after STAGE-C-ROLES: `paperclip-drop` (PAPERCLIP-DROP), `cm-tidy` (CHANGE-MGMT cluster), then the staged standard split (STAGING), then the absorption of ki.prj.ways-of-working once ki.sop.main acknowledges MSG-a5ca3edb.

@@ -335,3 +335,7 @@ Kris: "Why do we still have 4 sub worktrees for this repo? I want rid of those n
 ## 2026-11-07 02:48 GMT · NO-WORKTREES
 
 Kris: "We don't need to use worktrees; we need to get work done." (opening words heard as "Using some worktrees for now", read as "stop using worktrees for now"). Taken as: from now on the guild's runs work directly in the primary checkout, one editing run per repository at a time, committing by explicit path and pushing fast-forward only; briefs no longer say "work in your own worktree", and `--worktree` is not used. The cause of the two current run worktrees was the guild's own briefs for `paperclip-drop` and `roles-land`, which told them to work in a worktree, as this repository's AGENTS.md also directs; this decision overrides that for the guild's runs. `roles-land` and `paperclip-drop` finish in their worktrees, which go when they finish. `wt-drafts` removed the `ki-e2e` and `orca-adapter` draft worktrees, branches kept.
+
+## 2026-11-07 02:52 GMT · AGENTS-WORKTREE
+
+Kris: "Well, it seems like that information in agents.md is the problem, right?" Taken as: yes, and fix it at the source. Run `agents-worktree`, after `paperclip-drop` finishes (it also edits AGENTS.md), changes the harness AGENTS.md Git line so edits are made directly in the primary checkout, committed by explicit path, with worktrees only on an explicit ask; checks `ki-git`'s working-copy guidance for a worktree default and makes the primary checkout the default there; lists other repositories whose AGENTS.md carries the same line.
