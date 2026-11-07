@@ -317,3 +317,9 @@ Kris: "So can you tell me what your focus is right now so I can just keep an eye
 ## 2026-11-07 02:39 GMT · roles-design received
 
 Design kept as `roles/roles.design.md`: twelve glyphs, catalogue text, `workers` fields, the `🔑` thread line, live seats and the tools-ki line. Thirteen queries copied; the ten medium ones with STALE-ROWS go to blind review `roles-blind`, and the D12, knowledge-graph and unreviewed Orca mediums to `skills-blind`.
+
+## 2026-11-07 02:46 GMT · ROLE-DETAILS answered in part
+
+Kris, on the card. WORKERS-URI: "Drop it (recommended, high confidence)". MULTI-ROLE: "I don't understand why there's any seat which is a multi-role. In fact, it isn't a multi-role. So that's a complete misunderstanding of what was discussed." SEAT-ID: "It could do that, or effectively you could put the rule ahead of that in the footer. Like you've got the library building, for example, and then ki.sop.main, what does the key mean?"
+
+Read back as taken: `uri` is dropped from `workers`; Agora reads the uncommitted local thread binding. A seat has exactly one role and so one glyph; there are no multi-role seats, and the design's multi-role rule is withdrawn. On SEAT-ID, Kris suggests the role's glyph goes ahead of the work id and asks what 🔑 means; that is put back to him in one line before `roles-land` starts.

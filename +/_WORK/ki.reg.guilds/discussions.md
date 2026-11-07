@@ -40,18 +40,6 @@ b) Only in `state.md` `workers`, with `role` removed from `work.md` again.
 
 c) Only `work.md` `role`, as rule 11 said, with `workers` retired.
 
-### WORKERS-URI - Session addresses in `workers`
-
-**Context:** Each `workers` entry carries a `uri` such as `orca+claude-code://sol/<session id>`; the id is the Claude Code session's own (checked for ki.sop.main). The ki-work-package standard says a package "has no vendor-session field, conversation URL, runtime identifier", and that a session's host "stays out" of packages. Agora reads the host from the `uri` to show which Mac a worker runs on. Kris asked for `role` and `tier` in `workers` (7 November); he did not mention `uri`. The blind reviewer disagreed and preferred: "Drop `uri` and keep the rule as it is. Agora learns the host another way, such as its own machine-local view." (high confidence; the `uri` holds the Claude Code session id, which is exactly the vendor-session identifier that BOUNDARY-1 and the prohibited-payloads rule forbid).
-
-**Query:** Should `workers` entries keep the session address?
-
-**Options:**
-
-a) (recommended, confidence medium - Agora relies on it and the record exists only while the seat is live, but it reverses a standing rule) Keep `uri` as a defined optional field, cleared when the session ends, and narrow the prohibited-payloads rule to exclude it.
-
-b) Drop `uri` and keep the rule as it is. Agora learns the host another way, such as its own machine-local view.
-
 ### WORKERS-SHAPE - The closed fields of a `workers` entry
 
 **Context:** The entries in use carry `uri`, `name` (the session name, such as `🏠 🔑 personal.reg.household-sol`), `role`, `tier`, `focus`, `since`, `status` and `listening`, and inbox-terra adds `designation: primary`. Values in use include `listening: agora-call` and `tier: enablers`. Once the catalogue gives each role its glyph, `name` repeats what the role already says.
@@ -63,18 +51,6 @@ b) Drop `uri` and keep the rule as it is. Agora learns the host another way, suc
 a) (recommended, confidence high - reviewed: the blind reviewer chose the same; `name` is derived from `role` and the work id, so storing it invites drift that a check would then have to police) Yes, as listed.
 
 b) Keep `name` too, checked against the derived thread line.
-
-### MULTI-ROLE - How a seat with several roles is written
-
-**Context:** Kris asked for "multi-role seats (several glyphs)" and said managers may also make. A seat's tier is one value. The blind reviewer disagreed and preferred: "Separate the glyphs with spaces (`🏛️ ⚖️ 🔑 ki.sop.main`) and keep the rest." (medium confidence; four of the glyphs carry the variation selector described under GLYPH-SET).
-
-**Query:** For a multi-role seat, should `role` be a list with the primary first, the glyphs be written together in that order with no space (`🏛️⚖️ 🔑 ki.sop.main`), and `tier` be the primary role's tier?
-
-**Options:**
-
-a) (recommended, confidence medium - one token before the key keeps the line easy to read and to check) Yes.
-
-b) Separate the glyphs with spaces (`🏛️ ⚖️ 🔑 ki.sop.main`) and keep the rest.
 
 ### MARKS-RETIRE - ⭐ and 🔧 in names
 
