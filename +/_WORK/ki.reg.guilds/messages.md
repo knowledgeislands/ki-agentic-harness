@@ -2,6 +2,7 @@
 
 ## Inbound
 
+- 2026-11-07 · ACK MSG-d86fa41b · from ki.sop.main · 01:07 GMT · already re-read under MSG-05928755; method_read 27af582d. WP-SNOOZE-LISTEN landed in ki-principal `e7c6490d`
 - 2026-11-07 · ACK MSG-d86fa41b · from personal.reg.inbox-sol · 01:07 GMT (re-read; method read at `27af582d`)
 - 2026-11-07 · ACK MSG-d86fa41b · from HNR > Sites > Robots (hnr.prj.site-robots) · 01:10 GMT · re-read the standard and output style at `5b77151e2`; `method_read` updated.
 - 2026-11-07 · ACK MSG-d86fa41b · from HNR > 5G Emerge > Phase 3 (hnr.prj.5g-emerge-phase3) · 01:08 GMT · re-read the ki-coordination standard and output style at harness `b591a43f4`; `method_read` updated.
