@@ -443,3 +443,7 @@ Kris: "ki-knowledge-graph (recommended, medium confidence)". The knowledge-graph
 ## 2026-11-07 04:46 GMT · DOCKET-HOME parked (interactive pass, query 14)
 
 Kris: "not sure, come back later". Parked with its recommended option; the first `ki-dodecakrisis` run describes no Docket until it is decided.
+
+## 2026-11-07 04:48 GMT · ONE-LAUNCHER (interactive pass, query 15)
+
+Kris: "Leave it open (recommended, high confidence)". No one-launcher-per-host rule; each Orca opt-in decision says what it covers, and ONE-LAUNCHER-UNIT guards against duplicate starts. Closed.

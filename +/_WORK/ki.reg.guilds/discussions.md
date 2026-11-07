@@ -2,20 +2,6 @@
 
 ## Open
 
-### ONE-LAUNCHER - should one launcher per package per host become a rule
-
-from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November, differs)
-
-**Context:** the proposal has each package record one launcher per host in its decisions log, so a package never mixes Orca and `ki agent` on one Mac; it rests on design reasoning, not a trial; it would clash with OUTLIVE unless that exception is written in. The review prefers b) with high confidence: each opt-in can say what it covers, and one launcher per host would not stop the same work starting twice on another Mac or in a later session (now ONE-LAUNCHER-UNIT).
-
-**Query:** should one launcher per package per host become a rule?
-
-**Options:**
-
-a) (recommended, confidence medium - review disagrees; keeps runs findable and close-out simple, but untested) adopt it as an adapter rule with OUTLIVE's runs named as the exception
-
-b) leave it open and let each opt-in decision say what it covers (the review's pick)
-
 ### RUN-RECOVERY - should this recovery procedure become the adapter's rule
 
 from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November, differs)
