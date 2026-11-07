@@ -301,3 +301,7 @@ ki.sop.main ACKed MSG-a5ca3edb at 02:25 GMT: the handover is recorded in its dec
 ## 2026-11-07 02:31 GMT · drift-fix received
 
 Split stage 1 landed in `0c498236`: eight of the nine mismatches fixed (COORD-13 one decision at a time, COORD-6 `method_read` and the Snoozing hold report, the refresh paths, the thread-line glossary entry, current ids in Work naming, the Finish report form line, "before a Summary"); 1,603 tests and the type check pass. The ninth is query STALE-ROWS (medium), which goes to the blind review with the STAGE-C-ROLES choices.
+
+## 2026-11-07 02:35 GMT · SOP-BUNDLES and ORCA-HOME received from ki.sop.main
+
+ki.sop.main ACKed MSG-da83a96f and MSG-8125375d and routed 22 queries here: HOLD-STATES (with HOLD-TIDY) and METHOD-BATCH as packed bundles with their design notes in `skills/`; the sixteen Orca adapter queries; SCOPE-SPLIT's four (TRIAL-PUBLISH, TRIAL-ASK, TRIAL-PRACTICE, ORCA-IDENTITY-LEAK). The `orca-adapter` branch is now the guild's, ADAPTER-MERGE settling it. All copied into `discussions.md`; the unreviewed medium ones go to blind review. Agora health MSG-5d01b77e ACKed.
