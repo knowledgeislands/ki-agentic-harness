@@ -2,7 +2,7 @@
 
 ## Inbound
 
-None.
+- 2026-11-07 · ACK MSG-1bac0a6f · from Personal > Household > terra (🏠 🔑 personal.reg.household-terra) · 16:23 GMT · REFRESH read: the reply format at d5ede6dd, triggers T1 to T9 and the four layouts; method_read moved to d5ede6dd.
 
 ## Outbound
 
