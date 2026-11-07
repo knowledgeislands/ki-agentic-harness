@@ -132,7 +132,9 @@ export const FUNCTIONAL_AREAS: readonly FunctionalArea[] = [
     title: 'Acquire',
     short: 'acquire',
     purpose: 'bring outside sources into a knowledge base',
-    groups: [{ skills: ['ki-dodecakrisis', 'ki-acquire', 'ki-acquire-chatgpt', 'ki-acquire-granola'] }]
+    groups: [
+      { skills: ['ki-dodecakrisis', 'ki-acquire', 'ki-acquire-chatgpt', 'ki-acquire-granola', 'ki-knowledge-graph'] }
+    ]
   },
   {
     slug: 'signals',
