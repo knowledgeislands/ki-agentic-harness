@@ -2,9 +2,40 @@
 
 ## Open
 
+### PARTS-HOME - Where to write the four change-management parts
+
+**Context:** CM-PARTS a) and PART-HOME a) record the four parts in two places: the guild's work page and a field in the skills catalogue's generated data. The brief forbade editing `+/_WORK/ki.reg.guilds/`. A catalogue field needs a new frontmatter key accepted by `ki-skills`, plus a change to the `ki-repo-harness` catalogue generator, and both are outside change-management. The parts are Coordination, Work lifecycle, Work records and Design.
+
+**Query:** Should a run add the catalogue field and its generator support, with the coordinator writing the parts into the guild work page?
+
+**Options:**
+
+a) (recommended, confidence medium - the field name and generator change are small but are a schema change no one has reviewed) Yes. Add a `ki-part` frontmatter key, validated by `ki-skills` and published by the `ki-repo-harness` catalogue. Set it on the 12 named skills, and have the coordinator write the same list into `work.md`.
+
+b) Record the parts in the guild work page only, and leave the catalogue alone for now.
+
+### REMOTE-CONFIG - Where the folded GitHub Issues and Linear settings live
+
+**Context:** REMOTE-ADAPTERS a) folds `ki-work-github-issues` and `ki-work-linear` into one `ki-work` reference, selected by `adapter = "github-issues"` or `"linear"`. Today each adapter's settings sit in that skill's own table:
+
+- GitHub Issues: the repository and the lifecycle mapping.
+- Linear: the team and the mapping.
+
+`ki-repo` reads the GitHub Issues table to decide whether the Issues tab is on. The option does not say where these settings go once the skills are gone. The code that would change lives in `ki-work` and also in `ki-repo` and `ki-repo-harness`, the last two outside this brief. No repository declares either adapter, so nothing in use breaks. Nothing was landed, so that the old and new homes would not exist side by side.
+
+**Query:** Where should a remote adapter's settings live after the fold?
+
+**Options:**
+
+a) (recommended, confidence medium - it keeps one table per adapter under its selector, but it is a new configuration shape) In a sub-table of `ki-work`, `[skills.ki-work.github-issues]` or `[skills.ki-work.linear]`. `ki-repo` reads `adapter = "github-issues"`, and one run lands the reference, the code in all three skills, and the deletion of the two skills, with a migration file.
+
+b) Drop the settings entirely. The two values become reserved and stop until a remote executor exists, and the Issues tab stays off everywhere.
+
 ### PKG-PRIMARY - Should package repositories become a core repository shape?
 
 **Context:** `ki-repo` keeps a list of core shapes, the main kinds a Project repository can say it is, such as tools, MCP server or website. The new `ki-repo-packages` skill works as an add-on to the general Project shape and needs no place on that list. Putting it on the list would change `ki-repo`'s list, its automatic detection of declared skills and its per-shape commit hooks. Kris said on 7 November: "It seems like it's a new repo shape really, doesn't it?" Only one package repository exists, `packages-stoa`.
+
+The blind reviewer disagreed and preferred b): `ki-repo` says the primary shape names a repository's main responsibility, and vendoring is plainly Stoa's; single-repository core shapes already exist (`ki-repo-homebrew-tap`, `ki-repo-specifications`); the shape needs no staged lint of its own, so its commit hook can equal the general Project hook; and today `ki-repo`'s detection list leaves out `ki-repo-packages`, so the overlay's declaration goes unseen until that changes.
 
 **Query:** Should package repositories stay an add-on to the general Project shape, or join `ki-repo`'s core shapes?
 
@@ -30,11 +61,13 @@ b) Wait for the Stoa work to raise it itself.
 
 **Context:** The skill applies two rules to every package repository. First, the standard says package releases follow the release-on-demand policy that `ki-repo-tools` keeps for tooling: hold releases by default, and release only when something needs it. Second, Kris's words of 1 November about Stoa, "There should be no reference out of Knowledge Islands to other territories", and the addendum, "It shouldn't have a finite list of them", become a rule that no package repository keeps a list of its consumers. Both are written as final state, so changing either later means editing the standard.
 
+The reviewer also noted that `packages-stoa` still keeps `consumers.json5`, naming Humans Not Robots sites, against the 1 November rule; the migration overlay records it under STOA-NO-CONSUMERS.
+
 **Query:** Should both rules apply to every package repository, as written?
 
 **Options:**
 
-a) (recommended, confidence medium - both follow from the words and policies as they stand, but each widens a rule beyond the case it was set for) Yes, keep both as written.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same course, since `ki-repo-tools`'s release-on-demand section already calls itself the policy for any repository that cuts versioned releases, so only the no-list rule widens, and finding consumers by lock file costs nothing anywhere; both follow from the words and policies as they stand, but each widens a rule beyond the case it was set for) Yes, keep both as written.
 
 b) Narrow them: keep release timing to Stoa's own rules and the no-list rule to repositories serving other territories, and edit the standard to match.
 
