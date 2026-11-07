@@ -761,3 +761,5 @@ SHAREPOINT-SKILL landed in hnr-agentic-harness `503b53b` (SharePoint paths point
 ki.prj.agora's HEALTH MSG-bad2b644 answered by re-arming and an ACK; the line is removed.
 
 Lesson, 10:31 GMT: the first ACK commit in ki-principal was stopped by its hook, because another session had about 40 Agora reports staged in that shared index and `git commit` after `git add -- <path>` would have committed them too. The ACK went in with `git commit -- <path>`, which commits only that path. This seat now always names the path on `git commit` in a shared checkout. The other session's staged reports were left untouched; nine earlier ki-principal commits from this seat touched only their own message file or files.
+
+11:48 GMT: Agora HEALTH MSG-17631132 answered. The inbox watcher was re-armed and an ACK went to ki.prj.agora's Inbound; the line is removed here.
