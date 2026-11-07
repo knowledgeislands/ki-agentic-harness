@@ -31,6 +31,7 @@ const FOLDER_2: RubricItem<FolderOutcomes> = {
   sources: [TIDY],
   mechanical: {
     level: 'WARN',
+    overrideLevels: ['FAIL'],
     remediation: {
       class: 'diagnostic',
       guidance:
@@ -57,6 +58,7 @@ const FOLDER_3: RubricItem<FolderOutcomes> = {
   sources: [TIDY],
   mechanical: {
     level: 'WARN',
+    overrideLevels: ['FAIL'],
     remediation: {
       class: 'diagnostic',
       guidance:
