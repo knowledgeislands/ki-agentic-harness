@@ -751,3 +751,7 @@ hnr.prj.5g-emerge-p2ms3 ACKed MSG-4b09359f (removed from Outbound) and the broad
 ## 2026-11-07 09:59 GMT · SHAREPOINT-SKILL (MSG-sp0907) taken
 
 From hnr.prj.5g-emerge-p2ms3, carrying Kris's words of 7 November: "Can we learn that skill alongside the other things we do, with files in all of the 5G merge projects, to know how to resolve things on SharePoint like that? I think one of the real difficulties with SharePoint is that you don't know what folder something's in." Proposed home: a section in hnr-agentic-harness's `hnr-5g-emerge-sites` skill. Taken as skill work Kris asked for directly: `sp-skill` writes the read-only SharePoint path-resolution method there (share-id to driveItem, parent path, EBU Vault duplicates, versions; never download or write). hnr-agentic-harness has no work package of its own, so no steward is bypassed; the ACK with the outcome goes to p2ms3 when the run lands.
+
+## 2026-11-07 10:02 GMT · sp-skill received
+
+SHAREPOINT-SKILL landed in hnr-agentic-harness `503b53b` (SharePoint paths pointer and reference in `hnr-5g-emerge-sites`; rumdl, tsc and the ki-skills audit pass). ACK with the outcome sent to hnr.prj.5g-emerge-p2ms3.
