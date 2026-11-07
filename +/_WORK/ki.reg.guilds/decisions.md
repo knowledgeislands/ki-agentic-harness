@@ -257,3 +257,9 @@ Removed 11 on sol: 4 tools-rig (RIG-SPENT), 2 tools-ki (LANDED-COPIES), 4 tools-
 ## 2026-11-07 01:50 GMT · wt-landed and wt-blind received
 
 `footer-counts`, `footer-hook` and `lint-before-push` removed without force; sol now holds only the two DRAFT-SKILLS worktrees. The blind reviewer agreed on TERRA-ORCA and VEGA-KEY; both rise to high with its reframings.
+
+## 2026-11-07 01:58 GMT · QUERY-CLUSTERS and PAPERCLIP-DROP
+
+Kris: "Can you just consolidate your issues and such, and then you can ask me some questions about them? I think maybe concentrate it into a cluster which has got a lot of high confidence, that would allow us to get the most progress and get this list down." Taken as: the open queries are grouped into clusters, each asked as one decision to take all its recommendations, largest high-confidence cluster first.
+
+Kris, mid-turn: "For example, anything to do with paperclip. We know that we don't need to be doing anything with that now." Read back as taken: PAPERCLIP-NAMES a), delete the four coordination-lane subagents and the harness AGENTS.md "Paperclip local delivery" section with its merge grant; and Paperclip is out of scope, so the parked PAPERCLIP-RETIRE and PAPERCLIP-GRANT take retirement of `ki-delegation-paperclip` and its declarations (through the migration file) and withdrawal of the grant. Delivery waits for the cluster pass to finish so it lands with the other authorised work.

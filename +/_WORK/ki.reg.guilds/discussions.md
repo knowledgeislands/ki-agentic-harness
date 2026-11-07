@@ -234,20 +234,6 @@ a) (recommended, confidence high - reviewed: gatekeeper replaces a role, TOOLING
 
 b) Rename the skill too, `ki-acquire` to a gatekeeper name with deprecated aliases, revisiting TOOLING-STAYS.
 
-### PAPERCLIP-NAMES - How far "Paperclip-era role names are deleted" reaches
-
-focus: roles
-
-**Context:** The brief: "Paperclip-era role names are deleted (no confirmation needed)." On 26 September `subagents/coordination/` gained four "coordination lane" roles: `ki-convenor`, `ki-steward`, `ki-wright` and `ki-ferryman`, which covers remote execution and is not a Paperclip delivery role as such. The harness AGENTS.md section "Paperclip local delivery" names Wright, Steward and Convenor, and holds Kris's standing grant for the Convenor to merge into local `main`. The parked PAPERCLIP-RETIRE and PAPERCLIP-GRANT ask about retiring the Paperclip skill and its 54 declarations, and about suspending that grant. "Steward" lives on as a manager role.
-
-**Query:** Does the deletion take in the AGENTS.md Paperclip section and its merge grant, as well as the four subagents?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: keeping a standing grant for a deleted role would leave contradictory authority in the repository's guidance) Delete all four subagents and the AGENTS.md "Paperclip local delivery" section with its grant. The `ki-delegation-paperclip` skill and its declarations stay for PAPERCLIP-RETIRE.
-
-b) Delete only `ki-convenor`, `ki-steward` and `ki-wright`. Keep `ki-ferryman` and the AGENTS.md grant until PAPERCLIP-GRANT is answered.
-
 ### LIBRARY-OPEN - When to open `ki.reg.library`
 
 focus: roles
