@@ -520,3 +520,7 @@ Stage 3 of the coordination standard split landed as a pure move (`fb842b12`, di
 ## 2026-11-07 07:28 GMT · standard-split-3 received
 
 Stage 4 landed (`3e4c18c6`, tick `113bdb5b`): history moved out of all fourteen standard files into a 175-tag Decision register in `sources.md` (29 tags named while building it, marked †), about 40 tolerance clauses into the migration file; no rule reworded; 1,626 tests and all audits pass. The run stopped before stage 5 on STAGE5-REVIEWER, because its brief allowed no launches. This is not raised: the approved plan (STAGE-C-SPLIT a), 7 November 02:04 GMT) already names one Codex reviewer on the strongest model reading each old section beside its new home before the unit's commit lands, so the coordinator runs stage 5 as a draft, review and apply chain, which is the plan as written.
+
+## 2026-11-07 07:49 GMT · Agora health answered
+
+ki.prj.agora's HEALTH MSG-4554660b answered by re-arming on the Agora call and doorbell paths for 120 minutes and an ACK in its Inbound; the line is removed.
