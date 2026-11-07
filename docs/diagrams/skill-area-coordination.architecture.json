@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "940341c56fb8ee94c902f53a9ca80bd8dfd01eb1"
+      "revision": "020ec2b32a48a6183b974d283565efc3413ee342"
     },
     "legend": {
       "mode": "auto",
@@ -119,7 +119,7 @@
           "path": "skills/change-management/ki-coordination/SKILL.md"
         }
       ],
-      "tag": "R13 · CL · F3",
+      "tag": "R13 · CL · F17",
       "pos": [
         300,
         268
