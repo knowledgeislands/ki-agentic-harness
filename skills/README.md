@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 63 skills: 52 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 64 skills: 53 governance skills and 11 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -51,6 +51,16 @@ Acquire Granola meetings through read-only MCP calls: complete date windows, fol
 - **Applicability:** Declaration Only
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
 - **Dependencies:** `ki-acquire`
+- **Runtime:** Portable
+
+#### `ki-dodecakrisis`
+
+Govern D12, the Dodecakrisis: the ten sorting rules, mailbox queues and tags, guarded rules with a D12 prefix, protected labels read from the mail server, age-based sweeps, Deposit routes and the learning loop that turns corrections into proposed rules. Use to set up, audit, sort, sweep or improve a D12 mailbox; `ki-acquire` owns what happens after Deposit.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | sort <mailbox> | sweep <mailbox> | learn <mailbox> | help | refresh`
+- **Dependencies:** None
 - **Runtime:** Portable
 
 #### `ki-pulse`
