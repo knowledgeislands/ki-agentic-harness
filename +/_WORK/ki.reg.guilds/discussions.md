@@ -26,20 +26,6 @@ a) (recommended, confidence medium - they record what past reviews found, like t
 
 b) Reword or remove them so that Paperclip disappears from the harness entirely.
 
-### BROADCAST-FORM - How a message sent to many packages should be written in Outbound
-
-**Context:** The checker requires every Outbound line to name one recipient package id after `to` (`- <date> · <id> · to <package id> · …`). It has no form for a broadcast to many packages. Four guilds Outbound lines were broadcasts ("to 15 live packages", "to 41 live packages on sol"). To clear the failure without changing content, I wrote them as `to live-packages · 15 live packages · …`. `live-packages` is a placeholder that matches the id pattern but is not a real package.
-
-**Query:** Should the checker and the work-package standard get a proper broadcast recipient form, or should broadcasts be logged as one Outbound line per receiving package?
-
-**Options:**
-
-a) (recommended, confidence medium - reviewed: the blind reviewer chose this at high, because the send, ACK and prune rules and the banner all assume one receiver per line; the run that raised it preferred a count form) Log each broadcast as one Outbound line per receiving package, so each ACK clears its own line. Add one sentence to the work package standard's Prune rule: an ACK clears the line matching both the id and the receiver. Drop the `live-packages` placeholder.
-
-b) Add a broadcast form to the standard and checker, `to <n> live packages`, with new ACK-counting rules in the standard, checker and banner, and replace the placeholder lines with it.
-
-c) Keep the `live-packages` placeholder convention.
-
 ### TASK-LINKS-FIELD - Whether to retire the `task_links` roadmap field
 
 **Context:** `task_links` is an optional roadmap-record field that links a record to tasks in another system. Paperclip was its main user. `tools-ki` already shows a `linear` provider beside `paperclip`, and Linear is a supported work adapter, so the field has a plausible use beyond Paperclip. The blind reviewer disagreed with retiring it and preferred keeping it as a general field, with its own triage record to test whether Linear or GitHub Issues linking will use it.

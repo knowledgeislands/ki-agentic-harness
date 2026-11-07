@@ -407,3 +407,7 @@ ki.sop.main MSG-7e674180 routed ki.prj.stoa's ask: the guild owns a repository-s
 ## 2026-11-07 04:26 GMT · Z-HISTORY (interactive pass, query 6)
 
 Kris first asked: "Do we really need them?" Answered no: their outcomes are recorded elsewhere. Then: "Delete now, keep history (recommended, high confidence)". Run `z-delete` removes `reports/hold-request-20261030-z.md` and `reports/z-session-retirement-20261030.md` from ki-principal's ways-of-working folder in one commit; no history rewrite.
+
+## 2026-11-07 04:29 GMT · BROADCAST-FORM (interactive pass, query 7)
+
+Kris: "One line per receiver (recommended, medium confidence)". A broadcast is logged as one Outbound line per receiving package; the work-package standard's Prune rule gains one sentence: an ACK clears the line matching both the message id and the receiver; the `live-packages` placeholder lines are expanded. Rides with the next harness standards run.
