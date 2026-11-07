@@ -18,6 +18,7 @@ Replies to MSG-c6fa7c81, sent on 6 November 2026 at about 22:15 GMT to 41 live p
 - Topic material pasted into a State of play is stored and routed to its Project, bypassing the Inbox flow (DIRECT-TO-SOP). The boundary is named in ki-acquire. From hnr.sop.main.
 - A private aside from Kris is never recorded: the one exception to storing what he gives. From hnr.sop.main.
 - Temporary designs sit under a package's focus areas until they get a durable home, recorded in `work.md` (DESIGNS-STANDARD). Applies once proven. From personal.reg.inbox-terra.
+- Coordination lessons and method feedback this work relied on, proposed for the `ki-coordination` and `ki-delegation` owners. Lives in [coordination-lessons.md](https://github.com/knowledgeislands/ki-principal/blob/d8ab8112/+/_WORK/ki.prj.ways-of-working/_emerging/coordination-lessons.md) and [method-feedback.md](https://github.com/knowledgeislands/ki-principal/blob/d8ab8112/+/_WORK/ki.prj.ways-of-working/_emerging/method-feedback.md). From ki.prj.ways-of-working, absorbed into this guild (A8 of run `absorb`).
 
 ## ki-git
 
@@ -46,6 +47,11 @@ Replies to MSG-c6fa7c81, sent on 6 November 2026 at about 22:15 GMT to 41 live p
 - Publishing into a busy checkout: commit from a detached worktree off `origin/main`, push `HEAD:main`, then remove the worktree. Written nowhere, with ki-git also proposed. From personal.reg.household-sol.
 - Never drop Inbound lines: a rewrite carries every line it doesn't dispose of. The rewrite in `73a0774a` lost 13 lines. From ki.sop.main.
 - Edit a message queue line by line: match the whole line, never the id alone, and write `None.` only when the section is otherwise empty (PRUNE-BY-LINE). From personal.reg.household-terra.
+- Tending, proposed for the housekeeper role. Lives in [tending.md](https://github.com/knowledgeislands/ki-principal/blob/d8ab8112/+/_WORK/ki.prj.ways-of-working/_emerging/tending.md). From ki.prj.ways-of-working, absorbed into this guild (A8 of run `absorb`).
+
+## ki-repo
+
+- Repository metadata practice. Lives in [repository-metadata.md](https://github.com/knowledgeislands/ki-principal/blob/d8ab8112/+/_WORK/ki.prj.ways-of-working/_emerging/repository-metadata.md). From ki.prj.ways-of-working, absorbed into this guild (A8 of run `absorb`).
 
 ## Role catalogue and personal skills
 
@@ -65,6 +71,10 @@ Replies to MSG-c6fa7c81, sent on 6 November 2026 at about 22:15 GMT to 41 live p
 - Prove locally, feed upstream: a cross-site improvement may be proven in one site, then moved into the shared Stoa library and the local copy dropped; a vendored copy is never edited locally, and the build fails on a local edit. Owner: ki-repo-website-content for Stoa, ki-engineering for the general vendoring rule. From hnr.prj.site-robots.
 - Work-in-progress limit: a Project package pulls at most three roadmap records at a time and leaves the rest on the roadmap; ki-coordination caps only active Projects. Owner: ki-coordination. From hnr.prj.site-robots.
 - Motion and scale: pointer parallax moves only the far and middle layers, keeps the foreground and standing figures fixed together, and respects reduced motion; characters keep a consistent scale. Owner: ki-design-system. From hnr.prj.site-robots.
+
+## Kris's words no skill carries yet
+
+- COUNSEL, MECHANICAL, the over-engineering guard, KI-AGENTS-NAME, the "too many questions" steer, QUALIFY-ITEMS and LISTEN-TRUTH, for the skills each governs, and ANNOTATED-BOARD-SKILL for `ki-design-system`. Each is an entry of its own in this package's `decisions.md`, copied there verbatim on 7 November. From ki.prj.ways-of-working, absorbed into this guild (A8 of run `absorb`).
 
 ## Wrongly held
 
