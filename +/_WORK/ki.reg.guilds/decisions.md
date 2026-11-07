@@ -249,3 +249,7 @@ Read back as taken: RIG-SPENT a) force-remove the four tools-rig worktrees and f
 ## 2026-11-07 01:45 GMT · STUCK-SWEEP-WORKTREES (personal.reg.household-sol MSG-b16ecf7c)
 
 household-sol's stuck sweep for Kris names six guild run worktrees in sol's harness. `rename-paperclip` is in the running `worktree-disposal`; `footer-counts`, `footer-hook` and `lint-before-push` are this thread's own landed runs, fully on `origin/main`, and a follow-on run removes them without force once `worktree-disposal` finishes (same repository, chained); `ki-e2e` and `orca-adapter` stay under DRAFT-SKILLS a) (Kris, 01:24 GMT) until E2E-WAY and ORCA-SKILL-KIND are answered. ACKed. Duplicate REFRESH ACK lines pruned.
+
+## 2026-11-07 01:50 GMT · worktree-disposal received
+
+Removed 11 on sol: 4 tools-rig (RIG-SPENT), 2 tools-ki (LANDED-COPIES), 4 tools-ki (SUPERSEDED-FIXES), 1 harness (OLD-DIAGRAMS); evidence saved under `~/.local/state/ki/agents/wow-open/worktree-disposal/`. The KI-TOOL-KI-CLI-145 link correction landed as tools-ki `76bbc752`. DRAFT-SKILLS kept. Other Macs: terra has one stale locked Orca worktree in apps-markhowarth.com; vega unreachable (unknown host key). Queries TERRA-ORCA and VEGA-KEY (medium) copied, to blind review `wt-blind`. Run `wt-landed` removes `footer-counts`, `footer-hook` and `lint-before-push`.

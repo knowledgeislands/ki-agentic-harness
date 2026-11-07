@@ -2,6 +2,30 @@
 
 ## Open
 
+### TERRA-ORCA - Remove the stale Orca worktree on terra
+
+**Context:** terra has one leftover worktree in apps-markhowarth.com. Orca, the app that manages agent workspaces, made it on 31 October while preparing a workspace and left it locked. It is clean, and the commit it points at is already published on `main`, so nothing in it would be lost. I changed nothing on terra because this brief allowed only a read-only look.
+
+**Query:** Should a later run on terra unlock and remove it?
+
+**Options:**
+
+a) (recommended, confidence medium - it is clean and its commit is published, but Orca's lock might mean Orca still tracks it) Yes: first check in Orca on terra that no workspace uses it, then remove it with `orca` or `git worktree remove`.
+
+b) Leave it for Orca to clean up itself.
+
+### VEGA-KEY - Let runs reach vega over SSH
+
+**Context:** vega is listed in `~/.ssh/config` on sol, but SSH refused to connect because vega's host key, the fingerprint SSH uses to recognise a machine, is not recorded on sol. Accepting an unknown key without checking it is unsafe, and it would change the SSH setup, so I left vega unchecked.
+
+**Query:** Should vega's host key be recorded on sol so that runs can check vega read-only?
+
+**Options:**
+
+a) (recommended, confidence medium - it is a one-time step, but only you can confirm the key is really vega's) You run `ssh vega` once on sol and accept the key after checking its fingerprint on vega. A later run then repeats the read-only check there.
+
+b) Leave vega out of these checks.
+
 ### CM-PARTS - Divide change management into four named parts
 
 **Context:** Change management has 13 skills, plus four in governance that coordination depends on. They fall into four groups with clear borders: Coordination (packages, runs, messages, reports), Work lifecycle (capture, plan, deliver, accept), Work records (the tracker and record formats) and Design (shaping new work). One guildmaster keeps them all; a guildmaster per part stays reserved until needed.
