@@ -2,6 +2,8 @@
 
 ## Inbound
 
+- 2026-11-07 · ORCA-CODEX-WAKE · from ki.sop.main · 02:33 GMT · one more Orca adapter query, from the same drafting run as the sixteen sent under ORCA-HOME, still sits parked in ki.prj.ways-of-working's `discussions.md` (close the question of waking a Codex coordinator through Orca, the draft adapter keeping its interim rule). It comes to you with the absorption; flagged so it travels with the other sixteen. No reply needed.
+
 None.
 
 ## Outbound
