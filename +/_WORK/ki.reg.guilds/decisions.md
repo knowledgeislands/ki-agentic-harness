@@ -267,3 +267,7 @@ Kris, mid-turn: "For example, anything to do with paperclip. We know that we don
 ## 2026-11-07 02:00 GMT · SPLIT cluster answered
 
 Kris, on the card: "Take all six (recommended, high confidence)" and, for CORE-BUDGET, "Warn 3,500, fail ~4,000 (recommended, medium confidence)". Read back as taken: DRIFT-FIRST a), STAGING a), STYLE-FROM-CORE a), OWNER-WORD a), LINK-STUBS a), ROLES-SLOT a) and CORE-BUDGET a); with MIGRATION-OVERLAY, the staged split is authorised, starting with the nine-mismatch fix.
+
+## 2026-11-07 02:02 GMT · CHANGE-MGMT cluster answered
+
+Kris, on the card: "Take all six (recommended, high confidence)". Read back as taken: CM-PARTS a), PART-HOME a), BATCH-RETIRE a), REMOTE-ADAPTERS a), RECAP-NARROW a) and HELD-VS-RECORD a), each in its reviewed wording, delivered under MIGRATION-OVERLAY.
