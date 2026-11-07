@@ -10,6 +10,6 @@ Edits flow through the canonical source and its selected renderer or adapter. Ne
 
 ## Host surface selection
 
-A host-bound runtime reaches KI MCP servers through its own host's mcporter bridge. Claude Code, Claude Desktop, Codex and a Paperclip run are host-bound on whichever host they run on. claude.ai connectors belong to cloud sessions. An unauthorised connector in a host-bound session is expected state; report it only when a task needs that service and no bridge route provides it.
+A host-bound runtime reaches KI MCP servers through its own host's mcporter bridge. Claude Code, Claude Desktop and Codex are host-bound on whichever host they run on. claude.ai connectors belong to cloud sessions. An unauthorised connector in a host-bound session is expected state; report it only when a task needs that service and no bridge route provides it.
 
-Each host owns its canonical inventory, bridge and secret store. A runtime never depends on another host's loopback bridge. Reaching a bridge across hosts is an exposure decision for the host's owner, not a binding default. A runtime isolated from user configuration, such as a Paperclip run, needs its coordination platform's supported route to the bridge; `ki-delegation-paperclip` owns that route.
+Each host owns its canonical inventory, bridge and secret store. A runtime never depends on another host's loopback bridge. Reaching a bridge across hosts is an exposure decision for the host's owner, not a binding default.

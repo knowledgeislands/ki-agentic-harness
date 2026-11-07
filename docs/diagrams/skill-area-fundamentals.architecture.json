@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "1b68359a489a9fda6009c40f5699f6b3e2015d45"
+      "revision": "dabbddd97ebe2b52d1b86bc576d779a967b7cdcd"
     },
     "legend": {
       "mode": "auto",
@@ -70,26 +70,6 @@
       ]
     },
     {
-      "id": "ki-delegation-paperclip",
-      "type": "database",
-      "label": "ki-delegation-paperclip",
-      "sublabel": "agentic systems · opt-in",
-      "sources": [
-        {
-          "path": "skills/agentic-systems/ki-delegation-paperclip/SKILL.md"
-        }
-      ],
-      "tag": "R17 · CM · F6",
-      "pos": [
-        684,
-        64
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
       "id": "ki-authoring",
       "type": "security",
       "label": "ki-authoring",
@@ -141,8 +121,8 @@
       ],
       "tag": "R9 · CL · F8",
       "pos": [
-        44,
-        392
+        300,
+        268
       ],
       "size": [
         208,
@@ -162,7 +142,7 @@
       "tag": "R17 · CM · F3",
       "pos": [
         300,
-        268
+        392
       ],
       "size": [
         208,
@@ -181,7 +161,7 @@
       ],
       "tag": "R51 · CL · F7",
       "pos": [
-        300,
+        44,
         392
       ],
       "size": [
@@ -309,14 +289,6 @@
     },
     {
       "kind": "region",
-      "label": "Agentic systems · 1 skill",
-      "wraps": [
-        "ki-delegation-paperclip"
-      ],
-      "pad": 32
-    },
-    {
-      "kind": "region",
       "label": "Records and code · Records",
       "wraps": [
         "ki-decision-records"
@@ -375,12 +347,6 @@
     }
   ],
   "connections": [
-    {
-      "id": "ki-delegation-paperclip--ki-git",
-      "from": "ki-delegation-paperclip",
-      "to": "ki-git",
-      "variant": "default"
-    },
     {
       "id": "ki-recap--ki-authoring",
       "from": "ki-recap",
@@ -451,7 +417,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "7 skills, 3 outside prerequisites, 3 outside dependents, 9 composition and 1 optional edges, read from SKILL.md frontmatter.",
+        "7 skills, 3 outside prerequisites, 2 outside dependents, 8 composition and 1 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

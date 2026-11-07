@@ -1,10 +1,10 @@
 import { expect, test } from 'bun:test'
 import { tmpdir } from 'node:os'
-import { ALIAS } from '../items/alias.ts'
-import { createPaperclipAliasSession } from './alias.ts'
+import { RETIRED } from '../items/retired.ts'
+import { createRetiredPaperclipSession } from './retired.ts'
 
 const outcomes = (configuration: Readonly<Record<string, unknown>> | undefined) => {
-  const session = createPaperclipAliasSession({
+  const session = createRetiredPaperclipSession({
     mode: 'audit',
     repository: tmpdir(),
     userHome: tmpdir(),
@@ -12,22 +12,22 @@ const outcomes = (configuration: Readonly<Record<string, unknown>> | undefined) 
   })
   const context = session.subjects[0]?.context()
   if (!context) throw new Error('ki-agent-coordination-paperclip session did not expose its subject')
-  const item = ALIAS.items[0]
-  if (!item?.mechanical) throw new Error('ALIAS-1 mechanical item missing')
-  return { level: item.mechanical.level, outcomes: item.mechanical.audit.run(ALIAS.selectContext(context)) }
+  const item = RETIRED.items[0]
+  if (!item?.mechanical) throw new Error('RETIRED-1 mechanical item missing')
+  return { level: item.mechanical.level, outcomes: item.mechanical.audit.run(RETIRED.selectContext(context)) }
 }
 
-test('the deprecated declaration warns and names ki-delegation-paperclip', () => {
+test('a retired declaration warns and asks for its removal', () => {
   const { level, outcomes: found } = outcomes({ organisation_code: 'KIS' })
   expect(level).toBe('WARN')
   expect(found).toEqual([
     expect.objectContaining({
       status: 'VIOLATION',
-      message: expect.stringContaining('[skills.ki-delegation-paperclip]')
+      message: expect.stringContaining('remove [skills.ki-agent-coordination-paperclip]')
     })
   ])
 })
 
-test('without a declaration the alias does not apply', () => {
+test('without a declaration the stub does not apply', () => {
   expect(outcomes(undefined).outcomes[0]?.status).toBe('NOT_APPLICABLE')
 })

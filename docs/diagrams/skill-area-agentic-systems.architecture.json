@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "1b68359a489a9fda6009c40f5699f6b3e2015d45"
+      "revision": "dabbddd97ebe2b52d1b86bc576d779a967b7cdcd"
     },
     "legend": {
       "mode": "auto",
@@ -61,7 +61,7 @@
       ],
       "tag": "R2 · CM · F2",
       "pos": [
-        544,
+        288,
         268
       ],
       "size": [
@@ -79,10 +79,10 @@
           "path": "skills/agentic-systems/ki-delegation-paperclip/SKILL.md"
         }
       ],
-      "tag": "R17 · CM · F6",
+      "tag": "R2 · CM · F3",
       "pos": [
-        32,
-        392
+        544,
+        268
       ],
       "size": [
         208,
@@ -121,7 +121,7 @@
       ],
       "tag": "R5 · CM · F3",
       "pos": [
-        288,
+        32,
         392
       ],
       "size": [
@@ -142,27 +142,7 @@
       "tag": "R6 · CM · F4",
       "pos": [
         288,
-        268
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
-      "id": "ki-git",
-      "type": "database",
-      "label": "ki-git",
-      "sublabel": "governance · opt-in",
-      "sources": [
-        {
-          "path": "skills/governance/ki-git/SKILL.md"
-        }
-      ],
-      "tag": "R17 · CM · F3",
-      "pos": [
-        32,
-        596
+        392
       ],
       "size": [
         208,
@@ -181,14 +161,6 @@
     },
     {
       "kind": "region",
-      "label": "Fundamentals · Repository and writing",
-      "wraps": [
-        "ki-git"
-      ],
-      "pad": 32
-    },
-    {
-      "kind": "region",
       "label": "Agentic systems · 5 skills",
       "wraps": [
         "ki-subagents",
@@ -201,12 +173,6 @@
     }
   ],
   "connections": [
-    {
-      "id": "ki-delegation-paperclip--ki-git",
-      "from": "ki-delegation-paperclip",
-      "to": "ki-git",
-      "variant": "default"
-    },
     {
       "id": "ki-repo-harness--ki-subagents",
       "from": "ki-repo-harness",
@@ -241,7 +207,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "5 skills, 1 outside prerequisite, 1 outside dependent, 4 composition and 0 optional edges, read from SKILL.md frontmatter.",
+        "5 skills, 0 outside prerequisites, 1 outside dependent, 3 composition and 0 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

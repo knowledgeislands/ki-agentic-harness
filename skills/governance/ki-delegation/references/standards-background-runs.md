@@ -39,7 +39,7 @@ A **background agent** is a worker launched detached through `ki agent` under th
 
 It complements the [delegation-packet standard](standards-delegation-packets.md): a packet makes an approved high-risk handoff durable inside a work record, while a background run governs how any delegated agent is launched, reports, coordinates and is watched. A high-risk run carries both.
 
-Process skills still select, authorise, plan and accept work. Paperclip-coordinated delegation follows `ki-delegation-paperclip`; subagent role definitions follow `ki-subagents`.
+Process skills still select, authorise, plan and accept work. Subagent role definitions follow `ki-subagents`.
 
 ## Detachment
 
@@ -166,8 +166,6 @@ A brief cannot grant an external post. Its only permission is Kris's answer to a
 Where a brief's body and its authority footer conflict, the footer wins. The task supplies specifics within the footer's tier and grants, never authority beyond them; the only exception is an explicit push rule in the task, under Kris's 17 October 2026 words above. Every authority footer carries both rules in its posting line.
 
 In Kris's managed environment, when a task separately authorises a 1Password read, read only through the managed cached reader, `~/bin/chezmoi/op-cache "op://<vault>/<item>/<field>"`, with `OP_CACHE_SERVICE_ACCOUNT_ONLY=1`, and use `~/bin/chezmoi/op-cache --tag <tag> [--vault <vault>]` for discovery. Never call `op` directly or repeatedly: the reader caches each item for a day, so a run costs at most one read per item per day. Leave `chezmoi-op`, which manages the cache, to Kris. Kris set this on 30 October 2026 under OP-CACHE: "agents should be using cached_op". If the helper cannot read without a desktop prompt, stop and report; do not fall back to interactive access. Keep credential values out of output and tracked files. This condition grants no credential authority. When a task separately authorises a Cloudflare credential read, use only `~/bin/cf-token`. No territory's notes record credential item or token ids. Keep credential values out of output and tracked files; this rule grants no Cloudflare operation or credential authority. Kris adopted this Cloudflare half of RUN-SECRETS on 25 October 2026.
-
-Authority limits stay consistent with `ki-delegation-paperclip`, which owns Paperclip delivery and integration grants.
 
 ### Grants
 
@@ -324,7 +322,7 @@ Each outstanding query carries a stable mnemonic Needs tag, never a number, defi
 
 Runtime mechanics belong in the launcher, not in this skill or in personal setup.
 
-**Where each launcher runs.** Orca launches runs only on attended Macs, and only for work packages that opt in by a logged owner decision. `ki agent` is the only launcher on `vega`. An always-on Orca server comes only through Knowledge Islands Principal's Enactment Process, not by a run or a grant. `ki agent` stays the maintained fallback launcher, for hosts without Orca or Paperclip, and gains no feature that duplicates Orca. Kris took ORCA-REACH a) on 30 October 2026, "as recommended but with a follow up in a weeks time", and AGENT-HOME a) the same day, "as recommended but with a follow up in a few days".
+**Where each launcher runs.** Orca launches runs only on attended Macs, and only for work packages that opt in by a logged owner decision. `ki agent` is the only launcher on `vega`. An always-on Orca server comes only through Knowledge Islands Principal's Enactment Process, not by a run or a grant. `ki agent` stays the maintained fallback launcher, for hosts without Orca, and gains no feature that duplicates Orca. Kris took ORCA-REACH a) on 30 October 2026, "as recommended but with a follow up in a weeks time", and AGENT-HOME a) the same day, "as recommended but with a follow up in a few days".
 
 ## Mechanical boundary
 

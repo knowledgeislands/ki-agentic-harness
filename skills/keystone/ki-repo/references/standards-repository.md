@@ -97,7 +97,7 @@ A Project composes the shape skills it actually needs. The core shapes are `ki-r
 
 Every Project explicitly selects `primary_shape`, naming one of its declared core shape skills or `ki-repo-project` for a general Project. A Knowledge Base always selects its declared `ki-repo-kb` baseline. Missing, unsupported, undeclared, or kind-incompatible values fail validation. Declaring one specialist does not imply selecting it; adding another specialist does not alter the chosen primary shape. The choice identifies the repository's main responsibility without disabling its other skills. Directory names, display names, TOML table order, and an agent's judgment never replace these fields. Setup may emit an explicit general-Project scaffold; audits and consumers must not infer missing values.
 
-Skill prerequisites are the required edges declared in `ki-depends-on`, evaluated before the skill's own rules. For example, `ki-repo-mcp` requires `ki-engineering`; a shell-only tools repository does not. Optional dependencies and independently detected coverage remain distinct. The `ki-skills` composition contract governs the dependency graph; Paperclip does not maintain another graph.
+Skill prerequisites are the required edges declared in `ki-depends-on`, evaluated before the skill's own rules. For example, `ki-repo-mcp` requires `ki-engineering`; a shell-only tools repository does not. Optional dependencies and independently detected coverage remain distinct. The `ki-skills` composition contract governs the dependency graph.
 
 ## Repository write authority
 

@@ -137,7 +137,7 @@ These shapes are retired. A record still carrying one is tolerated with a warnin
 - `initiative`, the thread-model name for `theme`: name the theme in `theme`, read meanwhile as the record's theme under the [Project registry tolerance window](../../ki-work/references/standards-project-registry.md#tolerance-window);
 - `purpose: adoption`, which no record has used: use `capability` or `upkeep`.
 
-The same review on 2026-10-19 kept three sparsely used shapes because other rules depend on them: `kind: decide`, which the [graduation test](standards-repository-roadmaps.md#ideas-and-graduation) names for decision records; `resolution_target`, which a duplicate, merged or superseded cancellation needs to name its replacement; and [`task_links`](#task-links), which the Paperclip coordination standard uses as the durable link from a record to its tasks. `task_links` is revisited when Paperclip returns at Wave F.
+The same review on 2026-10-19 kept three sparsely used shapes: `kind: decide`, which the [graduation test](standards-repository-roadmaps.md#ideas-and-graduation) names for decision records; `resolution_target`, which a duplicate, merged or superseded cancellation needs to name its replacement; and [`task_links`](#task-links), the durable link from a record to its tasks in another system.
 
 ### Classification
 
@@ -207,16 +207,16 @@ A held record keeps its status, `baseline_ref`, completed Steps, and review evid
 
 ### Task links
 
-An item MAY carry `task_links` in its own frontmatter. This is the only authoritative structured map from that item to tasks in other systems; do not create a shared writable lookup table or copy remote task status into the KI lifecycle. The field is absent when no link has been verified. When present, it is a non-empty map from provider names matching `^[a-z][a-z0-9-]*$` to non-empty lists of reference objects. Each reference has exactly six non-empty string fields: `authority`, `scope`, `id`, `key`, `url`, and `relation`. Do not infer a URL scheme or provider-specific ID grammar from the portable field. A Paperclip reference uses its admitted instance base URL as `authority`, stable company UUID as `scope`, stable task UUID as `id`, current readable issue key as `key`, and company-prefixed issue URL as `url`.
+An item MAY carry `task_links` in its own frontmatter. This is the only authoritative structured map from that item to tasks in other systems; do not create a shared writable lookup table or copy remote task status into the KI lifecycle. The field is absent when no link has been verified. When present, it is a non-empty map from provider names matching `^[a-z][a-z0-9-]*$` to non-empty lists of reference objects. Each reference has exactly six non-empty string fields: `authority`, `scope`, `id`, `key`, `url`, and `relation`. Do not infer a URL scheme or provider-specific ID grammar from the portable field.
 
 ```yaml
 task_links:
-  paperclip:
-    - authority: http://127.0.0.1:3100
-      scope: 558dd49e-7615-409f-b7b2-7f19e22171d9
-      id: b76a4ec9-be48-4a3c-8568-7885b5e6789b
-      key: KIS-5
-      url: http://127.0.0.1:3100/KIS/issues/KIS-5
+  github:
+    - authority: https://github.com
+      scope: knowledgeislands/ki-agentic-harness
+      id: I_kwDOexample5
+      key: '#5'
+      url: https://github.com/knowledgeislands/ki-agentic-harness/issues/5
       relation: implementation
 ```
 

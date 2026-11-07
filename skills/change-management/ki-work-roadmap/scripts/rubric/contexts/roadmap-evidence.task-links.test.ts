@@ -42,7 +42,7 @@ Build the foundation.
 }
 
 const reference = `task_links:
-  paperclip:
+  tracker:
     - authority: http://127.0.0.1:3100
       scope: 558dd49e-7615-409f-b7b2-7f19e22171d9
       id: b76a4ec9-be48-4a3c-8568-7885b5e6789b
@@ -70,7 +70,7 @@ test('accepts a provider-neutral map with multiple tasks and providers', () => {
 
 test('rejects an inline YAML provider map and an annotated task_links header', () => {
   const inline =
-    'task_links: {paperclip: [{authority: "http://127.0.0.1:3100", scope: company, id: task, key: KIS-5, url: "http://127.0.0.1:3100/KIS/issues/KIS-5", relation: implementation}]}'
+    'task_links: {tracker: [{authority: "http://127.0.0.1:3100", scope: company, id: task, key: KIS-5, url: "http://127.0.0.1:3100/KIS/issues/KIS-5", relation: implementation}]}'
   expect(findingsFor(inline)).toContain('task_links must be a nested provider map')
   expect(findingsFor(reference.replace('task_links:', 'task_links: # delivery tasks'))).toContain(
     'task_links must be a nested provider map'
@@ -78,13 +78,13 @@ test('rejects an inline YAML provider map and an annotated task_links header', (
 })
 
 test('accepts blank lines within and after the task map', () => {
-  const spaced = reference.replace('  paperclip:\n', '  paperclip:\n\n').replace('      scope:', '\n      scope:')
+  const spaced = reference.replace('  tracker:\n', '  tracker:\n\n').replace('      scope:', '\n      scope:')
   expect(findingsFor(`${spaced}\n`)).toEqual([])
 })
 
 test('accepts YAML comments without stripping URL fragments or quoted hashes', () => {
   const commented = reference
-    .replace('  paperclip:', '  # provider identity\n  paperclip: # local instance')
+    .replace('  tracker:', '  # provider identity\n  tracker: # local instance')
     .replace('      scope:', '      # stable company\n      scope:')
     .replace(
       '      id: b76a4ec9-be48-4a3c-8568-7885b5e6789b',
@@ -99,8 +99,8 @@ test('accepts YAML comments without stripping URL fragments or quoted hashes', (
 })
 
 test('rejects malformed provider, empty field, unknown relation, and duplicate task relation', () => {
-  expect(findingsFor(reference.replace('paperclip:', 'Paperclip:'))).toContain(
-    "task_links provider 'Paperclip' must be lowercase kebab-case"
+  expect(findingsFor(reference.replace('tracker:', 'Tracker:'))).toContain(
+    "task_links provider 'Tracker' must be lowercase kebab-case"
   )
   expect(findingsFor(reference.replace('key: KIS-5', 'key: '))).toContain(
     'task_links reference fields must be non-empty strings'

@@ -436,8 +436,8 @@ test('the repository Markdown audit inspects the selected checkout but never phy
   expect(git(repository, 'add', '.').status).toBe(0)
   expect(git(repository, 'commit', '--quiet', '-m', 'fixture').status).toBe(0)
 
-  // A sibling linked worktree stored inside physical Git metadata, as Paperclip retains them.
-  const sibling = join(repository, '.git', 'paperclip-worktrees', 'KIS-0-fixture')
+  // A sibling linked worktree stored inside physical Git metadata, as some agent tools retain them.
+  const sibling = join(repository, '.git', 'tool-worktrees', 'task-0-fixture')
   expect(git(repository, 'worktree', 'add', '--quiet', '-b', 'fixture', sibling).status).toBe(0)
   writeFileSync(join(sibling, 'sibling.md'), malformed)
   mkdirSync(join(repository, '.git', 'notes-fixture'), { recursive: true })

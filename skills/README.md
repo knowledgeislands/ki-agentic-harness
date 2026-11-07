@@ -45,7 +45,7 @@ Govern ChatGPT conversation capture: honest digest or full-thread coverage, rout
 
 #### `ki-acquire-granola`
 
-Acquire Granola meetings through read-only MCP calls: complete date windows, folder routing, transcripts and screenshots, one capture per meeting UUID, skipping on Acquired or Captured membership. Use for Granola import or audit; `ki-acquire` owns the common contract, the assistant's `ki-muninn` owns CLI execution, and marking or retirement needs separate approval.
+Acquire Granola meetings through read-only MCP calls: complete date windows, folder routing, transcripts and screenshots, one capture per meeting UUID, skipping on Acquired or Captured membership. Use for Granola import or audit; `ki-acquire` owns the common contract, the Inbox's `ki-muninn` owns CLI execution, and marking or retirement needs separate approval.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -67,7 +67,7 @@ Capture a submitted link or scan bounded public sources, then triage current sig
 
 #### `ki-agent-coordination-paperclip`
 
-Deprecated alias of `ki-delegation-paperclip`, kept only so a repository still declaring `[skills.ki-agent-coordination-paperclip]` resolves during the rename's tolerance window. Its audit warns and names the replacement declaration; it owns no standard or procedure. Use `ki-delegation-paperclip` for Paperclip delegation.
+Retired Paperclip delegation skill, kept only so a repository still declaring `[skills.ki-agent-coordination-paperclip]` resolves while it removes the declaration. Its audit warns and asks for the declaration's removal; it owns no standard or procedure and nothing replaces it. Use `ki-delegation` for background-run delegation.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -77,12 +77,12 @@ Deprecated alias of `ki-delegation-paperclip`, kept only so a repository still d
 
 #### `ki-delegation-paperclip`
 
-Govern Paperclip as the KI delegation adapter: company and repository boundaries, Company Operational Review (bootstrap/rebootstrap) readiness, agent memory and knowledge return, and each repository's delivery and integration policy, while repositories remain knowledge and work authority. Use for designing or auditing Paperclip companies, projects, agents, tasks, direct sessions or execution workspaces for KI; not for Paperclip API mechanics or the portable background-run contract, which `ki-delegation` owns.
+Retired Paperclip delegation skill, kept only so a repository still declaring `[skills.ki-delegation-paperclip]` resolves while it removes the declaration. Its audit warns and asks for the declaration's removal; it owns no standard or procedure and nothing replaces it. Use `ki-delegation` for background-run delegation.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
-- **Arguments:** `audit <arrangement> | conform <arrangement> | educate <arrangement> | help | refresh`
-- **Dependencies:** `ki-git`
+- **Arguments:** `audit <repo> | help | conform | educate | refresh`
+- **Dependencies:** None
 - **Runtime:** Portable
 
 #### `ki-subagents`
@@ -143,7 +143,7 @@ Govern coordinating work under the Knowledge Islands work model: the responsive 
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | conform <repo> | drain | educate <repo> | help | hold | mark [only] [no art] | receive | refresh | resume | send | summary [since <time>] [no art]`
+- **Arguments:** `audit <repo> | conform <repo> | drain | educate <repo> | help | hold | mark [only | status only] [no art] | receive | refresh | resume | send | status [no art] | summary [since <time>] [no art]`
 - **Dependencies:** `ki-delegation`, `ki-work-package`
 - **Runtime:** Portable
 

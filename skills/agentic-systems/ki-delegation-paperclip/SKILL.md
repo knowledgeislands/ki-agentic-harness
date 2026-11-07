@@ -2,96 +2,40 @@
 name: ki-delegation-paperclip
 ki-kind: governance
 ki-applicability: declaration-only
-ki-depends-on: [ki-git]
+ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
+contributes: ['.ki.toml']
 description: >
-  Govern Paperclip as the KI delegation adapter: company and repository boundaries, Company Operational Review
-  (bootstrap/rebootstrap) readiness, agent memory and knowledge return, and each repository's delivery and integration
-  policy, while repositories remain knowledge and work authority. Use for designing or auditing Paperclip companies,
-  projects, agents, tasks, direct sessions or execution workspaces for KI; not for Paperclip API mechanics or the portable
-  background-run contract, which `ki-delegation` owns.
-argument-hint: 'audit <arrangement> | conform <arrangement> | educate <arrangement> | help | refresh'
+  Retired Paperclip delegation skill, kept only so a repository still declaring `[skills.ki-delegation-paperclip]` resolves while it
+  removes the declaration. Its audit warns and asks for the declaration's removal; it owns no standard or procedure and
+  nothing replaces it. Use `ki-delegation` for background-run delegation.
+argument-hint: 'audit <repo> | help | conform | educate | refresh'
 ---
 
-# KI delegation — Paperclip
+# KI delegation — Paperclip (retired)
 
-## Position
-
-Paperclip is a coordination plane around Knowledge Islands, not their memory or governance authority. A KI repository and admitted revision remain the durable source for knowledge, work records, authority, and review evidence. Paperclip may schedule agents, hold operational task state, and bind execution workspaces without becoming the place where durable KI meaning lives.
-
-This is the Paperclip adapter in the delegation family Kris chose under ORCH-NAME-DISPATCH on 1 November 2026, renamed from `ki-agent-coordination-paperclip`: `ki-delegation` owns the portable delegation contract and `ki agent` remains the floor launcher. The adapter's remit is wider than dispatch, and it keeps all of it: which company and repository own a task, whether a company is operationally ready, how agent memory returns knowledge to its repository, and each repository's delivery and integration policy. A repository still declaring `[skills.ki-agent-coordination-paperclip]` resolves through a thin deprecated alias that warns and names this declaration, for the rename's tolerance window only.
-
-This skill owns the relationship between those systems. Paperclip's own `paperclip` skill owns control-plane API mechanics, authentication, checkout, task updates, comments, and delegation. `ki-git` owns Git topology, commits, publication, review, and integration authority; this skill projects those rules into Paperclip coordination. Use `ki-subagents` when defining a portable agent role and the active `ki-work` adapter when changing a KI work record.
-
-Each participating repository declares its owning company with required `organisation_code` in `[skills.ki-delegation-paperclip]`; see the standard's [organisation identity](references/standards-agent-coordination-paperclip.md#organisation-identity). Territorial membership alone does not select a company.
-
-Read the [Paperclip coordination standard](references/standards-agent-coordination-paperclip.md) before designing or assessing an arrangement. Read the [generated rubric](references/rubric.md) for its review criteria and the [source record](references/sources.md) only when refreshing volatile Paperclip claims.
-
-For runtime upgrades, local compatibility repairs, or renamed company and issue codes, resolve the host environment repository's Paperclip operations guide and repair inventory before acting. That owner keeps version-specific patches, installed-payload checks, live regression evidence and retirement decisions; instance snapshots remain runtime state. Preserve stable issue identity when repairing historical links, and follow the host's maintenance procedure so loading a repair does not silently interrupt coordinated work. This skill does not own installation commands or a machine-specific patch catalogue.
-
-## Shared model
-
-Give every repository in the company's admitted scope its own Paperclip project. A separate Coordination project has no repository execution workspace and only coordinates scope, dependencies, decisions and hand-offs. All repository work, including read-only inspection, audits, planning and review, belongs in the owning repository project; the same agent role may act in either context without transferring authority. Apply the standard's [project boundary](references/standards-agent-coordination-paperclip.md#project-ownership-and-coordination-boundary).
-
-Every Paperclip implementation run that can mutate a repository uses a task-specific branch and isolated checkout under a Paperclip-owned root outside the repository and its Git directory. It may commit authorised work on that branch; pushing or integrating it requires separate authority.
-
-Keep four identities distinct:
-
-- an **agent role** is durable organisational identity and responsibility;
-- a **run or session** is one execution continuity in an agent harness;
-- a **workspace** is the filesystem and admitted baseline available to that run;
-- a **worker** is the compute or process executing it.
-
-Rita and Sue may both work on `tools-rig` and start from the same admitted revision. Each writing task gets its own worktree or equivalent isolated checkout, cut from a named commit, and a human's working copy is not one of them. Sharing the logical island does not require sharing one mutable directory.
-
-Work records invert that: both of them write roadmap records in `tools-rig`'s designated primary checkout, because an identifier is reserved by a committed ledger advance and two isolated branches can each advance the same number. The [standard](references/standards-agent-coordination-paperclip.md#roadmap-records-are-the-exception) states the exception and cites the roadmap standard that owns the ordering.
-
-Direct human-agent sessions remain valid. A directly addressed agent may use Paperclip's own skill to inspect assignments, create or update coordinated tasks, and return evidence. Paperclip is a shared coordination plane, not a mandatory conversational gateway.
-
-A repository delivery has a named destination branch, reviewer and integration owner before implementation starts. Branch completion is a hand-off; delivery completion requires evidence in the destination branch. Local-only delivery may use isolated worktrees followed by authorised local integration without a pull request. Apply the standard's delivery and recovery contract; `ki-git` owns the integration grant and safe Git write boundary.
-
-Local execution delivers into the human's designated primary checkout on local `main`, including its working files. A task branch, another clone's `main` and a published remote ref are different destinations. Name the destination host and checkout explicitly.
-
-Use a human-readable company and repository path, preferring the governing roadmap code first in each worktree name and the Paperclip task key as a collision suffix. Apply the standard's supported-field fallback where automatic provisioning cannot render the roadmap code. Preserve existing bindings until a verified migration can update Git and Paperclip together.
-
-Before moving delivery to a remote worker, prove the local delivery cycle, review what the coordination platform already provides, and agree a repository-owned remote-delivery policy. The [remote delivery prerequisite](references/standards-agent-coordination-paperclip.md#remote-delivery-prerequisite) defines the decision boundary without choosing a remote architecture. A programme put on hold stays held until the human explicitly resumes it.
-
-Paperclip is additive and replaceable: repository-owned knowledge and work must remain understandable to an authorised human or alternate agent with the declared skills and tooling. Apply the standard's [replacement test](references/standards-agent-coordination-paperclip.md#replaceable-coordination) and [recurring-activity boundary](references/standards-agent-coordination-paperclip.md#recurring-activities-and-routines): repository definitions own obligations, while routines schedule their governed execution.
+Kris retired Paperclip delegation on 7 November 2026: "anything to do with paperclip. We know that we don't need to be doing anything with that now." Every Paperclip standard, procedure and check has gone. This stub owns nothing: it exists only because the host refuses a repository whose `.ki.toml` declares a skill no harness provides, and [the migration file](references/standards-retirement-migration.md) says how a repository leaves it and when the stub goes. [The generated rubric](references/rubric.md) publishes its one check and [the sources](references/sources.md) record why it exists.
 
 ## Operating modes
 
-When configuring agent memory or reconciling employee learning, read the [agent-memory and knowledge-return standard](references/standards-agent-memory.md). Agent memory is a scoped working aid, not a parallel knowledge base or plan. Its weekly knowledge-return check belongs in the existing repository-owned review where practical; bootstrap and post-hire reconciliation verify this boundary without enabling memory or schedules implicitly.
-
-Company Operational Review is the human-facing name for the repeatable company review; bootstrap and rebootstrap refer to the same work and preserve its task, approvals and evidence. It checks operational readiness and efficiency: repository projects and styling, capable lean staffing, useful roadmap progress, and daily reporting, next-work and weekly review coverage. Use the existing task within the selected company and pilot; the review does not expand authority to other companies.
-
-The operational goal is reviewed roadmap work delivered into the designated checkout. The review establishes the prerequisites for that flow; an inventory or another preparation task is not the delivered result. Use the onboarding guide's [bounded outcome approval](references/standards-existing-estate-onboarding.md#approve-an-outcome-not-every-step) and [roadmap-to-delivery loop](references/standards-existing-estate-onboarding.md#roadmap-to-delivery-loop): carry existing authority through the necessary steps, prepare selected drafts when no Ready work exists, and ask only for a missing decision. Apply its staffing and recurring-coverage guidance: justified hires need actual supported human-approval proposals, and manual and scheduled calls share governed definitions. The guide does not itself grant work selection, implementation or integration authority.
-
-Repository tasks use the declared repository skills and their required dependencies as their baseline in the actual task workspace. Company-library assignment, runtime discovery, and repository declaration are separate checks; follow the standard's [execution baseline](references/standards-agent-coordination-paperclip.md#repository-skills-are-the-execution-baseline). Use the reusable [Company Operational Review brief](assets/bootstrap-task.md) to resolve the current company and territory without caller-supplied placeholders and return what is working, what improved, what happens next and which decision needs the human.
-
-Use the [post-hire configuration brief](assets/post-hire-task.md) from an external agent after approved hires or when reconciling existing agent settings. It bounds wake, KI and local-toolchain environment, skill-access and managed-instruction repairs without starting work or assuming direct database access.
-
-Before reviewing a candidate for integration, reconcile it with current destination `main`. Refresh a diverged delivery branch in its isolated worktree, normally by merging `main`; rebase only with explicit history-rewrite authority. Verify and independently review the refreshed result. This delivery gate does not authorise bulk branch updates, replay superseded work or lift a programme hold; apply the standard's [branch refresh boundary](references/standards-agent-coordination-paperclip.md#refreshing-a-delivery-branch).
-
-This governance skill carries **AUDIT · CONFORM · EDUCATE · REFRESH**. `help` / `-h` / `?` explains the skill, invocation, modes, and off-ramps, then stops. With no clear mode, provide the same explanation and only in an interactive session ask which mode and arrangement to use.
-
 ### Mode AUDIT
 
-→ Read [the AUDIT procedure](references/mode-audit.md) for the `.ki.toml` declaration precondition and the host invocation from inside a Paperclip run.
-
-Run `ki repo audit --skill ki-delegation-paperclip --repo <repo>` when the repository declares this capability. Every COORD item is a judgment criterion, so a mechanical `PASS` proves resolution, not conformance. Apply the judgment criteria in the generated rubric to the supplied Paperclip company, agent, task, workspace, and KI evidence. Report repository facts separately from remote Paperclip facts; an unavailable remote view is unknown, not a pass.
+Run `ki repo audit --skill ki-delegation-paperclip --repo <repo>`. The one check warns that the skill is retired and asks for `[skills.ki-delegation-paperclip]` to be removed from `.ki.toml`.
 
 ### Mode CONFORM
 
-Bring an explicitly scoped coordination design or local declaration into line with the standard. Preserve repository authority, repair task-to-work links, separate concurrent mutable workspaces, and identify evidence that must return to the island. Use Paperclip's own skill for authorised remote changes; this skill never treats an assignment as permission to mutate a repository, push, merge, deploy, or accept KI work.
+Run `ki repo conform --skill ki-delegation-paperclip --repo <repo> --dry-run` before applying it. CONFORM republishes the generated rubric only; it never rewrites the repository's declaration, which the repository removes itself.
 
 ### Mode EDUCATE
 
-For an initial or repeat Company Operational Review, including requests called bootstrap or rebootstrap, follow the [existing-estate onboarding guide](references/standards-existing-estate-onboarding.md) after the coordination standard. It owns the cross-company project styling scheme and stages inventory, one project per repository, task-link reconciliation on work items, repository health, the operating cadence, justified hire proposals, and a verified local delivery pilot without itself granting provisioning or agent resumption.
+Run `ki repo educate --skill ki-delegation-paperclip --repo <repo>` to render the concern and rubric, then point to [the migration file](references/standards-retirement-migration.md).
 
-Explain or draft the smallest arrangement that preserves the shared model. Start with one company or group, named repository identities, agent roles, task-to-work locators, workspace isolation, and evidence return. Do not provision a company, invent remote identifiers, or require every conversation to pass through Paperclip.
+### Mode HELP
+
+Explain that the skill is retired, that the repository removes its declaration, and stop without reading or changing repository state.
 
 ### Mode REFRESH
 
-**Precondition:** REFRESH writes only this canonical skill in `ki-agentic-harness`. From an installed copy, stop and redirect to the Harness.
+**Precondition:** REFRESH writes only the canonical skill under `ki-agentic-harness`. When invoked from an installed copy, stop and redirect to the harness.
 
-On the cadence in the [source record](references/sources.md), re-read Paperclip's official skill and documentation for task, workspace, chat, identity, and authority changes. Update only the Paperclip-facing delta; KI repository authority and lifecycle semantics remain with their owning KI skills.
+Read [the migration file](references/standards-retirement-migration.md); once no repository declares `[skills.ki-delegation-paperclip]`, delete this stub rather than refresh it.
