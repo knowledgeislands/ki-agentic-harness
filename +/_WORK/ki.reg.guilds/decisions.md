@@ -532,3 +532,7 @@ stage5-draft wrote all fourteen units; the independent Codex reviewer (stage5-re
 ## 2026-11-07 08:21 GMT · stage6 received unlanded; s5-blind tallied; ILL-26 pointer sent
 
 stage6 changed nothing: the core's style part is about 5,000 words against CORE-BUDGET a)'s 4,000 limit, and the core lacks the mark words, query options, interactive pass and listening fields the style carries today; a switch would change every coordinator on this machine at commit through the chezmoi link, so it held. STAGE6-BUDGET and CORE-EVERY-TURN copied and sent to blind review; the split rests here until Kris answers them with STAGE5-DEPTH. s5-blind agreed on HOLD-RUNSTATE and STAGE5-DEPTH (both now high). ki.prj.agora sent the ILL-26 pointer to `5a2030de` it asked for.
+
+## 2026-11-07 08:24 GMT · s6-blind tallied
+
+Codex reviewer: CORE-EVERY-TURN agreed (now high); STAGE6-BUDGET agreed at medium but left at medium, because the coordinator's masking regex broke on a nested bracket and the reviewer saw the tail of a)'s reason. Lesson for this seat: mask by removing the whole bracket up to its balanced close, and read the masked brief before launching.

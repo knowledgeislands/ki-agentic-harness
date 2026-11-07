@@ -6,6 +6,8 @@
 
 **Context:** Under CORE-BUDGET a) (Kris, 7 November 02:00 GMT), the core's word check warns above 3,500 words and fails above about 4,000. After the stage 5 rewrite, the part of the core that would become the always-loaded style is about 5,000 words. That is because stage 5 cut only about 6%, which is the open STAGE5-DEPTH question. This run was told to make no deeper cut, so stage 6 cannot add its size check without failing the tests.
 
+The blind reviewer (Codex) chose a) too, at medium confidence: a ceiling at today's oversized core would postpone the context saving the switch exists for, while a reviewed cut proves it before rollout. It asked that the budget cover the final core with the CORE-EVERY-TURN summaries included, and that the cut's feasibility and preserved meaning still be proven. Confidence is not lifted: the coordinator's masking slipped and the reviewer saw the tail of a)'s reason, so the review was not fully blind.
+
 **Query:** Should the deeper cut of the core be done together with the style switch, before stage 6 lands?
 
 **Options:**
@@ -18,11 +20,13 @@ b) Land the switch now with the core at about 5,000 words. The size check fails 
 
 **Context:** The style will be generated from the core alone (STYLE-FROM-CORE a)). Today's style carries the mark words, the shape of a query's options, the interactive pass and the listening and sync fields. The current core has none of them. Each is in a purpose file that the coordinator would have to read when it needs it. The plan meant the mark words and a five-line rule for acting on messages to sit in the core. A switch would change every coordinator on this machine as soon as it is committed.
 
+The reviewer added: message handling is partly in the core already, so complete its summary rather than duplicate it; include the interactive-pass trigger, which a) omits; make the loading occasions explicit; keep detailed procedures in their purpose files.
+
 **Query:** Before the switch, should the core gain a short every-turn summary of the rules that are not in it today?
 
 **Options:**
 
-a) (recommended, confidence medium - it keeps the rules every turn needs always loaded, as the plan meant, but it adds about 300 words against the size limit) Yes. Add one short paragraph each for the mark words, acting on messages, the query's lettered options and the listening fields, inside the markers, each pointing to its purpose file. The blind review checks these in the same stage 6 pass.
+a) (recommended, confidence high - reviewed: the blind Codex reviewer chose the same course, since the switch removes reminders the current style supplies and a contents table cannot reliably trigger the purpose-file reads that replace them; it keeps the rules every turn needs always loaded, as the plan meant, but it adds about 300 words against the size limit) Yes. Add one short paragraph each for the mark words, acting on messages, the query's lettered options and the listening fields, inside the markers, each pointing to its purpose file. The blind review checks these in the same stage 6 pass.
 
 b) No. Leave them in their purpose files and rely on the load table, accepting that a coordinator must read a purpose file before using them.
 
