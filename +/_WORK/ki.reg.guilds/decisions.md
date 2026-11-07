@@ -455,3 +455,16 @@ Kris: "Adopt it now (recommended, high confidence)" and "Test it next trial (rec
 ## 2026-11-07 04:52 GMT · TRIAL-PUBLISH and ORCA-IDENTITY-LEAK (interactive pass, queries 18 and 19); pass closed, mark
 
 Kris: "Workers commit, normal rules (recommended, medium confidence)" and "Drop them, check terra (recommended, medium confidence)". TRIAL-PUBLISH a): an Orca worker commits its own note by explicit path inside a write window granted by ask, under the ordinary rules, never running `git stash`; the coordinator pushes at receive (joins the Orca adapter run). ORCA-IDENTITY-LEAK a): `ki agent` also drops `ORCA_PANE_KEY`, `ORCA_TAB_ID`, `ORCA_WORKTREE_ID` and `ORCA_AGENT_HOOK_*` from runs it starts, then terra's Orca list is checked; sent to ki.prj.tools-burndown as MSG-fef220f9. The interactive pass closed: 19 queries asked; DOCKET-HOME parked; GUILD-NAME, ACQUIRE-SPLIT and STAGING-HOME held for Kris's unfinished thought on how the knowledge graph fits with the other pillar structures. Mark struck.
+
+## 2026-11-07 05:00 GMT · AWAY-WINDOW granted
+
+Kris, about 04:59 GMT: "Okay, I'm out of here now. It's over to you. I'm just checking out. Get as much as you can done. Don't introduce knowledge at top level anywhere. You can build the skills, but don't do anything else with it."
+
+- Window: from 05:00 GMT (05:00 UTC) until Kris returns; no end time given.
+- Work: the plan in `state.md` next steps, one editing run per repository at a time, primary checkouts only (NO-WORKTREES).
+- Permitted: carry out decisions already taken; build the agreed skills (`ki-dodecakrisis`, `ki-knowledge-graph`, `ki-exchange-dynamics`, the package-repository shape skill) and land the agreed standards; receive runs, ACK and route messages; blind reviews; commit and push fast-forward.
+- Excluded: introducing knowledge at the top level of any repository; doing anything with the knowledge itself beyond building the skills (no card dispatch, no knowledge-base or staging changes, no move of curation out of `ki-acquire` while ACQUIRE-SPLIT is open); the guild rename (GUILD-NAME open); the legal site merge (waits on LEGAL-ACCESS); DOCKET; anything needing a new decision, which is parked for the return report.
+- Never lifted: force-push, `--no-verify`, stash, rebase or reset of a primary checkout; posting outside Kris's repositories.
+- Wake and stop: a run finishing or a message wakes the coordinator; "stop the wake" or Kris's return ends the window.
+- Keep-awake: `caffeinate -dims -w 69227` on sol for this session, released when the window ends.
+- Revisions at entry: ki-agentic-harness origin/main `c55a28e0`, local main `c55a28e0`; ki-principal origin/main `eedb6959`, local main `eedb6959`.

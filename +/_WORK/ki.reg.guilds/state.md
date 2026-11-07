@@ -1,6 +1,6 @@
 ---
 id: ki.reg.guilds
-state: handoff-to-supervisor
+state: with-worker
 since: 2026-11-06T18:54:52Z
 received: 2026-11-06T16:54:00Z
 beat: null
@@ -30,12 +30,23 @@ workers:
 
 ## Next steps
 
-- NO-WORKTREES for now (Kris, 02:55 GMT): guild runs edit in the primary checkout, one per repository at a time, until Kris lifts it.
+- AWAY-WINDOW from 05:00 GMT until Kris returns: build the agreed skills and land the agreed standards; no knowledge at top level, nothing done with the knowledge itself. One editing run per repository; primary checkouts.
 
-0. STAGE-C-ROLES landed (`a4da0db2`, 03:03 GMT); REFRESH MSG-4cf14cb8 out to 15 packages, ACKs coming in; household-terra and household-sol switch their footers.
-1. Nothing running.
-2. Then, chained in the harness after STAGE-C-ROLES: `cm-tidy` (CHANGE-MGMT cluster), then the staged standard split (STAGING), then the absorption of ki.prj.ways-of-working once ki.sop.main acknowledges MSG-a5ca3edb.
-3. Waiting: Kris creating the Cloudflare Access application for `legal.midnight.ninja` and giving its name, login method and allow policy (LEGAL-ACCESS), then run `legal-merge`; Kris verifying vega's key (VEGA-KEY); personal.reg.inbox-sol's state of coordination (COORD-OVERLAP); ki.sop.main's bundles (MSG-da83a96f) and Orca items (MSG-8125375d).
+1. Running: `d12-skill` (harness, `ki-dodecakrisis` in `skills/acquire/`; D12-CORE; medium).
+2. `method-land` (harness): HOLD-STATES with HOLD-TIDY, METHOD-BATCH with the ADR-007 update and AUDIT-ORPHANS item, BROADCAST-FORM, the `task_links` triage record; refresh line to every package after. Large.
+3. `orca-land` (harness): the fifteen ORCA-ADAPTER rules, RUN-RECOVERY, RUN-HANDOVER, TRIAL-PUBLISH onto the `orca-adapter` draft, independent review, then onto `main` (ADAPTER-MERGE). Large.
+4. `doer-lessons` (harness): DOER-LESSONS from ki.prj.agora CD-63 into the coordination skills. Medium.
+5. `kg-skill` (harness): `ki-knowledge-graph` in `skills/acquire/` (KG-NAME, HARNESS-SCOPE a)); no change to `ki-acquire`, no card dispatch. Medium.
+6. `eda-skill` (harness): `ki-exchange-dynamics` in `skills/acquire/` (SKILL-HOMES a), design note in ki.sop.main). Medium.
+7. `pkg-shape` (harness): package-repository shape skill (REPO-SHAPE-PACKAGES, STOA-SHAPE). Medium.
+8. `header-estate` (harness): HEADER-ESTATE into `ki-repo-dotfiles-chezmoi`. Small.
+9. `cm-tidy` (harness): the CHANGE-MGMT cluster. Medium.
+10. `standard-split` (harness): the staged ki-coordination split, stage 2 onwards. Large.
+11. `absorb` (ki-principal, then the guild package): ways-of-working absorption under ABSORB-CLOSE. Large.
+
+Excluded: `legal-merge` (waits on LEGAL-ACCESS, Kris creating Cloudflare Access); GUILD-NAME, ACQUIRE-SPLIT, STAGING-HOME (Kris's unfinished pillar-structure thought); DOCKET-HOME (parked).
+
+3. Waiting: Kris creating the Cloudflare Access application for `legal.midnight.ninja` (LEGAL-ACCESS); Kris verifying vega's key (VEGA-KEY); personal.reg.inbox-sol's state of coordination (COORD-OVERLAP).
 
 ## Held
 
