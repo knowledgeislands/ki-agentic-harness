@@ -540,3 +540,160 @@ Codex reviewer: CORE-EVERY-TURN agreed (now high); STAGE6-BUDGET agreed at mediu
 ## 2026-11-07 08:27 GMT · seven ACKs cleared
 
 ki.sop.main ACKed six routed lines from the absorption (MSG-8feeef7e DONE-PRUNE, MSG-f852d108 DONE-PRUNE-TOOLS-KI, MSG-42cbd1a1 QUICK-FIXES-LIFECYCLE and MSG-7f2ed6ba MIRROR-TOKEN taken as its open queries for Kris; MSG-80fe4593 folded into KA-CLOSE-GATE; MSG-fd8320ff authorised under AGENT-HOME a)); ki.prj.agora ACKed MSG-7c41e2a9. All seven lines and their matching Outbound lines are removed.
+
+## 2026-11-07 08:37 GMT · ways-of-working hand-over placed
+
+Operational, under ABSORB-STEWARD a) (Kris, 7 November 02:12 GMT: all of ki.prj.ways-of-working is guild work): run `absorb-place` placed the hand-over in run `absorb`'s report, sections A1 to A9, from ki-principal `d8ab8112`. In `discussions.md`: the 31 full Move queries under `## Open`, each with its area line; the 8 one-line Move items (LINT-WHERE, PACKAGE-FORWARDING, STATE-MACHINE-DECISIONS, ENACTMENT-ADMIN, UNATTENDED-FIELD, UNATTENDED-AND-DUE-DATES, LEGACY-PREFIX, PARTIAL-REPOS) under `## Parked`, since a one-line entry is parked by form; the 8 duplicate one-liners of full queries dropped, as the plan says. Of the 24 Merge queries, CLI-PREVIEW joins DRYRUN-SCOPE as a Context point and option c), STEWARD-FIELD is a parked line beside ROLE-FIELDS, and the other 22 wait whole under `## Parked` beside their held or parked target (KNW-005, HOLD-TIDY, APP-SKILLS, the Orca set, ACQUIRE-ROUTE), none of which is an open query here. DEPS-HOLD (MSG-35f55f3c) is a parked line. The report's four queries, FINISH-HOLD, WOW-NAMING-FILES, PROTECTED-STILL and RUN-GROUPS, are open. A4 to A6 follow as entries of their own, verbatim, nested message lines given their own headings and DRY-RUN-FLAGS completed from the source log. A8 is in `skills/harvest.md`; A9's six notes are in `skills/`.
+
+## 2026-11-07 08:37 GMT · AUDIT-FOLDER2 finding received
+
+Operational: run `absorb` found that `ki repo audit --skill ki-work-package` and `--skill ki-coordination` fail to run in ki-principal, at `d8ab8112` and at the unchanged baseline `f7f6268c`, with "rubric item FOLDER-2 audit outcome … uses an undeclared level"; in ki-agentic-harness both run (0 FAIL, 9 WARN). FOLDER-2 is this guild's own `ki-work-package` rubric item, changed in harness `5df48ab1`, so the fix is guild skill work within the away window's "You can build the skills" and needs nothing from Kris: a bounded harness run reproduces it against ki-principal and makes FOLDER-2 return only declared levels. It blocks the close gate's audit evidence across the territory until then.
+
+## 2026-11-07 · Kris's words and pointers from ki.prj.ways-of-working
+
+Pointer: the entries below are copied verbatim from ki.prj.ways-of-working's `decisions.md` at ki-principal `d8ab8112`, under ABSORB-STEWARD a). A4, Kris's words no skill yet carries, run from COUNSEL to ANNOTATED-BOARD-SKILL; A5, pointers kept beside their parked queries (ENACTMENT-ADMIN, TERRA-RECOVERY's retention, DRYRUN-SCOPE, APP-SKILLS and the Orca set), from ENACTMENT-ADMIN to ORCA-ENV-LEAK; A6, the work state machine set that goes with the parked STATE-MACHINE-DECISIONS, from WORK-STATE-MACHINE to DIAGRAM-AGREED.
+
+## 2026-10-17 23:09 BST - COUNSEL
+
+- COUNSEL - (Kris, 17 October 23:09 BST) "I'm hoping this conversational style is quite useful, by the way. It helps me to sort of express the different things I'm thinking. As a general thing about me, I'll talk through things and give different perspectives on it. I'm not going to say what I want it to be, and I also want to have good counsel given to me by the agentic system as well. It's not me dictating." Applied in briefs: weigh and challenge Kris's model rather than transcribe it.
+
+## 2026-10-18 02:49 BST - MECHANICAL
+
+Kris, as received: "I want you to delegate and use mechnical commands as much as possible"
+
+Taken as: every unit is delegated, and each run prefers mechanical commands over hand edits - a generated plan run as a script (`git mv`, `sed`, `ki` subcommands, generators), dry run first, then applied and checked - with hand edits only where judgement is needed.
+
+## 2026-10-22 23:22 BST - guard against over-engineering
+
+Kris: "be careful that we are not over engineering at all times too".
+
+Taken as a standing steer for this work. Applied now to tools-ki, which has had eight fix rounds: the ninth review round is the last. Admit `0fd85a08` unless a reviewer finds a defect that breaks ordinary use of the current `ki` on real state; edge cases such as an older `ki` writing after the new one has checkpointed go into the release notes as known limits, not into a tenth fix. Any fix still needed is the smallest that clears a blocking finding. The same test applies to every brief: the simplest change that does the job, with reviews sized to the risk.
+
+## 2026-10-17 - KI-AGENTS-NAME
+
+- KI-AGENTS-NAME, homed in this log under DECISION-HOMES, in Kris's 17 October words: "Keep "agents"; ways of working logs the decision in its decisions log and nothing is renamed." State of play may strike its own entry to a pointer here.
+
+## 2026-10-27 01:35 GMT - too many questions
+
+- 2026-10-27 01:35 GMT · Kris: "you are asking me too many questions again". Taken as a standing steer: bring Kris no questions until the action plan is in front of Kris; where an answer reads one way, take that reading and log it here rather than asking. "Release ... As recommended" is taken as SWEEP-RELEASE-BOUND a without confirmation (applied with the action plan, not before); WEBSITE-CLOSE stays held.
+
+## 2026-11-01 00:20 GMT - QUALIFY-ITEMS
+
+- 1 November 2026, 00:20 GMT: **QUALIFY-ITEMS.** Kris: "maybe we could qualify the decisions as well. That need to be made, not just the decisions, so the discussions, as we now call them, and then queries. You could group the discussions". Taken as: label each open item either a decision (a choice to confirm, bundled where high confidence) or a discussion (needs Kris's own view: medium confidence, or something only Kris knows), and group them by theme; decisions first. Read back to Kris for confirmation.
+
+## 2026-11-03 - LISTEN-TRUTH
+
+- 2026-11-03 · IMPORTANT · LISTEN-TRUTH · Personal > Household > sol (personal.reg.household-sol), for household-terra's LIVE-THREADS (Kris 01:30 GMT: anything not live "is misleading if it says it"): your `state.md` says `listening_status: on`, but no thread of this work is running on sol or terra. At your next start, set `listening_status: off` and a true `state:` and `since:` while nothing is running.
+
+## 2026-11-03 - ANNOTATED-BOARD-SKILL
+
+- 2026-11-03 · ANNOTATED-BOARD-SKILL · from personal.reg.assistant-terra (🦉⭐ 🔑 personal.reg.assistant-terra), for personal.reg.assistant-terra.kiv (🎨 🔧, Claude Design, which cannot write to ki-principal), at Kris's request: please fold the annotated design-board method, with its component breakouts, into the `ki-design-system` skill in ki-agentic-harness, so other repositories can use it. The proposal is in `krisb/assistant` at `+/_WORK/personal.reg.assistant-terra/aside/annotated-design-board.md`: step 0, Review, in `ki-design-system`; the board as a standing projection; numbered pages; shells, with `N0`/`T0` around each whole shell and their components as `0.x.y` artboards in every state; and the region codes. It came out of the KIV design board (KIV-DESIGN-BOARD). Reply to personal.reg.assistant-terra.
+- 2026-11-03 · ANNOTATED-BOARD-SKILL addendum · from personal.reg.assistant-terra (🦉⭐ 🔑 personal.reg.assistant-terra), for personal.reg.assistant-terra.kiv: the annotated-board scripts now live in `krisb/assistant` at `prototype/kiv/board/` (a985c45): screenshot each page and shell, measure the labelled regions, capture each component in its states and build the canvas artboards. Its README gives the refresh steps and the KIV-specific parts another site would change. Please take them as the starting point for `ki-design-system`'s own board tooling.
+
+## 2026-10-20 23:30 BST - ENACTMENT-ADMIN
+
+Kris: "ENACTMENT-ADMIN ok lets go safe with a) but we will need to consider it soon"
+
+Taken as: a) after blind review. The gate stays on Admin, Pillars and Resources (SDR-KI-PRINCIPAL-004); the portable gate statements name `Admin/` alongside them, the Great Library's section stays Pillars-only, and the island's Enactment Process widens the owner-instruction stand-in so one approved scope covers a batch of related edits. No new decision record, no harness change. Narrowing the gate (the tiered or Admin-only options) stays open and comes back to Kris soon, carried as an open point in state.md, not a record.
+
+## Live pointers - 29 October 2026
+
+- MD-STANDARD / WORK-TIDY-GATE: [KI-TOOL-KI-CLI-175](/Users/krisbrown/kis/knowledge-islands/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-175-footer-markdown-writers.md) carries completed original-scope local end-to-end writer/exclusion and staged-gate evidence (`03374463`), independently accepted Done in `76df015a`. Global/HNR historical cleanliness, bypass cause and other-host/provider freshness are unproved; no closure or pruning was performed by this worker.
+- HOST-SYNC / TRADES-REPLY / WAITS-AS-TRADES: [live design](https://github.com/knowledgeislands/ki-principal/blob/d8ab8112/+/_WORK/ki.prj.ways-of-working/host-sync/host-sync-and-reply-trades.md) is unadopted and preserves full received source and Rig reply destinations. [Parked queries](https://github.com/knowledgeislands/ki-principal/blob/d8ab8112/+/_WORK/ki.prj.ways-of-working/discussions.md) retain every source, finish, audience, checksum, comparator, thread-default, external-link and retry choice.
+- RUNHOME-RENAME / HOME-STORE / CLOSE-COLLISION / AGENT-SCOPE: [Tools incoming queue](/Users/krisbrown/kis/knowledge-islands/ki-principal/+/_WORK/ki.prj.tools-burndown/messages.md) owns the grouped lifecycle need and the separately routed exact/exclusion-scope need. Fresh-group guidance is a workaround; no store repair, HNR inspection or receiver completion is claimed.
+- PUSH-FOOTER: received as observation only; the sender expressly requested no investigation or policy change. Preserve narrower task authority; this receipt broadens no current method-worker scope.
+
+## Retained publication evidence - 29 October 2026
+
+The proposed transition is superseded: independent live-ref review found all original effects already published, and the empty unpublished review branch was retired under existing Git authority. No primary rewrite, new activation approval or additional publication was needed. Preserve `refs/retention/wow-publication-original-20261029-urag5vjr` and `/Users/krisbrown/.local/state/ki/work-archives/wow-publication-20261029-urag5vjr/` as recovery/provenance for PUBLIC-REPORT-AUDIENCE; the private supersession and retirement proofs remain in the ways-of-working-reg runtime. This does not clear the historical audience question or authorise history/access changes. Existing MOD-011 and original Tools retention facts above remain unchanged.
+
+## 2026-11-02 01:56 GMT - DRY-RUN-FLAGS
+
+- 2 November 2026, 01:56 GMT: received **DRY-RUN-FLAGS** (personal.reg.assistant-terra, Kris: "My preference is always something like `--[no]-dry-run` ... it's got a dry run on by default. I don't like the idea of these write ones ... minus f to force it again. That feels wrong"). Taken as: one convention across KI tooling: every changing command dry-runs by default, `--no-dry-run` writes, and `--write`, `--apply`, `--yes` and `-f`/`--force` do not switch writing on. Run `dry-run-survey` surveys the KI tools and the harness and drafts the standard and the `--force` question for Kris. As received:
+  - 2026-11-02 · DRY-RUN-FLAGS · from personal.reg.assistant-terra (Personal > Assistant (terra)): Kris wants one dry-run convention across all tooling, to be thought through here and rolled out across Knowledge Islands tools where they have dry runs: "My preference is always something like `--[no]-dry-run` ... it's got a dry run on by default. I don't like the idea of these write ones, because usually write ones means it's writing something out to standard out ... minus f to force it again. That feels wrong". The proposed convention:
+  - Any command that changes something is a dry run by default.
+  - `--no-dry-run` makes it write.
+  - `--write`, `--apply`, `--yes` and `-f`/`--force` are not used to switch writing on.
+
+  Whether `--force` keeps a separate meaning, such as overriding a safety check, is for you and Kris to settle. The dotfiles go first: personal.reg.household-terra has been asked to make its own scripts consistent, and the chezmoi source currently mixes `--dry-run`, `--no-dry-run`, `--write`, `--apply`, `--yes` and `--force`. Please reply to personal.reg.assistant-terra.
+
+## 2026-11-02 15:24 GMT - RE-BOOTSTRAP-2-NOV
+
+- 2 November 2026, 15:24 GMT: **RE-BOOTSTRAP-2-NOV.** Kris re-opened this work: run group `ki-prj-ways-of-working`; "listen to your own messages.md for the whole session ... act on new lines, remove each line in the commit that records it, and reply by appending to the sender's messages.md"; "ki.prj.tools-burndown is on hold, so fix the two tools-ki faults yourself rather than routing them there"; "The four pillars are pioneering the work model and only keeping you informed, so take what's proven when Kris opens that up"; "Add a Host: sol trailer to every commit"; "Send replies to personal.reg.assistant-terra, Kris's liaison". Taken as: runs `launcher-reports` (report homing beside the brief, focus folders, and the `ki agent close` relative-home guard) and `granola-screenshots` (the screenshot-count failure), chained in tools-ki, replacing the lines routed to tools-burndown (REPORTS-HOMING, GRANOLA-IMPORT-FAIL); DRY-RUN-FLAGS stays with Kris as DRYRUN-SCOPE (`--force` answered); no install or release without Kris. method_read df3f5503 to b3c631c2.
+
+## 2026-11-02 00:24 GMT - E2E-WAY
+
+- 2 November 2026, 00:24 GMT: received from personal.reg.assistant-terra: **E2E-WAY** (Kris: "this is something I think we want to adopt"): run `ki-e2e-draft` drafts a `ki-e2e` skill on a harness branch from the proposal note, unpublished, for Kris's review (E2E-ADOPT). **ACQUIRE-HELD-RENAME** update: held material is now top-level `_held/`: run `acquire-held-2` updates `ki-acquire` and tells tools-burndown the Granola importer path. Replies go to assistant-terra. As received:
+  - 2026-11-02 · E2E-WAY · from personal.reg.assistant-terra (Personal > Assistant (terra)): Kris wants to adopt browser testing with e2e as a Knowledge Islands way of working: "this is something I think we want to adopt". It should become a skill, say `ki-e2e`, for testing any website a Capital owns, with captioned test videos and a report page as evidence on tickets. The proposal is in the [note](/Users/krisbrown/kis/personal/assistant/+/_WORK/personal.reg.assistant-kiv/aside/e2e-way-of-working.md). It was written by personal.reg.assistant-kiv, whose viewer, `prototype/kiv/` in krisb/assistant, is the working pilot. The practice is exact steps by default, roles and names rather than CSS, polling rather than sleeps, tightened screenshot comparisons, and checking that each test fails when it should. The presentation helper and the report page could move into the skill. Watch for the following: e2e is at version 0.22 (pin it), it needs Node 24.8 or later, each machine downloads about 120 MB of Chromium once, and screenshot references only match on the operating system that made them. HNR State of play has been asked to adopt it across HNR's sites. Please reply to personal.reg.assistant-terra.
+
+## ORCA-SUBAGENTS - ki agent runs appear as Orca sub-agents (30 October 2026, 16:10 GMT)
+
+Kris, in this thread: "I really want to make sure that we are updating and changing and fixing the way that we're using KI agent to make sure that they run in the same way that Orca does so that they come through as sub agents rather than primary agents and therefore they don't congest things. So look at the way that Orca does its sub agents and try and make it as compliant with that as you can ... if this is a thread which is in orca ... Orca does have ... an ID that it puts in it ... we can go and grab that and we can put that in the thing and then we know how to send it as a [sub-agent] and link it all up to the hierarchy". Taken as: investigate and design first in this package; implementation in tools-ki goes to its owning work once the design is seen. Also: the Summary must give a parked count and carry every query in full.
+
+## 2026-10-30 16:16 GMT - OP-CACHE and ORCA-WORKER-CLEANUP
+
+- 30 October 2026, 16:16 GMT: received OP-CACHE (hnr.sop.main; Kris: "agents should be using cached_op") and ORCA-WORKER-CLEANUP (hnr.sop.5ge, at Kris's request). Both are delegation-method changes in this work's scope. OP-CACHE: run `op-cache-rule` drafts the rule for the delegation guidance and brief templates and sends it to the KI Agentic Harness work as a message line. ORCA-WORKER-CLEANUP: folded into the Orca sub-agent design by run `orca-cleanup`, after `orca-subagents`, including a read-only check of what `worker-release` removes.
+
+## 2026-10-30 16:18 GMT - OP-CACHE applied
+
+- 30 October 2026, 16:18 GMT: op-cache-rule routed the harness change back here, since this work owns `ki-delegation`. Applying it under Kris's OP-CACHE words as a bounded change: run `op-cache-apply` edits the ki-delegation standard, authority footers and footer rubric per `design/op-cache-rule.md`, regenerates, verifies and pushes ki-agentic-harness.
+
+## 2026-10-30 16:22 GMT - ORCA-ENV-LEAK
+
+- 30 October 2026, 16:22 GMT: orca-subagents found that `ki agent` runs inherit the coordinator's `ORCA_*` environment, so Orca treats each run as the coordinator (verified). Under Kris's ORCA-SUBAGENTS words ("fixing the way that we're using KI agent"), the drafted ORCA-ENV-LEAK line (Part A, strip the four `ORCA_*` variables) goes to ki.prj.tools-burndown now; Part B (launch through `orca orchestration worker-start`) waits for Kris with the design's queries.
+
+## WORK-STATE-MACHINE - 2026-10-29
+
+Kris: "drain isn't the state, but it should be what we're doing to target or move to a particular state. So I think what we need is not only the state, but we also need the things that transition between them and what those things are called. So really we need a proper finite state machine that covers off this properly. And what we expect as conditions of doing those transitions. I think then we need to understand where something goes when it's in handoff to a target, whether it's on hold or finished. And then I think we're also missing some kind of bootstrap state. And you can get to that by re-bootstrapping, and bootstrapping can then transition to with worker or with supervisor as a result of it ... Can you draw that as a state machine with the different states and the arcs that things can take, and then underneath that diagram, can we then also define things about both the states and the arcs in terms of how we get there? And can you use something like ArchiFi to do that and display the SVG".
+
+Read-back: design under `ki-work-design` a finite state machine for work - the seven states plus Bootstrap, every named transition with its trigger and entry conditions, where Handoff to target resolves, and procedures such as drain attached to transitions - as an Archify diagram with SVG and a definitions note beneath it. HOLD-PORTABLE folds into this design.
+
+## TRANSITION-CONDITIONS - 2026-10-29
+
+Kris: "I think for a transition as well, we can have pre-state and post-state conditions, or pre-conditions and post-conditions, maybe is what I mean. So things that might have to be the case before you can move down the arc. The arc does work, and then the post-conditions are what must be achieved at the end of it. So for example, for something to move to on hold, it must have no local working copy, no local changes in its working copy, right? Everything must be pushed into a durable place on the origin. So effectively the idea would be if you deleted the local repository, you've lost nothing."
+
+Read-back: every transition in the WORK-STATE-MACHINE design states its preconditions (must hold before the arc starts), the work the arc does, and its postconditions (must hold when it ends). Into On hold the postcondition is portability: no run worktree, no uncommitted change, every branch merged or pushed, everything durable on origin - deleting the local repository loses nothing. Steered into run wow-state-machine.
+
+## STATE-MACHINE-REFINE - 2026-10-29
+
+Kris: "yes, do the 3 refinements please, but quickly". Read-back: in the work state machine design, (1) `hold` may start from With worker, With supervisor or Handoff to supervisor; (2) resume goes On hold → Bootstrap directly, release being its precondition; (3) drop the `drain blocked` arc: a hold that cannot meet its postconditions leaves the work where it was, marked blocked. Also, per the preceding "yes": each arc's pre- and postconditions shown on click or hover in the interactive HTML, with short guard labels on the SVG where they matter.
+
+## WORK-CYCLE-SHAPE - 2026-10-29
+
+Kris: "well there is an inner statemachine the is the "working" that is: "with worker" ---[inform]--> "handoff to supervisor"; "handoff to supervisor" ---[receive]--> "with supervisor"; "with supervisor" ---[direct]--> "handoff to worker"; "handoff to worker" ---[receive]--> "with worker". And then there are the other states around that with some key transitions too... "bootstrap" ---[pick up]-> "with worker"; "bootstrap" ---[report]-> "with supervisor"; "work" ---[stop]-> "at rest"; "at rest" ---[finish]-> "finished"; "at rest" ---[resume]-> "bootstrap". and then, it can be "at rest" for a number of reasons, e.g.: holding due to other work package demands; waiting due to waiting some response externally; moving due to moving the work to another host, work package etc. some of these names could be refined, but I hope that is clearer. and I think in the diagram today, "handoff to target" is a "at rest" reason."
+
+Read-back: redraw as a nested machine - a composite Work state holding the four-state cycle (inform, receive, direct, receive); Bootstrap enters it by pick up or report; stop leaves Work for At rest, with a reason (holding, waiting - which replaces Handoff to target - or moving); At rest exits by finish to Finished or resume to Bootstrap. Supersedes the flat layout and arc names of the first draft where they differ; names stay refinable.
+
+## WORK-CYCLE-ENDS - 2026-10-29
+
+Kris: "and yes, there is a start and end node too. the initial pseudo state is: "start" ---[open]-> "bootstrap" and the terminal state is already "finished" and "working" is a compound state effectively". Read-back: an initial pseudo-state Start with `open` into Bootstrap; Finished is the terminal state; the compound state is named Working.
+
+## WORK-ENTRY-GUARDS - 2026-10-29
+
+Kris: "so really... "start (wp)" ---[open]-> "bootstrap (wp)"; "bootstrap (wp)" ---[ready]-> "start (work)"; "start (work)" [X]---[pick up]-> "with worker"; "start (work)" [Y]---[refine]-> "with supervisor". Where [X] is if there is work that is clearly defined to get on with and [Y] is if the work needs more clarity.."
+
+Read-back: two initial pseudo-states. Start (work package) -open-> Bootstrap; Bootstrap -ready-> the Working compound state's own initial pseudo-state, Start (work); from it, guard [work clearly defined] -pick up-> With worker, guard [work needs more clarity] -refine-> With supervisor. `refine` replaces `report`; Bootstrap no longer enters With worker or With supervisor directly.
+
+## ROLES-ORCHESTRATOR - 2026-10-29
+
+Kris: "No, I think the supervisor is actually the human in the loop, and the worker is a subagent, and then the thread agent is effectively the orchestrator of the state machine."
+
+Read-back: three roles. Supervisor - Kris, the human in the loop. Worker - a subagent, the background run that does the work. Orchestrator - the thread agent, which runs the package's state machine: makes its transitions, launches and receives workers, and talks to the supervisor. With worker means a run holds the work. This reframes the Work Process note's "you are the worker to Kris"; RUN-LAYER is withdrawn as superseded.
+
+## ROLES-EITHER - 2026-10-29
+
+Kris: "One thing that's clear is that any of those roles can be done by AI or the human. but the preference is as you state..." Read-back: supervisor, worker and orchestrator are roles, not kinds of actor; any can be AI or human. Preferred: supervisor human, worker a subagent, orchestrator the thread agent.
+
+## WORKING-EXIT - 2026-10-29
+
+Kris: "there's a terminal state inside working as well as the initial pseudo state, and it's that one which then sends the stop drain portable and transitions from the work terminal state to at rest. And that can happen in reality with worker or with supervisor also. In many ways, the handoff to worker and the handoff to supervisor are intermediary or transitionary states."
+
+Read-back: Working gets a final state, End (work), reachable from With worker and from With supervisor; leaving Working through End (work) is the `stop` transition (drain, portable) to At rest. Handoff to worker and Handoff to supervisor are transitional states between the two stable ones, drawn as such.
+
+## MACHINE-HOME - 2026-10-29
+
+Kris: "Agree about the 2 skills working together." Read-back: `ki-work-package` owns the work state machine - states, transitions, pre- and postconditions - and the purpose-folder layout; `ki-coordination` owns the orchestrator's behaviour around it (reports, banners, delegation) and the drain and portability checks on stop; the Work Process note carries the picture and plain-language model.
+
+## DIAGRAM-AGREED - 2026-10-29
+
+Kris: "the latest diagram is just up and dup that's using Archify is exactly correct. And you're right, it's not held, it's at rest." Read-back: the Archify work state machine at wow-sm-polish's commit is the agreed shape; the state outside Working is At rest, not held, and the prompts say At rest.
