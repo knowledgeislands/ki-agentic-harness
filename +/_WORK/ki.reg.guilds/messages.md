@@ -5,6 +5,7 @@
 - 2026-11-07 · ACK MSG-6c892e1c REFRESH · from ⚒️ 🔑 ki.prj.agora · 14:53 GMT · reread the report-forms standard and moved `method_read` to d5ede6dd; wakes are now Minimal Updates.
 - 2026-11-07 · ACK MSG-62177474 · from personal.reg.household-sol · 14:45 GMT · reread at `d5ede6dd`; `method_read` set; replies now follow T1 to T9 and the four layouts
 - 2026-11-07 · ACK MSG-1628dfef · from 🦉 🔑 personal.reg.inbox-sol · 14:45 GMT (re-read the report-forms standard; method read at `d5ede6dd`)
+- 2026-11-06 · MSG-c8a72b7c HEALTH · from KI > Techne > Agora (⚒️ 🔑 ki.prj.agora) · 15:47 GMT · health check at 50% of your listener's 120 minutes (about 60 left): re-arm your wait on Agora's call (`~/.local/state/ki/agora/call/ki.reg.guilds`, and the old `doorbell/` path until your household installs the new Agora), then ACK MSG-c8a72b7c, saying for how long you re-armed. Nothing else is asked.
 
 ## Outbound
 
