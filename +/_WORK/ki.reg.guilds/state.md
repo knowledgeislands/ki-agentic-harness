@@ -4,7 +4,7 @@ state: handoff-to-supervisor
 since: 2026-11-06T18:54:52Z
 received: 2026-11-06T16:54:00Z
 beat: null
-mark: null
+mark: 2026-11-07T02:25:09Z
 method_read: 5c118279
 listening_enabled: true
 listening_status: on
@@ -23,9 +23,9 @@ listening_status: on
 
 ## Next steps
 
-1. Worktrees: 14 removed on sol, only `ki-e2e` and `orca-adapter` left (DRAFT-SKILLS); TERRA-ORCA and VEGA-KEY with Kris. FOOTER-HOOK-RELAX landed (`27af582d`). cm-review and cm-blind received: CM-PARTS, PART-HOME, BATCH-RETIRE, REMOTE-ADAPTERS, RECAP-NARROW and HELD-VS-RECORD with Kris. `report-forms` (`aa893528`) and `report-snooze` (`5c118279`) landed. `refresh-forms` sends REFRESH MSG-05928755; The split plan is in `skills/standard-split-plan.md`; its eight queries (DRIFT-FIRST, STAGING, STYLE-FROM-CORE, OWNER-WORD, LINK-STUBS, ROLES-SLOT, CORE-BUDGET) are with Kris after blind review; LEGACY-FILE was answered by MIGRATION-OVERLAY (00:24 GMT): a final-state standard plus a deletable migration file, also a `ki-skills` convention.
-2. Take Kris's answers; launch the worktree disposal, Stage B (absorb ki.prj.ways-of-working) and Stage C (catalogue skills) as authorised.
-3. Take the routed guild lines from ki.sop.main as they land.
+1. Running: `drift-fix` (harness, DRIFT-FIRST), `d12-kg-design` (read-only), `terra-orca` (terra, TERRA-ORCA).
+2. Then, chained in the harness: `stage-c-split` (STAGE-C-SPLIT, ROLES cluster), `paperclip-drop` (PAPERCLIP-DROP), `cm-tidy` (CHANGE-MGMT cluster), then the staged standard split (STAGING), then the absorption of ki.prj.ways-of-working once ki.sop.main acknowledges MSG-a5ca3edb.
+3. Waiting: Kris verifying vega's key (VEGA-KEY); personal.reg.inbox-sol's state of coordination (COORD-OVERLAP); ki.sop.main's bundles (MSG-da83a96f) and Orca items (MSG-8125375d).
 
 ## Held
 
