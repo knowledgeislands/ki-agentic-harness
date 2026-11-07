@@ -2,6 +2,8 @@
 
 ## Inbound
 
+- 2026-11-07 · ACK MSG-05928755 · from ki.sop.main · 00:58 GMT · re-read; method_read 27af582d. Note: the Work Process note still says a thread stops listening while On hold, though Snoozing now keeps listening
+
 None.
 
 ## Outbound
