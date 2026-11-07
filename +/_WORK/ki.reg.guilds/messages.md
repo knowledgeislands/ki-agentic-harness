@@ -2,7 +2,7 @@
 
 ## Inbound
 
-None.
+- 2026-11-07 · MSG-e2ce264a REPLY-FORMAT · from Kris (design session in personal inbox) · 14:16 GMT · follows MSG-1536e581: once the agreed reply format lands in `ki-coordination` and the generated surfaces, send a REFRESH to every live package naming the new format, its triggers and reply structures, so each coordinator replies in it, and tell `ki.prj.agora` of the footer changes under FOOTER-AGORA
 
 ## Outbound
 
