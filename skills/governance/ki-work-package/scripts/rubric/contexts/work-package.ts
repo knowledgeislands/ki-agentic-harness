@@ -47,6 +47,8 @@ const WORK_STATES: readonly unknown[] = [
   'finished'
 ]
 const HOLD_REASONS: readonly unknown[] = ['paused', 'more-expected']
+/** Who set a hold, under HOLD-SELF (Kris, 7 November 2026): the owner, or the worker itself for the idle hold. */
+const HOLD_SETTERS: readonly unknown[] = ['owner', 'worker']
 const KEBAB = '[a-z0-9]+(?:-[a-z0-9]+)*'
 /** The reserved second id segment of a secondary State of play, `<territory>.sop.<name>`. */
 const SECONDARY_SEGMENT = 'sop'
@@ -79,6 +81,8 @@ const DEFINITION_HEADINGS = ['Goals', 'Scope'] as const
  * warned on for its tolerance window.
  */
 const FOCUS_HEADING = 'Focus'
+/** The optional one-line Values section VALUES-HOME (Kris, 7 November 2026) admits between Scope and Focus. */
+const VALUES_HEADING = 'Values'
 const STATE_REQUIRED = ['id', 'state', 'since'] as const
 /** The thread capability fields Kris set under FOOTER-CAPABILITY-STATUS-2 on 1 November 2026. */
 const CAPABILITIES = ['listening', 'syncing'] as const
@@ -114,17 +118,24 @@ const QUERY_HEADINGS = ['Open', 'Parked'] as const
 const DISCUSSION_TITLES: Readonly<Record<string, string>> = { 'discussions.md': 'discussions', 'queries.md': 'queries' }
 const QUERY_HEADING = /^[A-Z0-9][A-Z0-9-]* - \S/
 const QUERY_PARTS = ['**Context:**', '**Query:**', '**Options:**'] as const
-/** A message line, with its optional host requirement and, under LAYOUT-PILLARS, its optional `focus: <id>` slot. */
+/**
+ * A message line, with its optional host requirement and, under LAYOUT-PILLARS, its optional `focus: <id>` slot. Its
+ * leading flag, under MESSAGE-WORDS (Kris, 7 November 2026), is `IMPORTANT`, `URGENT`, which carries an optional `by
+ * <deadline>` slot after the date and stands above every important line, or `SUPERSEDED`, a sender's replacement for
+ * its own line, which keeps that line's place.
+ */
 const MESSAGE_LINE =
-  /^- (IMPORTANT · )?(\d{4}-\d{2}-\d{2})(?: @[a-z0-9]+(?:-[a-z0-9]+)*)?(?: · focus: [a-z0-9]+(?:-[a-z0-9]+)*)? · [A-Z0-9][A-Z0-9-]* · [^:\n]+: \S/
+  /^- ((?:URGENT|IMPORTANT|SUPERSEDED) · )?(\d{4}-\d{2}-\d{2})(?: @[a-z0-9]+(?:-[a-z0-9]+)*)?(?: · by [^·\n]+)?(?: · focus: [a-z0-9]+(?:-[a-z0-9]+)*)? · [A-Z0-9][A-Z0-9-]* · [^:\n]+: \S/
+/** The `by <deadline>` slot after a message line's date and host requirement, which only an `URGENT` line carries. */
+const DEADLINE_SLOT = /^- (?:[A-Z]+ · )?\d{4}-\d{2}-\d{2}(?: @[a-z0-9-]+)? · by /
 /** The two sections of `messages.md` under MSG-SECTIONS (Kris, 4 November 2026), the H1-only file warned on until then. */
 const MESSAGE_HEADINGS = ['Inbound', 'Outbound'] as const
 /** A message id: `MSG-` and eight hex characters with an optional readable tag, or, for the tolerance window, a tag. */
 const MESSAGE_ID = String.raw`(?:MSG-[0-9a-f]{8}(?: [A-Z0-9][A-Z0-9-]*)?|[A-Z0-9][A-Z0-9-]*)`
 const PACKAGE_ID = String.raw`[a-z0-9]+(?:[.-][a-z0-9]+)*`
-/** An inbound message line in the sectioned file: date, optional host and focus slot, id, then the message. */
+/** An inbound message line in the sectioned file: optional flag, date, optional host, deadline and focus slots, id, then the message. */
 const INBOUND_LINE = new RegExp(
-  String.raw`^- (IMPORTANT · )?(\d{4}-\d{2}-\d{2})(?: @[a-z0-9]+(?:-[a-z0-9]+)*)?(?: · focus: [a-z0-9_]+(?:-[a-z0-9]+)*)? · ${MESSAGE_ID} · \S`
+  String.raw`^- ((?:URGENT|IMPORTANT|SUPERSEDED) · )?(\d{4}-\d{2}-\d{2})(?: @[a-z0-9]+(?:-[a-z0-9]+)*)?(?: · by [^·\n]+)?(?: · focus: [a-z0-9_]+(?:-[a-z0-9]+)*)? · ${MESSAGE_ID} · \S`
 )
 /** An acknowledgement at the top of Inbound: `- <date> · ACK <id> · from <package id>`, with an optional time. */
 const ACK_LINE = new RegExp(String.raw`^- \d{4}-\d{2}-\d{2} · ACK ${MESSAGE_ID} · from ${PACKAGE_ID}(?: · \S.*)?$`)
@@ -712,12 +723,16 @@ const stateChecks = (record: ParsedRecord, fields: Readonly<Record<string, unkno
   if (
     fields.state === 'on-hold'
       ? !hold ||
-        Object.keys(hold).some((key) => key !== 'reason' && key !== 'release') ||
+        Object.keys(hold).some((key) => key !== 'reason' && key !== 'release' && key !== 'set_by') ||
         !HOLD_REASONS.includes(hold.reason) ||
-        !singleLine(hold.release)
+        !singleLine(hold.release) ||
+        ('set_by' in hold && !HOLD_SETTERS.includes(hold.set_by)) ||
+        (hold.set_by === 'worker' && hold.reason !== 'more-expected')
       : 'hold' in fields
   )
-    fail('hold carries reason, paused or more-expected, and release when on hold, else absent')
+    fail(
+      'hold carries reason, paused or more-expected, release and an optional set_by, owner or worker, the worker setting only more-expected, when on hold, else absent'
+    )
   if (
     'blocking' in fields &&
     (typeof fields.blocking !== 'boolean' || (fields.blocking && fields.state !== 'handoff-to-supervisor'))
@@ -941,15 +956,21 @@ const messageEvidence = (messages: ParsedRecord, onHold: boolean, now: number, e
   }
   const inbound = (lines: readonly string[], pattern: RegExp, shape: string): void => {
     let ordinarySeen = false
+    let importantSeen = false
     for (const line of lines) {
       const match = pattern.exec(line)
       if (!match) {
         fail(shape)
         continue
       }
-      if (match[1]) {
+      const flag = match[1]?.slice(0, -3)
+      if (flag !== 'URGENT' && DEADLINE_SLOT.test(line)) fail('only an URGENT line carries a "by <deadline>" slot')
+      if (flag === 'URGENT') {
+        if (ordinarySeen || importantSeen) fail('urgent message lines stand above every important and ordinary line')
+      } else if (flag === 'IMPORTANT') {
+        importantSeen = true
         if (ordinarySeen) fail('important message lines stand above every ordinary line')
-      } else ordinarySeen = true
+      } else if (!flag) ordinarySeen = true
       if (words(line) > LIMITS.messageWords)
         warn(`a message line runs past about ${LIMITS.messageWords} words; link the detail`)
       const sent = Date.parse(`${match[2]}T00:00:00Z`)
@@ -980,7 +1001,7 @@ const messageEvidence = (messages: ParsedRecord, onHold: boolean, now: number, e
     inbound(
       lines,
       MESSAGE_LINE,
-      'each message line reads "- <date> · <TAG> · <sender label> (<sender id>): ...", with an optional "focus: <id> · " before the tag, or begins "- IMPORTANT · "'
+      'each message line reads "- <date> · <TAG> · <sender label> (<sender id>): ...", with an optional "focus: <id> · " before the tag, or begins "- URGENT · ", "- IMPORTANT · " or "- SUPERSEDED · "'
     )
     return
   }
@@ -1009,7 +1030,7 @@ const messageEvidence = (messages: ParsedRecord, onHold: boolean, now: number, e
     inbound(
       rest.filter((line) => !ACK_LINE.test(line)),
       INBOUND_LINE,
-      'each Inbound line reads "- <date> · <id> · ...", with an optional "focus: <id> · " before the id, begins "- IMPORTANT · ", or is an ACK line "- <date> · ACK <id> · from <package id>"'
+      'each Inbound line reads "- <date> · <id> · ...", with an optional "focus: <id> · " before the id, begins "- URGENT · ", "- IMPORTANT · " or "- SUPERSEDED · ", or is an ACK line "- <date> · ACK <id> · from <package id>"'
     )
   }
 }
@@ -1094,12 +1115,13 @@ const packageEvidence = (folder: WorkFolder, coordinationDeclared: boolean, now:
       subject: work.path
     })
   else if (
-    !sameOutline(work.body, work.stem, DEFINITION_HEADINGS) &&
-    !sameOutline(work.body, work.stem, [...DEFINITION_HEADINGS, FOCUS_HEADING])
+    ![[], [FOCUS_HEADING], [VALUES_HEADING], [VALUES_HEADING, FOCUS_HEADING]].some((optional) =>
+      sameOutline(work.body, work.stem, [...DEFINITION_HEADINGS, ...optional])
+    )
   )
     fail(
       work,
-      `a package's work.md headings must be the id H1, Goals, Scope and an optional Focus; its state lives in ${STATE_FILE}`
+      `a package's work.md headings must be the id H1, Goals, Scope, an optional Values and an optional Focus; its state lives in ${STATE_FILE}`
     )
   const definition = h2Sections(work.body)
   for (const heading of DEFINITION_HEADINGS)
@@ -1126,10 +1148,19 @@ const packageEvidence = (folder: WorkFolder, coordinationDeclared: boolean, now:
     fail(work, 'description must be a non-empty routing description')
   else if (fields.description.trim().length > LIMITS.description)
     warn(work, `description runs past ${LIMITS.description} characters`)
-  // The Focus section stays outside the definition's word limit.
-  const focus = definition.get(FOCUS_HEADING) ?? ''
-  if (words(work.body) - words(focus) > LIMITS.definitionWords)
-    warn(work, `work.md body runs past ${LIMITS.definitionWords} words, its Focus section aside`)
+  // The Values and Focus sections stay outside the definition's word limit.
+  const values = definition.get(VALUES_HEADING)
+  if (
+    values !== undefined &&
+    values
+      .trim()
+      .split(/\r?\n/)
+      .filter((line) => line.trim().length > 0).length !== 1
+  )
+    fail(work, 'Values is one line, linking the shared values and adding any of the work its own')
+  const aside = words(definition.get(FOCUS_HEADING) ?? '') + words(values ?? '')
+  if (words(work.body) - aside > LIMITS.definitionWords)
+    warn(work, `work.md body runs past ${LIMITS.definitionWords} words, its Values and Focus sections aside`)
   definitionChecks(work, fields, coordinationDeclared, evidence, true)
   const catalogue = roleCatalogue()
   definitionRoleChecks(work, fields, evidence, catalogue)

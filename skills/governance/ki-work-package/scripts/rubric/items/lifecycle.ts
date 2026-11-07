@@ -45,7 +45,7 @@ const LIFECYCLE_3: RubricItem<LifecycleContext> = {
   code: 'LIFECYCLE-3',
   title: 'package files keep within their soft size limits',
   description:
-    'A description runs to at most 500 characters, a `work.md` body to at most 300 words, its Focus section aside, and a `state.md` body to at most 400 words with Now at most five lines and no bulk history: no dated log lines, runs of commit identifiers or test counts, a single link being fine. Each message line runs to about 60 words at most, and none waits more than 7 days on work that is not on hold; `decisions.md` runs to at most 400 lines. The limits are soft and warned, never failed.',
+    'A description runs to at most 500 characters, a `work.md` body to at most 300 words, its Values and Focus sections aside, and a `state.md` body to at most 400 words with Now at most five lines and no bulk history: no dated log lines, runs of commit identifiers or test counts, a single link being fine. Each message line runs to about 60 words at most, and none waits more than 7 days on work that is not on hold; `decisions.md` runs to at most 400 lines. The limits are soft and warned, never failed.',
   sources: [`${SOURCE}#size-limits`],
   mechanical: {
     level: 'WARN',

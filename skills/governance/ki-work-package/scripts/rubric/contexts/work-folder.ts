@@ -284,6 +284,15 @@ export const awaitsCloseOut = (folder: string): boolean => {
 }
 
 /**
+ * Whether the work is On hold, either reason. Under HOLD-TIDY (Kris, 4 November 2026, landed under HOLD-STATES on 7
+ * November 2026) a held folder keeps nothing already dealt with, so its tidy candidates fail rather than warn.
+ */
+export const heldFolder = (folder: string): boolean => {
+  const file = existsSync(join(folder, STATE_FILE)) ? join(folder, STATE_FILE) : join(folder, WORK_FILE)
+  return frontField(file, 'state') === 'on-hold'
+}
+
+/**
  * What in a decisions log the `ki agent close` gate cannot read as an entry, under the tools-ki contract that every
  * `## ` heading opens one and runs to the next: entry-shaped lines before the first heading, which the gate never
  * sees; headings with no text, which it cannot name; and repeated headings, which `ki agent reconcile` cannot address.
@@ -406,18 +415,25 @@ export const folderOutcomes = (root: string): FolderOutcomes => {
         message: `tolerance: run reports belong in \`${REPORTS_FOLDER}/\`, leaving only the five package files at the top level; stray until the sweep: ${loose.join(', ')}`,
         subject: subject(folder)
       })
+    const held = heldFolder(folder)
     const due = answeredReports(folder)
     if (due.length > 0)
       answered.push({
         status: 'VIOLATION',
-        message: `every query of these reports is answered in the decisions log, so each whose outcome has a durable home is due for the tidy: ${due.join(', ')}`,
+        ...(held ? { level: 'FAIL' as const } : {}),
+        message: held
+          ? `work On hold keeps nothing already dealt with; tidy these reports, whose every query is answered in the decisions log, before the hold: ${due.join(', ')}`
+          : `every query of these reports is answered in the decisions log, so each whose outcome has a durable home is due for the tidy: ${due.join(', ')}`,
         subject: subject(folder)
       })
     const received = receivedBriefs(folder)
     if (received.length > 0)
       briefs.push({
         status: 'VIOLATION',
-        message: `each of these briefs has its run's report in the folder, so it is due for the tidy: ${received.join(', ')}`,
+        ...(held ? { level: 'FAIL' as const } : {}),
+        message: held
+          ? `work On hold keeps nothing already dealt with; tidy these briefs, whose run's report has been received, before the hold: ${received.join(', ')}`
+          : `each of these briefs has its run's report in the folder, so it is due for the tidy: ${received.join(', ')}`,
         subject: subject(folder)
       })
     if (awaitsCloseOut(folder))

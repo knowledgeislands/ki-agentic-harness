@@ -27,7 +27,7 @@ const FOLDER_2: RubricItem<FolderOutcomes> = {
   code: 'FOLDER-2',
   title: 'no work folder keeps a report whose queries are all answered',
   description:
-    "A run report, in a focus folder, in `reports/` or at the top level, whose every Needs tag the folder's decisions log names, or which has no queries, is a candidate for the tidy once its outcome has a durable home. Whether it has one stays the steward's judgement; the listing is never permission to delete.",
+    "A run report, in a focus folder, in `reports/` or at the top level, whose every Needs tag the folder's decisions log names, or which has no queries, is a candidate for the tidy once its outcome has a durable home. Whether it has one stays the steward's judgement; the listing is never permission to delete. Under HOLD-TIDY a folder whose work is On hold keeps nothing already dealt with, so there the listing fails rather than warns.",
   sources: [TIDY],
   mechanical: {
     level: 'WARN',
@@ -53,7 +53,7 @@ const FOLDER_3: RubricItem<FolderOutcomes> = {
   code: 'FOLDER-3',
   title: "no work folder keeps a brief whose run's report it has received",
   description:
-    "A brief `<focus-id>/<run>.brief.md`, or for the tolerance window `briefs/<run>.md`, goes once its run's report has been received, which the folder shows by holding `<run>.report.md` in a focus folder, in `reports/` or, for the tolerance window, at the top level.",
+    "A brief `<focus-id>/<run>.brief.md`, or for the tolerance window `briefs/<run>.md`, goes once its run's report has been received, which the folder shows by holding `<run>.report.md` in a focus folder, in `reports/` or, for the tolerance window, at the top level. Under HOLD-TIDY a folder whose work is On hold keeps no such brief, so there the listing fails rather than warns.",
   sources: [TIDY],
   mechanical: {
     level: 'WARN',

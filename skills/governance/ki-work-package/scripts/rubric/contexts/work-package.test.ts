@@ -1325,3 +1325,69 @@ for (const [name, change] of [
       run(RECORD, 'RECORD-2', context(repository)).some((outcome) => outcome.status === 'VIOLATION' && !outcome.level)
     ).toBe(true)
   })
+
+test('under HOLD-SELF a hold names who set it, and the worker sets only the idle more-expected hold', () => {
+  const repository = workFixture()
+  const held = (hold: string) =>
+    writePackage(
+      repository,
+      'ki.ways-of-working',
+      packageFiles('ki.ways-of-working', { state: { state: 'on-hold', hold } })
+    )
+  held('{ reason: more-expected, release: a message arrives or resume, set_by: worker }')
+  expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
+  held('{ reason: paused, release: after the migration, set_by: owner }')
+  expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
+  held('{ reason: paused, release: after the migration, set_by: worker }')
+  expect(statuses(context(repository))['RECORD-2']).toBe('VIOLATION')
+  held('{ reason: more-expected, release: a message arrives, set_by: someone }')
+  expect(statuses(context(repository))['RECORD-2']).toBe('VIOLATION')
+})
+
+test('under MESSAGE-WORDS urgent lines stand first and alone carry a deadline, and superseded lines keep their place', () => {
+  const repository = workFixture()
+  const inbound = (...lines: string[]) =>
+    writePackage(
+      repository,
+      'ki.ways-of-working',
+      packageFiles('ki.ways-of-working', {
+        messages: `# ki.ways-of-working messages\n\n## Inbound\n\n${lines.join('\n')}\n\n## Outbound\n\nNone.\n`
+      })
+    )
+  const urgent =
+    '- URGENT · 2099-01-01 · by 2099-01-02 09:00 GMT · MSG-0123abcd ROLLOUT · KI > SoP (ki.sop.main): roll out.'
+  const important = '- IMPORTANT · 2099-01-01 · MSG-1123abcd REFRESH · KI > SoP (ki.sop.main): reread the standard.'
+  const superseded =
+    '- SUPERSEDED · 2099-01-01 · MSG-2123abcd FIX · KI > SoP (ki.sop.main): done by run/fix, abc1234; adjust or tidy.'
+  const ordinary = '- 2099-01-01 · MSG-3123abcd ROUTE · KI > SoP (ki.sop.main): take the unit.'
+  inbound(urgent, important, ordinary, superseded)
+  expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
+  inbound(important, urgent, ordinary)
+  expect(run(RECORD, 'RECORD-2', context(repository))).toContainEqual(
+    expect.objectContaining({ message: expect.stringContaining('urgent message lines stand above') })
+  )
+  inbound('- IMPORTANT · 2099-01-01 · by 2099-01-02 · MSG-1123abcd REFRESH · KI > SoP (ki.sop.main): reread.')
+  expect(run(RECORD, 'RECORD-2', context(repository))).toContainEqual(
+    expect.objectContaining({ message: expect.stringContaining('only an URGENT line carries') })
+  )
+})
+
+test('under VALUES-HOME work.md admits one Values line between Scope and Focus, outside the word limit', () => {
+  const repository = workFixture()
+  const values = '## Values\n\nThe [shared values](https://example.org/values), and care for the reader.\n'
+  writePackage(
+    repository,
+    'ki.ways-of-working',
+    packageFiles('ki.ways-of-working', { workBody: `${DEFINITION}\n${values}\n${FOCUS.replace(/^2\. .*\n/m, '')}` })
+  )
+  expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
+
+  writePackage(
+    repository,
+    'ki.ways-of-working',
+    packageFiles('ki.ways-of-working', { workBody: `${DEFINITION}\n${values}\nA second line.\n` })
+  )
+  expect(run(RECORD, 'RECORD-2', context(repository))).toContainEqual(
+    expect.objectContaining({ message: expect.stringContaining('Values is one line') })
+  )
+})

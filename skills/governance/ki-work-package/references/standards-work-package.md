@@ -152,6 +152,8 @@ A tidy keeps the folder to what is still open, with Git history holding the rest
 
 A report whose outcome has no durable home yet is kept, not homed in haste. The rubric lists candidates; a listing is never permission to delete.
 
+**Before a hold.** Work going On hold, for either reason and whoever sets it, first tidies its folder, so that its focus folders hold nothing already dealt with: each run's brief and report go once the outcome is logged, and each design note once it has landed. Kris set it under HOLD-TIDY at about 18:10 GMT on 4 November 2026: "you can't tell me that you're on hold expecting more, yet then have additional things in there that have been dealt with." The rubric fails, rather than warns, a held folder that still keeps a report whose queries are all answered or a brief whose report has been received.
+
 ### Messages lines
 
 `messages.md` keeps two sections, as Kris set under MSG-SECTIONS on 4 November 2026, "standard first, then roll out": `## Inbound`, the work's incoming queue, and `## Outbound`, what it has sent and not yet seen acknowledged. Inbound holds one list item per message sent to the work, ACK lines at its top:
@@ -173,15 +175,20 @@ The `<id>` is a short message id, `MSG-` and eight lower-case hex characters fro
 
 - **Send:** the sender writes the line at its place in the receiver's Inbound and keeps the same line, with `to <receiver id>`, in its own Outbound.
 - **ACK:** on taking a line, the receiver, or its State of play acting for it while it has no active session under `ki-coordination`'s [acting for idle work](../../../change-management/ki-coordination/references/standards-coordination.md#territory-work), puts one ACK line naming its id at the top of the sender's Inbound, then deals with the message as below. The ACK says only that the message arrived; any reply is a separate message, sent the same way.
-- **Prune:** the sender, reading an ACK, removes the ACK line and the matching Outbound line together; an ACK for an id no longer in Outbound is simply removed. Anything left in Outbound is unacknowledged, and the banner lists it as `- [awaiting ACK] <id> · to <receiver id> · since <time>` under `ki-coordination`'s [Banner](../../../change-management/ki-coordination/references/standards-coordination.md#banner).
+- **Prune:** the sender, reading an ACK, removes the ACK line and the Outbound line matching both its id and its receiver together; an ACK for an id and receiver no longer in Outbound is simply removed. Anything left in Outbound is unacknowledged, and the banner lists it as `- [awaiting ACK] <id> · to <receiver id> · since <time>` under `ki-coordination`'s [Banner](../../../change-management/ki-coordination/references/standards-coordination.md#banner).
+- **Broadcast:** a message sent to many packages is one line in each receiver's Inbound and one Outbound line per receiving package, each naming its one receiver, so each ACK clears its own line, as Kris chose BROADCAST-FORM a) on 7 November 2026: "One line per receiver". A broadcast such as `REFRESH` is a pointer line: what changed in one clause and a link to the standard section at its pinned harness revision, whose commit message carries the detail, as Kris chose BROADCAST-POINTER a) the same day. Lines already held are not rewritten.
 
 The sender is named by its work name under `ki-coordination` [Work naming](../../../change-management/ki-coordination/references/standards-coordination.md#work-naming), the label with the sender's [thread line](standards-roles.md#thread-line) in brackets, its id last, as in `KI > Guilds (⚖️ 🔑 ki.reg.guilds):`, or the bare id where the sender has no role yet, as in `KI > SoP (ki):`. The thread line in brackets is STAGE-C-ROLES (Kris, 7 November 2026); the brackets themselves Kris adopted under WORK-LABEL on 25 October 2026: "I like this label, the way that you put the work package in brackets after it at the end. Can we adopt that as a standard?" A line whose sender carries the label alone, as lines written before that date do, is read as the same sender through the tolerance window, and the checker accepts both.
 
 A line is about 60 words at most with the detail linked, and a message citing an owner decision quotes its words. The queue is taken in priority order, as Kris set under WORK-QUEUE-PRIORITY on 19 October 2026, read back as "a work package's incoming work is a queue taken in priority order; the worker may group similar items; a line added at the top with an important flag must be taken first, in that order, which lets State of play change how a work works":
 
 - **Order:** lines stand in the order of their priority, top first. An ordinary line is added at the end; State of play, dispatching, may place a line at the position its priority warrants.
-- **Important lines:** a line flagged `IMPORTANT` is added at the top of Inbound, below any ACK lines and important lines already there, and every important line stands above every ordinary line. The worker takes the important lines first, in their order, one at a time, never grouping or reordering them. `FIRST-STEP` and `REFRESH` lines are important lines; the flag is how State of play changes how a work works.
+- **Important lines:** a line flagged `IMPORTANT` is added at the top of Inbound, below any ACK lines, urgent lines and important lines already there, and every important line stands above every ordinary line. The worker takes the important lines first, in their order, one at a time, never grouping or reordering them. `FIRST-STEP` and `REFRESH` lines are important lines; the flag is how State of play changes how a work works.
+- **Urgent lines:** a line flagged `URGENT` carries an urgent unit under `ki-coordination`'s [Urgent work](../../../change-management/ki-coordination/references/standards-coordination.md#messages-between-work), with an optional deadline slot after its date, `- URGENT · <YYYY-MM-DD> · by <deadline> · <id> · <sender label> (<sender thread line>): ...`. It implies `IMPORTANT` and stands above every important line, taken first in the same way. Only an urgent line carries a `by` slot.
+- **Superseded lines:** where an urgent unit was done for the receiver under `ki-coordination`'s Urgent work, the sender replaces its own original line with `- SUPERSEDED · <YYYY-MM-DD> · <id> · <sender label> (<sender thread line>): done by <run>, <commits>; adjust or tidy`, keeping the original id and the line's place, so the owner adjusts or tidies when it next comes online.
 - **Grouping:** below the important lines, the worker takes the queue from the top and may group similar lines into one unit of work where that makes sense, naming every grouped line in the commit that removes them.
+
+The three flags, `URGENT`, `IMPORTANT` and `SUPERSEDED`, take the one leading flag slot and leave the id one token, as Kris chose MESSAGE-WORDS a) on 7 November 2026: "As flags in the leading slot, `URGENT` carrying `by <deadline>` and sorting above `IMPORTANT`, `ACK` written into the sender's queue, and `SUPERSEDED` replacing the sender's own original line, each keeping the original tag." The ACK is the ACK line above.
 
 The sender adds or replaces only its own line, or its ACK line, and edits nothing else in the receiver's folder, committing that path alone with the subject `docs(work): <receiver id> message from <sender id>`. The receiver records each line's disposition where it lands, under `ki-coordination`'s route receipt, names it in the commit that removes the line, and only then removes it. Who may send, how a coordinator acts on a line, route receipt and the inbox check at each wake are `ki-coordination`'s [Messages between work](../../../change-management/ki-coordination/references/standards-coordination.md#messages-between-work). A folder still in [the single-file shape](#the-single-file-shape) carries the same lines in its work file's `## Messages` section.
 
@@ -241,7 +248,7 @@ Territory work is the main State of play, id `<territory>.sop.main` (legacy `<te
 
 The `description` is written for routing, in a skill description's voice, as Kris answered DESCRIPTION-SHAPE: third person, what the work does, then "Takes ..." naming the kinds of unit it accepts, then "Not for ..." naming the neighbouring works by id, one to three sentences, tested against a handful of ambiguous routing examples. There is no `active` or `accepts` field: every state except `finished` can receive, and a work winding down says "Not taking new units" in its description.
 
-The body has exactly this heading sequence, with `## Focus` after Scope where the work declares its focus areas:
+The body has exactly this heading sequence, with an optional one-line `## Values` after Scope and `## Focus` after it where the work declares its focus areas:
 
 ```markdown
 # ki.observatory
@@ -250,11 +257,14 @@ The body has exactly this heading sequence, with `## Focus` after Scope where th
 
 ## Scope
 
+## Values
+
 ## Focus
 ```
 
 - **Goals** - the standing goals of the work, stable across its waves, as few as it needs. For Project work the first line links the Project note's `outcome` and never restates it; for regular work it links the Activity note; for territory work, the Charter. Links point upward: the package names its Project, and the Project note never links down.
 - **Scope** - `In:` and `Out:` lines naming what the work takes and what belongs to which other work, by id. This is what State of play reads when two descriptions both match.
+- **Values** - optional: one line linking the shared values in the Work Process note and adding any the work holds itself, as Kris chose VALUES-HOME a) on 7 November 2026: "Write them once in the Work Process note under an Enactment record, and give each `work.md` an optional one-line `## Values` section linking them and adding any of its own." Left out of the body's word limit.
 - **Focus** - optional: the work's focus areas under [Focus areas](#focus-areas), left out of the body's word limit.
 
 Nothing else belongs in the work file: no state, next steps, evidence or history.
@@ -309,7 +319,7 @@ The field set is closed:
 | `id` | required | the work's id, agreeing with `work.md` and the folder, so the file read alone identifies itself |
 | `state` | required | `with-worker`, `handoff-to-supervisor`, `with-supervisor`, `handoff-to-worker`, `handoff`, `on-hold` or `finished` |
 | `target` | required in `handoff`, else absent | the holder the work is in transit to |
-| `hold` | required in `on-hold`, else absent | a mapping of `reason`, `paused`, or `more-expected` for Snoozing until `ki` accepts `snoozing`, and `release`, the condition in words |
+| `hold` | required in `on-hold`, else absent | a mapping of `reason`, `paused`, or `more-expected` for Snoozing until `ki` accepts `snoozing`, `release`, the condition in words, and an optional `set_by`, `owner` or `worker`, the worker setting only the idle `more-expected` hold under `ki-coordination`'s [Putting work on hold](../../../change-management/ki-coordination/references/standards-coordination.md#putting-work-on-hold); absent reads `owner` |
 | `blocking` | optional | `true` only in `handoff-to-supervisor`, when the worker sent back with a blocking query |
 | `since` | required | UTC time of the last move |
 | `received` | optional | UTC time of the supervisor's receive, or `null` |

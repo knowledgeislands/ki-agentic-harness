@@ -231,6 +231,21 @@ describe('focus folders', () => {
     expect(outcomes.answered[0]?.message).toEndWith(': layout/pilot.report.md')
     expect(outcomes.briefs[0]?.message).toEndWith(': layout/pilot.brief.md, _emerging/early.brief.md')
   })
+
+  test('under HOLD-TIDY a folder On hold that keeps dealt-with reports or briefs fails rather than warns', () => {
+    const root = fixture()
+    pkg(root)
+    write(root, join(WORK, 'work.md'), FOCUS_WORK)
+    write(root, join(WORK, 'decisions.md'), '# Decisions\n\n- PMO-CI answered\n')
+    write(root, join(WORK, 'layout', 'pilot.report.md'), queries('PMO-CI'))
+    write(root, join(WORK, 'layout', 'pilot.brief.md'), '# Brief\n')
+    expect(folderOutcomes(root).answered[0]?.level).toBeUndefined()
+    write(root, join(WORK, 'state.md'), '---\nid: ki.ways-of-working\nstate: on-hold\n---\n# state\n')
+    const outcomes = folderOutcomes(root)
+    expect(statuses(outcomes.answered)).toEqual(['FAIL'])
+    expect(statuses(outcomes.briefs)).toEqual(['FAIL'])
+    expect(outcomes.answered[0]?.message).toStartWith('work On hold keeps nothing already dealt with')
+  })
 })
 
 describe('work folder tidy', () => {
