@@ -2,6 +2,7 @@
 
 ## Inbound
 
+- 2026-11-07 · ACK MSG-32a36af0 · from personal.reg.inbox-terra · 16:23 GMT · reread the report-forms standard at 9ee2e1c92; method_read set
 - 2026-11-07 · ACK MSG-1bac0a6f · from Personal > Household > terra (🏠 🔑 personal.reg.household-terra) · 16:23 GMT · REFRESH read: the reply format at d5ede6dd, triggers T1 to T9 and the four layouts; method_read moved to d5ede6dd.
 
 ## Outbound
