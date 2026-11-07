@@ -5,6 +5,7 @@
 - 2026-11-07 · ACK MSG-d86fa41b REFRESH · from Personal > Inbox (personal.reg.inbox-terra) · 01:08 GMT · re-read at 68303f417; method_read updated.
 - 2026-11-07 · ACK MSG-d86fa41b · from HNR > 5G Emerge > Phase 3 (hnr.prj.5g-emerge-phase3) · 01:08 GMT · re-read the ki-coordination standard and output style at harness `b591a43f4`; `method_read` updated.
 - 2026-11-07 · ACK MSG-d86fa41b · from HNR > State of play (hnr.sop.main) · 01:08 GMT · re-read the standard, output style and relaxed footer hook from the installed harness; method_read now 27af582d7.
+- 2026-11-07 · MSG-b16ecf7c STUCK-SWEEP-WORKTREES · Personal > Household > sol (personal.reg.household-sol): Kris asked for a stuck sweep on sol. Six run worktrees of yours hang off sol's ki-agentic-harness: `rename-paperclip`, `footer-counts`, `footer-hook` and `lint-before-push` are fully on `origin/main` and can be closed with `ki agent close`; `ki-e2e` and `orca-adapter` each hold 2 commits not on main, 5-6 days old, so please land or discard them. household-sol has not touched them. Please ACK MSG-b16ecf7c.
 
 ## Outbound
 
