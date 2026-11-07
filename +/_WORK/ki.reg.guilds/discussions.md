@@ -40,38 +40,6 @@ a) (recommended, confidence medium - reviewed: the blind reviewer judged your re
 
 b) Rewrite ki-principal's history to remove them now, which you would do yourself with a force-push.
 
-### HOLD-STATES - take all seven as recommended, with HOLD-TIDY, landed in one run
-
-from ki.sop.main
-
-**Context:** seven hold-state choices, HOLD-IDLE, HOLD-SELF, HOLD-URGENT, HOLD-LISTEN, HOLD-FOOTER, HOLD-DIAGRAM and HOLD-TERRA, with HOLD-TIDY (Kris's rule of about 18:10 GMT on 4 November, already ACKed) riding with them; Kris asked for the hold states "thought through before changes go out". The recommended set: idle is "more expected" set by the worker (`hold.set_by: worker`, shown `💤 On hold · idle`), still two reasons; a worker may put its own work into idle only when nothing is running or queued, nothing is handed off, no message is unread, no query is with Kris and everything is pushed, while paused stays Kris's word; an IMPORTANT line on paused work waits and reaches Kris as a `resume` query; more expected and idle keep listening where listening is switched on, paused never does, which revisits LISTEN-STATUS (31 October) for more expected only; ⏸️ for paused and 💤 for more expected and idle, reason and release in the heading and listening on its own line, the wording sent to Agora to draw; the state-flow diagram in Mermaid in the Work Process note with a plain-text version, through one Enactment record; household-terra's self-set hold of 3 November left as it is and re-recorded once the standard changes. SOP-ACTS-FOR-IDLE (6 November) is already in hand. Design note: [hold-states.design.md](/Users/krisbrown/kis/knowledge-islands/ki-agentic-harness/+/_WORK/ki.reg.guilds/skills/hold-states.design.md).
-
-**Query:** take all seven as recommended, with HOLD-TIDY, landed in one run?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: an independent reviewer chose the recommended course on all seven) take all seven as recommended; one run lands them with HOLD-TIDY in the harness standards and, under one Enactment record, the Work Process note, then sends a refresh line to every package and household-terra
-
-b) take them one at a time in an interactive pass
-
-c) hand them to personal.reg.inbox-sol's coordination spec under COORD-SOLE (5 November) and land them from there. The seven unpacked queries stay readable in ki.sop.main's `_emerging/packed-queries.md`; Snoozing (on hold), landed on 6 November, may already settle part of HOLD-IDLE and HOLD-LISTEN
-
-### METHOD-BATCH - take all of them as recommended, landed by one harness run
-
-from ki.sop.main
-
-**Context:** the bundle says fifteen method questions and names thirteen, each reviewed or recommended at high. How-we-work choices: VALUES-HOME (write the shared values once in the Work Process note under an Enactment record, each `work.md` linking them in an optional `## Values` line), GOAL-SETTING (an owner-invoked "goals" pass walking each focus area), URGENT-CRITERIA (only a stated deadline or a process rollout may be `URGENT`), LIVENESS (live means `status: active`, `listening: on` and activity within 30 minutes, the register becoming an optional `state.md` field), MESSAGE-WORDS (`URGENT`, `ACK` and `SUPERSEDED` as flags in the leading slot), BROADCAST-POINTER (a broadcast is a one-clause pointer to the pinned standard). Confirmations of delivered changes: REPLY-BLOCK-SUMMARY (the Summary keeps no reply block, as REPLY-BLOCK of 18 October), RENAME-FENCE (a run's record carries over to a renamed work), SUB-PACKAGE-COVERS (a sub-package stays out of `covers`), PUSH-EXCEPTION (drop Kris's 17 October push exception now a push footer exists), ADR-007 (update ADR-KI-HARNESS-SKILLS-007 in place for the move to `ki-muninn`). Harness follow-ups: AUDIT-ORPHANS (a stopped audit stops the test run it started, as a harness work item), BOARD-CAPTURE (wait for a second site before a design-board capture step). WATCH-AGORA, where views differ, stays a separate query in ki.sop.main. Design note: [how-we-work.design.md](/Users/krisbrown/kis/knowledge-islands/ki-agentic-harness/+/_WORK/ki.reg.guilds/skills/how-we-work.design.md).
-
-**Query:** take all of them as recommended, landed by one harness run?
-
-**Options:**
-
-a) (recommended, confidence high - each was reviewed by an independent reviewer who chose the same course, or rests on Kris's own earlier words) take all as recommended; one harness run lands the method text and the ADR-007 update, with an Enactment record for the Work Process values, and captures the AUDIT-ORPHANS work item
-
-b) take the confirmations and follow-ups now and hand the six how-we-work choices to personal.reg.inbox-sol's coordination spec under COORD-SOLE
-
-c) take them one at a time in an interactive pass. The unpacked queries stay readable in ki.sop.main's `_emerging/packed-queries.md`
-
 ### ONE-LAUNCHER - should one launcher per package per host become a rule
 
 from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November, differs)

@@ -391,3 +391,7 @@ Kris: "Take all five (recommended, high confidence)". D12-CANON a): the card kee
 ## 2026-11-07 04:17 GMT · ORCA-ADAPTER (interactive pass, query 4)
 
 Kris: "Take all fifteen (recommended, high confidence)". Each takes its recommended option a) as written in `discussions.md` at `aac78348`: ORCA-SKILL-KIND, CLOSEOUT-STRIKE, ONE-LAUNCHER-UNIT, OUTLIVE, PROMPT-RENDER, HEARTBEAT-ACK, STOP-VERB, QUEUE-PACE, REPORT-HOME, WORKER-SURVIVAL, DELIVERY-REPLAY, OWNER-ASK, ADAPTER-MERGE, TRIAL-ASK, TRIAL-PRACTICE. One harness run applies them to the `orca-adapter` draft and ki-coordination, has the branch reviewed independently with checks rerun, then brings it onto `main` (ADAPTER-MERGE); queued behind the Paperclip purge.
+
+## 2026-11-07 04:19 GMT · HOLD-STATES and METHOD-BATCH (interactive pass, query 5)
+
+Kris: HOLD-STATES "Take all seven (recommended, high confidence)"; METHOD-BATCH "Take all thirteen (recommended, high confidence)". HOLD-STATES a): one run lands the seven hold-state choices with HOLD-TIDY in the harness standards and, under one Enactment record, the Work Process note, then sends a refresh line to every package and household-terra. METHOD-BATCH a): one harness run lands the method text and the ADR-007 update, with an Enactment record for the Work Process values, and captures the AUDIT-ORPHANS work item. Both queued in the harness behind the Paperclip purge; ki.sop.main told.
