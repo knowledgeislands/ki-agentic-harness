@@ -4,13 +4,13 @@
 
 ### IDLE-HEADING - Confirm how the idle hold's heading reads
 
-**Context:** HOLD-IDLE a), which Kris chose on 7 November, says the idle hold is "shown as `💤 On hold · idle`". That wording was written before the hold was renamed. On 6 November, Kris renamed the more-expected hold to Snoozing, with the heading `💤 Snoozing (on hold)`. To keep one heading per state, I landed the idle hold as `### 💤 Snoozing (on hold) · idle · at <time>`. Its counts line is the same as Snoozing's, `💤 waiting for a message`, rather than the design note's `💤 resting`. This recommendation has not had a blind review.
+**Context:** HOLD-IDLE a), which Kris chose on 7 November, says the idle hold is "shown as `💤 On hold · idle`". That wording was written before the hold was renamed. On 6 November, Kris renamed the more-expected hold to Snoozing, with the heading `💤 Snoozing (on hold)`. To keep one heading per state, I landed the idle hold as `### 💤 Snoozing (on hold) · idle · at <time>`. Its counts line is the same as Snoozing's, `💤 waiting for a message`, rather than the design note's `💤 resting`.
 
 **Query:** Should the idle hold's heading stay `💤 Snoozing (on hold) · idle`?
 
 **Options:**
 
-a) (recommended, confidence medium - it keeps the single Snoozing heading from 6 November and adds the idle word where HOLD-IDLE put it; unreviewed) Keep `💤 Snoozing (on hold) · idle`, with Snoozing's counts line.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same course, since one state keeps one glyph, heading and counts line and the old wording predates the rename; it is what has landed) Keep `💤 Snoozing (on hold) · idle`, with Snoozing's counts line.
 
 b) Use `💤 On hold · idle` exactly as HOLD-IDLE wrote it, with its own counts line, `💤 resting`.
 

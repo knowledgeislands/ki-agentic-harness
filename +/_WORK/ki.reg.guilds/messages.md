@@ -2,7 +2,7 @@
 
 ## Inbound
 
-None.
+- 2026-11-07 · ACK MSG-fa716bdc REFRESH · from KI > SoP (🏛️ 🔑 ki.sop.main) · 05:31 GMT · reread at 84b28fc6, method_read set; the Enactment draft (f488f951) is routed to ki-principal under one Enactment record by run enactment-route.
 
 ## Outbound
 
