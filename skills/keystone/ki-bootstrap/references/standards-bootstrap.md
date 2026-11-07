@@ -87,7 +87,7 @@ The host never executes `scripts/govern.ts`, `.ki/bin` wrappers, copied checkers
 - detect supported local agent runtimes;
 - create the KI user configuration when absent;
 - install or restore the verified canonical harness; and
-- activate the core `ki-bootstrap`, `ki-next`, `ki-plan`, `ki-implement`, `ki-accept`, `ki-batch`, and `ki-recap` skills for each detected runtime.
+- activate the core `ki-bootstrap`, `ki-next`, `ki-plan`, `ki-implement`, `ki-accept`, and `ki-recap` skills for each detected runtime.
 
 Repeated bootstrap is idempotent over correctly managed state. `ki bootstrap --refresh` redetects runtimes and rebuilds the recorded installed-harness and managed user-skill inventory from current state.
 

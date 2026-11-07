@@ -10,5 +10,4 @@ export type { AuditOutcome, RubricContextOptions, RubricFamily, RubricSession, S
 
 export type ChangeManagementRubricContext = {
   selection: { outcomes: readonly AuditOutcome[] }
-  scaffold: { outcomes: readonly AuditOutcome[]; ensureScaffold?: () => void }
 }

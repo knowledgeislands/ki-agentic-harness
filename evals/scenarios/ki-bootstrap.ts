@@ -18,7 +18,7 @@ export const scenarios: Scenario[] = [
       { name: 'installs canonical harness', re: /(install|verified)[^.\n]{0,50}(canonical|ki-agentic-harness)/i },
       {
         name: 'activates core user skills',
-        re: /(core|seven)[^.\n]{0,40}user skills|user skills[^.\n]{0,40}(core|seven)/i
+        re: /(core|six)[^.\n]{0,40}user skills|user skills[^.\n]{0,40}(core|six)/i
       },
       {
         name: 'does not declare repository governance',
@@ -26,7 +26,7 @@ export const scenarios: Scenario[] = [
       }
     ],
     rubric:
-      'House contract: `ki bootstrap` detects supported local agent runtimes, creates the KI XDG configuration, installs the verified canonical `knowledgeislands/ki-agentic-harness`, and activates the seven core user skills: `ki-bootstrap`, `ki-next`, `ki-plan`, `ki-implement`, `ki-accept`, `ki-batch`, and `ki-recap`. `ki-delegation` is opt-in. It does not edit a repository or declare repository governance. A correct answer names both the user-environment work and the repository boundary.'
+      'House contract: `ki bootstrap` detects supported local agent runtimes, creates the KI XDG configuration, installs the verified canonical `knowledgeislands/ki-agentic-harness`, and activates the six core user skills: `ki-bootstrap`, `ki-next`, `ki-plan`, `ki-implement`, `ki-accept`, and `ki-recap`. `ki-delegation` is opt-in. It does not edit a repository or declare repository governance. A correct answer names both the user-environment work and the repository boundary.'
   },
   {
     skill: 'ki-bootstrap',

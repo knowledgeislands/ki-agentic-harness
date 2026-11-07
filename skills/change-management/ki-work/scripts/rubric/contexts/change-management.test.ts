@@ -1,8 +1,8 @@
 import { afterEach, expect, test } from 'bun:test'
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { batchReadme, createChangeManagementSession } from './change-management.ts'
+import { createChangeManagementSession } from './change-management.ts'
 
 const temporaryDirectories: string[] = []
 
@@ -69,24 +69,4 @@ test('does not resolve adapters against an unsupported explicit repository kind'
       ).toContainEqual(
         expect.objectContaining({ status: 'VIOLATION', message: expect.stringContaining('Invalid repository kind') })
       )
-})
-
-test('a declared work capability requires and can restore the retained batch scaffold', () => {
-  const repository = mkdtempSync(join(tmpdir(), 'ki-work-scaffold-'))
-  temporaryDirectories.push(repository)
-  mkdirSync(join(repository, '+'))
-  writeFileSync(join(repository, '.ki.toml'), '[skills.ki-work]\nadapter = "roadmap"\n\n[skills.ki-work-roadmap]\n')
-  const session = createChangeManagementSession({
-    mode: 'conform',
-    repository,
-    userHome: '/tmp',
-    configuration: { skills: { 'ki-work': { adapter: 'roadmap' } } }
-  })
-  const scaffold = session.subjects[0]?.context().scaffold
-  expect(scaffold?.outcomes[0]?.status).toBe('VIOLATION')
-
-  scaffold?.ensureScaffold?.()
-  expect(session.proposal()).toEqual({
-    writes: [{ path: batchReadme.path, content: batchReadme.content, create: true }]
-  })
 })

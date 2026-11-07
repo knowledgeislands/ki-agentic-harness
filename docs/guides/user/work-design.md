@@ -49,6 +49,6 @@ The loop ends when the rollout is captured. From there:
 
 - `ki-next` captures each record with the relevant decisions in its Context, and selects the pilot;
 - `ki-plan` readies each record against the decisions;
-- `ki-batch` runs each wave of independent Ready records under your grant, and `ki-accept` closes single records under the same grant.
+- `ki-implement` delivers each Ready record; while you are away the coordinator delivers independent ones in frozen waves under your unattended-window grant, and `ki-accept` closes a wave's records only where that grant names closure.
 
 The loop never decides for you, and never pushes, prunes or accepts beyond the grant your decisions file quotes.
