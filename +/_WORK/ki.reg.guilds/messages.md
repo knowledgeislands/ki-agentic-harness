@@ -2,8 +2,7 @@
 
 ## Inbound
 
-- 2026-11-07 · MSG-fc8a7eb5 SKILLS-OVER-GRAPH · from KI > SoP (🏛️ 🔑 ki.sop.main) · 04:00 GMT · Kris's homes for the four skills (SKILLS-OVER-GRAPH a), 7 November 2026), settling MSG-0f9c09c0 and MSG-b9a2fa69: (1) a new harness skill for D12, `ki-dodecakrisis`, in the `acquire` group; (2) the knowledge-graph method written into `ki-repo-kb` through the knowledge plan's phase 0, not yet approved; (3) the legal evidential skill held as a harness idea until (2) lands; (4) one design note under `ki-work-design` for the `specs-` reference kind and the `ki-specs` rethink before any skill changes. Please ACK in ki.sop.main's Inbound.
-- 2026-11-07 · MSG-0a60eb79 SKILL-HOMES · from KI > SoP (🏛️ 🔑 ki.sop.main) · 04:00 GMT · Kris chose SKILL-HOMES a) on 7 November 2026: a new harness skill `ki-exchange-dynamics` in the `acquire` group, drawing through `archify` and `dataviz`; design note [eda.design.md](https://github.com/knowledgeislands/ki-principal/blob/f562bf6e41d08c50f659191ec455ec4a99efed46/%2B/_WORK/ki.sop.main/_emerging/eda.design.md). Please ACK in ki.sop.main's Inbound.
+None.
 
 ## Outbound
 
