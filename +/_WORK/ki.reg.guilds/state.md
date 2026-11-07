@@ -33,7 +33,7 @@ workers:
 - AWAY-WINDOW from 05:00 GMT until Kris returns: build the agreed skills and land the agreed standards; no knowledge at top level, nothing done with the knowledge itself. One editing run per repository; primary checkouts.
 
 1. Done: `d12-skill` (`6ee91697`, `d2b461e4`). Running: `method-land`. Held for Kris's return (outward, touches knowledge or other owners): the D12 card and sorting-engine rewording for inbox-terra, `ki-muninn` d12 commands, mcp-gsuite and mcp-m365 protected lists, all drafted in the d12-skill report.
-2. `method-land` (harness): HOLD-STATES with HOLD-TIDY, METHOD-BATCH with the ADR-007 update and AUDIT-ORPHANS item, BROADCAST-FORM, the `task_links` triage record; refresh line to every package after. Large.
+2. Done: `method-land` (`84b28fc6`, `6dca3174`, `2bd6e20e`, `7ae588c3`, `f488f951`); records AUDIT-ORPHANS and TASK-LINKS-FIELD drafted in its report, to capture; REFRESH sent by run `refresh-method`. Was: HOLD-STATES with HOLD-TIDY, METHOD-BATCH with the ADR-007 update and AUDIT-ORPHANS item, BROADCAST-FORM, the `task_links` triage record; refresh line to every package after. Large.
 3. `orca-land` (harness): the fifteen ORCA-ADAPTER rules, RUN-RECOVERY, RUN-HANDOVER, TRIAL-PUBLISH onto the `orca-adapter` draft, independent review, then onto `main` (ADAPTER-MERGE). Large.
 4. `doer-lessons` (harness): DOER-LESSONS from ki.prj.agora CD-63 into the coordination skills. Medium.
 5. `kg-skill` (harness): `ki-knowledge-graph` in `skills/acquire/` (KG-NAME, HARNESS-SCOPE a)); no change to `ki-acquire`, no card dispatch. Medium.

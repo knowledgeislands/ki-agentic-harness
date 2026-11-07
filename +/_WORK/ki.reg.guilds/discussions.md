@@ -2,6 +2,18 @@
 
 ## Open
 
+### IDLE-HEADING - Confirm how the idle hold's heading reads
+
+**Context:** HOLD-IDLE a), which Kris chose on 7 November, says the idle hold is "shown as `💤 On hold · idle`". That wording was written before the hold was renamed. On 6 November, Kris renamed the more-expected hold to Snoozing, with the heading `💤 Snoozing (on hold)`. To keep one heading per state, I landed the idle hold as `### 💤 Snoozing (on hold) · idle · at <time>`. Its counts line is the same as Snoozing's, `💤 waiting for a message`, rather than the design note's `💤 resting`. This recommendation has not had a blind review.
+
+**Query:** Should the idle hold's heading stay `💤 Snoozing (on hold) · idle`?
+
+**Options:**
+
+a) (recommended, confidence medium - it keeps the single Snoozing heading from 6 November and adds the idle word where HOLD-IDLE put it; unreviewed) Keep `💤 Snoozing (on hold) · idle`, with Snoozing's counts line.
+
+b) Use `💤 On hold · idle` exactly as HOLD-IDLE wrote it, with its own counts line, `💤 resting`.
+
 ### PROTECTED-INTERIM - May D12 change a mailbox before the servers enforce the protected list
 
 **Context:** Under PROTECTED-HOME a) (Kris, 7 November 2026), each mail server holds and enforces the list of protected labels, and D12 reads the list from the server. Neither `mcp-gsuite` nor `mcp-m365` can do this yet. The new standard says D12 does not change a mailbox whose server does not report protection switched on. Until the servers are built, the migration file therefore stops SORT, SWEEP, LEARN and CONFORM from writing to any mailbox. Audits and dry runs continue. Work that inbox-terra's own approvals already cover, such as the Gmail legal move, is not run through the skill and is unaffected.

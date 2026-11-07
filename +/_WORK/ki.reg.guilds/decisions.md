@@ -476,3 +476,7 @@ Kris, about 04:59 GMT: "Okay, I'm out of here now. It's over to you. I'm just ch
 ## 2026-11-07 05:23 GMT · STOA-TOOLCHAIN received
 
 ki.prj.stoa MSG-c0ddcf23: how packages-stoa applied `ki-engineering`'s intent to plain JavaScript checked by JSDoc; folded into the `pkg-shape` unit with STOA-SHAPE; ACKed.
+
+## 2026-11-07 05:27 GMT · method-land received
+
+HOLD-STATES with HOLD-TIDY landed in ki-coordination (`84b28fc6`) and ki-work-package (`6dca3174`): worker-set idle hold under five conditions, paused closed to every line, Snoozing and idle keep listening, the tidy-before-hold check. METHOD-BATCH: Values line, goals pass, Urgent work rule with liveness, `URGENT` and `SUPERSEDED` flags, pointer broadcasts, push exception removed (`2bd6e20e`), ADR-KI-HARNESS-SKILLS-007 updated (`7ae588c3`). BROADCAST-FORM in the Prune rule. Enactment draft `skills/enactment-hold-and-values.md` (`f488f951`) for ki.sop.main to route to ki-principal. 1,609 tests, `tsc`, audits pass. Records AUDIT-ORPHANS and TASK-LINKS-FIELD drafted for capture. Run `refresh-method` sends the REFRESH pointer line, one per live package; IDLE-HEADING copied and sent to blind review; `orca-land` started.
