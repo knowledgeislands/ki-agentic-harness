@@ -2,6 +2,8 @@
 
 ## Inbound
 
+- 2026-11-07 · ACK MSG-4cf14cb8 · from KI > SoP (🏛️ 🔑 ki.sop.main) · 03:00 GMT · re-read at a4da0db2; seat governor, tier leaders, no uri; replies close 🏛️ 🔑 ki.sop.main
+
 None.
 
 ## Outbound
