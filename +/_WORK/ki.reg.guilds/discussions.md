@@ -76,20 +76,6 @@ b) hold until an attended terra check shows how terra lists runs, then decide
 
 c) leave `ki agent` unchanged and add a rule that runs must not call `orca orchestration` commands. Original text at ki-principal `417546eb`
 
-### KG-NAME - What to call the knowledge-graph method skill
-
-**Context:** The new skill covers how deposited material is curated into a semantic knowledge graph: the card format, curating one item at a time, tending the staging area, and sending finished cards to their owners. Kris asked about it as "the semantic knowledge graph". Its sibling for capture is `ki-acquire`. The blind reviewer disagreed and preferred: `ki-curate`, because `ki-acquire` already calls this work "curation" and a "knowledge graph" name could be confused with the permanent bases `ki-repo-kb` governs. Kris, 7 November about 04:05 GMT: "I think the knowledge graph in itself is its own skill. I don't think it's part of the [repo] KB at all."
-
-**Query:** What should the skill be called?
-
-**Options:**
-
-a) (recommended, confidence medium - it matches Kris's own words and the graph is the skill's centre) `ki-knowledge-graph`.
-
-b) `ki-curate`, a verb that pairs with `ki-acquire`, though dispatch and the card format sit less naturally under it.
-
-c) `ki-knowledge-funnel`, after the funnel card, though the funnel's capture stage belongs to `ki-acquire`.
-
 ### STAGING-HOME - Who owns the staging knowledge base's structure
 
 **Context:** KNOWLEDGE-AS-KB a (6 November) makes the Inbox's `knowledge/` a declared staging knowledge base, using zone aliases that `ki-repo-kb` already supports. A staging base differs from an ordinary one: its ids can change, and it mirrors the islands it will dispatch to.

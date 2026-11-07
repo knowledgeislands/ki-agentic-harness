@@ -435,3 +435,7 @@ Kris: "Keep it, test later (recommended, medium confidence)". `task_links` stays
 ## 2026-11-07 04:42 GMT · PURGE-ROWS settled under RADAR-HISTORY
 
 `radar-purge` (`2fa77be2`) deleted the two Paperclip-only change-log rows and removed only the Paperclip wording from three mixed rows (2026-09-26 Gas City, 2026-10-06 AHP 1.0, 2026-10-19 ACP), keeping that unrelated history. That carries out Kris's "Remove them too" in full, so PURGE-ROWS a) stands without a separate question. A radar refresh is due (subjects 19 days past review).
+
+## 2026-11-07 04:44 GMT · KG-NAME (interactive pass, query 13)
+
+Kris: "ki-knowledge-graph (recommended, medium confidence)". The knowledge-graph method skill is `ki-knowledge-graph`; its guild waits on GUILD-NAME and Kris's unfinished thought on the other pillar structures. inbox-terra's 22 KG-CARDS feed it.
