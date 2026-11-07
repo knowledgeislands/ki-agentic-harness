@@ -4,20 +4,53 @@ This file holds the inbox watch, the two thread capabilities and host sync. It e
 
 ## Inbox watch
 
-- **Inbox watch:** a coordinating thread listens for its messages only when the owner asks it to. A coordinating thread listens once the owner expressly asks it to, in words such as "listen for messages" or "keep listening", and the coordinator records that request in the work's decisions log; a Rig host sync thread, `personal.reg.rig-<host>`, listens by its role without being asked, because [host sync](#thread-capabilities) implies listening. While a listening thread is open and its work is not draining, On hold or Finished, the coordinator keeps one inbox watcher armed, whoever holds the work; work [Snoozing](standards-holds.md#putting-work-on-hold) keeps it armed On hold too. "stop the wake" or "stop listening" ends listening until the owner asks again, and a thread never asked does not listen. The heartbeat while runs go is separate and stays, listening or not, and joins the watcher in one loop. The watcher is one long-running background loop, a detached shell loop that spends no model time: every couple of minutes it fetches and fast-forwards local `main` silently and compares the Git object of the work's `messages.md` with the one it started from, reading no content, and it exits only on news, a new line in `messages.md` or a run in this thread's group finishing; a pull that cannot fast-forward also ends it, as news needing a resolve. It has no timed bound while idle, so a quiet period produces no wake, no tool calls and no chat line. On a wake the thread speaks only about what landed: on a new line the coordinator acts on it under [Messages between work](standards-messages.md#messages-between-work), commits, re-arms and tells the owner in one timed line what it did, and on a finished run it receives the run in one timed line and re-arms. A thread never holds more than one loop; after a compaction or a recovery it checks whether one is armed before arming another. The watcher lives and dies with the session: it is a session wake, not a scheduled agent, and promises nothing once the thread closes. A thread whose runtime has no proven way for the watcher's exit to wake it checks its inbox only at owner messages and run events, and shows itself as not listening. A shared shell command for the watcher and each runtime's wake are still open questions for the owner.
-- **Listening:** a banner whose thread has the listening capability, `listening_enabled: true` in its `state.md`, shows `👂 listening` under [Banner](standards-coordination.md#banner)'s mode lines while the watcher is armed, `listening_status: on`, and `🔇 not listening` otherwise, `listening_status: off`: while draining, from `pause`, `done for now` or `drain` until the drain ends, because a drain stops listening, On hold and paused, while work [Snoozing](standards-holds.md#putting-work-on-hold), the worker's idle hold included, keeps showing `👂 listening`, after "stop the wake" or "stop listening", or where the runtime cannot be woken. A thread without the capability shows no listening line at all.
+- **Inbox watch:** a coordinator listens only once the owner expressly asks, in words such as "listen for messages" or "keep listening", and logs the request in `decisions.md`. A Rig host sync thread, `personal.reg.rig-<host>`, listens by its role, because [host sync](#thread-capabilities) implies listening. A coordinator never asked does not listen. "stop the wake" or "stop listening" ends listening until the owner asks again.
+- **When:** while a listening coordinator is open and its work is not draining, On hold or Finished, it keeps one watcher armed, whoever holds the work. Work [Snoozing](standards-holds.md#putting-work-on-hold) keeps it armed On hold too.
+- **The watcher:** one long-running detached shell loop that spends no model time. The heartbeat while runs go is separate and stays, listening or not, and joins the watcher in one loop.
+  - Every couple of minutes it fetches and fast-forwards local `main` silently and compares the Git object of the work's `messages.md` with the one it started from, reading no content.
+  - It exits only on news: a new line in `messages.md`, a run in this coordinator's group finishing, or a pull that cannot fast-forward, which needs a resolve.
+  - It has no timed bound while idle, so a quiet period brings no wake, no tool calls and no chat line.
+- **At a wake:** speak only about what landed. On a new line, act on it under [Messages between work](standards-messages.md#messages-between-work), commit, re-arm and tell the owner in one timed line what was done. On a finished run, receive it in one timed line and re-arm.
+- **One loop:** a coordinator never holds more than one loop. After a compaction or a recovery it checks whether one is armed before arming another.
+- **Session-bound:** the watcher lives and dies with the session. It is a session wake, not a scheduled agent, and promises nothing once the session closes. A runtime with no proven way for the watcher's exit to wake the session checks the inbox only at owner messages and run events, and shows not listening.
+- **Open questions:** a shared shell command for the watcher, and each runtime's wake, remain with the owner.
+- **Listening line:** where `listening_enabled: true`, the [banner's mode lines](standards-coordination.md#banner) show `👂 listening` while the watcher is armed, `listening_status: on`, and `🔇 not listening` otherwise, `listening_status: off`:
+  - while draining, from `pause`, `done for now` or `drain` until the drain ends, because a drain stops listening;
+  - On hold and paused;
+  - after "stop the wake" or "stop listening";
+  - where the runtime cannot be woken.
+
+  A thread without the capability shows no listening line at all.
+
+  Work [Snoozing](standards-holds.md#putting-work-on-hold), the idle hold included, keeps `👂 listening`. A coordinator without the capability shows no listening line.
 
 Sources: INBOX-WATCH, LISTEN-STATUS, LISTEN-OPT-IN, QUIET-LISTEN and WAKE-SESSION in [the decision register](sources.md#decision-register).
 
 ## Thread capabilities
 
-A coordination thread may have two capabilities. Each is switched on only by the owner's express word, recorded in the work's decisions log, or by an agreed role, such as a Rig host sync thread's.
+A coordinator may hold two capabilities. Each is switched on only by the owner's express word, logged in `decisions.md`, or by an agreed role, such as a Rig host sync thread's. `state.md` records them in four fields under the `ki-work-package` [state file](../../../governance/ki-work-package/references/standards-work-package.md#state-file):
 
-Each thread records its capabilities in four `state.md` fields under the `ki-work-package` [state file](../../../governance/ki-work-package/references/standards-work-package.md#state-file): `listening_enabled` and `syncing_enabled`, `true` or `false`, say whether the thread has the capability, and `listening_status` and `syncing_status`, `on` or `off`, say whether it is running now. If `syncing_enabled` is true, `listening_enabled` must be true, because a syncing thread is always a listening thread. The coordinator sets `_enabled` when the owner's word or the agreed role grants the capability and clears it only when the owner withdraws it; it sets `_status` at every arm, stop, drain, hold and resume. "stop the wake" or "stop listening" turns the status off and leaves the capability enabled. At [Finished](standards-mark.md#finishing-project-work) the close-out clears both `_enabled` fields.
+| Field | Values | Set |
+| --- | --- | --- |
+| `listening_enabled`, `syncing_enabled` | `true` or `false` | when the owner's word or the agreed role grants the capability; cleared only when the owner withdraws it |
+| `listening_status`, `syncing_status` | `on` or `off` | each `_status` at every arm, stop, drain, hold and resume |
 
-- **Listening:** the thread keeps the [inbox watcher](standards-coordination.md#coordinator-responsiveness) armed. A listening thread also tends its own work package. At a wake it makes at most one small tidy, within its turn budget: it keeps `state.md`'s front matter and next steps true; prunes received reports and spent briefs under the `ki-work-package` [tidy rules](../../../governance/ki-work-package/references/standards-work-package.md#tidying-the-work-folder); strikes a decision, or reduces it to a one-line pointer, once a durable home carries it, under the [decisions life cycle](standards-decisions.md#decisions-life-cycle); keeps `discussions.md` free of answered entries; and raises what it cannot settle as a query. It says nothing about a tidy unless something needs the owner. It never edits another work's package, though it may point out a problem in one with a line in that work's `messages.md`.
-- **Host sync:** the thread is its Mac's sync thread. It repeats each pass until the Mac and GitHub are clean and level, or until something needs judgement, and only then waits for its next slot. It stays quiet on quiet passes: nothing when nothing changed, at most one short line when something did, and a full report only for something that needs judgement or the owner. Host sync implies listening.
+- `syncing_enabled: true` requires `listening_enabled: true`: a syncing thread always listens.
+- "stop the wake" or "stop listening" sets the status to `off` and keeps the capability.
+- The close-out at [Finished](standards-mark.md#finishing-project-work) clears both `_enabled` fields.
 
-The banner's [mode lines](standards-coordination.md#banner) show the listening capability's status, `👂 listening` or `🔇 not listening`. Host sync has no banner line, because Agora keeps the machines in sync through each machine's household work package. The `syncing_enabled` and `syncing_status` fields stay in `state.md`.
+**Listening.** The coordinator keeps the [watcher](#inbox-watch) armed. At each wake it also makes at most one small tidy of its own package, within the turn budget:
+
+- keep `state.md`'s front matter and next steps true;
+- prune received reports and spent briefs under the `ki-work-package` [tidy rules](../../../governance/ki-work-package/references/standards-work-package.md#tidying-the-work-folder);
+- strike a decision, or cut it to a one-line pointer, once a durable home carries it, under the [decisions life cycle](standards-decisions.md#decisions-life-cycle);
+- clear answered entries from `discussions.md`;
+- raise what it cannot settle as a query.
+
+It mentions a tidy only when something needs the owner. It never edits another package; it may flag a problem there with one line in that package's `messages.md`.
+
+**Host sync.** The coordinator is its Mac's sync thread. It repeats each pass until the Mac and GitHub are clean and level, or something needs judgement, and only then waits for its next slot. A quiet pass says nothing, a pass that changed something says at most one short line, and only a matter for judgement or the owner gets a full report. Host sync implies listening.
+
+The banner's mode lines show only the listening status, `👂 listening` or `🔇 not listening`. Host sync has no banner line, because Agora keeps the machines in sync through each machine's household package; the `syncing_enabled` and `syncing_status` fields stay in `state.md`.
 
 Sources: THREAD-CAPABILITIES, FOOTER-CAPABILITY-STATUS-2, LISTEN-OPT-IN, LISTEN-TENDS-PACKAGE, SYNC-UNTIL-CLEAN, SYNC-QUIET and SYNC-LINE-OFF in [the decision register](sources.md#decision-register).
