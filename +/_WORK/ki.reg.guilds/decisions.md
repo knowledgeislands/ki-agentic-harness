@@ -779,3 +779,5 @@ Received reply-format, 14:42 GMT: changes 1 to 24 of the reply-format note all l
 Received reply-format-refresh, 14:48 GMT: the REFRESH for the new reply format reached all 17 live packages on sol, one commit each, across six repositories, all pushed (MSG-e2ce264a done). ki.sop.main has ACKed; the other 16 are tracked on one Outbound line. Staged files from other sessions were left untouched: Agora reports in ki-principal, and tower reports in apps-ninja.midnight.tower.
 
 REFRESH ACKs, at the next wake: 3 more packages ACKed the reply-format REFRESH. 13 are still awaited, tracked on the Outbound line.
+
+15:48 GMT: Agora HEALTH MSG-c8a72b7c answered. The watcher was re-armed and an ACK went to ki.prj.agora's Inbound; the line is removed here.
