@@ -199,3 +199,7 @@ Operational: the design plan is in `skills/standard-split-plan.md`. It proposes 
 ## 2026-11-06 23:56 GMT - split-review received
 
 Operational: the blind reviewer agreed with seven of the plan's eight recommendations, lifting each to high, and added three refinements. The style gets a short hand-written opening above the generated core. The rubric's tolerance checks repoint to the past-shapes file. The reserved roles row is plain text. On CORE-BUDGET the reviewer disagreed: warn above 3,500 and fail above about 4,000, against the plan's warning only. Both views are shown, and it stays medium. All eight are copied to `discussions.md`. Nothing is running, so the full Summary goes to Kris.
+
+## 2026-11-07 00:18 GMT · PROTECTED-LABELS received
+
+From personal.reg.inbox-terra (MSG-9c1f7a35), relaying Kris at about 23:40 GMT: some mailbox labels or categories "must never be changed or touched", such as Gmail's `Z_ARCHIVE/` and `Z_ARCHIVE/Legal Matters`, wanted "as a capability of the routing and of the mail MCP servers (mcp-gsuite and mcp-m365): a declared list of protected labels that no tool call may change"; and under GD12-SWEEP "every filter or rule D12 manages carries a `D12` prefix". Held with SKILL-SPECS until HARNESS-SCOPE is answered; ACKed. Agora HEALTH MSG-45aa8f1d: watcher re-armed, ACKed. REFRESH ACK from inbox-terra pruned.
