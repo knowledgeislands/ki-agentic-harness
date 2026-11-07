@@ -4,7 +4,12 @@ import { mkdirSync, mkdtempSync, readdirSync, rmSync, symlinkSync, writeFileSync
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { RubricFamily } from '../../shared/rubric.ts'
-import { type ChezmoiRubricContext, type ChezmoiShapeContext, createChezmoiSession } from '../contexts/chezmoi.ts'
+import {
+  type ChezmoiRubricContext,
+  type ChezmoiShapeContext,
+  createChezmoiSession,
+  missingHeaderParts
+} from '../contexts/chezmoi.ts'
 import catalogue from './index.ts'
 
 const temporaryDirectories: string[] = []
@@ -41,6 +46,7 @@ test('the catalogue preserves every chezmoi criterion in family order', () => {
     'CHEZMOI',
     'BIN',
     'GIT',
+    'HEADER',
     'PATTERN',
     'CONFIG',
     'LAYER',
@@ -60,6 +66,8 @@ test('the catalogue preserves every chezmoi criterion in family order', () => {
     'BIN-1',
     'GIT-1',
     'GIT-2',
+    'HEADER-1',
+    'HEADER-J1',
     'PATTERN-J1',
     'PATTERN-J2',
     'CONFIG-J1',
@@ -80,9 +88,9 @@ test('criteria declare complete v1 remediation and review metadata', () => {
   const mechanical = items.filter((item) => item.mechanical)
   const judgment = items.filter((item) => item.judgment)
 
-  expect(mechanical).toHaveLength(7)
+  expect(mechanical).toHaveLength(8)
   expect(mechanical.every((item) => item.mechanical?.remediation)).toBe(true)
-  expect(judgment).toHaveLength(8)
+  expect(judgment).toHaveLength(9)
   for (const item of judgment) {
     expect(item.judgment?.scope).not.toBeEmpty()
     expect(item.judgment?.outcomes.length).toBeGreaterThan(0)
@@ -185,4 +193,57 @@ test('GIT-2 requires no committed hook and no hooksPath binding', () => {
 
   rmSync(join(repository, '.githooks'), { recursive: true })
   expect(outcomes()[0]?.message).toContain('core.hooksPath is ".githooks"')
+})
+
+const HEADER_TEXT = `#!/usr/bin/env bash
+# tidy_leftovers - find and remove what retired tooling left behind.
+#
+# Old tools leave stale settings behind; this finds them and removes them when asked.
+#
+# Usage:   tidy_leftovers [-f]
+# Runs:    by hand
+# Created: 2026-10-30, 02b01eb
+set -eu
+`
+
+test('a complete header passes and each missing part is named', () => {
+  expect(missingHeaderParts(HEADER_TEXT)).toEqual([])
+  expect(missingHeaderParts('#!/bin/sh\nset -eu\n')).toEqual(['first line', 'description', 'Runs', 'Created'])
+  expect(missingHeaderParts('#!/bin/sh\n# tidy - tidy up.\n# Runs: by hand\n')).toEqual(['description', 'Created'])
+  expect(
+    missingHeaderParts(
+      `#!/usr/bin/env node\n${HEADER_TEXT.split('\n').slice(1).join('\n').replaceAll('# ', '// ').replaceAll('#\n', '//\n')}`
+    )
+  ).toEqual([])
+  expect(missingHeaderParts(`{{- if eq .chezmoi.os "darwin" -}}\n${HEADER_TEXT}`)).toEqual([])
+  expect(
+    missingHeaderParts(`#!/bin/sh\n{{- if eq .chezmoi.os "darwin" -}}\n${HEADER_TEXT.split('\n').slice(1).join('\n')}`)
+  ).toEqual([])
+})
+
+test('HEADER-1 covers executables, run scripts and script files but not tests or loader fragments', () => {
+  const repository = fixture()
+  writeFileSync(join(repository, 'bin', 'executable_tidy_leftovers'), HEADER_TEXT)
+  mkdirSync(join(repository, '.chezmoiscripts'))
+  writeFileSync(join(repository, '.chezmoiscripts', 'run_onchange_after_install.sh.tmpl'), '#!/bin/sh\necho\n')
+  mkdirSync(join(repository, 'dot_zprofile.d'))
+  writeFileSync(join(repository, 'dot_zprofile.d', 'path.zsh'), 'export PATH\n')
+  mkdirSync(join(repository, 'tests'))
+  writeFileSync(join(repository, 'tests', 'bin.test.mjs'), 'import "node:test"\n')
+  writeFileSync(join(repository, 'dot_gitconfig'), '[user]\n')
+  const family = catalogue.families.find((entry) => entry.code === 'HEADER') as RubricFamily<
+    ChezmoiRubricContext,
+    unknown
+  >
+  const item = family.items.find((entry) => entry.code === 'HEADER-1')?.mechanical
+  if (!item) throw new Error('HEADER-1 mechanical item is missing')
+  const session = createChezmoiSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
+  const subject = session.subjects.find((entry) => entry.families.includes('HEADER'))
+  if (!subject) throw new Error('chezmoi session has no HEADER subject')
+  const outcomes = item.audit.run(family.selectContext(subject.context()))
+  expect(outcomes.map((outcome) => outcome.subject)).toEqual([
+    '.chezmoiscripts/run_onchange_after_install.sh.tmpl',
+    'bin/executable_setup'
+  ])
+  expect(outcomes.every((outcome) => outcome.status === 'VIOLATION')).toBe(true)
 })

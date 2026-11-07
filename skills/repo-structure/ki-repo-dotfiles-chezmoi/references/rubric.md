@@ -11,6 +11,7 @@ Line-by-line criteria for auditing ki-repo-dotfiles-chezmoi. Classifications are
 - [CHEZMOI — Chezmoi repository shape](#chezmoi--chezmoi-repository-shape)
 - [BIN — Bin source naming](#bin--bin-source-naming)
 - [GIT — Git hygiene](#git--git-hygiene)
+- [HEADER — Script headers](#header--script-headers)
 - [PATTERN — App-mutated configuration](#pattern--app-mutated-configuration)
 - [CONFIG — Configuration editing](#config--configuration-editing)
 - [LAYER — Instruction layering](#layer--instruction-layering)
@@ -56,6 +57,20 @@ Stray lock files that block Git operations, and what the commit gate runs.
   - _Remediation:_ diagnostic — Inspect the lock’s owning process and repository boundary, then use the governed stale-lock recovery procedure; do not remove it blindly.
 - **GIT-2 [M] — No commit gate** — The source declares no commit gate: no `.githooks/` path is committed and no `core.hooksPath` is bound. Its gate is the manual one its `AGENTS.md` names, and `ki-repo` HOOK-1 to HOOK-4 are not applicable. (standards-chezmoi-dotfiles.md)
   - _Remediation:_ diagnostic — Remove `.githooks/`, run `git config --unset core.hooksPath`, and keep the check commands in the AGENTS.md manual gate.
+
+## HEADER — Script headers
+
+→ [standard](standards-chezmoi-dotfiles.md)
+
+The plain-English header comment each script opens with.
+
+- **HEADER-1 [M] — Script header present** — Every script in scope opens, after its shebang, with a header comment carrying a `<name> - <purpose>` first line, a description, and `Runs:` and `Created:` lines. (standards-chezmoi-dotfiles.md#script-headers)
+  - _Remediation:_ diagnostic — Add the missing header parts in plain English, taking the Created line from the commit that first added the file; change nothing but comments.
+- **HEADER-J1 [J] — Script header in plain English** — Each header explains in plain English what the script is for, why it matters and what it touches; Runs names what actually runs it and Created matches the Git history. (standards-chezmoi-dotfiles.md#script-headers)
+  - _Evidence scope:_ Every script header in scope, with the callers and the first-adding commit of each script.
+  - _Review prompt:_ Could a non-technical reader learn from each header the goal, why it matters and what it changes; does Runs name the real caller, and does Created match the commit that first added the file without a guessed work or decision?
+  - _Outcomes:_ conforming; header revision required; history evidence required
+  - _Conforming guidance:_ Rewrite the first line and description in plain English, keeping a good existing explanation below as notes; trace callers before writing `by hand`; take Created from Git history.
 
 ## PATTERN — App-mutated configuration
 

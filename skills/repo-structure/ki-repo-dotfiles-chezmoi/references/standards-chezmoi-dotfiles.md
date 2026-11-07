@@ -8,6 +8,7 @@ The rationale behind [the generated rubric](rubric.md) and its structured catalo
 - [Edit discipline](#edit-discipline)
 - [Shell configuration: loader, not rc](#shell-configuration-loader-not-rc)
   - [Paths and completions](#paths-and-completions)
+- [Script headers](#script-headers)
 - [bin/ dispatcher pattern](#bin-dispatcher-pattern)
 - [App-mutated config handling](#app-mutated-config-handling)
   - [Native fragment-binding contract](#native-fragment-binding-contract)
@@ -62,6 +63,35 @@ New configuration becomes a new file dropped into the right directory — never 
 Treat `PATH`, `MANPATH`, and shell completion search paths as ordered, user-visible interfaces rather than incidental environment variables. Make every contribution idempotent, document the repository's intended precedence, and guard optional tools and package managers so a fresh machine or an uninstalled integration still starts a shell successfully. Keep manual-page precedence compatible with executable precedence wherever a tool supplies its own manuals.
 
 Generate a tracked CLI completion from that CLI's supported completion command, such as `<tool> completion <shell>`, instead of maintaining a hand-written copy. Keep the generator in the source tree, make regeneration repeatable, and condition both generation and shell loading on the required tool or completion file being available. Exact tool choices and precedence belong in the consuming repository's local guidance, not in this standard.
+
+## Script headers
+
+Every script in the source opens with a header comment that tells a reader what the script is for, why it matters, how it is called, what runs it and when it was made, so that anyone can learn all about it from the file alone. Kris agreed this shape on 30 October 2026 and asked that the descriptions be "non-technical, so they should explain why it's important as well and what the goal of it is ... it should also be in plain English"; on 7 November 2026 he asked for the standard to be adopted into this skill.
+
+The header sits directly after the shebang line, or at the top of a file with none, in the file's own comment syntax: `#` for shell and Python, `//` for JavaScript and TypeScript. It has five parts:
+
+```bash
+#!/usr/bin/env bash
+# tidy_leftovers - find and remove what retired tooling left in workspace checkouts.
+#
+# Old tools leave stray folders and stale settings behind in project checkouts.
+# The costly one is a stale hook setting: Git then skips every commit check
+# without saying so. This finds them and, only when asked, removes them.
+#
+# Usage:   tidy_leftovers [-f|--apply] [--check-hooks]   (see -h)
+# Runs:    by hand; --check-hooks daily from the workstation health check
+# Created: 2026-10-30, 02b01eb (TIDY-AND-RESET)
+```
+
+- **First line:** `<target name> - <what it is for>`, one plain sentence. The name is the installed target's name, without chezmoi's source prefixes.
+- **Description:** a short paragraph in plain English that a non-technical reader can follow: the goal, why it matters and what would go wrong without it, and what it touches or changes. Technical detail appears only where someone needs it to use the script safely.
+- **Usage:** the call synopsis, pointing to `-h` where the script has one. A script that takes no arguments leaves this line out.
+- **Runs:** what runs it: by hand, a named LaunchAgent or scheduled job and when, a `chezmoi apply` hook, or another script. `by hand` is written only when nothing else in the repository calls it.
+- **Created:** `YYYY-MM-DD, <short commit>` of the commit that first added the file, from `git log --diff-filter=A --follow --format='%h %as' -- <path> | tail -1`, followed by `(<work or decision>)` only where that commit or its linked record names one. Where history starts with a bulk import, write `before <date of that commit> (imported)`.
+
+A good existing explanation is kept, never shortened: where it opens technically, the plain-English first line and description go first and the existing explanation follows as notes. In a `.tmpl` source the header must survive rendering, so it sits after the shebang and outside every template directive.
+
+The rule covers every file chezmoi installs as executable (an `executable_` source name, `.tmpl` sources included), every `run_` script, and every other script file (`.sh`, `.zsh`, `.bash`, `.mjs`, `.js`, `.ts`, `.py`). It excludes tests and shell start-up fragments sourced by a loader (under `.zprofile.d/` and `.zsh/`), which the loader's own comments describe. The repository's always-loaded guidance states the rule, and its own script audit checks it.
 
 ## bin/ dispatcher pattern
 

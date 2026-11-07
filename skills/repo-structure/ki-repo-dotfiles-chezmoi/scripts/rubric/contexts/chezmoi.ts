@@ -49,6 +49,22 @@ export type GitContext = {
   hooksPath: string | null
 }
 
+export type ScriptHeader = {
+  /** Source path relative to the repository root. */
+  path: string
+  /** Header parts the opening comment block lacks, in header order. */
+  missing: readonly HeaderPart[]
+}
+
+export type HeaderPart = 'first line' | 'description' | 'Runs' | 'Created'
+
+export type HeaderContext = {
+  repository: string
+  repositoryState: RepositoryState
+  applicable: boolean
+  scripts: readonly ScriptHeader[]
+}
+
 export type ReviewContext = {
   repository: string
   applicable: boolean
@@ -59,6 +75,7 @@ export type ChezmoiRubricContext = {
   shape: ChezmoiShapeContext
   bin: BinContext
   git: GitContext
+  header: HeaderContext
   review: ReviewContext
 }
 
@@ -184,6 +201,68 @@ const inspectHook = (repository: string, state: RepositoryState): Pick<GitContex
   return { hookDirectory: pathState(join(repository, '.githooks')) !== 'missing', hooksPath }
 }
 
+const SCRIPT_EXTENSIONS = ['.sh', '.zsh', '.bash', '.mjs', '.js', '.ts', '.py'] as const
+const SOURCE_PREFIXES =
+  /^(?:(?:executable|private|readonly|empty|encrypted|exact|external|remove|create|modify|symlink|literal)_|run_(?:once_|onchange_)?(?:before_|after_)?)+/
+// Tests and loader-sourced shell fragments are described by their suite or loader, not a header.
+const HEADER_EXCLUDED_TARGETS = new Set(['tests', '.zprofile.d', '.zsh'])
+const HEADER_LABEL = /^(Usage|Runs|Created):/
+
+/** The target-side name of one source path segment, with chezmoi's attribute prefixes removed. */
+const targetSegment = (segment: string): string => {
+  const name = segment.replace(/\.tmpl$/, '').replace(SOURCE_PREFIXES, '')
+  return name.startsWith('dot_') ? `.${name.slice(4)}` : name
+}
+
+const inHeaderScope = (path: string): boolean => {
+  const segments = path.split('/')
+  if (segments.some((segment) => HEADER_EXCLUDED_TARGETS.has(targetSegment(segment)))) return false
+  const leaf = segments.at(-1) ?? ''
+  if (/(?:^|_)executable_/.test(leaf) || leaf.startsWith('run_')) return true
+  const target = leaf.replace(/\.tmpl$/, '')
+  return SCRIPT_EXTENSIONS.some((extension) => target.endsWith(extension))
+}
+
+/** Which header parts the opening comment block lacks, after any shebang and template directives. */
+export const missingHeaderParts = (text: string): readonly HeaderPart[] => {
+  const lines = text.split(/\r?\n/)
+  const directive = /^\s*(?:\{\{.*\}\}\s*)?$/
+  let index = 0
+  // A template directive may precede the shebang, which a rendered target then opens with.
+  while (index < lines.length && directive.test(lines[index] ?? '')) index++
+  if (lines[index]?.startsWith('#!')) index++
+  while (index < lines.length && directive.test(lines[index] ?? '')) index++
+  const block: string[] = []
+  for (; index < lines.length; index++) {
+    const match = /^\s*(?:#(?!!)|\/\/)\s?(.*)$/.exec(lines[index] ?? '')
+    if (!match) break
+    block.push((match[1] ?? '').trim())
+  }
+  const [first = '', ...rest] = block
+  const labels = new Set(rest.flatMap((line) => HEADER_LABEL.exec(line)?.[1] ?? []))
+  const missing: HeaderPart[] = []
+  if (!/^\S.* - \S/.test(first)) missing.push('first line')
+  if (!rest.some((line) => line && !HEADER_LABEL.test(line))) missing.push('description')
+  if (!labels.has('Runs')) missing.push('Runs')
+  if (!labels.has('Created')) missing.push('Created')
+  return missing
+}
+
+const inspectHeaders = (repository: string, state: RepositoryState): readonly ScriptHeader[] => {
+  if (state !== 'physical') return []
+  const scripts: ScriptHeader[] = []
+  walkPhysicalFiles(
+    repository,
+    (path) => {
+      const source = relative(repository, path)
+      if (!inHeaderScope(source)) return
+      scripts.push({ path: source, missing: missingHeaderParts(readFileSync(path, 'utf8')) })
+    },
+    (name) => SKIP_DIRECTORIES.has(name)
+  )
+  return scripts.sort((left, right) => left.path.localeCompare(right.path))
+}
+
 export const hasRecognisedPrefix = (name: string): boolean =>
   RECOGNISED_PREFIXES.some((prefix) => name.startsWith(prefix))
 
@@ -227,12 +306,18 @@ export const createChezmoiSession = ({
       locks: inspectGitLocks(root, state),
       ...inspectHook(root, state)
     },
+    header: {
+      repository: root,
+      repositoryState: state,
+      applicable,
+      scripts: applicable ? inspectHeaders(root, state) : []
+    },
     review: { repository: root, applicable }
   }
   return {
     subjects: [
       {
-        families: ['CHEZMOI', 'BIN', 'GIT', 'PATTERN', 'CONFIG', 'LAYER', 'SHELL', 'ETIQ', 'SYNC'],
+        families: ['CHEZMOI', 'BIN', 'GIT', 'HEADER', 'PATTERN', 'CONFIG', 'LAYER', 'SHELL', 'ETIQ', 'SYNC'],
         context: () => context,
         subject: root
       },

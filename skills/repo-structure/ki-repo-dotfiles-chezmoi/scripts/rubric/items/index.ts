@@ -5,6 +5,7 @@ import { CHEZMOI } from './chezmoi.ts'
 import { CONFIG } from './config.ts'
 import { ETIQ } from './etiquette.ts'
 import { GIT } from './git.ts'
+import { HEADER } from './header.ts'
 import { LAYER } from './layer.ts'
 import { PATTERN } from './pattern.ts'
 import { RUBRIC } from './publication.ts'
@@ -16,5 +17,5 @@ export default {
   name: 'ki-repo-dotfiles-chezmoi',
   concern: 'Knowledge Islands chezmoi dotfiles management',
   createSession: createChezmoiSession,
-  families: [CHEZMOI, BIN, GIT, PATTERN, CONFIG, LAYER, SHELL, ETIQ, SYNC, RUBRIC]
+  families: [CHEZMOI, BIN, GIT, HEADER, PATTERN, CONFIG, LAYER, SHELL, ETIQ, SYNC, RUBRIC]
 } satisfies SkillRubricDefinition<ChezmoiRubricContext>

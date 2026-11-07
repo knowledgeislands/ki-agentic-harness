@@ -26,6 +26,7 @@ No `exemplars.md` is bundled yet: the single source repo is evidence for provisi
 - **Repo layout & naming** — the `dot_`/`executable_`/`private_`/`.tmpl` prefix system and how prefixes stack; the `bin/` executable convention; `.chezmoiignore` negation-through-ignored-parents; the `chezmoi doctor/status/managed/unmanaged` health-check workflow.
 - **Edit discipline** — edit the source, never the rendered target; resolve via `chezmoi source-path`/`chezmoi target-path`.
 - **Shell configuration** — rc files as thin loaders over numbered, load-order-prefixed config files, never accreting config inline; idempotent, conditional path setup and upstream-generated completions.
+- **Script headers** — every script opens with a plain-English header: what it is for and why it matters, then Usage, Runs and a Created line from Git history.
 - **bin/ dispatcher pattern** — a single bootstrap entrypoint dispatching `{install|update|cleanup|backup}` across independent, self-contained subsystem scripts.
 - **App-mutated config handling** — Pattern A (surgical patch), Pattern B (full template + reverse-merge), or Pattern C (native fragment binding), with a decision rule and format-preserving editor selection for writes.
 - **Single-source, multi-target templating** — one structured data file rendered into several per-target config fragments via a shared template partial.
@@ -43,8 +44,8 @@ Invoked as `help` / `-h` / `?`, it explains itself and stops: name, purpose, inv
 
 ### Mode AUDIT — check a chezmoi repo against the standard
 
-1. **Run the hosted rubric** — `ki repo audit --repo <repo-path> --skill ki-repo-dotfiles-chezmoi`. It checks the four **[M]** criteria in [the rubric](references/rubric.md) (a physical `.chezmoiignore`, template support when `.tmpl` files exist, `bin/` source-prefix conformance, and physical Git lock-file hygiene). The result also counts the unevaluated **[J]** criteria, which a reader must apply separately. Exit code is non-zero on any FAIL.
-2. Apply the **judgment** (`[J]`) criteria named in [the rubric](references/rubric.md) — Pattern A/B correctness for a given app config, format-preserving editor selection and evidence for every surgical writer, reusable-guidance ownership and independence from personal files, shell-path and completion handling, `.chezmoiignore` negation intent, and whether audit-reporting etiquette was actually followed.
+1. **Run the hosted rubric** — `ki repo audit --repo <repo-path> --skill ki-repo-dotfiles-chezmoi`. It checks the **[M]** criteria in [the rubric](references/rubric.md), among them a physical `.chezmoiignore`, template support when `.tmpl` files exist, `bin/` source-prefix conformance, physical Git lock-file hygiene, and a header on every script. The result also counts the unevaluated **[J]** criteria, which a reader must apply separately. Exit code is non-zero on any FAIL.
+2. Apply the **judgment** (`[J]`) criteria named in [the rubric](references/rubric.md) — Pattern A/B correctness for a given app config, format-preserving editor selection and evidence for every surgical writer, reusable-guidance ownership and independence from personal files, shell-path and completion handling, plain-English script headers whose Runs and Created lines match the repository, `.chezmoiignore` negation intent, and whether audit-reporting etiquette was actually followed.
 3. **Report** by location → criterion → fix; lead with FAIL findings, then judgment findings; present options, don't silently fix.
 
 ### Mode CONFORM — bring a repo into house shape

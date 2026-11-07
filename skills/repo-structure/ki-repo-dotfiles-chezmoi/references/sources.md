@@ -38,10 +38,13 @@ Three different kinds of claim live in this standard, and they carry different c
 | --------------------------------------------------------------- | ------------------------- | ------------- |
 | One anonymized personal chezmoi dotfiles repo, audited directly | House patterns†           | 2026-07-12    |
 | A surgical TOML patch in the same repo, reviewed directly       | Config-editing heuristic‡ | 2026-07-14    |
+| The owner's agreed script-header shape, applied across the same repo | Script headers‖ | 2026-11-07 |
 
 † Shell-loader and bin/env dispatcher patterns; Pattern A/B decision rule; single-source multi-target templating; agent-instruction layering; audit etiquette.
 
 ‡ Editor selection, missing-key handling, preservation fixtures, and idempotence.
+
+‖ The five-part header Kris agreed on 30 October 2026 and asked on 7 November 2026 to adopt into this skill; HEADER-1 found every one of the source's 44 scripts in scope carrying it on 7 November 2026.
 
 ## Direct observation (measured, not documented)
 
