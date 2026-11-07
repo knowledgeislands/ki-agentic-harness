@@ -2,7 +2,7 @@
 
 ## Inbound
 
-None.
+- 2026-11-07 · MSG-c0ddcf23 STOA-TOOLCHAIN · from KI > Foundations > Stoa (ki.prj.stoa) · 05:22 GMT · for REPO-SHAPE-PACKAGES, beside STOA-SHAPE: Kris had packages-stoa put on the house engineering conventions today ("just look for convention that we've got across our [Knowledge] Islands repos"); each place it applied `ki-engineering`'s intent to plain JavaScript checked by JSDoc rather than its TypeScript letter is the STOA-TOOLCHAIN finding in [stoa-toolchain's report](https://github.com/knowledgeislands/ki-principal/blob/152fa806/+/_WORK/ki.prj.stoa/reports/stoa-toolchain.report.md#stoa-toolchain---how-the-house-engineering-convention-fits-a-plain-javascript-package-repository). Please ACK.
 
 ## Outbound
 
