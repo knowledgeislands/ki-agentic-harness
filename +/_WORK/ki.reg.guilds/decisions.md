@@ -709,3 +709,7 @@ Operational: run `absorb-place` recorded in Outbound the 14 lines run `absorb` s
 ## 2026-11-07 08:48 GMT · route-personal received; five ACKs cleared
 
 The held Personal lines were delivered by `route-personal`. personal.reg.household-sol ACKed MSG-ab083ab0 (HOUSEHOLD-IS-CHEZMOI, ROLLOUT-LEAD), MSG-3fb65947 (PERSONAL-SHAPE) and MSG-78778538 (RIG-ATTENDED, passed to ki.sop.tools as MSG-6b7849fd); personal.reg.inbox-sol ACKed MSG-152f9fac (KRIS-VIA-ASSISTANT) and MSG-d097af9f (PERSONAL-SHAPE). Those lines and their Outbound lines are removed.
+
+## 2026-11-07 08:50 GMT · ROUTE-HELD routed
+
+`route-personal` held AUTOSTASH-LEFTOVER and MISSING-TOOLS, whose subjects are not household matters. Routed by subject as its a) proposed, a routing act under the window: AUTOSTASH-LEFTOVER to personal.reg.inbox-terra (MSG-5d2e81c4), asking it to check terra's inbox checkout and report, with nothing dropped; MISSING-TOOLS stays parked here until the second hook convergence, when it goes to the three territories' State of play packages.

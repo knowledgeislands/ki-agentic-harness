@@ -6,6 +6,7 @@ None.
 
 ## Outbound
 
+- 2026-11-07 · MSG-5d2e81c4 AUTOSTASH-LEFTOVER · to personal.reg.inbox-terra · 08:50 GMT · check terra's inbox for the 1 November autostash and report it
 - 2026-11-07 · MSG-a0a6f68e RIG-ATTENDED · to personal.reg.household-terra · 08:46 GMT · query: route the existing attended Rig checks and CORE-068 questions when Kris is available · awaiting ACK
 - 2026-11-07 · MSG-03dd00dc TERRA-LOCAL-REPORTS · to personal.reg.household-terra · 08:46 GMT · query: private review and disposition of terra's two run-only reports · awaiting ACK
 - 2026-11-07 · MSG-f1c5a283 TERRA-PR-CHECK · to personal.reg.household-terra · 08:46 GMT · query: who supplies the open pull-request inventory terra's drain needs · awaiting ACK
