@@ -2,6 +2,7 @@
 
 ## Inbound
 
+- 2026-11-07 · ACK MSG-3dba1f8b · from personal.reg.inbox-terra · 05:33 GMT · re-read ki-coordination and ki-work-package at 84b28fc6b; method_read set
 - 2026-11-07 · ACK MSG-0821fe7b · from 🦉 🔑 personal.reg.inbox-sol · 05:30 GMT (re-read; method read at `84b28fc6`)
 - 2026-11-07 · ACK MSG-ab947c20 · from HNR > 5G Emerge > Phase 3 (⚒️ 🔑 hnr.prj.5g-emerge-phase3) · 05:29 GMT · reread ki-coordination and ki-work-package at harness 84b28fc6; method_read set to 84b28fc6b.
 
