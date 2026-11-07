@@ -423,3 +423,7 @@ Kris: "Remove them too". Run `radar-purge` removes the dated Paperclip rows from
 ## 2026-11-07 04:36 GMT · legal-main received, blocked
 
 Every push to `main` in `apps-ninja.midnight.legal` deploys `legal.midnight.ninja` publicly, and no Cloudflare Access application exists yet, so merging `legal-site-skeleton` (which carries confidential case material) and pushing would publish it. The run pushed nothing and deleted no branch. The merge conflicts in `apps/site-legal/wrangler.jsonc` and the Cloudflare guide (Worker name); aborted, checkout back on `legal-site-skeleton`, clean. `f75e9dd` (Paperclip declaration removed) sits on local `main` only. `legal-review-2026-11-02` is superseded by the skeleton. Queries LEGAL-WORKER-NAME and LEGAL-ACCESS copied.
+
+## 2026-11-07 04:38 GMT · LEGAL-WORKER-NAME and LEGAL-ACCESS (interactive pass, queries 10 and 11)
+
+Kris: "New name + protections (recommended, high confidence)" and "Access first (recommended, high confidence)". The merge keeps `ninja-midnight-legal` with `workers_dev: false` and `preview_urls: false`, updating the old name in `AGENTS.md` and the guide. Nothing reaches `main` until Kris has created the Cloudflare Access application for `legal.midnight.ninja` and given its name, login method and allow policy; then a follow-up run records them, merges, pushes `main` and deletes the merged branches. `f75e9dd` stays local until then.

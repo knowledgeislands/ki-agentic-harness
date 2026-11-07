@@ -35,7 +35,7 @@ workers:
 0. STAGE-C-ROLES landed (`a4da0db2`, 03:03 GMT); REFRESH MSG-4cf14cb8 out to 15 packages, ACKs coming in; household-terra and household-sol switch their footers.
 1. Nothing running.
 2. Then, chained in the harness after STAGE-C-ROLES: `cm-tidy` (CHANGE-MGMT cluster), then the staged standard split (STAGING), then the absorption of ki.prj.ways-of-working once ki.sop.main acknowledges MSG-a5ca3edb.
-3. Waiting: Kris verifying vega's key (VEGA-KEY); personal.reg.inbox-sol's state of coordination (COORD-OVERLAP); ki.sop.main's bundles (MSG-da83a96f) and Orca items (MSG-8125375d).
+3. Waiting: Kris creating the Cloudflare Access application for `legal.midnight.ninja` and giving its name, login method and allow policy (LEGAL-ACCESS), then run `legal-merge`; Kris verifying vega's key (VEGA-KEY); personal.reg.inbox-sol's state of coordination (COORD-OVERLAP); ki.sop.main's bundles (MSG-da83a96f) and Orca items (MSG-8125375d).
 
 ## Held
 
