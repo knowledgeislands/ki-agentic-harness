@@ -2,6 +2,30 @@
 
 ## Open
 
+### HOLD-RUNSTATE - Where copied run state goes when work is put on hold
+
+**Context:** When work goes on hold, the rules say to copy into the work's package anything from a run's state folder (`~/.local/state/ki/agents/<run>/`) that is needed to resume. The drafter noticed that the package may only hold a fixed list of file kinds, set by `ki-work-package`. Copied run state may not be on that list. I kept the rule as it stands today, with the same meaning, so nothing changed. Neither the plan nor the earlier split decision settles where such files belong.
+
+**Query:** Should copied run state go to a named place in the package, such as the focus folder of the work it serves, so that it fits the package's list of allowed files?
+
+**Options:**
+
+a) (recommended, confidence medium - it fits the package's existing focus-folder rule, but the allowed-file list is in another skill and I have not tested it against this case) Name the focus folder the run served, or `findings/` for a finding, as the home for copied run state. Change the holds rule and, if needed, the `ki-work-package` list in stage 6 or a small follow-up.
+
+b) Leave the rule as it is, and deal with any clash with the allowed-file list when a real hold runs into it.
+
+### STAGE5-DEPTH - Accept the modest cut, or go deeper later
+
+**Context:** The terse rewrite now in the repository keeps every rule's meaning. Many tests pin exact sentences, and templates, tables and fixed tokens make up most of the remaining length, so the files are only about 6% shorter. A deeper cut means rewording the pinned sentences and changing their tests at the same time. That is stage 6's ground, where the tests and the generated style are rewritten anyway.
+
+**Query:** Should any deeper cut wait for stage 6, alongside the test changes, rather than opening a second stage 5 pass?
+
+**Options:**
+
+a) (recommended, confidence medium - pinned wording is safest changed together with its tests, and stage 6 already rewrites both) Leave the deeper cut to stage 6, which may shorten pinned sentences while it changes their tests.
+
+b) Send stage 5 back now for a deeper second pass, allowing pinned sentences to change and listing the test edits each one needs.
+
 ### PARTS-HOME - Where to write the four change-management parts
 
 **Context:** CM-PARTS a) and PART-HOME a) record the four parts in two places: the guild's work page and a field in the skills catalogue's generated data. The brief forbade editing `+/_WORK/ki.reg.guilds/`. A catalogue field needs a new frontmatter key accepted by `ki-skills`, plus a change to the `ki-repo-harness` catalogue generator, and both are outside change-management. The parts are Coordination, Work lifecycle, Work records and Design.

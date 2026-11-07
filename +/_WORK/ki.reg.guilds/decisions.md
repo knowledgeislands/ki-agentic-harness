@@ -524,3 +524,7 @@ Stage 4 landed (`3e4c18c6`, tick `113bdb5b`): history moved out of all fourteen 
 ## 2026-11-07 07:49 GMT · Agora health answered
 
 ki.prj.agora's HEALTH MSG-4554660b answered by re-arming on the Agora call and doorbell paths for 120 minutes and an ACK in its Inbound; the line is removed.
+
+## 2026-11-07 08:16 GMT · stage 5 landed; stage 6 and absorb started
+
+stage5-draft wrote all fourteen units; the independent Codex reviewer (stage5-review) found 14 issues (1 lost, 10 changed, 3 unclear); stage5-apply landed every unit with all fixes, core last (to `60b52443`, tick `1e7bf844`), restoring "agent" where a rule means one worker and the runtime-specific wording `ki-skills` requires; HOLD-DRAIN added to the register. Queries HOLD-RUNSTATE and STAGE5-DEPTH copied and sent to blind review. `stage6` launched on the plan's stage 6 as written, without any deeper cut while STAGE5-DEPTH is open. `absorb` launched in ki-principal as unit 11 under ABSORB-CLOSE, a different repository from the harness run.
