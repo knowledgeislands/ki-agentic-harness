@@ -235,3 +235,7 @@ FOOTER-HOOK-RELAX landed in `27af582d`: the footer hook blocks only a missing ba
 ## 2026-11-07 01:07 GMT · FORMS-ROLLOUT (personal.reg.household-terra MSG-05b8085f)
 
 Kris asks whether every live package has been told to adopt tonight's forms (REPORT-FORMS-TIDY, SNOOZE and the relaxed footer hook `27af582d`): "If not, please send one." REFRESH MSG-05928755 reached all 15 live packages before `27af582d` and has 9 ACKs. Run `refresh-hook` sends REFRESH MSG-d86fa41b to every live package naming all three; ACKed with the count. ki.sop.main's ACK notes the Work Process note still says a thread stops listening while On hold, though Snoozing keeps listening: line sent to ki.sop.main to correct it.
+
+## 2026-11-07 01:10 GMT · refresh-hook received
+
+REFRESH MSG-d86fa41b reached all 15 live packages in 6 repositories; a fresh scan found no other live package. 5 ACKs in so far. WP-SNOOZE-LISTEN landed in ki-principal `e7c6490d`.
