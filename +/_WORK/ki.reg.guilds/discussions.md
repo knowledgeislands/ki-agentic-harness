@@ -154,13 +154,13 @@ b) leave it open and let each opt-in decision say what it covers (the review's p
 
 from ki.prj.ways-of-working (blind review of ONE-LAUNCHER, 1 November)
 
-**Context:** whatever launcher a package uses, the same work could start twice, once per Mac or again by a new coordinator session; the review proposes exactly one launcher answerable for each dispatched unit, recorded at dispatch and checked first. Not itself blind-reviewed.
+**Context:** whatever launcher a package uses, the same work could start twice, once per Mac or again by a new coordinator session; the review proposes exactly one launcher answerable for each dispatched unit, recorded at dispatch and checked first. The blind reviewer adds that the check must read the live list of running work as well as the log, since two Macs could both pass a Git-synced log check before either pushes.
 
 **Query:** should each dispatched unit have one recorded launcher, checked before dispatch?
 
 **Options:**
 
-a) (recommended, confidence medium - guards against starting work twice, but the check is new and untried) yes: the adapter records the launcher with each unit at dispatch, and the coordinator checks the decisions log and running work before dispatching
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same course; guards against starting work twice, but the check is new and untried) yes: the adapter records the launcher with each unit at dispatch, and the coordinator checks the decisions log and running work before dispatching
 
 b) no: rely on whatever ONE-LAUNCHER settles
 
@@ -336,13 +336,15 @@ b) hold it until the open points are settled
 
 from ki.prj.orca-evaluation (SCOPE-SPLIT method question)
 
-**Context:** how a worker commits in a repository whose pre-commit hook runs lint-staged, which made and dropped a backup stash; in plan069 a no-stash rule collided with it, `worker_done` read `failed` though the work succeeded, and Kris granted a bounded exception. Kris chose HOOK-STASH a), lint-staged with `--no-stash`, on 1 November, which may settle it.
+**Context:** how a worker commits in a repository whose pre-commit hook runs lint-staged, which made and dropped a backup stash; in plan069 a no-stash rule collided with it, `worker_done` read `failed` though the work succeeded, and Kris granted a bounded exception. Kris chose HOOK-STASH a), lint-staged with `--no-stash`, on 1 November, which may settle it. The blind reviewer found that with `--no-stash` no stash is made, so the clash is gone and the stash clause is no longer needed.
 
 **Query:** how should Orca workers publish their notes?
 
 **Options:**
 
-a) (recommended, confidence medium - tests the worker-commit path the adapter needs, exception narrow and stated up front) each brief carries a bounded exception: the worker commits its own note by explicit path inside a write window granted by ask, the hook may make and drop lint-staged's backup stash, the worker never runs `git stash`, the coordinator pushes at receive
+a) (recommended, confidence medium - reviewed: the blind reviewer proposed this, and HOOK-STASH a) removed the reason for the exception) the worker commits its own note by explicit path inside a write window granted by ask, under the ordinary rules, and never runs `git stash`; the coordinator pushes at receive
+
+c) each brief carries the bounded exception as first written, including that the hook may make and drop lint-staged's backup stash
 
 b) no worker commits; the worker writes note and report and the coordinator commits both at receive. Likely closable as overtaken by HOOK-STASH a); original text at ki-principal `04591e2b`, `+/_WORK/ki.prj.orca-evaluation/queries.md`
 
@@ -356,7 +358,7 @@ from ki.prj.orca-evaluation (SCOPE-SPLIT method question)
 
 **Options:**
 
-a) (recommended, confidence medium - keeps the ask for what the coordinator can answer, needs no one attentive for half an hour) the coordinator answers its own asks with `--timeout-ms 1800000`, resuming by message id on timeout; a question only Kris can answer ends the attempt: the worker raises it as a blocking query, `worker_done --outcome failed` names its tag, the coordinator records it and retries after Kris answers
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same course; keeps the ask for what the coordinator can answer, needs no one attentive for half an hour) the coordinator answers its own asks with `--timeout-ms 1800000`, resuming by message id on timeout; a question only Kris can answer ends the attempt: the worker raises it as a blocking query, `worker_done --outcome failed` names its tag, the coordinator records it and retries after Kris answers
 
 b) the worker keeps the ask open while the coordinator relays it to Kris, resuming the same message after each 30-minute timeout. Original text at ki-principal `04591e2b`
 
@@ -370,7 +372,7 @@ from ki.prj.orca-evaluation (SCOPE-SPLIT method question)
 
 **Options:**
 
-a) (recommended, confidence medium - lets the trial generate evidence without settling the choices early) yes, provisionally and for the trial only, its evidence going back to the ORCA-FIT choices
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same course; lets the trial generate evidence without settling the choices early) yes, provisionally and for the trial only, its evidence going back to the ORCA-FIT choices
 
 b) no, settle those choices before any unit runs. Original text at ki-principal `04591e2b`
 
@@ -378,7 +380,7 @@ b) no, settle those choices before any unit runs. Original text at ki-principal 
 
 from ki.prj.orca-evaluation (SCOPE-SPLIT method question)
 
-**Context:** `ki agent` passed its whole environment, so a run started from an Orca chat coordinator carried the coordinator's Orca identity and could act as it in `orca orchestration` commands. tools-ki `2970714c` now drops `ORCA_AGENT_SESSION_ID`, `ORCA_AGENT_SESSION_SPAWN_TOKEN`, `ORCA_STRUCTURED_SESSION` and `ORCA_CHAT_SCRATCH_DIR`; the pane, tab, worktree and hook variables remain (`ORCA_PANE_KEY`, `ORCA_TAB_ID`, `ORCA_WORKTREE_ID`, `ORCA_AGENT_HOOK_*`), and terra's runs appear in Orca only through inherited pane variables, so removing them may drop runs from terra's list.
+**Context:** `ki agent` passed its whole environment, so a run started from an Orca chat coordinator carried the coordinator's Orca identity and could act as it in `orca orchestration` commands. tools-ki `2970714c` now drops `ORCA_AGENT_SESSION_ID`, `ORCA_AGENT_SESSION_SPAWN_TOKEN`, `ORCA_STRUCTURED_SESSION` and `ORCA_CHAT_SCRATCH_DIR`; the pane, tab, worktree and hook variables remain (`ORCA_PANE_KEY`, `ORCA_TAB_ID`, `ORCA_WORKTREE_ID`, `ORCA_AGENT_HOOK_*`), and terra's runs appear in Orca only through inherited pane variables, so removing them may drop runs from terra's list. The blind reviewer disagreed and preferred: holding until an attended terra check, because the variables that carried identity are already gone and the rest affect only how runs are listed; it also suggests dropping only `ORCA_AGENT_HOOK_*` now if they credit a run's hook events to the coordinator.
 
 **Query:** should `ki agent` also drop the remaining Orca variables from runs it starts?
 
@@ -392,7 +394,7 @@ c) leave `ki agent` unchanged and add a rule that runs must not call `orca orche
 
 ### KG-NAME - What to call the knowledge-graph method skill
 
-**Context:** The new skill covers how deposited material is curated into a semantic knowledge graph: the card format, curating one item at a time, tending the staging area, and sending finished cards to their owners. Kris asked about it as "the semantic knowledge graph". Its sibling for capture is `ki-acquire`.
+**Context:** The new skill covers how deposited material is curated into a semantic knowledge graph: the card format, curating one item at a time, tending the staging area, and sending finished cards to their owners. Kris asked about it as "the semantic knowledge graph". Its sibling for capture is `ki-acquire`. The blind reviewer disagreed and preferred: `ki-curate`, because `ki-acquire` already calls this work "curation" and a "knowledge graph" name could be confused with the permanent bases `ki-repo-kb` governs.
 
 **Query:** What should the skill be called?
 
@@ -406,7 +408,7 @@ c) `ki-knowledge-funnel`, after the funnel card, though the funnel's capture sta
 
 ### GUILD-NAME - Keep the guild called "acquire", or rename it
 
-**Context:** HARNESS-SCOPE a) (Kris, 7 November) made each harness skill folder a guild and put both new skills under the acquire guild, leaving its name open. With D12 and the graph skill added, the guild runs from sorting through capture and curation to dispatch. Renaming the folder moves skill paths, the catalogue and links.
+**Context:** HARNESS-SCOPE a) (Kris, 7 November) made each harness skill folder a guild and put both new skills under the acquire guild, leaving its name open. With D12 and the graph skill added, the guild runs from sorting through capture and curation to dispatch. Renaming the folder moves skill paths, the catalogue and links. The blind reviewer disagreed and preferred: `knowledge-tending`, because it is exact, matches the Pillar folder, other guild folders are already hyphenated, and a bare `knowledge` could be confused with the knowledge-base skills in `repo-structure`.
 
 **Query:** What should this guild be called?
 
@@ -426,7 +428,7 @@ c) Keep `acquire`; it costs nothing, but sorting and curation are not acquisitio
 
 **Options:**
 
-a) (recommended, confidence medium - it keeps the tenet as a concept and puts the method where it gets used) The card keeps the concept (the twelve Ds, the names and why) and links to the skill. The skill's standard holds the ten rules and how they run.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same course; it keeps the tenet as a concept and puts the method where it gets used) The card keeps the concept (the twelve Ds, the names and why) and links to the skill. The skill's standard holds the ten rules and how they run.
 
 b) The card stays the authority for everything, and the skill cites it.
 
@@ -438,7 +440,7 @@ b) The card stays the authority for everything, and the skill cites it.
 
 **Options:**
 
-a) (recommended, confidence medium - one place for Kris to look, and the working modes are small) One `ki-dodecakrisis` skill: the four standard modes plus SORT, SWEEP and LEARN.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same course; one place for Kris to look, and the working modes are small) One `ki-dodecakrisis` skill: the four standard modes plus SORT, SWEEP and LEARN.
 
 b) Two skills: `ki-dodecakrisis` for the standard and a separate process skill for running it.
 
@@ -450,7 +452,7 @@ b) Two skills: `ki-dodecakrisis` for the standard and a separate process skill f
 
 **Options:**
 
-a) (recommended, confidence medium - repeatable, cheap and uses existing mailbox settings) Code in `ki-muninn` (`ki-muninn d12 sweep`, `ki-muninn d12 learn`), governed by the skill. hnr-principal runs it too, for its own mailbox.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same course; repeatable, cheap and uses existing mailbox settings) Code in `ki-muninn` (`ki-muninn d12 sweep`, `ki-muninn d12 learn`), governed by the skill. Whether hnr-principal runs it for its own mailbox is left for later: that mailbox is Microsoft 365, so `ki-muninn` would need a second mail backend.
 
 b) A scheduled agent pass that uses the skill and the mail servers directly, with code later.
 
@@ -498,13 +500,13 @@ b) No: `ki-acquire` keeps them, and the graph skill covers only the card format 
 
 **Options:**
 
-a) (recommended, confidence medium - structure stays with the structure skill and method with the method skill) A staging profile in `ki-repo-kb` for the zones and aliases, with the graph skill covering how material moves through it.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same course; structure stays with the structure skill and method with the method skill) A staging profile in `ki-repo-kb` for the zones and aliases, with the graph skill covering how material moves through it.
 
 b) All of it in the graph skill.
 
 ### DOCKET-HOME - Where D12's Docket items live
 
-**Context:** In D12, the Docket keeps actions that outlive the item they came from. The Gmail design has a `D12/12 Docket` label. The Inbox keeps Kris's life actions as cards in `knowledge/actions/`, which the KIV viewer reads. How the two relate is still open in the sorting-engine draft, and the standard can only describe a settled final state.
+**Context:** In D12, the Docket keeps actions that outlive the item they came from. The Gmail design has a `D12/12 Docket` label. The Inbox keeps Kris's life actions as cards in `knowledge/actions/`, which the KIV viewer reads. How the two relate is still open in the sorting-engine draft, and the standard can only describe a settled final state. The blind reviewer disagreed and preferred: leaving the Docket out of the first version, because the sorting-engine draft has not settled it and a standard can only describe a settled state; the action card can follow once the draft decides.
 
 **Query:** What is a Docket item?
 
