@@ -10,7 +10,7 @@
 
 **Options:**
 
-a) (recommended, confidence medium - the groups match how the skills already hand off, but nobody else has checked the borders) Yes: Coordination, Work lifecycle, Work records and Design, one guildmaster for all, trades parked until the Trades revamp.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same, as the borders match how the skills already hand off and one guildmaster fits "reserve until needed") Yes: Coordination (`ki-coordination`, `ki-work-package`, `ki-delegation`, `ki-recap`), Work lifecycle (`ki-next`, `ki-plan`, `ki-implement`, `ki-accept`), Work records (`ki-work`, `ki-work-roadmap`, `ki-work-recurring`) and Design (`ki-work-design`), one guildmaster for all. The trades skills stay on hold for the Trades revamp, which this answer does not decide.
 
 b) Three parts: fold Design into Coordination, since it is one small skill.
 
@@ -24,7 +24,7 @@ c) No parts; keep change management as one list.
 
 **Options:**
 
-a) (recommended, confidence medium - it gets the clarity without breaking links across 63 repositories) Grouping only: record the parts in the guild's work page and the skills catalogue; folders stay where they are.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same, as moving folders breaks links across 63 repositories for a purely visual gain) Grouping only: record the parts in the guild's work page and as a field in the skills catalogue's generated data, so the two cannot drift; folders stay where they are.
 
 b) Move folders so each part is its own directory under `skills/change-management/`.
 
@@ -36,7 +36,7 @@ b) Move folders so each part is its own directory under `skills/change-managemen
 
 **Options:**
 
-a) (recommended, confidence medium - no recent use and the window already carries the authority, but autonomous delivery outside a coordinating package would lose its envelope) Yes, retire it: the window grant in the decisions log is the one authority record, `ki-accept` closes under a cited grant, and `ki batch` goes after a tolerance window.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same, as no batch has been made since 20 October and two authority records for one grant drift) Yes, retire it. The window grant in the decisions log is the one authority record; the frozen-set rule (a wave is fixed before delivery starts) and the closure rule move into `ki-coordination` and `ki-accept`; all five brief footers lose their `ki-batch` clause in the same change; autonomous delivery outside a coordinating package is dropped, such work opening a package with a window; the empty `+/_BATCHES/` folders and the `ki batch` command go through the migration file.
 
 b) Keep it but narrow it to autonomous delivery outside a coordinating package, and drop it from the window.
 
@@ -50,7 +50,7 @@ c) Keep it as is.
 
 **Options:**
 
-a) (recommended, confidence medium - no repository uses them and they cannot run, but `ki-repo` code and rubrics depend on the GitHub Issues name) Yes, fold both into `ki-work`, keep the old names readable for a tolerance window, and repoint `ki-repo`'s Issues switch.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same, noting `ki-repo`'s live dependency needs a target) Yes, fold both into `ki-work` as one reference: a repository picks its tracker with a `ki-work` adapter value such as `adapter = "github-issues"`, which `ki-repo`'s Issues switch reads instead of a skill declaration; `ki-plan`, `ki-next` and the skills catalogue are repointed; the old names stay readable through the migration file.
 
 b) Retire both outright, with no reference kept.
 
@@ -76,7 +76,7 @@ b) Keep the checkpoint mode as a convenience that calls `ki-work-package`.
 
 **Options:**
 
-a) (recommended, confidence medium - it makes deferred work visible to the roadmap without loading records with undecided questions, but it adds captures) Yes: deliverable work becomes a record in its home repository through `ki-next`; Held keeps only items waiting on a named decision or event.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same, as it follows HANDOFF-AS-MESSAGE and puts deferred work where selection and acceptance look) Yes: work not delivered by the run or session that produced it becomes an unadopted triage record in its home repository, captured there through `ki-next`; Held keeps only items waiting on a named decision or event.
 
 b) No: packages may keep deferred work in Held as long as needed, and roadmaps are only for repository delivery chosen separately.
 
