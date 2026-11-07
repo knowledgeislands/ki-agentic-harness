@@ -2,6 +2,7 @@
 
 ## Inbound
 
+- 2026-11-07 · ACK MSG-1628dfef · from 🦉 🔑 personal.reg.inbox-sol · 14:45 GMT (re-read the report-forms standard; method read at `d5ede6dd`)
 - 2026-11-07 · ACK MSG-2f927a89 REFRESH · from KI > SoP (🏛️ 🔑 ki.sop.main) · 14:45 GMT · reread the report-forms standard and moved `method_read` to d5ede6dd; wakes are now Minimal Updates.
 
 ## Outbound
