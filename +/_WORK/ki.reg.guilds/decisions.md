@@ -383,3 +383,7 @@ ki.sop.main ACKed KG-OWN-SKILL MSG-feae119e: KNOWLEDGE-PLAN phase 0 adopts the k
 ## 2026-11-07 04:12 GMT · ABSORB-CLOSE (interactive pass, query 2)
 
 Kris: "Take all three (recommended, high confidence)". ABSORB-DROPS a): drop the 13 overtaken ways-of-working queries, each logged with its reason by the absorption run. CLOSE-WAIVER a): meet the strict close gate; a reconcile run records a home or class for every entry, then closes the group. Z-PUBLISHED a): delete the two Z reports with the folder at close-out, history untouched; Z-HISTORY stays open. All three ride with the queued absorption run.
+
+## 2026-11-07 04:14 GMT · D12-CORE (interactive pass, query 3)
+
+Kris: "Take all five (recommended, high confidence)". D12-CANON a): the card keeps the concept and links to the skill, whose standard holds the ten rules; the card's "change them there" line is reworded. D12-KIND a): one `ki-dodecakrisis` skill with the four standard modes plus SORT, SWEEP and LEARN. D12-RUNNER a): code in `ki-muninn` (`ki-muninn d12 sweep`, `ki-muninn d12 learn`) governed by the skill; hnr-principal's Microsoft 365 mailbox later. PROTECTED-HOME a): each mail server's per-account configuration declares the protected labels and refuses any change; D12 reads the list from the server. PROTECTED-READ a): refuse every change, read state included. The D12 skill run is queued in the harness; the server and `ki-muninn` parts route to their owners from it.

@@ -396,66 +396,6 @@ b) `knowledge-tending`, the name of the Pillar folder that holds all three cards
 
 c) Keep `acquire`; it costs nothing, but sorting and curation are not acquisition.
 
-### D12-CANON - Where D12's rules live once the skill exists
-
-**Context:** The D12 card, Kris's fundamental tenet of 5 November, holds the twelve Ds, the names and the ten rules, and currently says "change them there". SKILLS-OVER-GRAPH (6 November) says method moves into skills and the graph keeps "things that are".
-
-**Query:** Which holds the authoritative D12 rules, the card or the skill?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: the blind reviewer chose the same course; it keeps the tenet as a concept and puts the method where it gets used) The card keeps the concept (the twelve Ds, the names and why) and links to the skill. The skill's standard holds the ten rules and how they run.
-
-b) The card stays the authority for everything, and the skill cites it.
-
-### D12-KIND - One D12 skill with working modes, or two skills
-
-**Context:** House governance skills share four modes: audit, conform, educate and refresh. D12 also needs working modes: sort arrivals, run the sweeps, and learn from corrections. Each writes only with an approval it cites.
-
-**Query:** Should one skill hold both the standard and the working modes?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: the blind reviewer chose the same course; one place for Kris to look, and the working modes are small) One `ki-dodecakrisis` skill: the four standard modes plus SORT, SWEEP and LEARN.
-
-b) Two skills: `ki-dodecakrisis` for the standard and a separate process skill for running it.
-
-### D12-RUNNER - What runs the sweeps and the learning loop
-
-**Context:** Sweeps are simple, repeated label and age searches. The learning loop reads mail headers through the change history. Executable importers live outside the harness, in the Inbox's `ki-muninn`, which already holds the mailbox settings. Kris said on 6 November that the sweeps are D12's own runs.
-
-**Query:** What should execute D12's sweeps and learning?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: the blind reviewer chose the same course; repeatable, cheap and uses existing mailbox settings) Code in `ki-muninn` (`ki-muninn d12 sweep`, `ki-muninn d12 learn`), governed by the skill. Whether hnr-principal runs it for its own mailbox is left for later: that mailbox is Microsoft 365, so `ki-muninn` would need a second mail backend.
-
-b) A scheduled agent pass that uses the skill and the mail servers directly, with code later.
-
-### PROTECTED-HOME - Where the protected-label list lives
-
-**Context:** Kris, about 23:40 GMT on 6 November: some labels "must never be changed or touched", as "a capability of the routing and of the mail MCP servers". A list held by the caller can be forgotten or left out; a list held in each server's own configuration (managed by chezmoi) protects every caller, D12 or not.
-
-**Query:** Where should the protected list be declared?
-
-**Options:**
-
-a) (recommended, confidence high - only a server-side list protects against every caller) In each mail server's per-account configuration. The server refuses any change, and D12 reads the list from the server.
-
-b) In the D12 settings of the declaring repository, passed to the server on each call.
-
-### PROTECTED-READ - Does marking read count as touching
-
-**Context:** Z-ARCHIVE (Kris, 6 November): nothing "adds, removes, renames or deletes any label under it, or changes the messages it holds". Opening a protected message in the Gmail web app marks it read regardless; this only concerns tool calls.
-
-**Query:** Should the servers also refuse to mark protected messages read or unread?
-
-**Options:**
-
-a) (recommended, confidence high - it matches "never changed or touched") Yes, refuse every change, read state included.
-
-b) Allow read-state changes and refuse everything else.
-
 ### ACQUIRE-SPLIT - Move curation and dispatch out of `ki-acquire`
 
 **Context:** The `ki-acquire` standard already contains "Staging and curation" and "Dispatch and authority" sections, and its description mentions curation and dispatch. The new graph skill covers the same ground. Two copies would drift apart.
