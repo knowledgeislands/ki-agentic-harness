@@ -6,6 +6,15 @@ None.
 
 ## Outbound
 
+- 2026-11-07 · MSG-152f9fac KRIS-VIA-ASSISTANT · to personal.reg.inbox-sol · 08:46 GMT · pointer: Kris's KRIS-VIA-ASSISTANT decision and assistant-sol's confirmation, carried by inbox-sol · awaiting ACK
+- 2026-11-07 · MSG-ab083ab0 HOUSEHOLD-IS-CHEZMOI · to personal.reg.household-sol · 08:46 GMT · pointer: HOUSEHOLD-IS-CHEZMOI and ROLLOUT-LEAD, carried by household-sol · awaiting ACK
+- 2026-11-07 · MSG-d097af9f PERSONAL-SHAPE · to personal.reg.inbox-sol · 08:46 GMT · pointer: Kris's PERSONAL-SHAPE words, carried by inbox-sol · awaiting ACK
+- 2026-11-07 · MSG-3fb65947 PERSONAL-SHAPE · to personal.reg.household-sol · 08:46 GMT · pointer: Kris's PERSONAL-SHAPE words, carried by household-sol · awaiting ACK
+- 2026-11-07 · MSG-78778538 RIG-ATTENDED · to personal.reg.household-sol · 08:46 GMT · query: route the existing attended Rig checks and CORE-068 questions when Kris is available · awaiting ACK
+- 2026-11-07 · MSG-a0a6f68e RIG-ATTENDED · to personal.reg.household-terra · 08:46 GMT · query: route the existing attended Rig checks and CORE-068 questions when Kris is available · awaiting ACK
+- 2026-11-07 · MSG-03dd00dc TERRA-LOCAL-REPORTS · to personal.reg.household-terra · 08:46 GMT · query: private review and disposition of terra's two run-only reports · awaiting ACK
+- 2026-11-07 · MSG-f1c5a283 TERRA-PR-CHECK · to personal.reg.household-terra · 08:46 GMT · query: who supplies the open pull-request inventory terra's drain needs · awaiting ACK
+- 2026-11-07 · MSG-be907d9f TERRA-RECOVERY · to personal.reg.household-terra · 08:45 GMT · query: where the retained publication and private-proof items are held · awaiting ACK
 - 2026-11-07 · MSG-12d5cee1 HNR-TOOLROOT · to hnr.sop.main · 08:38 GMT · HNR renames `tooling/boundaries` to `tooling/depcruise` on four sites; the harness keeps SCR-5 from dropping the install line · awaiting ACK
 - 2026-11-07 · MSG-9ec432fc HNR-EMPTY-PROJECT · to hnr.sop.main · 08:38 GMT · hnr.prj.site-pt clears STREAM-10's empty-Project warning itself · awaiting ACK
 - 2026-11-07 · MSG-40956271 PERSONAL-KINDS · to personal.sop.main · 08:38 GMT · propose a kind for PERSONAL-PRINCIPAL-002, -004, -005 and -006 to Kris · awaiting ACK
