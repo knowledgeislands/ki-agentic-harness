@@ -508,3 +508,11 @@ RECAP-NARROW a) landed (`de2bf5ae`); HELD-VS-RECORD a) and the change-management
 ## 2026-11-07 06:52 GMT · batch-finish received; cm-blind-2 tallied
 
 The rest of BATCH-RETIRE a), RECAP-NARROW a) and HELD-VS-RECORD a) landed across the harness (`953c1e9a` footers, `5df48ab1` work package and hand-off spec, `fe9b6cc9` scaffold and mentions, diagram `9079a712`); 1,622 tests pass. The run kept `skills/change-management/ki-batch/` because tools-ki's bootstrap still requires it and three repositories hold live batch records; its BATCH-FOLDER a) (keep it until tools-ki drops it, then delete) is taken as the safe reading of BATCH-RETIRE a) rather than raised, since deleting now would break `ki bootstrap` and `ki harness refresh` elsewhere. Its ten BATCH-RETIRE lines are recorded in Outbound and carried by `batch-send` under the window's routing grant. Inbound now reads None, clearing RECORD-2. cm-blind-2: PARTS-HOME disagreed (reviewer preferred b) and named option c), shown in Context); REMOTE-CONFIG agreed (now high). `standard-split` launched as unit 10.
+
+## 2026-11-07 06:56 GMT · batch-send received
+
+nine BATCH-RETIRE lines delivered (ki-principal 2a3d7d22, b303f349; hnr-principal a5e9420f, 19872408; personal-principal 54debe24; va 53b5429; er 13714dc; si 270bc68; tmx f62761e). lgl.sop.main's messages.md has no Inbound/Outbound sections, so the run held MSG-6cbbef0b (LGL-INBOUND-SHAPE); the coordinator delivered it at the top of that flat list as a plain routing act, no query raised. lgl.sop.main's file shape is its own RECORD-2 matter.
+
+## 2026-11-07 07:10 GMT · standard-split-2 received; ki.sop.main ACK
+
+Stage 3 of the coordination standard split landed as a pure move (`fb842b12`, diagrams `51ceb186`, tick `24837bf3`): one core, thirteen purpose files and a migration file; 94 links in 25 harness files repointed; link-resolution and hard-token coverage tests added; 1,626 tests pass. Stage 2's 1,017-entry rule inventory was built but left out of the package by the brief; its INVENTORY-HOME a) is the plan's own home (proof step 1), so the coordinator committed it to `skills/standard-split-inventory.md` as a work-package write, and `standard-split-3` carries on from stage 4 with leave to update it. ki.sop.main ACKed MSG-cfdef582 (routed to ki.prj.agora as MSG-29ac4fe7); both lines removed, Inbound reads None.

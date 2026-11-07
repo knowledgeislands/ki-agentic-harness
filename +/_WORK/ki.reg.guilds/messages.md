@@ -2,12 +2,11 @@
 
 ## Inbound
 
-- 2026-11-07 · ACK MSG-cfdef582 BATCH-RETIRE · from KI > SoP (🏛️ 🔑 ki.sop.main) · 06:55 GMT · routed to ki.prj.agora as MSG-29ac4fe7, which owns apps-agora.local.
+None.
 
 ## Outbound
 
 - 2026-11-07 · MSG-92f3be1b BATCH-RETIRE · to ki.prj.tools-burndown · 06:50 GMT · BATCH-RETIRE a) landed in the harness: drop `ki-batch` from tools-ki's `minimumBootstrapUserSkills`, let `ki harness refresh` drop a retired capability the new harness no longer carries, remove the `ki batch` command and tools-ki's own `+/_BATCHES/`; the harness then deletes its retired `ki-batch` folder, under its adapter migration file
-- 2026-11-07 · MSG-cfdef582 BATCH-RETIRE · to ki.sop.main · 06:50 GMT · `ki-batch` is retired and `ki-work` no longer checks `+/_BATCHES/`: remove the leftover `+/_BATCHES/README.md` folder from apps-agora.local
 - 2026-11-07 · MSG-6cbbef0b BATCH-RETIRE · to lgl.sop.main · 06:50 GMT · `ki-batch` is retired: disposition legal-principal's KIT-LEGAL-BATCH-001 and remove its `+/_BATCHES/` folder, and remove legal-agentic-harness's leftover `+/_BATCHES/README.md` folder
 - 2026-11-07 · MSG-1fb11bcd BATCH-RETIRE · to hnr.prj.5g-emerge-phase2 · 06:50 GMT · `ki-batch` is retired: disposition apps-io.5g-emerge.phase2's 5GE-P2-BATCH-003 and remove its `+/_BATCHES/` folder
 - 2026-11-07 · MSG-8e2c5c4f BATCH-RETIRE · to hnr.prj.5g-emerge-p2ms3 · 06:50 GMT · `ki-batch` is retired: disposition apps-io.5g-emerge.p2ms3's 5GE-P2MS3-BATCH-001 and remove its `+/_BATCHES/` folder
