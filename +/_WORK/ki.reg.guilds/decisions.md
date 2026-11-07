@@ -297,3 +297,7 @@ Taken as: STAGE-C-ROLES goes first in the harness queue. `drift-fix` (in flight,
 ## 2026-11-07 02:30 GMT · ABSORB handover acknowledged; terra-orca received
 
 ki.sop.main ACKed MSG-a5ca3edb at 02:25 GMT: the handover is recorded in its decisions log, and ki.reg.guilds is ki.prj.ways-of-working's assigned steward for the absorption only. The absorption runs after STAGE-C-ROLES. terra-orca removed the stale Orca worktree on terra (unlock, remove without force; Orca had no record of it); terra now has no linked worktrees in 73 repositories.
+
+## 2026-11-07 02:31 GMT · drift-fix received
+
+Split stage 1 landed in `0c498236`: eight of the nine mismatches fixed (COORD-13 one decision at a time, COORD-6 `method_read` and the Snoozing hold report, the refresh paths, the thread-line glossary entry, current ids in Work naming, the Finish report form line, "before a Summary"); 1,603 tests and the type check pass. The ninth is query STALE-ROWS (medium), which goes to the blind review with the STAGE-C-ROLES choices.
