@@ -2,18 +2,6 @@
 
 ## Open
 
-### LEGAL-BRANCH - Paperclip declaration in the midnight.legal site
-
-**Context:** `personal/apps-ninja.midnight.legal` is checked out on the branch `legal-site-skeleton`, not `main`, so I skipped it. Its `.ki.toml` still declares a retired Paperclip skill. Once the stub skills are gone from installed harnesses, that declaration will point at a skill that no longer exists, and the repository's audits will complain.
-
-**Query:** How should the leftover declaration in this repository be removed?
-
-**Options:**
-
-a) (recommended, confidence medium - it keeps the branch work untouched and needs no checkout change) A short follow-up run removes the declaration on `main` through a commit made without switching the checkout, or when the branch next merges, and leaves the branch to pick it up then.
-
-b) The session that owns `legal-site-skeleton` removes the declaration on its branch as part of its own work.
-
 ### RADAR-HISTORY - Paperclip rows in the radar's change log
 
 **Context:** I removed Paperclip's subject, evidence and source entry from the agentic radar. Its change log, the review history table in `skills/governance/ki-agentic-radar/references/sources.md`, still names Paperclip in four dated rows. I added one row recording today's purge. Rewriting those rows would change the history of past reviews.
