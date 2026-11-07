@@ -10,13 +10,13 @@
 
 **Options:**
 
-a) (recommended, confidence medium - it matches "never changed or touched" and leaves no gap for a forgotten list, though it delays live sorting) Yes. D12 writes nothing to a mailbox until its server reports protection on.
+a) (recommended, confidence high - reviewed: the blind reviewer chose the same course, since a run-side check cannot see every case, such as a message carrying both a protected and an ordinary label, sub-labels or a renamed label; it matches "never changed or touched" and leaves no gap for a forgotten list, though it delays live sorting) Yes. D12 writes nothing to a mailbox until its server reports protection on.
 
 b) Allow writes in the meantime, but only with an approval that names the protected labels the run must leave alone, and check each target against them.
 
 ### MAILBOX-CONFIG - Where a D12 mailbox's provider and server are declared
 
-**Context:** The skill reads its own `[skills.ki-dodecakrisis]` table, which gives each mailbox a provider, a server and a label root, following the design note. The Inbox already declares the same mailboxes for `ki-muninn` under `[muninn.mail.mailboxes]`, with provider and server. The house rule lets a skill check only its own table, so the two tables cannot be checked against each other, and the provider and server would be written twice.
+**Context:** The skill reads its own `[skills.ki-dodecakrisis]` table, which gives each mailbox a provider, a server and a label root, following the design note. The Inbox already declares the same mailboxes for `ki-muninn` under `[muninn.mail.mailboxes]`, with provider and server. The house rule lets a skill check only its own table, so the two tables cannot be checked against each other, and the provider and server would be written twice. The blind reviewer disagreed and preferred b): `ki-muninn` already declares the mailboxes with provider and server and is D12's own runner, so a second copy could send SORT and SWEEP to different servers after a rename; it suggests `ki-muninn`'s own check confirm that every D12 mailbox name exists in its table.
 
 **Query:** Should the D12 table repeat each mailbox's provider and server?
 
