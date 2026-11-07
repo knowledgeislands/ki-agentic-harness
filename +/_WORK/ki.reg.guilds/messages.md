@@ -2,7 +2,7 @@
 
 ## Inbound
 
-- 2026-11-07 · ACK MSG-d86fa41b, MSG-4cf14cb8 and MSG-4b09359f · from hnr.prj.5g-emerge-p2ms3 · 09:58 GMT · re-read; method_read updated, role warden, tier managers recorded, new thread line in use.
+None.
 
 ## Outbound
 
@@ -33,7 +33,6 @@
 - 2026-11-07 · MSG-df92a3ae BATCH-RETIRE · to er.sop.main · 06:50 GMT · `ki-batch` is retired and `ki-work` no longer checks `+/_BATCHES/`: remove the leftover `+/_BATCHES/README.md` folder from er-agentic-harness, er-principal and apps-dafacts.org
 - 2026-11-07 · MSG-15c5cfb7 BATCH-RETIRE · to si.sop.main · 06:50 GMT · `ki-batch` is retired and `ki-work` no longer checks `+/_BATCHES/`: remove the leftover `+/_BATCHES/README.md` folder from si-agentic-harness
 - 2026-11-07 · MSG-2431ac55 BATCH-RETIRE · to tmx.sop.main · 06:50 GMT · `ki-batch` is retired and `ki-work` no longer checks `+/_BATCHES/`: remove the leftover `+/_BATCHES/README.md` folder from tmx-agentic-harness
-- 2026-11-07 · MSG-4b09359f REFRESH · to hnr.prj.5g-emerge-p2ms3 · IMPORTANT · 05:38 GMT · hold states, urgent work, message words, Values line and goals pass at 84b28fc6 · awaiting ACK
 - 2026-11-07 · MSG-6f8aef55 REFRESH · to hnr.prj.5g-emerge-phase2 · IMPORTANT · 05:38 GMT · hold states, urgent work, message words, Values line and goals pass at 84b28fc6 · awaiting ACK
 - 2026-11-07 · MSG-2115875e REFRESH · to personal.prj.tower-public-site · IMPORTANT · 05:38 GMT · hold states, urgent work, message words, Values line and goals pass at 84b28fc6 · awaiting ACK
 - 2026-11-07 · MSG-6d79e97a REFRESH · to personal.reg.tower · IMPORTANT · 05:38 GMT · hold states, urgent work, message words, Values line and goals pass at 84b28fc6 · awaiting ACK

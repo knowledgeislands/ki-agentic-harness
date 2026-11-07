@@ -743,3 +743,7 @@ Of 41 direct Outbound lines, 3 are disposed (household-terra took TERRA-LOCAL-RE
 ## 2026-11-07 09:43 GMT · md-writer received; md-blind tallied
 
 The fact-finding run found a writer's rule already in `ki-git` (LINT-BEFORE-PUSH, 6 November), not pointed to by `ki-authoring` or the run Rules footer; `ki agent` copies reports unformatted; only three repositories have `self:check`, one with rumdl; no write hook formats Markdown. MD-WRITER opened; the blind Codex reviewer agreed with a) (now high) and added that report receipt checks after formatting and keeps the source on failure.
+
+## 2026-11-07 09:52 GMT · hnr.prj.5g-emerge-p2ms3 ACK
+
+hnr.prj.5g-emerge-p2ms3 ACKed MSG-4b09359f (removed from Outbound) and the broadcasts MSG-d86fa41b and MSG-4cf14cb8 (counted; the broadcast lines stay while other receivers hold them).
