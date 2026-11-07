@@ -719,3 +719,7 @@ The held Personal lines were delivered by `route-personal`. personal.reg.househo
 AUDIT-FOLDER2 is fixed by `878d4287`: FOLDER-2 and FOLDER-3 now declare FAIL, with a test; 1,627 tests pass. Its finding PRINCIPAL-AUDIT (ki-principal's audits now run and report 157 and 193 FAIL, fleet layout findings) went to ki.sop.main as MSG-e19b4a07. personal.reg.inbox-terra ACKed MSG-5d2e81c4: terra's inbox has no stash and `314df11` is present, so AUTOSTASH-LEFTOVER is settled with nothing dropped. Every unit of the window plan is now landed or waits on a decision from Kris; the thread keeps listening and launches nothing new until Kris returns or a message arrives.
 
 Correction, 08:56 GMT: MSG-e19b4a07 was not delivered. ki-principal could not fast-forward because another session holds an uncommitted `+/_WORK/ki.sop.tools/messages.md`, which this seat does not touch; the Outbound line is marked undelivered and delivery is retried at the next wake once the checkout fast-forwards.
+
+## 2026-11-07 09:09 GMT · Agora health answered; MSG-e19b4a07 delivered
+
+ki.prj.agora's HEALTH MSG-279a8a89 answered by re-arming and an ACK. ki-principal fast-forwarded, so MSG-e19b4a07 reached ki.sop.main.
