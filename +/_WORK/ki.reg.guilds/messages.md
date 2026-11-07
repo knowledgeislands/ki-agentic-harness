@@ -2,7 +2,7 @@
 
 ## Inbound
 
-None.
+- 2026-11-07 · ACK MSG-e19b4a07 PRINCIPAL-AUDIT · from KI > SoP (🏛️ 🔑 ki.sop.main) · 09:09 GMT · taken: at the next mark a run reruns both audits and sends each flagged package one line naming its findings.
 
 ## Outbound
 
