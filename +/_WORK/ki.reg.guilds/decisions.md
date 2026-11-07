@@ -723,3 +723,7 @@ Correction, 08:56 GMT: MSG-e19b4a07 was not delivered. ki-principal could not fa
 ## 2026-11-07 09:09 GMT · Agora health answered; MSG-e19b4a07 delivered
 
 ki.prj.agora's HEALTH MSG-279a8a89 answered by re-arming and an ACK. ki-principal fast-forwarded, so MSG-e19b4a07 reached ki.sop.main.
+
+## 2026-11-07 09:11 GMT · MSG-e19b4a07 ACKed
+
+ki.sop.main took PRINCIPAL-AUDIT: at its next mark a run reruns both audits and sends each flagged package one line. Both lines removed.

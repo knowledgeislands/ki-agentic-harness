@@ -2,11 +2,10 @@
 
 ## Inbound
 
-- 2026-11-07 · ACK MSG-e19b4a07 PRINCIPAL-AUDIT · from KI > SoP (🏛️ 🔑 ki.sop.main) · 09:09 GMT · taken: at the next mark a run reruns both audits and sends each flagged package one line naming its findings.
+None.
 
 ## Outbound
 
-- 2026-11-07 · MSG-e19b4a07 PRINCIPAL-AUDIT · to ki.sop.main · 08:54 GMT · ki-principal's work-package audits now run and report fleet failures for its stewards
 - 2026-11-07 · MSG-a0a6f68e RIG-ATTENDED · to personal.reg.household-terra · 08:46 GMT · query: route the existing attended Rig checks and CORE-068 questions when Kris is available · awaiting ACK
 - 2026-11-07 · MSG-03dd00dc TERRA-LOCAL-REPORTS · to personal.reg.household-terra · 08:46 GMT · query: private review and disposition of terra's two run-only reports · awaiting ACK
 - 2026-11-07 · MSG-f1c5a283 TERRA-PR-CHECK · to personal.reg.household-terra · 08:46 GMT · query: who supplies the open pull-request inventory terra's drain needs · awaiting ACK
