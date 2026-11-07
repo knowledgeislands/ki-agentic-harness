@@ -6,6 +6,7 @@
 
 ## Outbound
 
+- 2026-11-07 · MSG-feae119e KG-OWN-SKILL · to ki.sop.main · 04:05 GMT · Kris corrected SKILLS-OVER-GRAPH (2): the knowledge graph is its own skill, not part of `ki-repo-kb` · awaiting ACK
 - 2026-11-07 · MSG-4cf14cb8 REFRESH · to live-packages · IMPORTANT · 15 live packages · 02:55 GMT · role catalogue and key thread line at `a4da0db2`; ACKed so far by hnr.prj.5g-emerge-phase3, hnr.sop.main, ki.prj.agora, ki.sop.main, personal.reg.household-sol, personal.reg.inbox-sol, personal.reg.inbox-terra · awaiting ACK
 - 2026-11-07 · MSG-f3abdb7e ROLE-NAMES · to ki.prj.tools-burndown · 03:00 GMT · align the `ki agent` launch name with the role thread line `<glyph> 🔑 <work-id>` (STAGE-C-ROLES)
 - 2026-11-06 · MSG-c6fa7c81 SKILL-HARVEST · to live-packages · 41 live packages on sol · 22:15 GMT · 9 replies in · awaiting ACK
