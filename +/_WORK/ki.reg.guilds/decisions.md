@@ -492,3 +492,7 @@ Four of tonight's lessons (CD-63, ILL-26) landed in `5a2030de`: ki-delegation Pr
 ## 2026-11-07 05:58 GMT · kg-skill received; lessons-blind tallied
 
 `ki-knowledge-graph` landed in `skills/acquire/` (`ae0a1944`, diagrams `bd18988b`): card format, one-at-a-time curation, tending, layered graphs with the shadow-node life cycle, dispatch by Git move; modes CURATE, TEND, DISPATCH; a 16-criterion rubric; one migration file noting ACQUIRE-SPLIT, STAGING-HOME and GUILD-NAME as open. No knowledge touched. Queries KEYSTONE and ATTACH-FORM copied and sent to blind review. Three PORT-1 runtime-wording failures in ki-delegation and ki-work-package block `ki repo conform`; run `port-fix` clears them. lessons-blind: OUTBOUND-RECOVERY agreed (high), MAKER-PROTOCOL disagreed (preferred c).
+
+## 2026-11-07 06:11 GMT · port-fix received; kg-blind tallied
+
+PORT-1 cleared (`602a7881`: "Claude Design" now "the design runtime" in two standards); `ki repo conform` publishes again. `ki-exchange-dynamics` landed in `skills/acquire/` (`a24e0527`, diagrams `5ec64a03`): method and rendering standards, schema, validator with tests, an invented example, migration overlay; 1,620 tests pass. No knowledge touched; the discovery line and Principal pointer note were left out under the window and raised as EDA-DISCOVERY, sent to blind review. kg-blind agreed on KEYSTONE and ATTACH-FORM (both now medium). `pkg-shape` started with HEADER-ESTATE.

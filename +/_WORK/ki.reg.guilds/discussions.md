@@ -2,6 +2,18 @@
 
 ## Open
 
+### EDA-DISCOVERY - Let people find the new skill beyond its description
+
+**Context:** The design note's plan has two more ways for people to find the skill. One is a line in the ways-of-working guidance. The other is a short "Exchange Dynamics Analysis" pointer note among Knowledge Islands Principal's Emerging Concepts, which would go through the Enactment Process. Both were left out because the away-window grant says "Don't introduce knowledge at top level anywhere". For now the skill is found only by its description. The migration overlay lists this gap and should be cleared once the gap is closed.
+
+**Query:** Should the ways-of-working line and the Principal pointer note now be written through their owners?
+
+**Options:**
+
+a) (recommended, confidence medium - the design note planned both, but the pointer note adds knowledge to Principal, which needs your word) Yes, after the away window: route a message to ki.sop.main for the pointer note and the ways-of-working line, then delete that line of the overlay.
+
+b) The skill's description is enough for now: keep the overlay line until the discovery guidance is next reviewed.
+
 ### KEYSTONE - Move `ki-knowledge-graph` to the keystone group
 
 **Context:** Kris suggested, in the note sent with the cards, that this become a keystone skill, under `skills/keystone/`. The keystone group holds `ki-repo`, `ki-bootstrap` and `ki-skills`, the skills the rest of the harness stands on. HARNESS-SCOPE a) on 7 November put the knowledge-graph skill in the acquire group, which is where it now sits. A move would change the skill's folder, its catalogue section, the functional-area table and two diagrams, and links to it would need updating. Its applicability would stay declaration-only, meaning a repository uses it only by declaring it.
@@ -10,7 +22,7 @@
 
 **Options:**
 
-a) (recommended, confidence low - only Kris knows whether he meant keystone as a load-bearing method or as a group, and this has had no blind review) Keep it in acquire for now and decide together with GUILD-NAME, since renaming that group may settle where the intake skills belong.
+a) (recommended, confidence medium - reviewed: the blind reviewer chose the same course, since keystone skills are what the harness itself runs on and apply at baseline, while this one applies only where declared; only Kris knows whether he meant keystone as a load-bearing method or as a group) Keep it in acquire for now and decide together with GUILD-NAME, since renaming that group may settle where the intake skills belong.
 
 b) Move it to keystone now, because the card format and layered graphs underlie every knowledge base and not just intake.
 
@@ -24,7 +36,7 @@ c) Keep it in acquire for good, beside `ki-dodecakrisis` and `ki-acquire`, as on
 
 **Options:**
 
-a) (recommended, confidence low - it matches what already exists, but Kris has not discussed either form) Adopt the Inbox's `shadow-of` path and address with a `checked` date for shadows, and a front-matter flag on each card for attachment points.
+a) (recommended, confidence medium - reviewed: the blind reviewer chose the same course, since both forms are already in use and a flag in the card moves with it, where a register would drift; it matches what already exists, but Kris has not discussed either form) Adopt the Inbox's `shadow-of` path and address with a `checked` date for shadows, and a front-matter flag on each card for attachment points.
 
 b) Adopt the shadow form, and declare attachment points in a register in each graph's index note.
 

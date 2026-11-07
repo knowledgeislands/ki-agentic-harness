@@ -37,7 +37,7 @@ workers:
 3. Done: `orca-land` (`940341c5`, `816b5426`, `643b73a2`, published by `harness-resolve`; `orca-adapter` branch deleted); PROMPT-RENDER tools-ki follow-up to send. Was: the fifteen ORCA-ADAPTER rules, RUN-RECOVERY, RUN-HANDOVER, TRIAL-PUBLISH onto the `orca-adapter` draft, independent review, then onto `main` (ADAPTER-MERGE). Large.
 4. Done: `doer-lessons` (`5a2030de`). Was: DOER-LESSONS from ki.prj.agora CD-63 into the coordination skills. Medium.
 5. Done: `kg-skill` (`ae0a1944`, `bd18988b`). Was: `ki-knowledge-graph` in `skills/acquire/` (KG-NAME, HARNESS-SCOPE a)); no change to `ki-acquire`, no card dispatch. Medium.
-6. `eda-skill` (harness): `ki-exchange-dynamics` in `skills/acquire/` (SKILL-HOMES a), design note in ki.sop.main). Medium.
+6. Done: `eda-skill` with the PORT-1 fix (`602a7881`, `a24e0527`, `5ec64a03`). Was: `ki-exchange-dynamics` in `skills/acquire/` (SKILL-HOMES a), design note in ki.sop.main). Medium.
 7. `pkg-shape` (harness): package-repository shape skill (REPO-SHAPE-PACKAGES, STOA-SHAPE MSG-6adb77c9, STOA-TOOLCHAIN MSG-c0ddcf23 on applying `ki-engineering` to plain JavaScript with JSDoc). Medium.
 8. `header-estate` (harness): HEADER-ESTATE into `ki-repo-dotfiles-chezmoi`. Small.
 9. `cm-tidy` (harness): the CHANGE-MGMT cluster. Medium.
