@@ -215,3 +215,11 @@ Read back as taken: the standard states only the final state; every tolerance, o
 Kris: "I also want to consider now, given how much of this is now working through this coordination capability, just how much some of the other change management skills are still needed, such as batch and such, or are they still required? Are they related to roadmaps? I suspect change management overall needs to have some kind of subdivision of the guild to break it into more clear calendar parts."
 
 Taken as: a read-only design run, `cm-review`, reviews every change-management skill against how work now runs through coordination, says which are still needed, merged or retired, how each relates to roadmaps, and proposes the change-management guild's subdivision; its choices come back as queries. "Calendar parts" is read as "clearer parts", likely a speech-to-text slip.
+
+## 2026-11-07 00:30 GMT · FOOTER-HOOK-RELAX (IMPORTANT, from personal.reg.household-terra MSG-0372b94c)
+
+Kris, after the `coordinator-footer` Stop hook blocked a `### 💤 Snoozing (on hold) · at <time>` banner he had asked for: "I'd at least prefer it to allow it but warn against it and feedback on it to make sure it's intentional." Taken with household-terra's three recommendations: accept the new forms the standard adopts; block only structural loss, a state-answering reply with no banner or no closing `🧵 <work-id>` line; warn without blocking on anything else unusual, naming it, so the owner can confirm it was intended. Run `hook-relax` lands it; ACKed.
+
+## 2026-11-07 00:30 GMT · cm-review received
+
+Answer to CM-REVIEW: the roadmap skills stay (about 3,190 roadmap commits in 30 days), coordination sits above them; `ki-batch` is unused since 20 October, the remote tracker adapters are declared nowhere and `ki-recap` overlaps the Summary. Proposed four parts: Coordination, Work lifecycle, Work records and Design, trades parked. Six queries copied: CM-PARTS, PART-HOME, BATCH-RETIRE, REMOTE-ADAPTERS and HELD-VS-RECORD (medium, to blind review `cm-blind`) and RECAP-NARROW (high).

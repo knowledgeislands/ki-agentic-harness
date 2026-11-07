@@ -2,6 +2,84 @@
 
 ## Open
 
+### CM-PARTS - Divide change management into four named parts
+
+**Context:** Change management has 13 skills, plus four in governance that coordination depends on. They fall into four groups with clear borders: Coordination (packages, runs, messages, reports), Work lifecycle (capture, plan, deliver, accept), Work records (the tracker and record formats) and Design (shaping new work). One guildmaster keeps them all; a guildmaster per part stays reserved until needed.
+
+**Query:** Should the change-management guild be divided into these four parts?
+
+**Options:**
+
+a) (recommended, confidence medium - the groups match how the skills already hand off, but nobody else has checked the borders) Yes: Coordination, Work lifecycle, Work records and Design, one guildmaster for all, trades parked until the Trades revamp.
+
+b) Three parts: fold Design into Coordination, since it is one small skill.
+
+c) No parts; keep change management as one list.
+
+### PART-HOME - Record the parts without moving skill folders
+
+**Context:** `ki-work-package`, `ki-delegation` and the trades skills live in the governance folder, while the Coordination part would include them. Moving folders breaks the links in every brief footer and every repository's references.
+
+**Query:** Should the parts be recorded as a grouping only, or should skill folders move to match?
+
+**Options:**
+
+a) (recommended, confidence medium - it gets the clarity without breaking links across 63 repositories) Grouping only: record the parts in the guild's work page and the skills catalogue; folders stay where they are.
+
+b) Move folders so each part is its own directory under `skills/change-management/`.
+
+### BATCH-RETIRE - Retire ki-batch into the unattended window
+
+**Context:** `ki-batch` gives an approved, frozen set of Ready records one authority envelope. No batch has been created in 30 days; the last ledger was [KI-HARNESS-BATCH-025](/Users/krisbrown/kis/knowledge-islands/ki-agentic-harness/+/_BATCHES/KI-HARNESS-BATCH-025.md) on 20 October. The unattended window in coordination now plans and delivers records "in `ki-batch` waves", so one grant has two authority records: the decisions log and a batch record. Retiring it touches the five brief footers, the `ki batch` command and 18 repositories' empty `+/_BATCHES/` folders.
+
+**Query:** Should `ki-batch` be retired, with its frozen-set and closure rules moved into `ki-coordination` and `ki-accept`?
+
+**Options:**
+
+a) (recommended, confidence medium - no recent use and the window already carries the authority, but autonomous delivery outside a coordinating package would lose its envelope) Yes, retire it: the window grant in the decisions log is the one authority record, `ki-accept` closes under a cited grant, and `ki batch` goes after a tolerance window.
+
+b) Keep it but narrow it to autonomous delivery outside a coordinating package, and drop it from the window.
+
+c) Keep it as is.
+
+### REMOTE-ADAPTERS - Fold the GitHub Issues and Linear adapters into ki-work
+
+**Context:** `ki-work-github-issues` and `ki-work-linear` describe using those services as a repository's tracker. Neither is declared by any repository, and neither can run: both say remote execution is unavailable. `ki-repo` uses the GitHub Issues declaration to decide whether a repository's Issues tab is switched on.
+
+**Query:** Should the two remote tracker skills become one reference inside `ki-work`?
+
+**Options:**
+
+a) (recommended, confidence medium - no repository uses them and they cannot run, but `ki-repo` code and rubrics depend on the GitHub Issues name) Yes, fold both into `ki-work`, keep the old names readable for a tolerance window, and repoint `ki-repo`'s Issues switch.
+
+b) Retire both outright, with no reference kept.
+
+c) Keep both as they are.
+
+### RECAP-NARROW - Narrow ki-recap to the conversational session recap
+
+**Context:** `ki-recap` summarises a live session. While coordinating, the Summary already replaces it, as you decided on 14 October ("ki-recap keeps the ordinary session recap only"). It still carries a `checkpoint <work id>` mode that writes a work package, which `ki-work-package` owns, and a rule that tidies batch folders.
+
+**Query:** Should `ki-recap` drop its checkpoint mode and batch tidying, keeping only the conversational recap?
+
+**Options:**
+
+a) (recommended, confidence high - it finishes what the 14 October decision started and removes two overlaps) Yes, narrow it to the conversational recap and its learning routes.
+
+b) Keep the checkpoint mode as a convenience that calls `ki-work-package`.
+
+### HELD-VS-RECORD - Where a package's deferred work lives
+
+**Context:** Packages keep waiting work in their Held lists; this package holds six such items, some for days. Roadmap records are where `ki-next` looks for deferred work and where acceptance happens. HANDOFF-AS-MESSAGE (20 October) says handoffs are message lines and only deferred work the receiver owns becomes a record.
+
+**Query:** Should deferred deliverable work that outlives a session become a roadmap record in its home repository, leaving Held only for items waiting on a named decision or event?
+
+**Options:**
+
+a) (recommended, confidence medium - it makes deferred work visible to the roadmap without loading records with undecided questions, but it adds captures) Yes: deliverable work becomes a record in its home repository through `ki-next`; Held keeps only items waiting on a named decision or event.
+
+b) No: packages may keep deferred work in Held as long as needed, and roadmaps are only for repository delivery chosen separately.
+
 ### STAGE-C-SPLIT - Write in the parts of the role catalogue you've already approved now
 
 **Context:** You've approved the role list and that every package records its role (ROLES-TIDY, 6 November), but none of it is in the shared skills. Packages are already adding a `role:` field the package format doesn't allow yet, so the `ki-work-package` audit flags them (RECORD-2, seen on this package in the hooks-stubs run). The seven open role questions only affect parts of the catalogue: seats, the assistant's name, Paperclip names and the library.
