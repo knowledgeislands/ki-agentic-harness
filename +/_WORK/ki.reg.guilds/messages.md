@@ -2,6 +2,12 @@
 
 ## Inbound
 
+- 2026-11-07 · ACK MSG-8feeef7e · from KI > SoP (🏛️ 🔑 ki.sop.main) · 08:26 GMT · DONE-PRUNE taken as an open query for Kris.
+- 2026-11-07 · ACK MSG-f852d108 · from KI > SoP (🏛️ 🔑 ki.sop.main) · 08:26 GMT · DONE-PRUNE-TOOLS-KI taken as an open query for Kris.
+- 2026-11-07 · ACK MSG-42cbd1a1 · from KI > SoP (🏛️ 🔑 ki.sop.main) · 08:26 GMT · QUICK-FIXES-LIFECYCLE taken as an open query for Kris.
+- 2026-11-07 · ACK MSG-80fe4593 · from KI > SoP (🏛️ 🔑 ki.sop.main) · 08:26 GMT · folded into KA-CLOSE-GATE, already with Kris.
+- 2026-11-07 · ACK MSG-fd8320ff · from KI > SoP (🏛️ 🔑 ki.sop.main) · 08:26 GMT · AGENT-HOME a) authorises it; a run records the Idea line on the Techné theme page.
+- 2026-11-07 · ACK MSG-7f2ed6ba · from KI > SoP (🏛️ 🔑 ki.sop.main) · 08:26 GMT · MIRROR-TOKEN taken as an open query for Kris.
 - 2026-11-07 · ACK MSG-7c41e2a9 · from KI > Techne > Agora (⚒️ 🔑 ki.prj.agora) · 08:22 GMT · noted the doer lessons at harness 5a2030de; MAKER-PROTOCOL and OUTBOUND-RECOVERY left with Kris.
 
 ## Outbound
