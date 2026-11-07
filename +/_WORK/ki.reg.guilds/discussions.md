@@ -2,6 +2,32 @@
 
 ## Open
 
+### LEGAL-WORKER-NAME - Which Worker name wins in the merge
+
+**Context:** On `main`, `7bb8e60` renamed the Worker to `ninja-midnight-legal` in `wrangler.jsonc` and the Cloudflare guide. `legal-site-skeleton` still calls it `apps-legal-midnight-ninja`, and it adds `workers_dev: false` and `preview_urls: false` so the site has no second, unprotected address. The conflict is small. Settling it means choosing the name, and the name has to match the Worker in the Cloudflare dashboard.
+
+**Query:** Should the merge keep the new name, `ninja-midnight-legal`, together with the skeleton's protections?
+
+**Options:**
+
+a) (recommended, confidence high - the rename is the later decision already on `main`, and the protections are needed regardless) Keep `ninja-midnight-legal` and the `workers_dev`/`preview_urls` settings. Also update the old name in `AGENTS.md` and the guide's Workers Builds table, then make the merge commit locally.
+
+b) Keep `apps-legal-midnight-ninja` and drop the rename.
+
+### LEGAL-ACCESS - Publishing to main before Cloudflare Access exists
+
+**Context:** Once merged, `main` holds the legal review and the case graphs, and a push deploys them publicly. The repository's own rule is that the site sits behind Cloudflare Access before any of this reaches `main`. That needs a Zero Trust Access application for `legal.midnight.ninja`, which only you can create in the dashboard.
+
+**Query:** How do you want to get the site onto `main`?
+
+**Options:**
+
+a) (recommended, confidence high - this is the only order that keeps the material private) Create the Access application first and give me its name, login method and allow policy. A follow-up run then records them in the guide, merges, pushes `main` and deletes the merged branches.
+
+b) Merge locally now but do not push until Access exists. The risk is that another session pushes `main` under the standing push rule and publishes the material.
+
+c) Push anyway, accepting public exposure. I do not recommend this, and the confidential rule needs your explicit go in the thread.
+
 ### TASK-LINKS-FIELD - Whether to retire the `task_links` roadmap field
 
 **Context:** `task_links` is an optional roadmap-record field that links a record to tasks in another system. Paperclip was its main user. `tools-ki` already shows a `linear` provider beside `paperclip`, and Linear is a supported work adapter, so the field has a plausible use beyond Paperclip. The blind reviewer disagreed with retiring it and preferred keeping it as a general field, with its own triage record to test whether Linear or GitHub Issues linking will use it.

@@ -419,3 +419,7 @@ Kris: "Yes, get entirely rid of it, and can you also make sure that that reposit
 ## 2026-11-07 04:34 GMT · RADAR-HISTORY (interactive pass, query 9)
 
 Kris: "Remove them too". Run `radar-purge` removes the dated Paperclip rows from `skills/governance/ki-agentic-radar/references/sources.md`'s change log, so Paperclip leaves the harness entirely outside `+/_WORK/` history.
+
+## 2026-11-07 04:36 GMT · legal-main received, blocked
+
+Every push to `main` in `apps-ninja.midnight.legal` deploys `legal.midnight.ninja` publicly, and no Cloudflare Access application exists yet, so merging `legal-site-skeleton` (which carries confidential case material) and pushing would publish it. The run pushed nothing and deleted no branch. The merge conflicts in `apps/site-legal/wrangler.jsonc` and the Cloudflare guide (Worker name); aborted, checkout back on `legal-site-skeleton`, clean. `f75e9dd` (Paperclip declaration removed) sits on local `main` only. `legal-review-2026-11-02` is superseded by the skeleton. Queries LEGAL-WORKER-NAME and LEGAL-ACCESS copied.
