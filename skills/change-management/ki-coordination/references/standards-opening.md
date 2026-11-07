@@ -86,7 +86,7 @@ A member-repository Project session is a seat for its Capital package, not autho
 | Ways of working | `ki.prj.ways-of-working` | `KI > Model > Ways of working` | `knowledge-islands-model.ways-of-working.md`, `ki.ways-of-working` |
 | Tools burndown | `ki.prj.tools-burndown` | `KI > Foundations > Tools burndown` | `platform-foundations.tools-burndown.md`, `ki.tools-burndown` |
 | Knowledge Islands regular work | `ki.reg.main` | `KI > Regular work` | recurring work in Initiative notes, `ki.regular` |
-| Registry removal | `ki.reg.registry-removal` | `KI > Registry removal` | a conversational thread, `ki.regular.registry-removal` |
+| Registry removal | `ki.reg.registry-removal` | `KI > Registry removal` | a conversational session, `ki.regular.registry-removal` |
 
 Sources: NAMING-MODEL, SUB-PACKAGE, TITLE-THEME, LABEL-HOST, WORK-LABEL, STAGE-C-ROLES and RENAME-NAME in [the decision register](sources.md#decision-register).
 
@@ -95,7 +95,7 @@ Sources: NAMING-MODEL, SUB-PACKAGE, TITLE-THEME, LABEL-HOST, WORK-LABEL, STAGE-C
 The owner opens a session in the actual package-home checkout, the Capital by default or the approved regular or ad hoc member home, names it by its [thread line](#work-naming) where the runtime can name a session, and pastes one opener.
 
 - **Runtime binding:** in the runtime-specific Claude Code binding, the opener launches the session as `claude --name "<thread line>"`: `<role glyph> 🔑 <work-id>` from `work.md`'s `role`, or `🧵 <work-id>` with no role yet, the same name as the rename line and every report's thread line.
-- **Rename line:** every bootstrap and re-bootstrap report carries one `Rename thread: /rename <thread line>` line, so a session opened another way can take the name. It is one of two named exceptions to the rule that reports carry no paste line; the other is the [restart suggestion](standards-coordination.md#banner).
+- **Rename line:** every Bootstrap carries one `Rename thread: /rename <thread line>` line, so a session opened another way can take the name. It is one of two named exceptions to the rule that reports carry no paste line; the other is the [restart suggestion](standards-coordination.md#banner).
 - **Ownership:** `ki agent prompts`, which prints the launch command, belongs to `tools-ki`. The State of play prepares the package first, so every session opens with one opener and nothing else.
 - **Shape:** an opener is a steering-ready brief, not a transcript: it names the work and leaves state to the package. Its role line carries the three rules of [the responsive coordinator](standards-coordination.md#the-responsive-coordinator).
 

@@ -8,7 +8,7 @@ On hold is the Work Process note's state, with its two reasons: paused, and more
 
 - A hold is agreed only from With supervisor: the owner says `pause` or `done for now`, and a coordinator may propose one in its send. The one exception is the idle hold below, which the worker sets itself.
 - A hold serves a move between hosts, closes work for a period or rests it between waves. It never says which host the work comes back up on.
-- A conversational session's ad hoc work goes On hold through a `state.md` update, with no hold report.
+- A conversational session's ad hoc work goes On hold through a `state.md` update, with no Stop.
 
 **First steps.** Read `IMPORTANT` lines first, cancel every wake this session holds, the watcher included, and report whether anything is still running, queued or scheduled. Work going Snoozing re-arms the watcher once the snooze lands.
 
@@ -25,9 +25,9 @@ On hold is the Work Process note's state, with its two reasons: paused, and more
   - copy into the package anything under `~/.local/state/ki/agents/<run>/` needed to resume, and remove re-copied retired reports by explicit path;
   - set `state.md`'s front matter to `state: on-hold`, with `hold.reason` (`paused`, or `more-expected` for Snoozing), `hold.release` in words, and `since`;
   - commit with the subject `docs(work): <id> hold, paused` or `docs(work): <id> hold, snoozing`, and push. Make no baseline or empty commit.
-- **Report:** the hold report is the send that announces the hold, and nothing else is said.
-  - Form line `**⏸️ On hold · Hold report at <local time> · mark <local time>**`, or `**💤 Snoozing (on hold) · Hold report at <local time> · mark <local time>**`, under the [report heading](standards-coordination.md#banner).
-  - Sections `## Done`, one line per repository, `## Parked` and `## Left over`, and no others: no `## In Progress`, no `## Queries`, and no **Context**, **Query** or **Options**.
+- **Report:** the Stop, trigger T3 in the [coordinator reply format](standards-report-forms.md#triggers), is the send that announces the hold, and nothing else is said.
+  - Form line `**Stop at <local time> · mark <local time>**`, under the [report heading](standards-report-forms.md#banner-detail); the state shows only in the banner heading.
+  - Sections `## Done`, one line per repository; `## In Progress`, holding Left over, another session's uncommitted file, or `Nothing`; and `## Queries`, holding the tags parked in `discussions.md`, one line each, with no **Context**, **Query**, **Options** or reply block.
   - The On hold or Snoozing banner, listing nothing waiting under [Banner](standards-coordination.md#banner): counts `⏸️ drained · 🅿️ <n> queries parked`, or `💤 waiting for a message · 🅿️ <n> queries parked`; items only `[parked]` and `[release]`.
   - The thread line is the last line; no send or resume prompt follows. Nothing about pushes appears beyond a failure.
 
@@ -46,7 +46,7 @@ On hold is the Work Process note's state, with its two reasons: paused, and more
   - Once the session closes, the State of play acts for the snoozing package on its lines alone.
 - **Idle:** a worker may put its own work into Snoozing by itself, the idle hold, and into no other hold.
   - It may go idle only while all five hold: no run running or queued; nothing in handoff to a target; no unprocessed line in `messages.md`; no open query with the owner in `discussions.md`, parked queries allowed; every repository the work touched committed and pushed. Any query with the owner keeps the work With supervisor.
-  - The package is tidied first, as for any hold, but idle needs no drain and no hold report. Set `state: on-hold`, `hold.reason: more-expected`, `hold.set_by: worker`, `hold.release: a message arrives, or resume` and `since`; commit `docs(work): <id> hold, idle`; say so in one line.
+  - The package is tidied first, as for any hold, but idle needs no drain and no Stop. Set `state: on-hold`, `hold.reason: more-expected`, `hold.set_by: worker`, `hold.release: a message arrives, or resume` and `since`; commit `docs(work): <id> hold, idle`; say so in one line.
   - The banner is Snoozing's, with the heading `### 💤 Snoozing (on hold) · idle · at <time>`. It listens only while `listening_enabled` is true.
   - A line arriving on a listening idle coordinator is received at once, moving the work straight to With worker, not Handoff to worker, because the worker is already there.
   - The owner's `pause`, `done for now` or `snooze` turns an idle hold into the owner's form, `hold.set_by: owner`. A hold with no `set_by` was set by the owner.

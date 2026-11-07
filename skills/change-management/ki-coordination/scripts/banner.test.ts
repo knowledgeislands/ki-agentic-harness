@@ -9,14 +9,15 @@ import { generate } from './generate/index.ts'
 // 2026-10-14, "a better heading that is the actual just normal text, so it can
 // be rich text rather than fixed width text", with its single rule since
 // 2026-10-17, "we can just go single horizontal rule", so no saved report opens
-// with `---`. Its form line leads with the work's state in glyphs. The banner
-// is the Work Process note's, set with BANNER-GLYPH and REPLY-BLOCK on 18
-// October and TARGET-GLYPH the same day: the glyphs come first and the last
-// glyph is whose move it is, a settled state shows its holder's glyph alone,
-// an arrow appears only in a handoff state, and no report carries a reply
-// block. The block-letter frames retired with the work model. This test is the
-// mechanical check the COORD rubric cannot run against a repository, because the
-// transcripts the banners appear in are not tracked.
+// with `---`. Under REPLY-FORMAT, agreed on 7 November 2026, its form line names
+// the reply structure, the time and the last mark, with no state, and the banner
+// heading alone shows the state. The banner is the Work Process note's, set with
+// BANNER-GLYPH on 18 October and TARGET-GLYPH the same day: the glyphs come first
+// and the last glyph is whose move it is, a settled state shows its holder's glyph
+// alone and an arrow appears only in a handoff state. The block-letter frames
+// retired with the work model. This test is the mechanical check the COORD rubric
+// cannot run against a repository, because the transcripts the banners appear in
+// are not tracked.
 
 const skillRoot = resolve(import.meta.dir, '..')
 const harnessRoot = resolve(skillRoot, '..', '..', '..')
@@ -42,11 +43,11 @@ const PROJECT_NOTE = '/Users/krisbrown/workspaces/knowledge-islands/ki-principal
 const HEADING_EXAMPLE = [
   `# [Model](${THEME_PAGE}) › [Ways of working](${PROJECT_NOTE})`,
   '',
-  '**🤖 → 👤 Handoff to supervisor · Summary at 23:52 BST · since 22:34 BST**',
+  '**Summary at 23:52 BST · last mark 22:34 BST**',
   '',
   '---',
   '',
-  '## Summary since 22:34 BST'
+  '## Summary'
 ].join('\n')
 /** The `#` heading: a linked theme, ` › `, a linked Project, and for a run report ` › <run name>`. */
 const HEADING_LINE = /^# \[[^\]]+\]\(\/[^)]+\) › \[[^\]]+\]\(\/[^)]+\)( › [a-z0-9-]+)?$/
@@ -54,12 +55,14 @@ const HEADING_LINE = /^# \[[^\]]+\]\(\/[^)]+\) › \[[^\]]+\]\(\/[^)]+\)( › [a
 const STATE_OF_PLAY_LINE = /^# \[[^\]]+\]\([^)]+\) › State of play$/
 /** A glyph state: a settled holder's glyph alone, or an arrow in a handoff state, with an optional reason; never a target in brackets. */
 const GLYPH_STATE = `(?:🤖 With worker|👤 With supervisor|🤖 → 👤 Handoff to supervisor(?: · blocked)?|👤 → 🤖 Handoff to worker|→ 🎯 Handoff to [^·*]+|⏸️ On hold(?: · paused until [^·*]+)?|💤 Snoozing \\(on hold\\)|🏁 Finished)`
+/** A friendly time: the local time and zone, naming the day where it is not today. */
+const FRIENDLY_TIME = String.raw`(?:yesterday |[A-Z][a-z]{2} \d{1,2} [A-Z][a-z]{2} )?\d{2}:\d{2} [A-Z]{3,4}`
 /**
- * The form line: the glyph state, the form and the local issued time, bold, then under REPORT-FORMS-TIDY a Summary's
- * window start, the hold's mark in a hold report, and the last mark in every other form.
+ * The form line under REPLY-FORMAT: the reply structure, the local time and the last mark, bold, in friendly times and
+ * with no state; a hold's Stop names the hold's own mark.
  */
 const FORM_LINE = new RegExp(
-  String.raw`^\*\*${GLYPH_STATE} · (?:Summary at \d{2}:\d{2} [A-Z]{3,4} · since|(?:Status|Re-bootstrap|Run report|Finish report) at \d{2}:\d{2} [A-Z]{3,4} · last mark|Hold report at \d{2}:\d{2} [A-Z]{3,4} · mark) \d{2}:\d{2} [A-Z]{3,4}\*\*$`,
+  String.raw`^\*\*(?:(?:Summary|Status|Bootstrap|Run report|Stop) at ${FRIENDLY_TIME} · last mark|Stop at ${FRIENDLY_TIME} · mark) ${FRIENDLY_TIME}\*\*$`,
   'u'
 )
 /** The banner heading: `### <glyph state> · at <time>` under SNOOZE-HEADING, or Finished's close line. */
@@ -67,15 +70,15 @@ const BANNER_HEADING = new RegExp(
   String.raw`^### (?:${GLYPH_STATE} · at \d{2}:\d{2} [A-Z]{3,4}|🏁 Finished · .+ closed at \d{2}:\d{2} [A-Z]{3,4})$`,
   'u'
 )
-/** A banner item: `- [<state>] <what>`, the live items naming a holder and a since; housekeeping lives in the report body. */
-const ITEM = /^- \[(running|queued|with you|stuck|blocked|parked|awaiting ACK|on hold|release|finished)\] .+$/
-/** A sent line awaiting its ACK, under NO-LINK-MARK: `- [awaiting ACK] <id> · to <package id> · since <time>`. */
-const AWAITING_ACK_ITEM =
-  /^- \[awaiting ACK\] MSG-[0-9a-f]{8}(?: [A-Z0-9][A-Z0-9-]*)? · to [a-z0-9]+(?:[.-][a-z0-9]+)* · since \d{2}:\d{2}$/
+/**
+ * A banner item: `- [<state>] <what>`, the live items naming a holder and ending `· at <time>`; housekeeping lives in the
+ * report body, and a line awaiting its ACK is counted in the package line only.
+ */
+const ITEM = /^- \[(running|queued|with you|stuck|blocked|parked|on hold|release|finished)\] .+$/
 /** The items BANNER-TRIM moved out of the banner and into the report body. */
 const BODY_ITEM = /^- \[(handoff|committed|uncommitted|recovered|unlogged|behind)\]/
 const HOLDER_ITEM =
-  /^- \[(running|queued|with you|stuck)\] [^·]+ · (owner|agent|run\/[\w-]+|work\/[\w.-]+|person\/[\w-]+|repo\/[\w-]+) · since \d{2}:\d{2}$/
+  /^- \[(running|queued|with you|stuck)\] [^·]+ · (owner|agent|run\/[\w-]+|work\/[\w.-]+|person\/[\w-]+|repo\/[\w-]+) · at \d{2}:\d{2}$/
 const PROJECT_THREAD_LINE = '⚒️ 🔑 ki.prj.ways-of-working'
 const TERRITORY_THREAD_LINE = '🧵 ki.sop.main'
 /**
@@ -86,16 +89,19 @@ const THREAD_LINE = /^(?:🧵|[^\s!-~]+ 🔑) [a-z0-9-]+(?:\.[a-z0-9-]+){0,2}$/u
 /** The heading-for line: what the worker is doing, an arrow and the hold or handoff it is heading for. */
 const HEADING_FOR_LINE =
   /^↪️ (?:draining → (?:⏸️ On hold|💤 Snoozing \(on hold\))|(?:draining|finishing) → 👤 Handoff to supervisor|finishing → 🎯 Handoff to [^·*]+)$/u
-/** The listening line while the inbox watcher is armed, on a thread with the listening capability. */
+/** The counts line of a live state: all five views, zeros written, and the records awaiting acceptance where any are. */
+const COUNTS_LINE =
+  /^🤖 \d+ running · ⏳ \d+ queued · 👤 \d+ with you · ⛔ \d+ blocked · 🅿️ \d+ parked(?: · 📥 \d+ to accept)?$/u
+/** The listening line while the inbox watcher is armed. */
 const LISTEN_LINE = /^👂 listening$/u
 /** The listening line REPORT-FORMS-TIDY gave a hold waiting for a message, which SNOOZE replaced with plain listening. */
 const LISTEN_HOLD_LINE = '👂 listening · a message releases the hold'
-/** The listening line while that capability is off. */
+/** The listening line otherwise, its default. */
 const LISTEN_OFF_LINE = /^🔇 not listening$/u
-/** The roadmap line under FOOTER-COUNTS, in a Summary's footer where the work's repository has a roadmap. */
+/** The roadmap line under FOOTER-COUNTS, in a Full reply's footer, reading none where the repository has no roadmap. */
 const ROADMAP_LINE =
-  /^🗺️ roadmap · (?:1 record|(?!1 )\d+ records) · \d+ open · \d+ done awaiting prune · (?:1 idea|(?!1 )\d+ ideas)$/u
-/** The package line under FOOTER-COUNTS, beside the roadmap line in a Summary's footer. */
+  /^🗺️ roadmap · (?:none|(?:1 record|(?!1 )\d+ records) · \d+ open · \d+ done awaiting prune · (?:1 idea|(?!1 )\d+ ideas))$/u
+/** The package line under FOOTER-COUNTS, beside the roadmap line in a Full reply's footer. */
 const PACKAGE_LINE = /^📦 package · inbox (\d+) · outbox (\d+) · held \d+ · awaiting ACK (\d+)$/u
 /** The sync line SYNC-LINE-OFF removed from every banner, read only in past reports. */
 const SYNC_LINE = /^🔄 (?:not )?syncing for [a-z0-9<>-]+$/u
@@ -130,16 +136,15 @@ const expectReportHeading = (lines: string[] | undefined): void => {
   expect(lines[3]).toBe('')
   expect(lines[4]).toBe('---')
   expect(lines[5]).toBe('')
-  expect(lines[6]).toMatch(/^## (Done|Summary since \d{2}:\d{2} [A-Z]{3,4})$/)
+  expect(lines[6]).toMatch(/^## (Done|Summary)$/)
   expect(lines.slice(7).filter((line) => line !== '')).toEqual([])
 }
 
 /**
- * A banner, top to bottom under FOOTER-LAYOUT: the heading, a blank line, a counts line where live, a blank line, then
- * in a Summary's footer under FOOTER-COUNTS the roadmap line where there is a roadmap and the package line, each followed
- * by a blank line, the
- * items, then each closing line after a blank line: the heading-for line where one stands, the listening line on a
- * thread with that capability, each on or off, and the thread line last.
+ * A banner, top to bottom under FOOTER-LAYOUT and REPLY-FORMAT: the heading, a blank line, a counts line where live, a
+ * blank line, then in a Full reply's footer under FOOTER-COUNTS the roadmap line and the package line, each followed by a
+ * blank line, the items, then each closing line after a blank line: the heading-for line where one stands, the listening
+ * line, on or off, before Finished, and the thread line last.
  */
 const expectBanner = (lines: string[]): void => {
   expect(lines[0]).toMatch(BANNER_HEADING)
@@ -159,10 +164,11 @@ const expectBanner = (lines: string[]): void => {
   const listening = LISTEN_LINE.test(closing[at] ?? '') || LISTEN_OFF_LINE.test(closing[at] ?? '')
   if (listening) at += 1
   expect(at).toBe(closing.length)
+  expect(listening).toBe(!finished)
   let first = 2
-  let awaitingAck: number | undefined
   if (!finished) {
-    expect(lines[2]).toMatch(/^\S+ [a-z0-9 ]+( · \S+ [a-z0-9 ]+)*$/u)
+    const hold = /^### (?:⏸️|💤)/u.test(lines[0] ?? '')
+    expect(lines[2]).toMatch(hold ? /^(?:⏸️|💤) [a-z ]+ · 🅿️ \d+ quer(?:y|ies) parked$/u : COUNTS_LINE)
     expect(lines[3]).toBe('')
     first = 4
     if (ROADMAP_LINE.test(lines[first] ?? '')) {
@@ -173,52 +179,46 @@ const expectBanner = (lines: string[]): void => {
     const [, , outbox, awaiting] = lines[first]?.match(PACKAGE_LINE) ?? []
     if (awaiting !== undefined) {
       expect(Number(outbox)).toBeGreaterThanOrEqual(Number(awaiting))
-      awaitingAck = Number(awaiting)
       expect(lines[first + 1]).toBe('')
       first += 2
     }
   }
   const items = lines.slice(first, end - 1)
   expect(items.length).toBeGreaterThan(0)
-  if (awaitingAck !== undefined)
-    expect(items.filter((line) => line.startsWith('- [awaiting ACK]'))).toHaveLength(awaitingAck)
   for (const item of items) expect(item).toMatch(ITEM)
   for (const item of items.filter((line) => /^- \[(running|queued|with you|stuck)\]/.test(line)))
     expect(item).toMatch(HOLDER_ITEM)
-  for (const item of items.filter((line) => line.startsWith('- [awaiting ACK]')))
-    expect(item).toMatch(AWAITING_ACK_ITEM)
   for (const item of items) expect(item).not.toMatch(/decision \d|#\d/)
 }
 
-test('the standard carries the report heading as a linked theme › Project heading, the glyph form line and one rule', () => {
+test('the standard carries the report heading as a linked theme › Project heading, the form line and one rule', () => {
   const found = headings(standard)
   expect(found).toHaveLength(3)
   const [summary, territory, runReport] = found
   expect(summary?.join('\n')).toBe(HEADING_EXAMPLE)
   expectReportHeading(summary)
   expect(territory?.[0]).toBe('# [<territory or theme>](<its local note>) › State of play')
-  expect(territory?.[2]).toBe('**👤 With supervisor · Summary at 19:13 BST · since 09:00 BST**')
-  expect(territory?.[6]).toBe('## Summary since 09:00 BST')
+  expect(territory?.[2]).toBe('**Bootstrap at 09:13 BST · last mark yesterday 18:05 BST**')
+  expect(territory?.[6]).toBe('## Done')
   expectReportHeading(territory)
   expect(runReport?.[0]).toBe(`# [Model](${THEME_PAGE}) › [Ways of working](${PROJECT_NOTE}) › migrate-phase1`)
-  expect(runReport?.[2]).toBe('**🤖 → 👤 Handoff to supervisor · Run report at 20:40 BST · last mark 14:54 BST**')
+  expect(runReport?.[2]).toBe('**Run report at 20:40 BST · last mark 14:54 BST**')
   expectReportHeading(runReport)
 })
 
-test('the form line leads with the glyph state, then the form, the local issued time and its window or mark', () => {
-  expect('**🤖 With worker · Summary at 19:13 BST · since 14:54 BST**').toMatch(FORM_LINE)
+test('the form line names the reply structure, the local time and the last mark, in friendly times and with no state', () => {
+  for (const structure of ['Summary', 'Status', 'Bootstrap', 'Run report', 'Stop'])
+    expect(`**${structure} at 19:13 BST · last mark 14:54 BST**`).toMatch(FORM_LINE)
+  expect('**Bootstrap at 09:13 BST · last mark yesterday 18:05 BST**').toMatch(FORM_LINE)
+  expect('**Summary at 09:13 GMT · last mark Thu 5 Nov 09:12 GMT**').toMatch(FORM_LINE)
+  expect('**Stop at 15:02 BST · mark 14:58 BST**').toMatch(FORM_LINE)
+  expect('**Summary at 15:02 BST · mark 14:58 BST**').not.toMatch(FORM_LINE)
   expect('**🤖 With worker · Summary at 19:13 BST · last mark 14:54 BST**').not.toMatch(FORM_LINE)
-  expect('**👤 With supervisor · Status at 19:13 BST · last mark 14:54 BST**').toMatch(FORM_LINE)
-  expect('**👤 With supervisor · Re-bootstrap at 19:13 BST · last mark 14:54 BST**').toMatch(FORM_LINE)
-  expect('**🏁 Finished · Finish report at 18:00 BST · last mark 17:40 BST**').toMatch(FORM_LINE)
-  expect('**🤖 → 👤 Handoff to supervisor · blocked · Summary at 09:05 GMT · since 14:54 BST**').toMatch(FORM_LINE)
-  expect('**👤 With supervisor · Recap at 09:05 GMT · last mark 14:54 BST**').not.toMatch(FORM_LINE)
-  expect('**👤 With supervisor · Full summary at 09:05 GMT · last mark 14:54 BST**').not.toMatch(FORM_LINE)
-  expect('**→ 🎯 Handoff to KI > Tools burndown · Summary at 23:10 BST · since 22:00 BST**').toMatch(FORM_LINE)
-  expect('**⏸️ On hold · Hold report at 15:02 BST · mark 14:58 BST**').toMatch(FORM_LINE)
-  expect('**⏸️ On hold · Hold report at 15:02 BST · last mark 14:58 BST**').not.toMatch(FORM_LINE)
-  expect('**Summary at 19:13 BST · last mark 14:54 BST**').not.toMatch(FORM_LINE)
-  expect('**👤 With supervisor · Summary at 2026-10-14T17:03:02Z · last mark 14:54 BST**').not.toMatch(FORM_LINE)
+  expect('**🤖 With worker · Summary at 19:13 BST · since 14:54 BST**').not.toMatch(FORM_LINE)
+  expect('**⏸️ On hold · Hold report at 15:02 BST · mark 14:58 BST**').not.toMatch(FORM_LINE)
+  for (const retired of ['Recap', 'Full summary', 'Re-bootstrap', 'Finish report', 'Position', 'Update'])
+    expect(`**${retired} at 09:05 GMT · last mark 08:54 GMT**`).not.toMatch(FORM_LINE)
+  expect('**Summary at 2026-10-14T17:03:02Z · last mark 14:54 BST**').not.toMatch(FORM_LINE)
   expect('# [Ways of working](/a/b.md)').not.toMatch(HEADING_LINE)
   expect('# [KI Capital](/a/b.md) › State of play').toMatch(STATE_OF_PLAY_LINE)
 })
@@ -247,7 +247,6 @@ test('With worker names the hold or handoff it is heading for in its own line be
   for (const target of targets) {
     expect(`↪️ ${target}`).toMatch(HEADING_FOR_LINE)
     expect(`### 🤖 With worker (${target}) · at 13:05 GMT`).not.toMatch(BANNER_HEADING)
-    expect(`**🤖 With worker (${target}) · Summary at 13:05 GMT · last mark 12:40 GMT**`).not.toMatch(FORM_LINE)
     for (const text of [standard, outputStyle]) expect(text).toContain(`\`↪️ ${target}\``)
   }
   expect('↪️ draining').not.toMatch(HEADING_FOR_LINE)
@@ -256,7 +255,7 @@ test('With worker names the hold or handoff it is heading for in its own line be
   const draining = banners(standard).find((lines) => lines.some((line) => HEADING_FOR_LINE.test(line)))
   expect(draining?.[0]).toBe('### 🤖 With worker · at 23:41 BST')
   expect(draining?.slice(-7)).toEqual([
-    '- [with you] WORK-HOME · owner · since 22:58',
+    '- [with you] WORK-HOME · owner · at 22:58',
     '',
     '↪️ draining → ⏸️ On hold',
     '',
@@ -274,10 +273,10 @@ test('With worker names the hold or handoff it is heading for in its own line be
 
 // Kris, 31 October 2026, under LISTEN-STATUS: "that should be something that comes out in the summary mode, which is
 // whether or not the thread is listening to messages or not, whether it's draining". A drain and a hold stop listening.
-// Refined under FOOTER-CAPABILITY-STATUS-2, relayed on 1 November 2026: the footer shows the listening line only when
-// `listening_enabled` is true, and the line shows its status. Kris removed the sync line under SYNC-LINE-OFF, about
-// 18:00 GMT on 4 November 2026: "remove the sync mode line from the banner entirely", as Agora keeps machines in sync.
-test('every banner shows the listening line where the thread has it, on or off, and never a sync line', () => {
+// Under REPLY-FORMAT, agreed on 7 November 2026, every banner before Finished shows the listening line, `🔇 not
+// listening` by default. Kris removed the sync line under SYNC-LINE-OFF, about 18:00 GMT on 4 November 2026: "remove the
+// sync mode line from the banner entirely", as Agora keeps machines in sync.
+test('every banner before Finished shows the listening line, on or off, and never a sync line', () => {
   expect('👂 listening').toMatch(LISTEN_LINE)
   expect('🔇 not listening').toMatch(LISTEN_OFF_LINE)
   for (const line of ['🔇 not listening while draining', '👂 listening off', '🔇 draining, so not listening'])
@@ -294,9 +293,9 @@ test('every banner shows the listening line where the thread has it, on or off, 
   expectBanner([
     '### 🤖 With worker · at 09:00 GMT',
     '',
-    '🤖 1 running',
+    '🤖 1 running · ⏳ 0 queued · 👤 0 with you · ⛔ 0 blocked · 🅿️ 0 parked',
     '',
-    '- [running] host pass · run/host-pass · since 08:58',
+    '- [running] host pass · run/host-pass · at 08:58',
     '',
     '↪️ draining → ⏸️ On hold',
     '',
@@ -309,9 +308,9 @@ test('every banner shows the listening line where the thread has it, on or off, 
       expectBanner([
         '### 🤖 With worker · at 09:00 GMT',
         '',
-        '🤖 1 running',
+        '🤖 1 running · ⏳ 0 queued · 👤 0 with you · ⛔ 0 blocked · 🅿️ 0 parked',
         '',
-        '- [running] host pass · run/host-pass · since 08:58',
+        '- [running] host pass · run/host-pass · at 08:58',
         '',
         '👂 listening',
         '',
@@ -320,6 +319,17 @@ test('every banner shows the listening line where the thread has it, on or off, 
         '🧵 personal.reg.rig-sol'
       ])
     ).toThrow()
+  expect(() =>
+    expectBanner([
+      '### 🤖 With worker · at 09:00 GMT',
+      '',
+      '🤖 1 running · ⏳ 0 queued · 👤 0 with you · ⛔ 0 blocked · 🅿️ 0 parked',
+      '',
+      '- [running] host pass · run/host-pass · at 08:58',
+      '',
+      '🧵 personal.reg.rig-sol'
+    ])
+  ).toThrow()
   for (const lines of banners(standard)) expect(lines.some((line) => SYNC_LINE.test(line))).toBe(false)
   const [withWorker, handoff, , hold, snoozing, finished] = banners(standard)
   expect(withWorker?.at(-3)).toBe('👂 listening')
@@ -332,6 +342,7 @@ test('every banner shows the listening line where the thread has it, on or off, 
   for (const lines of banners(standard))
     expect(lines.some((line) => / · (?:not the )?sync thread for /u.test(line))).toBe(false)
   expect(standard).toContain('**Mode lines.**')
+  expect(standard).toContain('which is the default')
   expect(standard).toContain('LISTEN-STATUS')
   expect(standard).toContain('FOOTER-NOT-LISTENING')
   expect(standard).toContain('FOOTER-CAPABILITY-STATUS-2')
@@ -349,9 +360,10 @@ test('every banner shows the listening line where the thread has it, on or off, 
     expect(text).not.toContain('not the sync thread for <host>')
     expect(text).toContain('the inbox watcher')
   }
-  expect(outputStyle).toContain(
-    'after a blank line following its last mode line, with exactly one plain Markdown thread line'
-  )
+  for (const text of [standard, outputStyle])
+    expect(text).toContain(
+      'after a blank line following its listening line, or its list where it has none, with exactly one plain Markdown thread line'
+    )
 })
 
 // Kris, 31 October 2026, under LISTEN-OPT-IN: "any of the coordination [threads] can be set up in this mode, but we've
@@ -365,17 +377,16 @@ test('a thread listens only when the owner asks it to, and a Rig host sync threa
     expect(text).toContain('"stop the wake" or "stop listening"')
     expect(text).toContain('Rig host sync thread')
   }
-  expect(standard).toContain('A thread without the capability shows no listening line at all.')
-  expect(outputStyle).toContain('no listening line at all where Kris has not asked the thread to listen')
+  for (const text of [standard, outputStyle]) expect(text).not.toContain('no listening line at all')
   expect(standard).not.toContain('keep one inbox watcher armed whenever')
 })
 
 // Kris, 31 October 2026, under THREAD-CAPABILITIES and SYNC-UNTIL-CLEAN: "a resync doesn't finish until it's got to a
 // point of being clean". A thread may hold listening and host sync, each switched on only by express word or an agreed
 // role; host sync repeats each pass until clean and level, stays quiet on quiet passes and implies listening.
-test('a thread may hold listening and host sync, and the banner shows only the listening line', () => {
-  expect(standard).toContain('## Thread capabilities')
-  expect(standard).toContain('[Thread capabilities](standards-listening.md#thread-capabilities)')
+test('a session may hold listening and host sync, and the banner shows only the listening line', () => {
+  expect(standard).toContain('## Session capabilities')
+  expect(standard).toContain('[Session capabilities](standards-listening.md#session-capabilities)')
   for (const name of ['THREAD-CAPABILITIES', 'SYNC-UNTIL-CLEAN', 'SYNC-QUIET', 'Host sync implies listening.'])
     expect(standard).toContain(name)
   for (const text of [standard, outputStyle]) {
@@ -408,8 +419,8 @@ test('the standard carries the With worker, handoff, draining, On hold, Snoozing
   ])
   for (const lines of found) expectBanner(lines)
   const [withWorker, handoff, , hold] = found
-  expect(withWorker?.[2]).toBe('🤖 2 running · 👤 1 with you · ⛔ 1 blocked')
-  expect(withWorker).toContain('- [running] work-model · run/work-model · since 23:20')
+  expect(withWorker?.[2]).toBe('🤖 2 running · ⏳ 0 queued · 👤 1 with you · ⛔ 1 blocked · 🅿️ 0 parked')
+  expect(withWorker).toContain('- [running] work-model · run/work-model · at 23:20')
   expect(handoff).toContain('- [parked] 1')
   expect(found.flat().some((line) => BODY_ITEM.test(line))).toBe(false)
   expect(handoff?.some((line) => line.startsWith('- [running]'))).toBe(false)
@@ -438,7 +449,7 @@ test('reports omit routine push state, and an On hold banner lists nothing waiti
   expect(standard).toContain('**A hold lists nothing waiting.**')
   expect(standard).toContain('PUSH-NOT-WITH-YOU')
   expect(standard).toContain('HOLD-CLEAN')
-  expect(standard).toContain('A hold report keeps nothing about pushes beyond a failure.')
+  expect(standard).toContain('A Stop keeps nothing about pushes beyond a failure.')
   for (const text of [standard, outputStyle]) {
     expect(text).toContain('own unit could not be published because its push failed')
     expect(text).not.toMatch(/names? the other sessions' stacked commits once|show them only as `\[unpushed\]`/)
@@ -470,7 +481,7 @@ test('the restart suggestion is a named exception with narrow triggers, placed b
   expect(standard).not.toContain("hook's stale-method advisory")
   expect(outputStyle).toContain('beyond a warranted restart suggestion after a second compaction')
   expect(outputStyle).toContain('with two named exceptions')
-  expect(outputStyle).toContain('never in a hold report, a run report or a conversational reply')
+  expect(outputStyle).toContain('never in a Stop, a run report or a conversational reply')
 })
 
 test('every banner closes with its work identity and never emits a send or resume prompt', () => {
@@ -481,7 +492,7 @@ test('every banner closes with its work identity and never emits a send or resum
     expect(text).not.toContain('To bring this work back and continue it, paste this:')
     expect(text).not.toContain('{{send-line}}')
     expect(text).not.toContain('{{hold-send-line}}')
-    expect(text).toContain('**⏸️ On hold · Hold report at <local time> · mark <local time>**')
+    expect(text).toContain('**Stop at <local time> · mark <local time>**')
   }
   expect(PROJECT_THREAD_LINE).toMatch(THREAD_LINE)
   expect(TERRITORY_THREAD_LINE).toMatch(THREAD_LINE)
@@ -504,9 +515,13 @@ test('every banner closes with its work identity and never emits a send or resum
   expect(standard).toContain('## Pushing beneath other sessions')
 })
 
-test('the standard and the output style retire the reply block and the block-letter frames', () => {
+// Under REPLY-FORMAT, agreed on 7 November 2026, the reply block returns whenever a reply carries a query: one fenced
+// `text` block, one line per query, its tag and the recommended letter, replacing REPLY-BLOCK of 18 October.
+test('the standard and the output style carry the reply block and retire the block-letter frames', () => {
   for (const text of [standard, outputStyle]) {
-    expect(text).toContain('REPLY-BLOCK')
+    expect(text).toContain('replacing REPLY-BLOCK of 18 October')
+    expect(text).toContain('one fenced `text` block')
+    expect(text).toContain('`<TAG> a`')
     expect(withoutSources(text)).not.toMatch(/^╭─/m)
     expect(text).not.toContain('- [at rest]')
   }
@@ -514,37 +529,43 @@ test('the standard and the output style retire the reply block and the block-let
   expect(standard).toContain('Taken as: <the instruction it will act on>')
 })
 
-test('a coordinator reply that moves the mark, changes the state or answers where the work stands ends with the banner', () => {
+test("a reply's structure, which its trigger chooses, sets whether it ends with the banner", () => {
   expect(standard).toContain('**When it appears.**')
-  for (const text of [standard, outputStyle]) {
-    expect(text).toContain(
+  expect(standard).toContain(
+    'every Summary, Status, Bootstrap, run report, Stop and Position closes with it, and an Update or Answer, the Minimal layout, has none'
+  )
+  expect(standard).toContain('never a judgement of whether a reply answers where the work stands')
+  expect(outputStyle).toContain('The trigger, not judgement, sets whether a reply carries the banner')
+  for (const text of [standard, outputStyle])
+    expect(text).not.toContain(
       "moves the mark, changes the work's state or answers where the work stands ends with the banner"
     )
-    expect(text).toContain('a plain answer that does none of these needs none')
-  }
 })
 
 // SUMMARY-MODEL, approved by Kris with immediate effect on 4 November 2026 and
 // relayed as SUMMARY-NOW: the mark is only a timestamp, and one Summary form
 // replaces the Summary, recap and full summary, superseding MARK-STATUS's
 // table after the queries. Its footer's art and lines are Agora's (FOOTER-AGORA).
-test('the Summary runs Summary since, the two-column status table, the queries in full, then the footer', () => {
+// Under REPLY-FORMAT its section is `## Summary`, with no time.
+test('the Summary runs its summary, the two-column status table, the queries in full, then the footer', () => {
   const summary = standard.slice(standard.indexOf('### The Summary'), standard.indexOf('## Coordinating work'))
   const parts = [
-    '1. **`## Summary since <time>`**',
-    '2. **`## Status`**',
-    '3. **`## Findings`**',
-    '4. **`## Queries`**',
-    '5. **The footer**'
+    'the Answer where there is one, `## Summary`',
+    '`## Status`',
+    '`## Findings` while one is open',
+    '`## Queries` with every open query in full and the reply block',
+    'then the footer'
   ]
   const at = parts.map((part) => summary.indexOf(part))
   expect(at.every((index) => index > 0)).toBe(true)
   expect([...at].sort((a, b) => a - b)).toEqual(at)
   expect(summary).toContain('| Focus | Where it stands |')
   expect(summary).not.toContain('Waiting on you |')
-  for (const glyph of ['👤 Kris', '🤖 a worker', '🧵 another thread', '⏳ the outside world']) {
+  for (const glyph of ['👤 the owner', '🤖 a worker or run', '🧵 another session', '🌐 the outside world'])
     expect(summary).toContain(glyph)
-  }
+  expect(summary).toContain('⏳ means queued only')
+  expect(summary).not.toContain('⏳ the outside world')
+  expect(outputStyle).toContain('🌐 the outside world')
   expect(summary).toContain('`**\\_emerging**`')
   expect(summary).toContain('FOOTER-AGORA')
   expect(summary).toContain('TABLE-ALIGN')
@@ -577,13 +598,10 @@ test('the core retains all five hard rules and lists every purpose file', () => 
     '3) while work lies with a worker, give a timed one-to-two-line update when you launch work and when a run finishes, keeping one background check armed that wakes you only when a run finishes, with no timed bound, and no heartbeat otherwise'
   )
   expect(line).toContain(
-    '4) give every Summary in its summary shape and every re-bootstrap and hold report in the owner-report shape, heading and form line to glyph banner'
+    '4) give every reply the structure and layout its trigger sets in the ki-coordination reply format, a Summary or Status in full, a Bootstrap or Stop in the owner-report shape, heading block to glyph banner, a Position as the banner, an update or plain answer with no footer'
   )
-  expect(line).toContain('with no reply block')
-  expect(line).toContain('a Summary and a re-bootstrap report restating every open query in full')
-  expect(line).toContain(
-    'end any other reply that moves the mark, changes the state or answers where the work stands with the banner'
-  )
+  expect(line).toContain('with a reply block whenever there is a query')
+  expect(line).toContain('a Summary and a Bootstrap restating every open query in full')
   expect(line).toContain(
     'every medium- or low-confidence query, and any high-confidence destructive, deletion or publication one, goes to one blind review before it reaches the owner'
   )
@@ -608,13 +626,14 @@ test('unknown-session hook sources stay short and conditional while the style re
   }
 })
 
-test('the run-report and footer-report sources carry the quiet-tools rule and no reply block', () => {
+test('the run-report and footer-report sources carry the quiet-tools rule and the reply block', () => {
   expect(standard).toContain('### Quiet tools')
   const quiet = 'run Git with `-q`, never paste gate, audit or Git output, and report each outcome in one line.'
   for (const surface of generate(harnessRoot).filter(({ path }) => path.includes('ki-delegation/assets/'))) {
     expect(surface.content).toContain(quiet)
-    expect(surface.content).toContain('🤖 → 👤 Handoff to supervisor · Run report at')
-    expect(surface.content).toContain('no reply block')
+    expect(surface.content).toContain('**Run report at <local time> · last mark <local time>**')
+    expect(surface.content).toContain('closing the queries with a reply block')
+    expect(surface.content).not.toContain('no reply block')
   }
 })
 
@@ -735,7 +754,7 @@ test('the inbox watcher wakes only on news, with no timed bound or timed heartbe
   expect(standard).toContain('QUIET-LISTEN')
   for (const text of [standard, outputStyle]) {
     expect(text).toContain('fetches and fast-forwards')
-    expect(text).toContain("a run in this thread's group finishing")
+    expect(text).toContain("a run in this session's group finishing")
     expect(text).toContain('so a quiet period')
     expect(text).toContain('"stop the wake" or "stop listening"')
     for (const gone of [
@@ -770,37 +789,42 @@ test('the opener launches the session under its thread line', () => {
   expect(standard).not.toContain('claude --name "<label> (<id>)"')
 })
 
-// Kris, via personal.reg.assistant-terra ATER-004 at 22:26 GMT on 4 November 2026, under NO-LINK-MARK: anything sent
-// and awaiting its ACK goes in the banner's list as `- [awaiting ACK] <id> · to <pkg> · since <time>`.
-test('a sent line awaiting its ACK is a banner item naming its id, receiver and since', () => {
-  expect('- [awaiting ACK] MSG-8029f0fa · to personal.reg.assistant-sol · since 22:27').toMatch(AWAITING_ACK_ITEM)
-  expect('- [awaiting ACK] MSG-8029f0fa NO-LINK-MARK · to ki.sop.main · since 22:27').toMatch(AWAITING_ACK_ITEM)
-  for (const line of ['- [awaiting ACK] MSG-8029f0fa · since 22:27', '- [awaiting ACK] NO-LINK-MARK · to ki.sop.main'])
-    expect(line).not.toMatch(AWAITING_ACK_ITEM)
-  expectBanner([
+// Under REPLY-FORMAT, agreed on 7 November 2026, a sent line awaiting its ACK is counted in the package line only, no
+// longer listed as the `[awaiting ACK]` item NO-LINK-MARK set on 4 November.
+test('a sent line awaiting its ACK is counted in the package line, never listed as an item', () => {
+  const banner = [
     '### 👤 With supervisor · at 23:52 GMT',
     '',
-    '👤 1 with you',
+    '🤖 0 running · ⏳ 0 queued · 👤 1 with you · ⛔ 0 blocked · 🅿️ 0 parked',
+    '',
+    '🗺️ roadmap · none',
     '',
     '📦 package · inbox 0 · outbox 1 · held 0 · awaiting ACK 1',
     '',
-    '- [with you] WORK-HOME · owner · since 22:58',
-    '- [awaiting ACK] MSG-8029f0fa · to personal.reg.assistant-sol · since 22:27',
+    '- [with you] WORK-HOME · owner · at 22:58',
+    '',
+    '🔇 not listening',
     '',
     '🧵 ki.sop.main'
-  ])
-  for (const text of [standard, outputStyle]) {
-    expect(text).toContain('`- [awaiting ACK] <id> · to <package id> · since <time>`')
-  }
+  ]
+  expectBanner(banner)
+  const listed = [...banner]
+  listed.splice(9, 0, '- [awaiting ACK] MSG-8029f0fa · to personal.reg.assistant-sol · at 22:27')
+  expect(() => expectBanner(listed)).toThrow()
+  for (const lines of banners(standard)) expect(lines.some((line) => line.startsWith('- [awaiting ACK]'))).toBe(false)
+  expect(standard).toContain('never listed as an item')
+  for (const text of [standard, outputStyle]) expect(text).not.toContain('`- [awaiting ACK] <id>')
   expect(standard).toContain('NO-LINK-MARK')
 })
 
 // Kris, about 20:40 GMT on 6 November 2026, of the footer personal.reg.household-terra trialled, under FOOTER-COUNTS:
 // "I absolutely love that footer. Can you make that the case, please, and get that to be rolled out?" Beneath the
-// counts line, the hold line on hold, a Summary's footer carries one roadmap line and one package line; the banner
-// alone, the footer's short form, carries neither, and the thread line stays last.
-test("a Summary's footer carries the roadmap and package lines beneath its counts line, and the short form neither", () => {
+// counts line, the hold line on hold, a Full reply's footer carries one roadmap line and one package line, the roadmap
+// line reading none where there is no roadmap under REPLY-FORMAT; the Medium and Short layouts carry neither, and the
+// thread line stays last.
+test("a Full reply's footer carries the roadmap and package lines beneath its counts line, and the other layouts neither", () => {
   expect('🗺️ roadmap · 1 record · 0 open · 1 done awaiting prune · 0 ideas').toMatch(ROADMAP_LINE)
+  expect('🗺️ roadmap · none').toMatch(ROADMAP_LINE)
   expect('📦 package · inbox 0 · outbox 0 · held 0 · awaiting ACK 0').toMatch(PACKAGE_LINE)
   for (const line of [
     '🗺️ roadmap · 1 records · 0 open · 0 done awaiting prune · 0 ideas',
@@ -812,18 +836,20 @@ test("a Summary's footer carries the roadmap and package lines beneath its count
     expectBanner([
       '### 👤 With supervisor · at 23:52 GMT',
       '',
-      '👤 1 with you',
+      '🤖 0 running · ⏳ 0 queued · 👤 1 with you · ⛔ 0 blocked · 🅿️ 0 parked',
       '',
       '🗺️ roadmap · 1 record · 0 open · 1 done awaiting prune · 0 ideas',
       '',
-      '- [with you] WORK-HOME · owner · since 22:58',
+      '- [with you] WORK-HOME · owner · at 22:58',
+      '',
+      '🔇 not listening',
       '',
       '🧵 ki.sop.main'
     ])
   ).toThrow()
   const [withWorker, handoff, draining, hold, finished] = banners(standard)
   expect(withWorker?.slice(2, 7)).toEqual([
-    '🤖 2 running · 👤 1 with you · ⛔ 1 blocked',
+    '🤖 2 running · ⏳ 0 queued · 👤 1 with you · ⛔ 1 blocked · 🅿️ 0 parked',
     '',
     '🗺️ roadmap · 6 records · 4 open · 1 done awaiting prune · 1 idea',
     '',
@@ -835,47 +861,55 @@ test("a Summary's footer carries the roadmap and package lines beneath its count
     expect(lines?.some((line) => PACKAGE_LINE.test(line) || ROADMAP_LINE.test(line))).toBe(false)
   for (const text of [standard, outputStyle]) {
     expect(text).toContain('`🗺️ roadmap · <n> records · <n> open · <n> done awaiting prune · <n> ideas`')
+    expect(text).toContain('`🗺️ roadmap · none`')
     expect(text).toContain('`📦 package · inbox <n> · outbox <n> · held <n> · awaiting ACK <n>`')
     expect(text).toContain('`ki repo roadmap summary`')
     expect(text).toContain('FOOTER-COUNTS')
-    expect(text).toContain('long form')
-    expect(text).toContain('short form')
   }
+  expect(outputStyle).toContain('the Medium and Short layouts carrying neither')
   expect(standard).toContain('**Roadmap and package lines.**')
-  expect(standard).toContain('In a Summary of work On hold the counts line is the hold line')
+  expect(standard).toContain("a Full reply's footer carries one line of roadmap counts and one of package counts")
+  expect(standard).toContain('In a Full reply on work On hold the counts line is the hold line')
 })
 
-// Kris, relayed by household-terra on 6 November 2026 under REPORT-FORMS-TIDY: say plainly which "since" is which, give
-// each form one complete template, let an owner-asked hold keep listening for a message, and offer the status table
-// without the history part.
-test('each report form has one template and the Summary names its window', () => {
-  const templates = standard.split('### Templates\n')[1]?.split('\n### The Summary\n')[0] ?? ''
-  for (const form of [
+// Kris, relayed by household-terra on 6 November 2026 under REPORT-FORMS-TIDY, asked for one complete template per form
+// and the status table without the history part; under REPLY-FORMAT, agreed on 7 November 2026, each reply structure
+// has its template, and a Stop folds the hold and finish reports.
+test('each reply structure has one template, and the form line carries no state', () => {
+  const templates = standard.split('### Templates\n')[1]?.split('\n### Verbs\n')[0] ?? ''
+  for (const structure of [
     '**Summary**',
     '**Status**',
-    '**Re-bootstrap report**',
-    '**Hold report**',
-    '**Hold report while Snoozing**',
-    '**Finish report**',
-    '**Plain state reply**'
+    '**Bootstrap**',
+    '**Run report**',
+    '**Stop**',
+    '**Stop while Snoozing**',
+    '**Stop at Finished**',
+    '**Position**',
+    '**Update** and **Answer**'
   ])
-    expect(templates).toContain(form)
+    expect(templates).toContain(structure)
   for (const line of [
-    '**<glyph state> · Summary at <now> · since <window start>**',
-    '**<glyph state> · Status at <now> · last mark <mark>**',
-    '**<glyph state> · Re-bootstrap at <now> · last mark <mark>**',
-    "**⏸️ On hold · Hold report at <now> · mark <the hold's mark>**",
-    '**🏁 Finished · Finish report at <now> · last mark <mark>**'
+    '**Summary at <now> · last mark <mark time>**',
+    '**Bootstrap at <now> · last mark <mark time>**',
+    "**Stop at <now> · mark <the hold's mark>**",
+    '**Stop at <now> · last mark <mark time>**'
   ])
     expect(templates).toContain(line)
-  expect(templates).toContain('A hold is visibly not a Summary')
-  expect(standard).toContain('- **Three times:**')
+  for (const retired of [
+    '**Re-bootstrap report**',
+    '**Hold report**',
+    '**Finish report**',
+    '<glyph state> · Summary at'
+  ])
+    expect(templates).not.toContain(retired)
+  expect(standard).toContain('- **Times:**')
   expect(standard).toContain('- **Snoozing:**')
   expect(standard).toContain('/ki-coordination mark, status only')
   expect(standard).toContain('/ki-coordination status ')
   for (const text of [standard, outputStyle]) {
     expect(text).toContain('`mark, status only`')
-    expect(text).toContain('· since <window start>')
+    expect(text).not.toContain('· since <window start>')
   }
 })
 
@@ -893,13 +927,13 @@ test('Snoozing has its own glyph, keeps listening, is never drained, and one tab
   expect(
     snoozing?.filter((line) => line.startsWith('- [')).every((line) => /^- \[(parked|release)\] /.test(line))
   ).toBe(true)
-  expect('**💤 Snoozing (on hold) · Hold report at 23:58 GMT · mark 23:55 GMT**').toMatch(FORM_LINE)
+  expect('**Stop at 23:58 GMT · mark 23:55 GMT**').toMatch(FORM_LINE)
   expect('### ⏸️ On hold · more expected · at 23:58 GMT').not.toMatch(BANNER_HEADING)
   expect('### 👤 With supervisor · since 23:52 GMT').not.toMatch(BANNER_HEADING)
   expect('↪️ draining → 💤 Snoozing (on hold)').toMatch(HEADING_FOR_LINE)
   const table = standard.split('**One table of states.**')[1]?.split('\n\n**')[0] ?? ''
   expect(table).toContain(
-    '| State | Glyph | Banner heading | Counts line | Allowed items | Listening line | Report form |'
+    '| State | Glyph | Banner heading | Counts line | Allowed items | Listening line | Reply structure |'
   )
   for (const state of [
     'With worker',

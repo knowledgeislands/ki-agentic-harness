@@ -723,7 +723,10 @@ describe('work files', () => {
     expect(
       reportHasGlyphForm('**🤖 → 👤 Handoff to supervisor · Run report at 23:10 BST · last mark 22:34 BST**')
     ).toBe(true)
-    expect(reportHasGlyphForm('**Summary at 19:13 BST · last mark 14:54 BST**')).toBe(false)
+    expect(reportHasGlyphForm('**Summary at 19:13 BST · last mark 14:54 BST**')).toBe(true)
+    expect(reportHasGlyphForm('**Run report at 20:40 BST · last mark 14:54 BST**')).toBe(true)
+    expect(reportHasGlyphForm('**Stop at 21:10 GMT · mark 21:10 GMT**')).toBe(true)
+    expect(reportHasGlyphForm('**Summary at 19:13 BST**')).toBe(false)
     const root = fixture(capital)
     const folder = work(root, 'ki.ways-of-working', project())
     writeFileSync(

@@ -65,9 +65,12 @@ const OUTPUT_STYLE = 'ki-coordinator'
 const COORDINATOR_HOOK = 'coordinator-reminder.sh'
 const HOOK_EVENTS = ['UserPromptSubmit', 'SessionStart'] as const
 const PROJECT_THREAD = /^(?<initiative>[a-z0-9]+(?:-[a-z0-9]+)*)\.(?<project>[a-z0-9]+(?:-[a-z0-9]+)*)$/
-/** A report whose form line leads with a glyph state was written under the work model, so on or after 2026-10-18; 🧑 and → 👤 are the glyphs before GLYPH-OWNER. */
+/**
+ * A report whose form line leads with a glyph state was written under the work model, so on or after 2026-10-18; 🧑 and
+ * → 👤 are the glyphs before GLYPH-OWNER. A form line with no state, closing on its mark, is the reply format's.
+ */
 const GLYPH_FORM_LINE =
-  /^\*\*(?:🤖|👤|🧑|⏸️|💤|🏁|→ 🎯|→ 👤)[^\n]* · (?:Summary|Status|Recap|Full summary|Re-bootstrap|Run report|Hold report|Finish report) at /mu
+  /^\*\*(?:(?:🤖|👤|🧑|⏸️|💤|🏁|→ 🎯|→ 👤)[^\n]* · (?:Summary|Status|Recap|Full summary|Re-bootstrap|Run report|Hold report|Finish report) at |(?:Summary|Status|Bootstrap|Run report|Stop) at [^*\n]* · (?:last )?mark )/mu
 
 export type OutcomeContext = { readonly outcomes: readonly AuditOutcome[] }
 
@@ -694,7 +697,7 @@ export const reportMultipleRecommendationFindings = (text: string): readonly str
     .filter((query) => query.split(/\r?\n/).filter((line) => RECOMMENDED_OPTION.test(line)).length > 1)
     .map((query) => (query.split(/\r?\n/, 1)[0] ?? '').slice(4).trim())
 
-/** Whether a report's form line leads with a glyph state, so it was written under the work model. */
+/** Whether a report's form line leads with a glyph state or takes the reply format's, so it was written under the work model. */
 export const reportHasGlyphForm = (text: string): boolean => GLYPH_FORM_LINE.test(text)
 
 /**

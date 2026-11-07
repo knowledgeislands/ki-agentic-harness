@@ -1,6 +1,6 @@
 # Coordinating-work standard: listening and host sync
 
-This file holds the inbox watch, the two thread capabilities and host sync. It extends [the core](standards-coordination.md).
+This file holds the inbox watch, the two session capabilities and host sync. It extends [the core](standards-coordination.md).
 
 ## Inbox watch
 
@@ -14,19 +14,20 @@ This file holds the inbox watch, the two thread capabilities and host sync. It e
 - **One loop:** a coordinator never holds more than one loop. After a compaction or a recovery it checks whether one is armed before arming another.
 - **Session-bound:** the watcher lives and dies with the session. It is a session wake, not a scheduled agent, and promises nothing once the session closes. A runtime with no proven way for the watcher's exit to wake the session checks the inbox only at owner messages and run events, and shows not listening.
 - **Open questions:** a shared shell command for the watcher, and each runtime's wake, remain with the owner.
-- **Listening line:** where `listening_enabled: true`, the [banner's mode lines](standards-coordination.md#banner) show `👂 listening` while the watcher is armed, `listening_status: on`, and `🔇 not listening` otherwise, `listening_status: off`:
+- **Listening line:** the [banner's listening line](standards-coordination.md#banner) shows `👂 listening` while the watcher is armed, `listening_status: on`, and `🔇 not listening` otherwise, `listening_status: off`, which is the default:
   - while draining, from `pause`, `done for now` or `drain` until the drain ends, because a drain stops listening;
   - On hold and paused;
   - after "stop the wake" or "stop listening";
-  - where the runtime cannot be woken.
+  - where the runtime cannot be woken;
+  - where the owner has not asked the session to listen and it is no host sync thread, `listening_enabled: false`.
 
-  A thread without the capability shows no listening line at all.
-
-  Work [Snoozing](standards-holds.md#putting-work-on-hold), the idle hold included, keeps `👂 listening`. A coordinator without the capability shows no listening line.
+  The line appears in every structure that carries it, whatever the capability. Work [Snoozing](standards-holds.md#putting-work-on-hold), the idle hold included, keeps `👂 listening`.
 
 Sources: INBOX-WATCH, LISTEN-STATUS, LISTEN-OPT-IN, QUIET-LISTEN and WAKE-SESSION in [the decision register](sources.md#decision-register).
 
-## Thread capabilities
+<a id="thread-capabilities"></a>
+
+## Session capabilities
 
 A coordinator may hold two capabilities. Each is switched on only by the owner's express word, logged in `decisions.md`, or by an agreed role, such as a Rig host sync thread's. `state.md` records them in four fields under the `ki-work-package` [state file](../../../governance/ki-work-package/references/standards-work-package.md#state-file):
 
@@ -35,7 +36,7 @@ A coordinator may hold two capabilities. Each is switched on only by the owner's
 | `listening_enabled`, `syncing_enabled` | `true` or `false` | when the owner's word or the agreed role grants the capability; cleared only when the owner withdraws it |
 | `listening_status`, `syncing_status` | `on` or `off` | each `_status` at every arm, stop, drain, hold and resume |
 
-- `syncing_enabled: true` requires `listening_enabled: true`: a syncing thread always listens.
+- `syncing_enabled: true` requires `listening_enabled: true`: a syncing session always listens.
 - "stop the wake" or "stop listening" sets the status to `off` and keeps the capability.
 - The close-out at [Finished](standards-mark.md#finishing-project-work) clears both `_enabled` fields.
 
@@ -51,6 +52,6 @@ It mentions a tidy only when something needs the owner. It never edits another p
 
 **Host sync.** The coordinator is its Mac's sync thread. It repeats each pass until the Mac and GitHub are clean and level, or something needs judgement, and only then waits for its next slot. A quiet pass says nothing, a pass that changed something says at most one short line, and only a matter for judgement or the owner gets a full report. Host sync implies listening.
 
-The banner's mode lines show only the listening status, `👂 listening` or `🔇 not listening`. Host sync has no banner line, because Agora keeps the machines in sync through each machine's household package; the `syncing_enabled` and `syncing_status` fields stay in `state.md`.
+The banner shows only the listening status, `👂 listening` or `🔇 not listening`. Host sync has no banner line, because Agora keeps the machines in sync through each machine's household package; the `syncing_enabled` and `syncing_status` fields stay in `state.md`.
 
-Sources: THREAD-CAPABILITIES, FOOTER-CAPABILITY-STATUS-2, LISTEN-OPT-IN, LISTEN-TENDS-PACKAGE, SYNC-UNTIL-CLEAN, SYNC-QUIET and SYNC-LINE-OFF in [the decision register](sources.md#decision-register).
+Sources: THREAD-CAPABILITIES, FOOTER-CAPABILITY-STATUS-2, LISTEN-OPT-IN, LISTEN-TENDS-PACKAGE, SYNC-UNTIL-CLEAN, SYNC-QUIET, SYNC-LINE-OFF and REPLY-FORMAT in [the decision register](sources.md#decision-register).

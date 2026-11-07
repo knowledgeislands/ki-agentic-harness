@@ -13,7 +13,7 @@ Several sessions commit into one checkout, so one session's commits can sit on a
   - It stops on another session's content, uncertain ownership or a judgement call. File ownership alone does not prove a file holds no other session's content.
   - When it stops, park a blocking query and push nothing more from that repository in the window, under the delegation [conflict-run boundary](../../../governance/ki-delegation/references/standards-background-runs.md#conflict-runs).
   - Nobody stashes, rebases or resets in the coordinator's checkout.
-- **Report:** reports and banners omit routine push state and other sessions' stacked commits. Where a run's own unit could not be published because its push failed, its `## Done` names the unit and the reason. A hold report says nothing about pushes beyond a failure.
+- **Report:** reports and banners omit routine push state and other sessions' stacked commits. Where a run's own unit could not be published because its push failed, its `## Done` names the unit and the reason. A Stop says nothing about pushes beyond a failure.
 
 Sources: COMMIT-OWN-WORK, PACKAGE-PUSH, PUSH-NOT-WITH-YOU and CONFLICT-RUN in [the decision register](sources.md#decision-register).
 

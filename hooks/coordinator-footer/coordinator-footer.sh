@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Stop: hold a coordinating reply back only when its footer has lost its structure,
-# and warn on anything else unusual. A Summary or a Status, a re-bootstrap or hold
-# report, a reply that already opens a banner, and a reply to an owner's mark or
-# state word must close with a banner: a ### state heading and the thread line,
-# last: <role glyph> 🔑 <work-id>, or 🧵 <work-id> for a session with no role yet.
-# An unrecognised state heading, a missing or odd counts line, ⭐, 🔧 or 🧵 in the
-# role glyph's place, and in a Summary or Status missing art, roadmap or package
-# line pass with a warning, so the owner can confirm the form was intended. The
+# and warn on anything else unusual. A Summary or a Status, a Bootstrap or a Stop,
+# a reply that already opens a banner, and a reply to an owner's mark, state word
+# or Position phrase must close with a banner: a ### state heading and the thread
+# line, last: <role glyph> 🔑 <work-id>, or 🧵 <work-id> for a session with no role
+# yet. An unrecognised state heading, a missing or odd counts line, a missing
+# listening line before Finished, ⭐, 🔧 or 🧵 in the role glyph's place, and in a
+# Summary or Status missing art, roadmap or package line pass with a warning, so the owner can confirm the form was intended. The
 # hook holds no copy of the role catalogue, which ki-work-package owns.
 # Quiet for conversational replies and launched agents; never blocks twice in a
 # row, only warning then; fails open on unusable input.
@@ -62,12 +62,12 @@ owner_prompt() {
 form=$(printf '%s\n' "$reply" | LC_ALL=C awk '
   /^(```|~~~)/ { fence = !fence; next }
   fence { next }
-  /^## Summary since / || /^\*\*.* · (Summary|Status) at / { print "summary"; exit }
-  /^\*\*.* · (Re-bootstrap|Hold report|Finish report) at / || /^### .*(With worker|Handoff to|With supervisor|On hold|Snoozing|Finished)/ || /^(🧵|[^ -~]+ 🔑) [^ ]+ *$/ { other = 1 }
+  /^## Summary$/ || /^## Summary since / || /^\*\*(.* · )?(Summary|Status) at / { print "summary"; exit }
+  /^\*\*(.* · )?(Bootstrap|Stop|Re-bootstrap|Hold report|Finish report) at / || /^### .*(With worker|Handoff to|With supervisor|On hold|Snoozing|Finished)/ || /^(🧵|[^ -~]+ 🔑) [^ ]+ *$/ { other = 1 }
   END { if (other) print "banner" }')
 
 if [ -z "$form" ]; then
-  # No footer form of its own: only an owner's mark or state word, in a session
+  # No footer form of its own: only an owner's mark, state word or Position phrase, in a session
   # that has already closed a reply with a thread line in either form, asks for
   # the banner.
   [ -n "$transcript" ] && [ -d "$cwd" ] || exit 0
@@ -80,6 +80,7 @@ if [ -z "$form" ]; then
   prompt=${prompt% no art}
   case "$prompt" in
     mark | 'mark only' | 'mark, status only' | 'mark status only' | summary | 'summary since '* | recap | 'recap and mark' | 'full summary' | 'summary in full' | status | \
+    'where are we' | 'where does it stand' | "what's the state" | \
       pause | 'done for now' | snooze | drain | hold | resume | finish | send | receive | 'with me' | ack | 'got it' | seen) ;;
     *) exit 0 ;;
   esac
@@ -96,8 +97,8 @@ if [ "$form" = summary ]; then
     prompt=$(owner_prompt) || prompt='no art'
     case "$prompt" in '' | *'no art'*) art=0 ;; esac
   fi
-  top=$(git -C "$cwd" rev-parse --show-toplevel 2>/dev/null) || top=$cwd
-  [ ! -d "$top/docs/roadmap" ] || roadmap=1
+  # The roadmap line shows always, `🗺️ roadmap · none` where there is no roadmap.
+  roadmap=1
 fi
 
 # Two lists, separated by a unit separator: the structural parts whose loss holds the
@@ -120,13 +121,14 @@ found=$(printf '%s\n' "$reply" | LC_ALL=C awk -v long="$([ "$form" = summary ] &
     is_thread = key || $0 ~ /^🧵 [^ ]+ *$/
     # A state heading opens with its glyph or names a state; a query or finding heading opens with its tag.
     state = $0 ~ /^### .*(With worker|Handoff to|With supervisor|On hold|Snoozing|Finished)/
-    if (state || $0 ~ /^### [^ -~]/) { heading = NR; known = state; finished = index($0, "Finished") > 0; counts_seen = 0; counts = 0; odd = 0; road = 0; pack = 0; next }
+    if (state || $0 ~ /^### [^ -~]/) { heading = NR; known = state; finished = index($0, "Finished") > 0; counts_seen = 0; counts = 0; odd = 0; road = 0; pack = 0; listen = 0; next }
     if (heading && !counts_seen) {
       counts_seen = 1
       if (!is_thread && $0 !~ /^(- \[|🧵|🗺|📦|👂|🔇|↪)/) { counts = 1; odd = $0 !~ /^(🤖|👤|⛔|🅿|⏸|💤|📥|🎯|⏳)/ }
     }
     if (heading && $0 ~ /^🗺/ && index($0, "roadmap")) road = 1
     if (heading && $0 ~ /^📦/ && index($0, "package")) pack = 1
+    if (heading && $0 ~ /^(👂 listening|🔇 not listening)/) listen = 1
     if (is_thread) {
       thread = NR
       glyphs = key ? substr($0, 1, index($0, " 🔑") - 1) : ""
@@ -144,6 +146,7 @@ found=$(printf '%s\n' "$reply" | LC_ALL=C awk -v long="$([ "$form" = summary ] &
     if (heading && !known) warn[++w] = "a state heading the table of states does not name"
     if (heading && !finished && !counts) warn[++w] = "no counts line beneath the state heading"
     if (heading && counts && odd) warn[++w] = "a counts line opening with none of the counts glyphs"
+    if (heading && known && !finished && !listen) warn[++w] = "no listening line, 👂 listening or 🔇 not listening"
     if (long && art && (!art_at || (heading && art_at > heading))) warn[++w] = "no Knowledge Islands art above the banner"
     if (long && roadmap && !road) warn[++w] = "no 🗺️ roadmap line"
     if (long && !pack) warn[++w] = "no 📦 package line"

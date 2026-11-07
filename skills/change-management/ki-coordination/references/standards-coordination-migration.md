@@ -33,6 +33,7 @@ This file holds temporary adjustments to [the coordinating-work standard](standa
 - [Pre-focus and numbered decisions-log entries](#pre-focus-and-numbered-decisions-log-entries)
 - [The earlier design-note home](#the-earlier-design-note-home)
 - [Observatory feedback packages](#observatory-feedback-packages)
+- [Openers that name the re-bootstrap report](#openers-that-name-the-re-bootstrap-report)
 
 ## Thread model
 
@@ -180,3 +181,7 @@ The earlier `+/_DESIGN/<subject-slug>/` home for design notes is read for the to
 ## Observatory feedback packages
 
 The owner's consolidated Observatory feedback package, `feedback/<date>-<slug>.md`, written into the folder of the work that produced the document with one `messages.md` line linking it, committed together under the `ki-work-package` [entry points](../../../governance/ki-work-package/references/standards-work-package.md#entry-points), is accepted for the tolerance window. Adjusts the Sender item of [Messages between work](standards-messages.md#messages-between-work).
+
+## Openers that name the re-bootstrap report
+
+An opener whose first step says to give "the full re-bootstrap report", as the openers under [Opening work](standards-opening.md#opening-work) and `ki agent prompts` still print them, asks for the Bootstrap, and a past report headed `Re-bootstrap`, `Hold report` or `Finish report`, or carrying a state in its form line, stays readable as the Bootstrap or Stop it was. Delete this adjustment once `tools-ki` prints openers naming the Bootstrap and the openers here say the same. It adjusts trigger T2 in [Triggers](standards-report-forms.md#triggers).

@@ -23,11 +23,11 @@ A one-line opener brings a new or running session onto this contract, for exampl
 4. acts on each line of [`messages.md`](standards-messages.md#messages-between-work), `IMPORTANT` lines first, `FIRST-STEP` among them, then in queue order, before launching any work;
 5. as a State of play, gathers every record awaiting acceptance across its territory's repositories, or, as a secondary, across the work it covers, and brings them first, ahead of every other query, as one bundle per work under [Acceptance bundles](standards-queries.md#acceptance-bundles);
 6. as the main State of play, lists every item in its territory's `+/_WORK_REVIEW/` areas and, while any holds anything, raises them as one `REVIEW-HOLD` query under [Work awaiting review](standards-territory.md#work-awaiting-review);
-7. gives the re-bootstrap report, a full [report](standards-reporting.md#owner-report) under the [report heading](standards-coordination.md#banner), form line `**<glyph state> · Re-bootstrap at <local time> · last mark <local time>**`:
+7. gives the Bootstrap, trigger T2 in the [coordinator reply format](standards-report-forms.md#triggers), a full Medium [report](standards-reporting.md#owner-report) under the [report heading](standards-report-forms.md#banner-detail), form line `**Bootstrap at <local time> · last mark <local time>**`:
    - `## Done` gives its coordinator role and where the work stands, ending with `Rename thread: /rename <thread line>`, the thread line being `<role glyph> 🔑 <work-id>`, or `🧵 <work-id>` with no role yet, under [Opening work](standards-opening.md#opening-work);
    - `## In Progress` gives what is running;
    - `## Queries` gives every open query in full;
-   - the [banner](standards-coordination.md#banner) and thread line close it, rendered exactly as a Summary renders them, the thread line last.
+   - the [banner](standards-coordination.md#banner) and thread line close it, rendered as every banner is, without the roadmap and package lines, the thread line last.
 
 Work opened, bootstrapped or restarted in a new session with no mark strikes one at its start, writing `mark` in `state.md`, so every work carries a mark. [Re-anchoring](#re-anchoring-after-compaction) in the same session moves none.
 
@@ -52,7 +52,7 @@ After any compaction, owner's or runtime's, the coordinator, before answering an
 1. re-reads this standard, the harness output style `output-styles/ki-coordinator.md` from disk and all five files of its package in full, and follows the style file wherever it differs from the loaded style;
 2. runs `ki agent status` and reads `messages.md`, `IMPORTANT` lines first, and any run inbox;
 3. as a State of play, lists every item in its territory's `+/_WORK_REVIEW/` areas and carries the `REVIEW-HOLD` query under [Work awaiting review](standards-territory.md#work-awaiting-review) while any holds anything;
-4. confirms in one line that it has re-anchored, then answers in report form with the banner.
+4. confirms in one line that it has re-anchored, then answers with the Bootstrap, heading block to banner.
 
 The style file wins because a session keeps the style it loaded at start through a compaction, so the loaded copy can lag the file on disk; the [compact pointer](standards-coordination.md#generated-surfaces) and the style's re-anchoring paragraph say the same.
 
