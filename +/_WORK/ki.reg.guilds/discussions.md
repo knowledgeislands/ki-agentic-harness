@@ -72,34 +72,6 @@ b) take the confirmations and follow-ups now and hand the six how-we-work choice
 
 c) take them one at a time in an interactive pass. The unpacked queries stay readable in ki.sop.main's `_emerging/packed-queries.md`
 
-### ORCA-SKILL-KIND - should `ki-delegation-orca` stay a process skill
-
-from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November 05:25 GMT)
-
-**Context:** a governance skill holds a house standard with four modes and a generated rubric; a process skill drives an action. `ki-delegation-paperclip` is governance, but the Orca adapter only describes how a coordinator starts, waits on, steers and closes workers, resting on `ki-delegation` and `ki-coordination`; the review agrees, so long as being a process skill is no way round the shared standards.
-
-**Query:** should `ki-delegation-orca` stay a process skill?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed; fits what the skill does, avoids an empty rubric) keep it a process skill, revisiting only if Orca use needs auditable criteria; any change to who writes reports, how runs detach or who holds authority is made in the governance skill that owns that rule
-
-b) make it a governance skill now, declared in `.ki.toml`, with a rubric and audit scripts like `ki-delegation-paperclip`
-
-### CLOSEOUT-STRIKE - strike that open point and cite the trial
-
-from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November)
-
-**Context:** `ki-coordination`'s "Closing out Orca workers" still says it is unproven whether a coordinator in an Orca chat may release a worker it started; the 1 November trial (TRIAL-SHAPE) showed a Claude Code chat coordinator can: release closed each worker's terminal and kept its transcript. The review agrees if the wording claims no more than seen (not Codex coordinators, not every terminal, no release of an unfinished worker).
-
-**Query:** strike that open point and cite the trial?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed; the trial recorded the release directly) strike it, cite TRIAL-SHAPE, say the proof covers Claude Code chat coordinators only, keep the fallback for a refused or uncertain release as an ordinary rule; releasing never stands in for stopping an unfinished worker
-
-b) leave it open until the Orca sub-agent pilot checks it
-
 ### ONE-LAUNCHER - should one launcher per package per host become a rule
 
 from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November, differs)
@@ -113,76 +85,6 @@ from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 Nov
 a) (recommended, confidence medium - review disagrees; keeps runs findable and close-out simple, but untested) adopt it as an adapter rule with OUTLIVE's runs named as the exception
 
 b) leave it open and let each opt-in decision say what it covers (the review's pick)
-
-### ONE-LAUNCHER-UNIT - should each dispatched unit have one recorded launcher, checked before
-
-from ki.prj.ways-of-working (blind review of ONE-LAUNCHER, 1 November)
-
-**Context:** whatever launcher a package uses, the same work could start twice, once per Mac or again by a new coordinator session; the review proposes exactly one launcher answerable for each dispatched unit, recorded at dispatch and checked first. The blind reviewer adds that the check must read the live list of running work as well as the log, since two Macs could both pass a Git-synced log check before either pushes.
-
-**Query:** should each dispatched unit have one recorded launcher, checked before dispatch?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: the blind reviewer chose the same course; guards against starting work twice, but the check is new and untried) yes: the adapter records the launcher with each unit at dispatch, and the coordinator checks the decisions log and running work before dispatching
-
-b) no: rely on whatever ONE-LAUNCHER settles
-
-### OUTLIVE - should a run that must outlive its coordinator go through `ki agent` u
-
-from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November)
-
-**Context:** nobody has tested whether an Orca worker survives its coordinator chat ending; a `ki agent` run is detached and survives, as the delegation standard requires of a run that must survive its launcher. The review agrees but warns survival alone is not enough to lift the rule: a fresh session must find the worker, see progress, collect its result and see it finish; a package wholly opted into Orca needs Kris to amend its opt-in.
-
-**Query:** should a run that must outlive its coordinator go through `ki agent` until worker survival is proved?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed; uses the launcher already proved) adopt as an interim rule, lifted only when WORKER-SURVIVAL shows a worker that keeps working, can be found with progress and result from a fresh session, and finishes; Kris amends a wholly-Orca opt-in to allow the exception
-
-b) use Orca regardless and accept the risk of losing the run
-
-### PROMPT-RENDER - should the whole brief text be the spec until `ki` can render one
-
-from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November)
-
-**Context:** Orca's `worker-start` takes the instructions as a "spec"; the proposal passes the whole brief with its authority footer and report rule, since no `ki` command renders a brief without launching it. The review agrees: hand over a brief already written and checked, and passing it must never add authority.
-
-**Query:** should the whole brief text be the spec until `ki` can render one?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed; the four trial workers ran this way) adopt it: the coordinator passes a brief already in the work folder, kept exactly as launched and checked first for leftover placeholders, a missing or doubled authority footer, a wrong report path and shell truncation; capture a `ki` render-only step as a tools-ki follow-up
-
-b) wait for the render-only step before any further Orca dispatch
-
-### HEARTBEAT-ACK - should the waiter acknowledge heartbeat-only batches itself
-
-from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November)
-
-**Context:** Orca workers send heartbeats and Orca prompts Kris about each unacknowledged one; filtering by type still wakes the waiter. The proposal has the waiter acknowledge a heartbeat-only batch and wait again within its five-minute bound, waking the coordinator only for a finish, escalation or question. Untried; the review wants a supervised trial covering more than a finish.
-
-**Query:** should the waiter acknowledge heartbeat-only batches itself?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed; nothing relied on until a supervised trial shows it safe) adopt it after one supervised trial covering a finish, a question, an escalation, an unknown message kind and a mixed batch, showing the waiter acknowledges only all-heartbeat batches; the five-minute bound runs from the waiter's first start
-
-b) keep the coordinator acknowledging everything itself
-
-### STOP-VERB - should `worker-stop` be the adapter's stop, used only on Kris's named
-
-from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November)
-
-**Context:** a run stops only when Kris names it and says stop (settled); the proposal maps that to Orca's `worker-stop --dispatch <id>`, never used in Knowledge Islands. The review agrees if the first use is checked.
-
-**Query:** should `worker-stop` be the adapter's stop, used only on Kris's named word?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed; Orca's documented verb, checks guard first use) adopt it, noted as unexercised: before first use check what the installed command stops and what happens to partial work, afterwards report whether the worker stopped; closing or releasing a worker never stands in for stopping it
-
-b) leave stopping open until tried once
 
 ### RUN-RECOVERY - should this recovery procedure become the adapter's rule
 
@@ -198,62 +100,6 @@ a) (recommended, confidence high - review disagrees; it is what was done on 1 No
 
 b) wait for the RUN-HANDOVER test first (the review's pick)
 
-### QUEUE-PACE - should that pacing become the adapter's rule
-
-from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November)
-
-**Context:** Orca does not start a queued worker when its dependencies finish; ORCA-QUEUE already routes queued runs through Orca while the parent chat is live, else `ki agent`. The proposal adds that the coordinator starts the next worker at the wake that settles the previous one, about three running; the review adds that three is a ceiling and a finish message alone does not prove the dependency succeeded.
-
-**Query:** should that pacing become the adapter's rule?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed; matches existing three-at-a-time guidance) adopt it: at the settling wake, read the report, confirm the next worker's dependency succeeded and nothing conflicts, then start it, no more than about three running and never starting a worker twice during recovery
-
-b) leave pacing to each coordinator
-
-### REPORT-HOME - should the coordinator copy an Orca worker's report into `reports/` at
-
-from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November)
-
-**Context:** `ki agent` copies a finished run's report into the work folder; Orca does not. The proposal has the coordinator copy the report named in the worker's finish message at receive. The review agrees if every rule naming the launcher as only writer changes too, and the copy is guarded (expected report for that worker and package, content unchanged, repeatable, stops if a different file is there, never copies a path just because a message names it). This revisits Kris's 14 October decision "make the launcher the only writer of the thread folder's log and report files".
-
-**Query:** should the coordinator copy an Orca worker's report into `reports/` at receive?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed; keeps reports in Git without waiting for tools-ki) revisit the 14 October decision for Orca alone: adopt the coordinator's copy as a named Orca exception, written into `ki-delegation`'s run-packet text and every rule naming the launcher as only writer, with those checks
-
-b) teach `ki agent` to home Orca workers' reports, keeping one writer
-
-### WORKER-SURVIVAL - should the next Orca-dispatched run include this test deliberately
-
-from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November)
-
-**Context:** untested; Kris left it as a technical detail for first live use under TRIAL-SHAPE; the review agrees with a deliberate test.
-
-**Query:** should the next Orca-dispatched run include this test deliberately?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed; cheap, and it is what lifts OUTLIVE) yes: with one short read-only worker running, note its identity, end only an expendable coordinator chat (not the Orca app or the Mac), and from a fresh session check the worker kept working, its result and any pending question can be reached, and it can be cleaned up; a worker finishing before the chat ends proves nothing
-
-b) wait for it to happen by chance
-
-### DELIVERY-REPLAY - run this test before relying on replay
-
-from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November)
-
-**Context:** Orca's help says an unacknowledged message replays on the next check; the loss test has not run. The review adds a second case: a message already acted on but not acknowledged must not cause a second action when it returns.
-
-**Query:** run this test before relying on replay?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed; the wait rule assumes no seen event is lost) yes, in the same trial as WORKER-SURVIVAL with results recorded separately: note the first message's id, end only the test waiter before it acknowledges, re-arm and check the same message returns; then end it after the coordinator acted but before acknowledging, and check the replay starts, accepts or changes nothing a second time
-
-b) rely on Orca's help text
-
 ### RUN-HANDOVER - is the test worth running
 
 from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November, differs)
@@ -267,34 +113,6 @@ from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 Nov
 a) (recommended, confidence medium - review disagrees; RUN-RECOVERY already works, so this only adds convenience) leave it untested unless recovery proves costly
 
 b) test it in the next trial, read-only, along the review's lines (the review's pick)
-
-### OWNER-ASK - keep this open until OF-OWNER-ASK is decided
-
-from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November)
-
-**Context:** operational questions use Orca's ask-and-reply (proved); how a worker's question only Kris can answer reaches Kris is undecided under OF-OWNER-ASK in the orca-fit design, and the draft leaves it open. The review agrees, adding the gap must not leave a worker waiting indefinitely nor let a coordinator answer in Kris's place.
-
-**Query:** keep this open until OF-OWNER-ASK is decided?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed; already held by its own query, invents no route) yes; until then a worker that needs Kris reports the question and keeps it, and nothing needing Kris's answer goes ahead on a timeout, silence or a coordinator's reply
-
-b) settle it in the adapter now
-
-### ADAPTER-MERGE - should the branch go to independent review and then be fast-forwarded
-
-from ki.prj.ways-of-working (run/orca-adapter, ORCA-LAUNCHER; blind review 1 November)
-
-**Context:** the `orca-adapter` branch holds two commits on `main` at `321742fe` and would fast-forward; besides the skill text and diagrams it changes `skills/keystone/ki-repo/scripts/rubric/contexts/audit.ts` and the skill-function sorting in `skills/repo-structure/ki-repo-harness/scripts/rubric/contexts/skill-functions.ts`. The drafting run reported tests, type check and audits passing; the review did not rerun them; the brief forbade merging and pushing. The review agrees with a gated sequence.
-
-**Query:** should the branch go to independent review and then be fast-forwarded into `main`?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed; the repository's normal path) yes: apply the answers above that change the text, have the final branch including both audit scripts reviewed independently with checks rerun, then fast-forward it into `main`; as of 7 November `main` is 203 commits past `321742fe`, so the branch no longer fast-forwards as it stands
-
-b) hold it until the open points are settled
 
 ### TRIAL-PUBLISH - how should Orca workers publish their notes
 
@@ -311,34 +129,6 @@ a) (recommended, confidence medium - reviewed: the blind reviewer proposed this,
 c) each brief carries the bounded exception as first written, including that the hook may make and drop lint-staged's backup stash
 
 b) no worker commits; the worker writes note and report and the coordinator commits both at receive. Likely closable as overtaken by HOOK-STASH a); original text at ki-principal `04591e2b`, `+/_WORK/ki.prj.orca-evaluation/queries.md`
-
-### TRIAL-ASK - how does a worker raise a question only Kris can answer
-
-from ki.prj.orca-evaluation (SCOPE-SPLIT method question)
-
-**Context:** an Orca ask blocks the worker and times out after 10 minutes by default (30 at most), staying pending and resumable by message id; in plan069 an ask timed out and escalated and Kris answered in chat. Overlaps OWNER-ASK above and OF-OWNER-ASK in the orca-fit design.
-
-**Query:** how does a worker raise a question only Kris can answer?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: the blind reviewer chose the same course; keeps the ask for what the coordinator can answer, needs no one attentive for half an hour) the coordinator answers its own asks with `--timeout-ms 1800000`, resuming by message id on timeout; a question only Kris can answer ends the attempt: the worker raises it as a blocking query, `worker_done --outcome failed` names its tag, the coordinator records it and retries after Kris answers
-
-b) the worker keeps the ask open while the coordinator relays it to Kris, resuming the same message after each 30-minute timeout. Original text at ki-principal `04591e2b`
-
-### TRIAL-PRACTICE - run on the ORCA-FIT draft's recommended practice as a provisional, tri
-
-from ki.prj.orca-evaluation (SCOPE-SPLIT method question)
-
-**Context:** Orca workers need a rule for ids, specifications, liveness and reports; the ORCA-FIT draft recommends ids on a `state.md` Now line, the full rendered prompt as specification, liveness from Orca heartbeats only, and reports outside the repository named by `--report-path`; the draft never left Ways of working. Since then ORCA-ROUTING put Run ids out of package files, and PROMPT-RENDER, HEARTBEAT-ACK and REPORT-HOME above cover the rest.
-
-**Query:** run on the ORCA-FIT draft's recommended practice as a provisional, trial-only rule?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: the blind reviewer chose the same course; lets the trial generate evidence without settling the choices early) yes, provisionally and for the trial only, its evidence going back to the ORCA-FIT choices
-
-b) no, settle those choices before any unit runs. Original text at ki-principal `04591e2b`
 
 ### ORCA-IDENTITY-LEAK - should `ki agent` also drop the remaining Orca variables from runs it
 
