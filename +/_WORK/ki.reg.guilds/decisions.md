@@ -439,3 +439,7 @@ Kris: "Keep it, test later (recommended, medium confidence)". `task_links` stays
 ## 2026-11-07 04:44 GMT · KG-NAME (interactive pass, query 13)
 
 Kris: "ki-knowledge-graph (recommended, medium confidence)". The knowledge-graph method skill is `ki-knowledge-graph`; its guild waits on GUILD-NAME and Kris's unfinished thought on the other pillar structures. inbox-terra's 22 KG-CARDS feed it.
+
+## 2026-11-07 04:46 GMT · DOCKET-HOME parked (interactive pass, query 14)
+
+Kris: "not sure, come back later". Parked with its recommended option; the first `ki-dodecakrisis` run describes no Docket until it is decided.

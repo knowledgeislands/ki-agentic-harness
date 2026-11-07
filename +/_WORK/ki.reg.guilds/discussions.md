@@ -114,20 +114,7 @@ a) (recommended, confidence high - one owner per rule is the house contract) Yes
 
 b) No: `ki-acquire` keeps them, and the graph skill covers only the card format and tending.
 
-### DOCKET-HOME - Where D12's Docket items live
-
-**Context:** In D12, the Docket keeps actions that outlive the item they came from. The Gmail design has a `D12/12 Docket` label. The Inbox keeps Kris's life actions as cards in `knowledge/actions/`, which the KIV viewer reads. How the two relate is still open in the sorting-engine draft, and the standard can only describe a settled final state. The blind reviewer disagreed and preferred: leaving the Docket out of the first version, because the sorting-engine draft has not settled it and a standard can only describe a settled state; the action card can follow once the draft decides.
-
-**Query:** What is a Docket item?
-
-**Options:**
-
-a) (recommended, confidence low - it matches the existing viewer, but Kris has not discussed it) An action card in the declaring repository's actions area that points at the item. The `D12/12 Docket` label just marks the item as having one.
-
-b) Only the mailbox label; no card.
-
-c) Leave Docket out of the first version of the skill.
-
 ## Parked
 
+- DOCKET-HOME: what a D12 Docket item is; recommended a) (low) an action card in the declaring repository's actions area pointing at the item, the `D12/12 Docket` label marking it; the blind reviewer preferred leaving it out of the first version. Kris, 7 November: "not sure, come back later".
 - ACQUIRE-ROUTE: acquisition items (GRANOLA-CAPTURED-SKIP MSG-6620cbb7, GRANOLA-COUNT, CHECKSUMS-SETTLED, ACQ-HOLD-WORDING, ACQ-SCAFFOLD-NOTE, ACQUISITION-PROCESS-APPROVE) to ki.reg.main via State of play; recommended a) high. Kris, 7 November: "We can come back to that later." None.
