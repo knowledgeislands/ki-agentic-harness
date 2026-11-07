@@ -781,3 +781,5 @@ Received reply-format-refresh, 14:48 GMT: the REFRESH for the new reply format r
 REFRESH ACKs, at the next wake: 3 more packages ACKed the reply-format REFRESH. 13 are still awaited, tracked on the Outbound line.
 
 15:48 GMT: Agora HEALTH MSG-c8a72b7c answered. The watcher was re-armed and an ACK went to ki.prj.agora's Inbound; the line is removed here.
+
+REFRESH ACKs: 1 more packages ACKed the reply-format REFRESH; 12 still awaited.
