@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 67 skills: 55 governance skills and 12 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 68 skills: 56 governance skills and 12 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -637,6 +637,16 @@ Audit or scaffold KI MCP server code for source-release readiness, workspace-MCP
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
 - **Dependencies:** `ki-engineering`
 - **Runtime:** Runtime-bound; supported runtimes are resolved by its host contract
+
+#### `ki-repo-packages`
+
+Audit or conform a KI `packages-*` repository whose source tree consumers vendor whole: the vendored package, workbench, lock and vendoring tools, sync paragraph, consumers found by lock, and release and re-vendor rule. Use `ki-repo-tools` for installed CLIs, `ki-engineering` for the toolchain, and `ki-repo` for universal files.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
 
 #### `ki-repo-project`
 

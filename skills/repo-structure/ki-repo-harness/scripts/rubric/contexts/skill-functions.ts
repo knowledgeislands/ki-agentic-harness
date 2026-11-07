@@ -99,6 +99,7 @@ export const FUNCTIONAL_AREAS: readonly FunctionalArea[] = [
           'ki-repo-mcp',
           'ki-repo-harness',
           'ki-repo-tools',
+          'ki-repo-packages',
           'ki-repo-homebrew-tap',
           'ki-repo-dotfiles-chezmoi'
         ]

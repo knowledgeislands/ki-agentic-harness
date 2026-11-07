@@ -1,0 +1,16 @@
+# Sources
+
+**Refresh:** canonical · on-change
+
+Review alongside a change to `packages-stoa`'s vendoring tools, release rule or sync paragraph, to `ki-repo-tools`' release-on-demand policy, to `ki-engineering`'s script names or TypeScript rules, or when a second package repository appears.
+
+- Kris's words of 7 November 2026 in ki.sop.main, routed to the harness work package `ki.reg.guilds` as REPO-SHAPE-PACKAGES: "I think they're probably pretty similar to tools. It probably does mean that we should have a skill for whatever structure this thing might have. It seems like it's a new repo shape really, doesn't it?" They asked for this skill.
+- The STOA-SHAPE finding of the Stoa Project, `ki.prj.stoa`, in [its ki-repo-0-32-0 report](https://github.com/knowledgeislands/ki-principal/blob/34b5faeb/+/_WORK/ki.prj.stoa/reports/ki-repo-0-32-0.report.md#stoa-shape---how-a-package-repository-differs-from-the-tools-shape), compared `packages-stoa` at `119d6ad` with `ki-repo-tools` and named what a package-repository skill would own: the vendoring contract, consumers and deferral, release and notice, the version locations, the sync paragraph and workbench story coverage.
+- The STOA-TOOLCHAIN finding in [the Stoa Project's stoa-toolchain report](https://github.com/knowledgeislands/ki-principal/blob/152fa806/+/_WORK/ki.prj.stoa/reports/stoa-toolchain.report.md#stoa-toolchain---how-the-house-engineering-convention-fits-a-plain-javascript-package-repository), against `packages-stoa` at `5da3fb0`, is the source of each place [Code form and the engineering standard](standards-package-repositories.md#code-form-and-the-engineering-standard) applies `ki-engineering`'s intent to plain JavaScript checked by JSDoc.
+- [`packages-stoa`](https://github.com/knowledgeislands/packages-stoa) at `5da3fb0`, its `AGENTS.md` above all, is the reference repository: its layout, core rules, release rule, sync paragraph and vendoring tools (`packages/stoa/tooling/stoa.js` and `lock.js`). It is the only package repository so far, so every rule here is drawn from one case (n=1).
+- Kris's words of 1 November 2026, sent to the Stoa work by HNR's sites State of play as STOA-NO-CONSUMERS and its addendum, set [Consumers](standards-package-repositories.md#consumers): "There should be no reference out of Knowledge Islands to other territories", and consumers are found by "patterns that it knows about that would identify that it's been used".
+- The harness work package `ki.reg.guilds` holds MIGRATION-OVERLAY (7 November 2026), which shapes [the migration overlay](standards-package-repositories-migration.md), and the away-window grant under which this skill was written.
+
+## Last review
+
+Written on 7 November 2026 from the sources above. No external source was fetched; no second package repository exists to test the rules against.
