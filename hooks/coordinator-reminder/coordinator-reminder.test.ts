@@ -159,7 +159,7 @@ test.each([0, 1, 6])('unknown selection ignores %s stale packages and reads no p
   for (let index = 0; index < count; index++) {
     const folder = join(checkout, '+/_WORK', `ki.reg.stale-${index}`)
     mkdirSync(folder, { recursive: true })
-    writeFileSync(join(folder, 'work.md'), `---\nlevel: ${index ? 'project' : 'regular'}\n---\n`)
+    writeFileSync(join(folder, '_index.md'), `---\nlevel: ${index ? 'project' : 'regular'}\n---\n`)
     writeFileSync(join(folder, 'state.md'), `---\nstate: ${states[index]}\nmethod_read: stale\n---\n`)
   }
   // Bash records executed commands, including substitutions and expanded globs.

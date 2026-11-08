@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from 'bun:test'
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import {
@@ -54,7 +54,7 @@ const work = (root: string, id: string, fields: Record<string, string>): string 
   const frontmatter = Object.entries(fields)
     .map(([key, value]) => `${key}: '${value}'`)
     .join('\n')
-  writeFileSync(join(folder, 'work.md'), `---\n${frontmatter}\n---\n\n# ${id}\n`)
+  writeFileSync(join(folder, '_index.md'), `---\n${frontmatter}\n---\n\n# ${id}\n`)
   return folder
 }
 
@@ -239,7 +239,7 @@ describe('sub-packages', () => {
     work(root, 'ki.prj.alpha.site', { level: 'project', state: 'with-worker' })
     expect(statuses(context(root).roles.outcomes)).toEqual(['PASS'])
     expect(context(root).labels.outcomes.map((outcome) => outcome.subject)).not.toContain(
-      '+/_WORK/ki.prj.alpha.site/work.md'
+      '+/_WORK/ki.prj.alpha.site/_index.md'
     )
   })
 
@@ -631,7 +631,7 @@ describe('work files', () => {
   })
 
   test('a theme found only in the legacy Initiatives registry warns before 7 November 2026 and fails from it', () => {
-    const subject = { path: 'work.md', id: 'ki.ways-of-working', folder: '.', fields: { theme: 'model' } }
+    const subject = { path: '_index.md', id: 'ki.ways-of-working', folder: '.', fields: { theme: 'model' } }
     const initiatives = new Set(['model'])
     const before = themeOutcomes(subject, new Set(), initiatives, '2026-11-06')
     expect(statuses(before)).toEqual(['WARN'])
@@ -705,9 +705,9 @@ describe('work files', () => {
   test('a report in a declared focus folder has its links checked, and an undeclared folder is not read', () => {
     const root = fixture(capital)
     const folder = work(root, 'ki.ways-of-working', project())
-    const definition = readFileSync(join(folder, 'work.md'), 'utf8')
+    const definition = readFileSync(join(folder, '_index.md'), 'utf8')
     writeFileSync(
-      join(folder, 'work.md'),
+      join(folder, '_index.md'),
       `${definition}\n## Focus\n\n1. \`layout\` — the layout.\n2. \`_emerging\` — the rest.\n`
     )
     mkdirSync(join(folder, 'layout'))
@@ -840,7 +840,7 @@ test('Project packages live in the Capital while member regular packages remain 
   )
   const regular = fixture({ repository: 'member', capital: 'ki-principal' })
   const folder = work(regular, 'ki.regular', { level: 'regular', title: 'KI > Regular work' })
-  const path = join(folder, 'work.md')
+  const path = join(folder, '_index.md')
   writeFileSync(path, `${readFileSync(path, 'utf8')}\n## Scope\n\nHome: member, deliberately approved.\n`)
   expect(context(regular).master.outcomes.some((outcome) => outcome.status === 'VIOLATION')).toBe(false)
 })
@@ -849,7 +849,7 @@ test('member regular umbrella and children are discovered and declare their actu
   const root = fixture({ repository: 'acquire', capital: 'personal-principal' })
   for (const id of ['personal.regular', 'personal.regular.acquire-intake']) {
     const folder = work(root, id, { id, level: 'regular', title: "'Personal > Intake'" })
-    const path = join(folder, 'work.md')
+    const path = join(folder, '_index.md')
     const definition = readFileSync(path, 'utf8')
     writeFileSync(
       path,
@@ -857,8 +857,20 @@ test('member regular umbrella and children are discovered and declare their actu
     )
   }
   expect(statuses(context(root).master.outcomes)).toEqual(['PASS'])
-  const path = join(root, '+/_WORK/personal.regular/work.md')
+  const path = join(root, '+/_WORK/personal.regular/_index.md')
   writeFileSync(path, readFileSync(path, 'utf8').replace('Home:', 'Elsewhere:'))
+  expect(context(root).master.outcomes).toEqual([
+    expect.objectContaining({ status: 'VIOLATION', subject: '+/_WORK/personal.regular/_index.md' })
+  ])
+})
+
+// INDEX-ENTRY (Kris, 8 November 2026): a work whose entry file is still `work.md` is read the same during the rollout.
+test('a member regular package whose entry file is still work.md is found and read', () => {
+  const root = fixture({ repository: 'acquire', capital: 'personal-principal' })
+  const folder = work(root, 'personal.regular', { level: 'regular', title: "'Personal > Intake'" })
+  const legacy = join(folder, 'work.md')
+  renameSync(join(folder, '_index.md'), legacy)
+  writeFileSync(legacy, `${readFileSync(legacy, 'utf8')}\n## Scope\n\nElsewhere: no home declared.\n`)
   expect(context(root).master.outcomes).toEqual([
     expect.objectContaining({ status: 'VIOLATION', subject: '+/_WORK/personal.regular/work.md' })
   ])

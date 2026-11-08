@@ -1,7 +1,7 @@
 /**
  * Read-only discovery of a repository's coordinating work for the thin `ki-coordination` rubric.
  *
- * Boundary: reads the repository's `.ki.toml` identity, its work files `+/_WORK/<id>/work.md` and the reports and
+ * Boundary: reads the repository's `.ki.toml` identity, its work files `+/_WORK/<id>/_index.md` and the reports and
  * decisions logs beside them, the holding area `+/_WORK_REVIEW/`, which it only counts, and for the tolerance window
  * its `+/_CHECKPOINTS/` records and the thread reports under `+/_THREADS/<run>/`, each old shape passing with a
  * warning; on a Capital the `Streams/Projects/`, `Streams/Themes/` and legacy `Streams/Initiatives/` registry; and the
@@ -32,9 +32,13 @@ const THEMES_DIRECTORY = join('Streams', 'Themes')
 const INITIATIVES_DIRECTORY = join('Streams', 'Initiatives')
 const THREADS_DIRECTORY = join('+', '_THREADS')
 const REPORT_SUFFIX = '.report.md'
-/** A focus area's list item under `work.md`'s `## Focus`: its kebab-case id leading as a code span. */
+/** A focus area's list item under `_index.md`'s `## Focus`: its kebab-case id leading as a code span. */
 const FOCUS_ITEM = /^(?:\d+[.)]|[-*+])[ \t]+`([a-z0-9]+(?:-[a-z0-9]+)*)`/
-const WORK_FILE = 'work.md'
+/** A work's entry file under INDEX-ENTRY (Kris, 8 November 2026), then `work.md`, still read during its rollout. */
+const ENTRY_FILES = ['_index.md', 'work.md'] as const
+/** The entry file a folder holds, `_index.md` first, or the `_index.md` it lacks. */
+const entryPath = (folder: string): string =>
+  ENTRY_FILES.map((name) => join(folder, name)).find((path) => existsSync(path)) ?? join(folder, ENTRY_FILES[0])
 /** The work package's state file; a folder holding one is in the five-file package shape. */
 const STATE_FILE = 'state.md'
 /** More roadmap records than this awaiting acceptance for one Project is over the owner-queue cap, warned on rather than failed. */
@@ -177,23 +181,23 @@ const folders = (directory: string): readonly string[] | undefined => {
 
 /**
  * The front matter of a work: its work file's, with the state file's over it where the folder is in the package shape,
- * so the state fields are read from `state.md` and the definition fields from `work.md`.
+ * so the state fields are read from `state.md` and the definition fields from `_index.md`.
  */
 const workFields = (folder: string): Readonly<Record<string, unknown>> | null => {
-  const definition = frontMatter(join(folder, WORK_FILE))
+  const definition = frontMatter(entryPath(folder))
   if (!existsSync(join(folder, STATE_FILE))) return definition
   const state = frontMatter(join(folder, STATE_FILE))
   return definition && state ? { ...definition, ...state, id: definition.id ?? state.id } : definition
 }
 
-/** The work files `+/_WORK/<id>/work.md`, or undefined when no `+/_WORK/` subarea exists. */
+/** The work files `+/_WORK/<id>/_index.md`, or `work.md` during the rollout, or undefined when no `+/_WORK/` subarea exists. */
 const workFiles = (root: string): readonly Work[] | undefined => {
   const found = folders(join(root, WORK_DIRECTORY))
   if (!found) return undefined
   return found
-    .filter((folder) => existsSync(join(folder, WORK_FILE)))
+    .filter((folder) => existsSync(entryPath(folder)))
     .map((folder) => ({
-      path: relative(root, join(folder, WORK_FILE)),
+      path: relative(root, entryPath(folder)),
       id: basename(folder),
       folder,
       fields: workFields(folder)
@@ -259,7 +263,7 @@ const masterOutcomes = (
     return [
       {
         status: 'VIOLATION',
-        message: 'a Capital holds its territory work `+/_WORK/<territory>/work.md`; none is present',
+        message: 'a Capital holds its territory work `+/_WORK/<territory>/_index.md`; none is present',
         subject: WORK_DIRECTORY
       }
     ]
@@ -284,12 +288,12 @@ const masterOutcomes = (
   if (!capital && repositoryIdentity(root).capital)
     for (const work of works ?? []) {
       if (workLevel(work.id) !== 'regular') continue
-      const text = readFileSync(join(work.folder, WORK_FILE), 'utf8')
+      const text = readFileSync(entryPath(work.folder), 'utf8')
       const scope = /^## Scope[ \t]*\r?\n([\s\S]*?)(?=^## |$(?![\s\S]))/m.exec(text)?.[1] ?? ''
       if (!/^(?:- )?Home:[ \t]*\S/m.test(scope))
         outcomes.push({
           status: 'VIOLATION',
-          message: 'a regular or ad hoc member package declares its deliberate Home: in work.md Scope',
+          message: 'a regular or ad hoc member package declares its deliberate Home: in its _index.md Scope',
           subject: work.path
         })
     }
@@ -321,7 +325,7 @@ const masterOutcomes = (
   if (master)
     outcomes.push(
       legacy(
-        "the state-of-play checkpoint is the thread-model shape; territory work moves to `+/_WORK/<territory>/work.md` at the territory's migration",
+        "the state-of-play checkpoint is the thread-model shape; territory work moves to `+/_WORK/<territory>/_index.md` at the territory's migration",
         master.path
       )
     )
@@ -435,7 +439,7 @@ const labelOutcomes = (
       })
     outcomes.push(
       legacy(
-        `the coordination thread checkpoint is the thread-model shape; its work moves to \`+/_WORK/<territory>.${project}/work.md\` at the territory's migration`,
+        `the coordination thread checkpoint is the thread-model shape; its work moves to \`+/_WORK/<territory>.${project}/_index.md\` at the territory's migration`,
         record.path
       )
     )
@@ -541,11 +545,11 @@ const reviewOutcomes = (root: string): AuditOutcome[] => {
 }
 
 /**
- * The focus folders a work folder's `work.md` declares under `## Focus`, LAYOUT-PILLARS (2 November 2026): each list
+ * The focus folders a work folder's `_index.md` declares under `## Focus`, LAYOUT-PILLARS (2 November 2026): each list
  * item leading with its kebab-case id as a code span, under the `ki-work-package` focus areas.
  */
 const focusFolders = (folder: string): readonly string[] => {
-  const path = join(folder, WORK_FILE)
+  const path = entryPath(folder)
   if (!existsSync(path) || !lstatSync(path).isFile()) return []
   const focus = /^## Focus[ \t]*$([\s\S]*?)(?=^#{1,2} |(?![\s\S]))/m.exec(readFileSync(path, 'utf8'))?.[1] ?? ''
   return focus

@@ -185,7 +185,7 @@ Whenever a session or report mentions a roadmap or work record, a package file, 
 - **Never invented:** when a target cannot be resolved, the text says so.
 - **Pruned records:** a pruned record has no local file, so it is linked as `[<FULL-ID> (pruned)](https://github.com/<owner>/<repo>/blob/<last revision>/<path>)`. The link text is always the full identifier followed by `(pruned)`, and the last revision is the last commit in which the file existed, usually the parent of the prune commit. A live record keeps its local-file link; a pruned record is never pointed at the Project note that carries it, nor left as a bare identifier.
 - **Scope:** status lines, reports, recaps and package files alike, a background agent's report included.
-- **Check:** the rubric's COORD-7 checks the reports under `+/_WORK/<id>/`, in each focus folder its `work.md` declares and in `reports/`.
+- **Check:** the rubric's COORD-7 checks the reports under `+/_WORK/<id>/`, in each focus folder its `_index.md` declares and in `reports/`.
   - Every full record identifier in their prose, a record or a Decision Record, sits inside a Markdown link.
   - A link that names a record and targets an absolute local path points at a file that exists, inside the audited checkout and wherever the target's folder is present on the machine, so a checkout beside it is checked too.
   - A target outside the checkout whose folder is absent, as every other repository is on a CI runner, is checked for shape only: a Markdown file whose name opens with the linked identifier, as [KI-HARNESS-GOV-197 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/95a1ab58/docs/roadmap/KI-HARNESS-GOV-197-pmo-7-outside-checkout-links.md) set.

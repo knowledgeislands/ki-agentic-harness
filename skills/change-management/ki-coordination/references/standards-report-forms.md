@@ -166,7 +166,7 @@ Each structure has one complete template. A line in angle brackets says what goe
 
 | Focus | Where it stands |
 | --- | --- |
-| **<focus id>** ⭐<br><focus line from work.md> | **<state in a few words>**<br>🤖 <run work>; next: <step><br>🧵 <other package>: <what>; next: <step><br>🌐 <waiting on whom><br>👤 <with you>: <TAG> |
+| **<focus id>** ⭐<br><focus line from _index.md> | **<state in a few words>**<br>🤖 <run work>; next: <step><br>🧵 <other package>: <what>; next: <step><br>🌐 <waiting on whom><br>👤 <with you>: <TAG> |
 
 ## Findings                                                                  B4
 
@@ -379,9 +379,9 @@ Sources: SUMMARY-MODEL, SUMMARY-NOW, STATUS-FORM, STATUS-FORM-2, STATUS-FORM-3, 
 
 The **Summary** is the coordinator's one summary form, a Full reply. It runs from the last mark, from the session's start where there is none, or from any time the owner names, laid out for about 90 columns unless the owner asks for another width. Where the owner named the window's start, B2's headline names it. It holds, in order, the parts the [structure–part matrix](#structurepart-matrix) gives: the heading block, the Answer where there is one, `## Summary`, `## Status`, `## Findings` while one is open, `## Queries` with every open query in full and the reply block, then the footer, the art unless `no art` was asked for, and the banner with its roadmap and package lines and its thread line. The [interactive pass](standards-queries.md#interactive-pass) follows `## Queries`, keeping each query's tag, Context, Query and Options.
 
-**The status table** has two columns, **Focus** and **Where it stands**, and one row per focus area holding items, in `work.md`'s Focus order with the primary first. It is the full board, not a delta: every live item appears whether or not it changed.
+**The status table** has two columns, **Focus** and **Where it stands**, and one row per focus area holding items, in `_index.md`'s Focus order with the primary first. It is the full board, not a delta: every live item appears whether or not it changed.
 
-- **Focus cell:** line one is the focus id alone in bold, the underscore escaped, as in `**\_emerging**`, with ⭐ on the primary. Under it, at normal size, the focus's line from `work.md`'s Focus section, word for word. The Focus column takes at most a third of the table's width, so each focus line stays one short phrase of goal and order; a longer line is shortened in `work.md`, never reworded in the Summary.
+- **Focus cell:** line one is the focus id alone in bold, the underscore escaped, as in `**\_emerging**`, with ⭐ on the primary. Under it, at normal size, the focus's line from `_index.md`'s Focus section, word for word. The Focus column takes at most a third of the table's width, so each focus line stays one short phrase of goal and order; a longer line is shortened in `_index.md`, never reworded in the Summary.
 - **Where it stands:** a bold headline giving the focus's state in a few words, then one line per item, opening with its **holder**, 👤 the owner, 🤖 a worker or run, 🧵 another session or 🌐 the outside world, then what it is and its next step. ⏳ means queued only. The owner's items come last and name their query's tag, so no waiting column is needed. Uncommitted work, unlogged decisions and repositories behind their remote, under the [repository level check](standards-sync.md#repository-level-check), are 🤖 lines in their own row, or the primary's.
 - **`_emerging`** is a usable catch-all focus and gets a row like any other.
 - **Rendering:** a plain Markdown table with `<br>` between the lines of a cell. The owner wants top-aligned cells, which Markdown cannot ask for; Orca's chat view is asked for them under [PERSONAL-DOTFILES-UE-107 (pruned)](https://github.com/krisb/dotfiles/blob/7f5a625/docs/roadmap/PERSONAL-DOTFILES-UE-107-decide-orca-adoption.md), ORCA-TABLE-ALIGN. Until then cells centre.
@@ -410,7 +410,7 @@ Sources: SUMMARY-MODEL, TABLE-ALIGN, FOOTER-AGORA, FOOTER-COUNTS and REPLY-FORMA
 - **Heading:** `# [<Theme>](<local theme page>) › [<Project>](<local Project note>)`: the theme's display name, the `title` its page gives, linked to the page by absolute path, then ` › `, then the Project's display name in words, not its slug, linked to its note the same way.
   - Project work with no theme gives the Project alone.
   - A State of play writes the territory or theme it covers, linked to its local note, then `› State of play`; a secondary `› State of play (<name>)`.
-  - Explicitly coordinating regular or ad hoc work uses `# [<actual work label>](<actual local work page>)`, optionally preceded by its real theme, linking `work.md` where no separate page exists; never fabricate a Project.
+  - Explicitly coordinating regular or ad hoc work uses `# [<actual work label>](<actual local work page>)`, optionally preceded by its real theme, linking `_index.md` where no separate page exists; never fabricate a Project.
   - No rule stands before the heading, so it is the first line and H1 of every saved report.
 - **Form line:** a blank line, then H2, `**<Structure> at <now> · last mark <mark time>**`, under [Part content](#part-content), with no state.
 - **Times:** each with its own words.
@@ -531,7 +531,7 @@ With worker, a Position while draining towards a hold after `pause`, with one ru
 
 **Restart suggestion.** Suggest restarting a session only when one of three triggers holds, and for nothing else:
 
-- **Identity changed:** the work's id, level, label or run name changed in this session, as when a package moves from `hnr.prj.email-routing` to `hnr.reg.email-routing`. The session's name, run and opener no longer match `work.md`, and only a fresh opener sets all three again.
+- **Identity changed:** the work's id, level, label or run name changed in this session, as when a package moves from `hnr.prj.email-routing` to `hnr.reg.email-routing`. The session's name, run and opener no longer match `_index.md`, and only a fresh opener sets all three again.
 - **Repeated compaction:** the session has been compacted twice or more. Each [re-anchoring](standards-bootstrap.md#re-anchoring-after-compaction) rebuilds from a summary of a summary, and a fresh bootstrap from the package is more faithful.
 - **Method moved on:** since the session opened, the method changed its opener, the hook line or the output style, checked under [Refreshing this guidance](standards-coordination.md#refreshing-this-guidance). A session keeps the style and opener it loaded at start; only a fresh session loads the current ones.
 

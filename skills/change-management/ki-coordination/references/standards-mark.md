@@ -15,8 +15,8 @@ The mark is only a timestamp, `mark: <UTC timestamp>` in `state.md`'s front matt
   4. [close out Orca workers](#closing-out-orca-workers);
   5. commit the package and confirm in one line.
 - **Open items carry forward:** a mark resets only the window of `## Summary`. Open and parked queries in `discussions.md`, open records in the work's scope, running and queued background agents and parked tangents stay on the status table and in `## Queries`; a mark never drops, closes or hides them.
-- **History:** comes from Git and run reports, never from `state.md`. `git log -- +/_WORK/<id>/work.md` shows what the work is and `git log -- +/_WORK/<id>/state.md` its moves. `state.md` holds no dated log, commit runs or test counts; it may link one report or commit instead of copying it, and the `ki-work-package` rubric's history check warns otherwise.
-- **No mark yet:** the Summary runs from the session's start, or from `work.md`'s `created_at` where that is unknown, and the first `mark` strikes the first mark.
+- **History:** comes from Git and run reports, never from `state.md`. `git log -- +/_WORK/<id>/_index.md` shows what the work is and `git log -- +/_WORK/<id>/state.md` its moves. `state.md` holds no dated log, commit runs or test counts; it may link one report or commit instead of copying it, and the `ki-work-package` rubric's history check warns otherwise.
+- **No mark yet:** the Summary runs from the session's start, or from `_index.md`'s `created_at` where that is unknown, and the first `mark` strikes the first mark.
 - **Not a recap:** a Summary covers the package since the mark, and `ki-recap` covers one session at a lower level; they share no form or procedure.
 
 Sources: SUMMARY-MODEL, DECISION-NO-NUMBER, MARK-THEN-SUMMARY and STATE-HISTORY in [the decision register](sources.md#decision-register).

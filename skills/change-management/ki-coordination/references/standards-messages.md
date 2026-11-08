@@ -54,7 +54,7 @@ A coordinator receives lines from other work through its package's `messages.md`
 | Surface | Carries | Who writes it | When |
 | --- | --- | --- | --- |
 | Transcript | Owner turns and the coordinator's own replies; nothing injected | The coordinator, in its report | Every owner-facing turn names the lines received and acted on since the last one |
-| Package | `work.md` and `state.md` front matter, which the Observatory reads; the `messages.md` queue; parked tags in `discussions.md` | The coordinator, under the work-package standard; other work writes only its own `messages.md` line | `state.md` at every send, receive, mark and hold; `work.md` when the definition changes |
+| Package | `_index.md` and `state.md` front matter, which the Observatory reads; the `messages.md` queue; parked tags in `discussions.md` | The coordinator, under the work-package standard; other work writes only its own `messages.md` line | `state.md` at every send, receive, mark and hold; `_index.md` when the definition changes |
 | Work status | `ki work status --format json`, schema `ki/work-status/v1`, and the five views | `ki`, reading every package | On demand; the Observatory reads only this |
 | Notification | Line received, acknowledgement sent, session recovered, session errored | Not this standard | The notification record in Knowledge Islands Principal owns the channel |
 

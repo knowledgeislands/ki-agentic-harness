@@ -64,7 +64,7 @@ Sources: STYLE-STALE in [the decision register](sources.md#decision-register).
 
 Prefer a fresh session once the package holds everything needed to resume.
 
-The package alone says how work is picked up. `state.md`'s front matter, its state, since, hold and mark, with the holder derived from `work.md`'s worker and supervisor, says where the work lies; its next steps say what the worker does when back in use. Every send, receive, mark and hold rewrites `state.md`'s front matter to agree with the report's banner; `work.md` changes only with the definition. Neither file records a session host seat; an inventory-based host requirement may appear in the work label under `ki-work-package`.
+The package alone says how work is picked up. `state.md`'s front matter, its state, since, hold and mark, with the holder derived from `_index.md`'s worker and supervisor, says where the work lies; its next steps say what the worker does when back in use. Every send, receive, mark and hold rewrites `state.md`'s front matter to agree with the report's banner; `_index.md` changes only with the definition. Neither file records a session host seat; an inventory-based host requirement may appear in the work label under `ki-work-package`.
 
 | State | First on pick-up |
 | --- | --- |
@@ -79,12 +79,12 @@ Run the [repository level check](standards-sync.md#repository-level-check) befor
 
 **Pick-up reads.** Picking work up stays within the [turn budget](standards-coordination.md#coordinator-responsiveness).
 
-- One read of the package's files counts as one call: all five at bootstrap and re-anchoring; otherwise `state.md`, `messages.md`, `discussions.md` and `decisions.md`, with `work.md` only when it changed.
+- One read of the package's files counts as one call: all five at bootstrap and re-anchoring; otherwise `state.md`, `messages.md`, `discussions.md` and `decisions.md`, with `_index.md` only when it changed.
 - A write to the package's files with a brief counts as one write set, so the five-call budget is not spent before the first launch.
 - After bootstrap, read only what changed since the last read, plus the entries bearing on the question, not every decision and query at each owner message.
 - A report's `## Queries` is rendered from `discussions.md`'s `## Open`.
 
-**Identity.** The closing thread line identifies the work to pick up; no session gets a copyable send or resume prompt beyond the [restart suggestion](standards-coordination.md#banner) when a trigger holds. Before acting, the coordinator verifies the id and exact label against `work.md` and grounds itself in the primary checkout of the package's repository. It re-bootstraps, takes stock from `decisions.md`, `ki agent status`, `messages.md` and the owner's messages, follows the state's first step above and restarts authorised work.
+**Identity.** The closing thread line identifies the work to pick up; no session gets a copyable send or resume prompt beyond the [restart suggestion](standards-coordination.md#banner) when a trigger holds. Before acting, the coordinator verifies the id and exact label against `_index.md` and grounds itself in the primary checkout of the package's repository. It re-bootstraps, takes stock from `decisions.md`, `ki agent status`, `messages.md` and the owner's messages, follows the state's first step above and restarts authorised work.
 
 - Whatever must be done first on pick-up is an important `FIRST-STEP` line in `messages.md`.
 - Work others wait on writes `READY` into the State of play's `messages.md`, and the State of play then identifies each waiting piece by its thread line, in its own order.
@@ -96,7 +96,7 @@ Sources: PICKUP-PRINCIPLE and PICKUP-READS in [the decision register](sources.md
 A red x in the editor's session list means the backend turn errored, not that the work is lost: the package holds everything needed.
 
 1. Do not open a new session first. Ask the same session to pick up the work its closing [thread line](standards-coordination.md#banner) identifies. If it replies, it re-anchors, strikes the mark, gives a fresh Summary since the mark and takes stock.
-2. If the editor will not send into the session, open a new one in the same project folder and identify the work by its id and exact label from the thread line. The coordinator verifies both against `work.md` before acting; the old transcript becomes history.
+2. If the editor will not send into the session, open a new one in the same project folder and identify the work by its id and exact label from the thread line. The coordinator verifies both against `_index.md` before acting; the old transcript becomes history.
 3. The recovered coordinator reports, as part of taking stock, what it missed and what it did about it. That report's `## Done` carries a line saying the session was recovered and when, in UTC.
 
 Sources: RED-X-RECOVERY in [the decision register](sources.md#decision-register).

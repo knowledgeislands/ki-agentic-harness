@@ -16,7 +16,7 @@ This file holds States of play, Project work under them, assigned packages, the 
 
 Project work coordinates exactly one Project for the owner. It always delegates: it runs its work as background agents through `ki agent` under the `ki-delegation` [background-run standard](../../../governance/ki-delegation/references/standards-background-runs.md), and keeps its own turns short under [Coordinator responsiveness](standards-coordination.md#coordinator-responsiveness).
 
-- **Package:** the coordinator picks the work up from `+/_WORK/<territory>.prj.<project>/`, whose `work.md` defines the work and whose `state.md` holds its current state only, and keeps both current under the work-package standard. `work.md` names its Project in front matter; the Project note does not link down.
+- **Package:** the coordinator picks the work up from `+/_WORK/<territory>.prj.<project>/`, whose `_index.md` defines the work and whose `state.md` holds its current state only, and keeps both current under the work-package standard. `_index.md` names its Project in front matter; the Project note does not link down.
 - **Decisions:** log each owner approval in `+/_WORK/<id>/decisions.md` before launching the work it authorises.
 - **State of play:** the [State of play](#territory-work) owns cross-Project priorities, releases and decisions touching more than one Project, and Project work raises those there. Releases follow the `ki-repo-tools` release-on-demand policy: a delivery run never releases by default, and a release run carries the `release` footer for the named release only.
 - **Naming:** where the runtime can name a session, it takes its seat's thread line, such as `⚒️ 🔑 ki.prj.ways-of-working`, under [Work naming](standards-opening.md#work-naming).
@@ -26,7 +26,7 @@ Project work coordinates exactly one Project for the owner. It always delegates:
 
 ### Territory work
 
-Each territory Capital holds one main State of play, `+/_WORK/<territory>.sop.main/work.md`, titled `<Territory> > SoP`: the coordination of the territory's coordinations. It may also hold [secondary States of play](#secondary-states-of-play), each coordinating a named part of the territory under the main.
+Each territory Capital holds one main State of play, `+/_WORK/<territory>.sop.main/_index.md`, titled `<Territory> > SoP`: the coordination of the territory's coordinations. It may also hold [secondary States of play](#secondary-states-of-play), each coordinating a named part of the territory under the main.
 
 - Each does project management and may coordinate explicitly assigned Project packages. Delivery stays in those packages and their product repositories, never in the State of play's own package.
 - Only a Capital holds a State of play. The main is never Finished while the territory is open.
@@ -60,7 +60,7 @@ Its duties:
 
 **Dispatch.** The State of play is the single dispatch coordinator. Every new unit with no clear owner, an owner dump, a handoff with no owning work, a cross-work item whose owner is unclear, and every method improvement, comes to it, pasted by the owner or as a line in its own `messages.md`. A work's own follow-ups, an item in a record already naming its work, and a reply to a line go direct.
 
-- **Matching:** match the unit against the register, the `work.md` and `state.md` front matter `ki work status` derives from the packages, reading a `work.md` body only where two descriptions match. Keep no copy of the register.
+- **Matching:** match the unit against the register, the `_index.md` and `state.md` front matter `ki work status` derives from the packages, reading a `_index.md` body only where two descriptions match. Keep no copy of the register.
 - **Routing:** write one dated line into the chosen work's `messages.md`, `- <date> · ROUTE · <Territory> > SoP (<territory>): <the unit in the owner's words, with links>`, at the position its priority warrants, flagged important where it must be taken first, under [Messages between work](standards-messages.md#messages-between-work). Where nothing matches, propose to the owner a new piece of work, within the cap, or a record captured through `ki-next`.
 - **Returns:** a returned part is routed once more at most. If it cannot be placed, or would come back again, it goes to the owner as a query, so nothing bounces.
 - **Unread lines:** show in the register the count and age of lines nobody has picked up. A line routed to work On hold, paused, waits without waking it. For work Snoozing whose session is closed or not waking, identify the work by its thread line, and ask the owner to lift a hold where a line is urgent.
@@ -69,7 +69,7 @@ Its duties:
 
 - Every work sends a method improvement to the State of play as a `METHOD` line in its `messages.md`, and the State of play also watches the works for improvements.
 - While Ways of working is open, the State of play routes each improvement to it like any other unit, its description saying it takes method changes, and Ways of working sends targeted `REFRESH` lines under [Refreshing this guidance](standards-coordination.md#refreshing-this-guidance).
-- When Ways of working finishes, the State of play's `work.md` description gains method stewardship and its Scope says where method changes go. It keeps a method backlog, dispatches each accepted small improvement as small regular work or into the Project it most affects, with a design review for a change of shape, and sends the `REFRESH` lines itself. A significant change revives Ways of working, or a more targeted Project under the Model theme.
+- When Ways of working finishes, the State of play's `_index.md` description gains method stewardship and its Scope says where method changes go. It keeps a method backlog, dispatches each accepted small improvement as small regular work or into the Project it most affects, with a design review for a change of shape, and sends the `REFRESH` lines itself. A significant change revives Ways of working, or a more targeted Project under the Model theme.
 - Lasting method authority stays in the skills and Decision Records, and the State of play still executes nothing.
 
 Sources: SOP-ACTS-FOR-IDLE, WORK-ROUTING and STEWARD-HOME in [the decision register](sources.md#decision-register).
@@ -115,7 +115,7 @@ A territory always has its main State of play and may add secondaries where it h
   - The main's `covers` is the register of record, including coverage through secondaries and registered work whose package is absent or pruned; a secondary's list is an assigned subset.
   - Check parents against the register, same-territory membership, unique secondary coverage and cycles, under the `ki-work-package` [definition fields](../../../governance/ki-work-package/references/standards-work-package.md#work-file).
   - Work with no secondary stays with the main.
-- **Creating:** the owner decides each secondary and its coverage at the main, which logs the decision and prepares the package On hold until the owner opens it. Changing coverage is a main decision, made in both `work.md` files in one commit.
+- **Creating:** the owner decides each secondary and its coverage at the main, which logs the decision and prepares the package On hold until the owner opens it. Changing coverage is a main decision, made in both `_index.md` files in one commit.
 - **Front door:** the main stays the owner's only front door and the single dispatch coordinator. Owner dumps, units with no clear owner, method improvements, and anything touching more than one secondary, or a secondary and uncovered work, come to the main.
 - **Main owns:** the registry, membership and Known Lands; releases and priorities across secondaries; the territory-wide ceiling on active Project work; method stewardship; the worktree sweep and `REVIEW-HOLD`; and every decision touching more than one secondary.
 - **Secondary owns,** for its covered work alone: cross-Project priorities; its queue in its own `state.md` `## Queue`, within its share of the main's ceiling; acceptance bundles; decisions touching more than one covered Project; and routing between them. It rolls up the five views across its covered work; the main rolls up all.
