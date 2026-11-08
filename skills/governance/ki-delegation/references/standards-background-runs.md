@@ -324,7 +324,9 @@ Each outstanding query carries a stable mnemonic Needs tag, never a number, defi
 
 Runtime mechanics belong in the launcher, not in this skill or in personal setup.
 
-**Where each launcher runs.** Orca launches runs only on attended Macs, and only for work packages that opt in by a logged owner decision. `ki agent` is the only launcher on `vega`. An always-on Orca server comes only through Knowledge Islands Principal's Enactment Process, not by a run or a grant. `ki agent` stays the maintained fallback launcher, for hosts without Orca, and gains no feature that duplicates Orca. Kris took ORCA-REACH a) on 30 October 2026, "as recommended but with a follow up in a weeks time", and AGENT-HOME a) the same day, "as recommended but with a follow up in a few days".
+**Where each launcher runs.** Orca launches runs only on attended Macs, and only for work packages that opt in by a logged owner decision. `ki agent` is the only launcher on `vega`. An always-on Orca server that launches or hosts background runs comes only through Knowledge Islands Principal's Enactment Process, not by a run or a grant. A reach-only server, which gives remote reach into attended sessions and launches no runs, rests instead on Kris's BASELINE-ORCA direction, relayed by `personal.reg.rig-sol` on 8 November 2026, as Rig's `service:orca-serve` does on sol's studio profile. `ki agent` stays the maintained fallback launcher, for hosts without Orca, and gains no feature that duplicates Orca. Kris took ORCA-REACH a) on 30 October 2026, "as recommended but with a follow up in a weeks time", and AGENT-HOME a) the same day, "as recommended but with a follow up in a few days".
+
+Sources: BASELINE-ORCA in [the source register](sources.md).
 
 ## Mechanical boundary
 

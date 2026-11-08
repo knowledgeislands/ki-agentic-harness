@@ -14,8 +14,11 @@
 | `ki-work-roadmap` | 2026-08-12 | Approved work-record lifecycle, plan ownership, and review boundary |
 | [OpenAI: Codex subagents][openai-subagents] | 2026-08-12 | Ordinary subagent task selection, permissions, and execution guidance |
 | [Anthropic: Claude Code sub-agents][anthropic-subagents] | 2026-08-12 | Ordinary subagent task fit, restricted capabilities, and isolation guidance |
+| BASELINE-ORCA, Kris's direction relayed by `personal.reg.rig-sol` | 2026-11-08 | A reach-only always-on Orca server, giving remote reach into attended sessions and launching no runs, outside the Enactment Process that any server launching or hosting runs still needs |
 
 ## Last review
+
+A 2026-11-08 review under run `orca-reach` of `ki.reg.guilds` settles ORCA-REACH-CONFLICT, which `personal.reg.rig-sol` reported that day: since 8 November 2026 sol has run an always-on Orca server, Rig's `service:orca-serve` on its studio profile, at Kris's BASELINE-ORCA direction, giving terra and the phone reach into attended sessions and launching no runs. Where each launcher runs now keeps the Enactment Process for any always-on server that launches or hosts background runs and rests a reach-only server on BASELINE-ORCA.
 
 A 2026-11-07 in-house review under run `batch-finish` of `ki.reg.guilds` applies BATCH-RETIRE a), which Kris took that day: the four authority footers, the standard and the footer check replace the retired `ki-batch` authorisation with a recorded unattended-window grant that names closure for the record's frozen wave, under `ki-accept` and `ki-coordination`. No external source refreshed.
 
