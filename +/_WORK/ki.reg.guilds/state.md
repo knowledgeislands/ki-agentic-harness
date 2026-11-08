@@ -21,8 +21,8 @@ workers:
 
 ## Now
 
-- 2026-11-08 12:27 GMT: Kris is back and the away window that opened at 05:00 GMT on 7 November is closed. The keep-awake is released.
-- 12:28 GMT: Kris said "drain down ready to stop working, we are moving host in some way". The package is drained: nothing is running or queued, the listener is stopped and nothing new launches.
+- 2026-11-08 12:23 GMT: Kris is back and the away window that opened at 05:00 GMT on 7 November is closed. The keep-awake is released.
+- 12:23 GMT: Kris said "drain down ready to stop working, we are moving host in some way". The package is drained: nothing is running or queued, the listener is stopped and nothing new launches.
 - Owed on resume, before the next mark: the return report, a Summary since 05:00 GMT on 7 November.
 - To launch on resume, under MD-WRITER a) of 8 November 12:22 GMT: first `md-writer-harness`, which adds the writer's rule to `ki-authoring` and the run rules footer; then `md-writer-tools-ki`, which makes `ki agent` format and check each report it receives and keep the original if that fails. The briefs are in sol's `~/.cache/ki-wow-briefs/`, and the decisions entry carries their scope, so a new host can rewrite them.
 - Held for Kris's word: a skills-harvest run for the five SKILL-HARVEST learnings from hnr.prj.5g-emerge-phase2 (decisions, 8 November 12:22 GMT).
