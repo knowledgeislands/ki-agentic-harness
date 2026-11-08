@@ -882,3 +882,5 @@ REFRESH ACKs: 1 more packages ACKed the reply-format REFRESH; 8 still awaited.
 - 2026-11-08 21:34 GMT · ORCA-REACH-CONFLICT (Agora 01a1bd14, personal.reg.rig-sol, under AUTONOMY): `ki-delegation`'s "Where each launcher runs" requires the Enactment Process for an always-on Orca server, while sol runs one at Kris's direction (BASELINE-ORCA, Rig `service:orca-serve`) for reach only, launching no runs. Judged: record Kris's direction as the authority for a reach-only server and keep the Enactment Process for one that launches runs. Run `orca-reach` (harness). ACKed.
 
 - 2026-11-08 21:37 GMT · Agora 27755cfd (personal.reg.inbox), correcting b4459932: "the Observatory move is not agreed". The rig rename brief waits on tools-ki and the quartermaster's Observatory fix, as before. ACKed.
+
+- 2026-11-08 21:46 GMT · WORK-REVIEW-DELETE: Kris: "delete `+/_WORK_REVIEW`". The harness's `+/_WORK_REVIEW/` held only its tracked `README.md`; removed. Departs from nothing yet: `ki-work-package` still names `+/_WORK_REVIEW/` as an optional holding area, and checks still accept it.
