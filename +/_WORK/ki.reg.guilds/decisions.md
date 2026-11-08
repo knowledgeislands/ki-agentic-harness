@@ -886,3 +886,5 @@ REFRESH ACKs: 1 more packages ACKed the reply-format REFRESH; 8 still awaited.
 - 2026-11-08 21:46 GMT · WORK-REVIEW-DELETE: Kris: "delete `+/_WORK_REVIEW`". The harness's `+/_WORK_REVIEW/` held only its tracked `README.md`; removed. Departs from nothing yet: `ki-work-package` still names `+/_WORK_REVIEW/` as an optional holding area, and checks still accept it.
 
 - 2026-11-08 21:47 GMT · WORK-REVIEW-RETIRE: Kris: "do it now", on retiring `+/_WORK_REVIEW/` from the standard. Run `work-review-retire` (harness) removes it from `ki-work-package` and every skill naming it, warns on a leftover folder during a short rollout, and lists the repositories still holding one. Departs from `ki-work-package`'s holding area for work awaiting review.
+
+- 2026-11-08 21:49 GMT · orca-reach received: `e82418b3d` rests a reach-only Orca server on Kris's BASELINE-ORCA direction in `ki-delegation`'s "Where each launcher runs"; a launching server still needs the Enactment Process. Replied to personal.reg.rig-sol.
