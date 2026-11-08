@@ -16,6 +16,8 @@ role: guildmaster
 
 # ki.reg.guilds
 
+> **Moved.** Since 9 November 2026 this package lives in the Agora store, `krisb/ki-agora-store`, at `work/ki/ki.reg.guilds/`, and is edited only there (WP-STORE). This copy stays only so that `ki` and the hooks can still find it.
+
 ## Goals
 
 - Act as guildmaster, in the manager tier: own the role catalogue, the roles every work package and agent takes.
