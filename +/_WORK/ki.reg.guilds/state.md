@@ -7,26 +7,26 @@ beat: null
 mark: 2026-11-07T04:52:00Z
 method_read: d5ede6dd
 listening_enabled: true
-listening_status: on
+listening_status: off
 workers:
   - role: guildmaster
     tier: managers
     focus: [roles, skills]
     since: 2026-11-06T16:54:00Z
     status: active
-    listening: on
+    listening: off
 ---
 
 # ki.reg.guilds state
 
 ## Now
 
-- Renamed from ki.reg.ways-of-working at 18:51 GMT under rule 13; sol's Agora watches it, terra to follow.
-- Sent to Kris at 18:54 GMT with fifteen queries: five on worktrees, three on routing, seven on the role catalogue rollout, all high after review.
-- Landed today: LINT-BEFORE-PUSH and CHECK-CONSUMERS (`056996c0`), FOOTER-COUNTS (`27833e5b`), FOOTER-HOOK (`8ec15e63`).
-- Both Macs repointed: harness `d8ade2e0` retired the five forwarding stubs (1,598 tests pass); run `refresh-all` is sending REFRESH MSG-283f72a5 to every live package.
-- STAGE-C-SPLIT with Kris (23:20 GMT): write the approved role catalogue into the skills now; the `role:` field packages now carry fails RECORD-2 until then.
-- Listening.
+- 2026-11-08 12:27 GMT: Kris is back and the away window that opened at 05:00 GMT on 7 November is closed. The keep-awake is released.
+- 12:28 GMT: Kris said "drain down ready to stop working, we are moving host in some way". The package is drained: nothing is running or queued, the listener is stopped and nothing new launches.
+- Owed on resume, before the next mark: the return report, a Summary since 05:00 GMT on 7 November.
+- To launch on resume, under MD-WRITER a) of 8 November 12:22 GMT: first `md-writer-harness`, which adds the writer's rule to `ki-authoring` and the run rules footer; then `md-writer-tools-ki`, which makes `ki agent` format and check each report it receives and keep the original if that fails. The briefs are in sol's `~/.cache/ki-wow-briefs/`, and the decisions entry carries their scope, so a new host can rewrite them.
+- Held for Kris's word: a skills-harvest run for the five SKILL-HARVEST learnings from hnr.prj.5g-emerge-phase2 (decisions, 8 November 12:22 GMT).
+- REPLY-FORMAT REFRESH: 9 of 17 packages ACKed, 8 awaiting. PLAIN-QUERY-NAMES is with the inbox design session for its next round.
 
 ## Next steps
 

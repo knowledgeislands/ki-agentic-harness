@@ -826,3 +826,5 @@ REFRESH ACKs: 1 more packages ACKed the reply-format REFRESH; 8 still awaited.
 - 2026-11-08 12:22 GMT · Health check MSG-e7ba771d from ki.prj.agora answered late: the 07:53 wait had already been woken by the household-terra answer. Re-armed for 120 minutes, until about 14:23 GMT. ACK sent to ki.prj.agora.
 
 - 2026-11-08 12:27 GMT · BACK answered by Kris through the question card: "Yes, I'm back". The away window that opened at 05:00 GMT on 7 November ends now, 12:27 GMT on 8 November. Keep-awake `caffeinate` pid 41165 released. The return report follows, and the next mark is struck only once Kris has seen it. The MD-WRITER runs launch under Kris's answer of 12:22 GMT.
+
+- 2026-11-08 12:28 GMT · Kris: "drain down ready to stop working, we are moving host in some way". Drain taken: no launches, so the MD-WRITER runs wait for the resume; the listener is stopped and `listening_status` is off. Nothing was running or queued, so the package is DRAINED. The work stays With worker, heading for a handoff to Kris. The return report is owed on resume.
