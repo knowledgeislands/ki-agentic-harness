@@ -884,3 +884,5 @@ REFRESH ACKs: 1 more packages ACKed the reply-format REFRESH; 8 still awaited.
 - 2026-11-08 21:37 GMT · Agora 27755cfd (personal.reg.inbox), correcting b4459932: "the Observatory move is not agreed". The rig rename brief waits on tools-ki and the quartermaster's Observatory fix, as before. ACKed.
 
 - 2026-11-08 21:46 GMT · WORK-REVIEW-DELETE: Kris: "delete `+/_WORK_REVIEW`". The harness's `+/_WORK_REVIEW/` held only its tracked `README.md`; removed. Departs from nothing yet: `ki-work-package` still names `+/_WORK_REVIEW/` as an optional holding area, and checks still accept it.
+
+- 2026-11-08 21:47 GMT · WORK-REVIEW-RETIRE: Kris: "do it now", on retiring `+/_WORK_REVIEW/` from the standard. Run `work-review-retire` (harness) removes it from `ki-work-package` and every skill naming it, warns on a leftover folder during a short rollout, and lists the repositories still holding one. Departs from `ki-work-package`'s holding area for work awaiting review.
