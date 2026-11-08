@@ -7,6 +7,7 @@ This file holds messages between work and the surfaces a coordinator reads. It e
 Any coordinator may message other work; the State of play also spreads common instructions and routes new units. Rules go to their durable owner, a skill or a Decision Record. A line goes into the receiving package's `messages.md`, its incoming queue, which travels between hosts through Git, so a line reaches work wherever and whenever it is next picked up. Writing a line is a send to that work.
 
 - **Place and shape:** one line in the receiver's `messages.md`, in the shape, length and commit subject of the `ki-work-package` [Messages lines](../../../governance/ki-work-package/references/standards-work-package.md#messages-lines).
+- **Agora store:** a message sent through Agora is filed under its recipient's territory, the first part of the recipient's work id, never the sender's: a line to `personal.reg.inbox` lands in `messages/personal/`.
 - **Priority order:** lines stand in priority order, top first.
   - An ordinary line goes at the end; a State of play dispatching may place a line where its priority warrants.
   - An important line, `- IMPORTANT · <date> · <TAG> · <sender label> (<sender id>): ...`, goes above every ordinary line and is taken first. Important lines are taken in order, one at a time, never grouped or reordered.
@@ -42,7 +43,7 @@ Any coordinator may message other work; the State of play also spreads common in
 - **Release notices:** after an authorised release, the releasing territory owner or coordinator sends each affected owning work a release notice in its `messages.md`, or in the receiving State of play's queue where no clear owner exists. It names the released version, the relevant change, compatibility, adoption steps and any reply needed, within the existing sender and cross-territory boundaries. The receiver owns adoption and any genuinely deferred record. The notice is an obligation only: it grants no release authority, consumer selection, rollout execution or foreign-record creation.
 - **Inbox check at each wake:** each wake of the [watcher](standards-listening.md#inbox-watch) compares `messages.md`'s last commit and the harness revision with what was last read, and acts on a new line at once, in queue order, without stopping running work. Nothing adds a wake where none is armed: the State of play acts for work that is not listening under [acting for idle work](standards-territory.md#territory-work), and shows the age of any line it leaves.
 
-Sources: MESSAGES-ASYNC, WORK-QUEUE-PRIORITY, FEEDBACK-AS-MESSAGE, ROUTE-RECEIPT, HANDOFF-AS-MESSAGE, URGENT-CRITERIA, ROUTE-UP, HOW-WE-WORK, LIVENESS, BROADCAST-FORM and BROADCAST-POINTER in [the decision register](sources.md#decision-register).
+Sources: MESSAGES-ASYNC, WORK-QUEUE-PRIORITY, FEEDBACK-AS-MESSAGE, ROUTE-RECEIPT, HANDOFF-AS-MESSAGE, URGENT-CRITERIA, ROUTE-UP, HOW-WE-WORK, LIVENESS, BROADCAST-FORM, BROADCAST-POINTER and STORE-TERRITORY in [the decision register](sources.md#decision-register).
 
 ## Surfaces
 
