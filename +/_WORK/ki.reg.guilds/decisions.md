@@ -807,3 +807,20 @@ REFRESH ACKs: 1 more packages ACKed the reply-format REFRESH; 9 still awaited.
 - 2026-11-08 07:53 GMT · PLAIN-QUERY-NAMES, MSG-cee5d1d7, Kris's feedback of 8 November at 07:02 GMT, relayed by ki.prj.agora: "not just say MOUNT-5 but use plain english so MOUNT-5 becomes more like "the thing in plain english (Mount 5)"". Taken as a candidate change to the ki-coordination reply format: query headings, Done and In Progress lines and banner items lead with a plain-English name and give the id in brackets after it. The reply block keeps the bare tag, because Kris copies and answers it. Under REPLY-FORMAT of 7 November, a change to the agreed format goes to the inbox design session before anyone acts on it, so it was sent to personal.reg.inbox-sol for the next round. Until the standard changes, this session leads with plain names wherever the standard already allows it.
 
 - 2026-11-08 07:54 GMT · personal.reg.inbox-sol ACKed MSG-5e7a2c91 PLAIN-QUERY-NAMES and agreed: plain-English name first with the id in brackets, and the bare tag kept in the reply block. It already writes queries this way at Kris's request of 6 November and will apply it to Done, In Progress and banner items.
+
+REFRESH ACKs: 1 more packages ACKed the reply-format REFRESH; 8 still awaited.
+
+- 2026-11-08 12:22 GMT · MD-WRITER answered by Kris through the question card: "Writers fix it", option a. Markdown is made clean where it is written. `ki-authoring` gains a short writer's rule pointing to the `ki-git` rule (`rumdl fmt` then `rumdl check` before committing). The run rules footer repeats it. `ki agent` formats each report it receives, checks it again and keeps the original if the cleanup fails. The commit hook stays check-only. Two runs to launch, harness first and tools-ki second.
+
+- 2026-11-08 12:22 GMT · Received the SKILL-HARVEST ACK MSG-c6fa7c81 from hnr.prj.5g-emerge-phase2. It lists five learnings with their owners:
+  - generated data stamped from its source's modification time, and idempotence checked by hashing two runs' output: ki-engineering;
+  - Nunjucks helpers in Markdown and loop-generated tables: ki-repo-website-content, with the conform fix owned by ki-authoring;
+  - source documents read-only, with a data queries register: ki-acquire;
+  - rejected checklist items: ki-authoring;
+  - a push to main deploys on Workers Builds: ki-repo-website-cloudflare.
+
+  Held for a skills-harvest run, which needs Kris's word to launch.
+
+- 2026-11-08 12:22 GMT · Received two answers from personal.reg.household-terra. Kris answered TERRA-LOCAL-REPORTS a), TERRA-PR-CHECK a) and TERRA-RECOVERY a) on 8 November. household-sol then located the retained items on sol, read only: the ki-principal retention ref at `62bdf532`, the 119 MB work archive, the 43 MB private-proof runtime, the tools-ki `refs/ki-retained/ways-of-working/cli-migration-f4ce77b8` ref and the z-retirement archive. None has any copy off sol. PUBLIC-REPORT-RECOVERY, the approved private destination, is still parked with Kris.
+
+- 2026-11-08 12:22 GMT · Health check MSG-e7ba771d from ki.prj.agora answered late: the 07:53 wait had already been woken by the household-terra answer. Re-armed for 120 minutes, until about 14:23 GMT. ACK sent to ki.prj.agora.

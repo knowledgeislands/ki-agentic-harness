@@ -2,27 +2,7 @@
 
 ## Open
 
-### MD-WRITER - Where Markdown gets made clean before a commit
-
-**Context:** A run report written by `ki agent` on 6 November was copied by hand into `apps-ninja.midnight.tower/reports/`. It failed the Markdown check at Kris's commit 30 hours later. Today the commit hook only checks Markdown, and only `ki repo conform` fixes it; that has been the case since Kris's choice on 26 October. Since 6 November, `ki-git` has told every session and run to run `rumdl fmt` and `rumdl check` on Markdown before committing. Three things are missing:
-
-- `ki-authoring` does not point to that rule.
-- The run Rules footer does not repeat it.
-- `ki agent` copies reports unchanged and never formats them.
-
-79 of 81 recent reports already pass, and every repository uses the same Markdown configuration. Only three repositories have a `self:check` script, and only one of those runs the Markdown check.
-
-The reviewer added that the layers are complementary, and that report receipt must check after formatting and keep the source report if cleanup fails, since formatting alone does not prove a clean result.
-
-**Query:** Which layer should make Markdown clean before it reaches a commit?
-
-**Options:**
-
-a) (recommended, confidence high - reviewed: the blind Codex reviewer chose the same course, since it puts cleanup with writers and the shared report receiver, covers both runtimes and keeps a separate commit check) Add a short writer's rule to `ki-authoring` that points to the `ki-git` rule. Have `ki agent` run the house Markdown fix on each report when it receives it. Add that rule to the run Rules footer. The hook stays check-only.
-
-b) Let the commit hook fix Markdown files that are fully staged, then check them. This reverses the 26 October choice and changes the hook in every repository.
-
-c) Add a Claude Code write hook that formats each Markdown file after Write or Edit. It covers only Claude Code's own tool writes, and it goes against the "finish edits before a formatter writes" preference.
+None.
 
 ## Parked
 
