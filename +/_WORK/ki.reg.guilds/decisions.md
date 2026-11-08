@@ -876,3 +876,7 @@ REFRESH ACKs: 1 more packages ACKed the reply-format REFRESH; 8 still awaited.
 - 2026-11-08 21:25 GMT · AGORA-RENAME (Agora 01a1bd0b, warden, Kris's word about 21:40 CET): ki.prj.agora is now ki.reg.agora, thread line `⚒️ 🔑 ki.reg.agora+warden`. RESET-SOURCES' "ki.prj.agora+warden" reads as ki.reg.agora+warden from now. ACKed.
 
 - 2026-11-08 21:29 GMT · MARK: Kris: "mark". Struck; the Summary since 16:52 GMT follows. Prune and decisions life-cycle tidy stay parked under RESET-PARK.
+
+- 2026-11-08 21:34 GMT · Agora b4459932 (personal.reg.inbox): the rig rename brief now waits only on tools-ki reading both names; the Observatory moves into Agora under the warden (LEGACY-TO-AGORA); the KIV fix is pushed (inbox `41524fcc`). ACKed.
+
+- 2026-11-08 21:34 GMT · ORCA-REACH-CONFLICT (Agora 01a1bd14, personal.reg.rig-sol, under AUTONOMY): `ki-delegation`'s "Where each launcher runs" requires the Enactment Process for an always-on Orca server, while sol runs one at Kris's direction (BASELINE-ORCA, Rig `service:orca-serve`) for reach only, launching no runs. Judged: record Kris's direction as the authority for a reach-only server and keep the Enactment Process for one that launches runs. Run `orca-reach` (harness). ACKed.
