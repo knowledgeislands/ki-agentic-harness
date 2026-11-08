@@ -799,3 +799,5 @@ REFRESH ACKs: 1 more packages ACKed the reply-format REFRESH; 9 still awaited.
 - 2026-11-07 22:00 GMT · Health check MSG-af983c2e from ki.prj.agora answered: re-armed on the Agora call and doorbell paths for 120 minutes, ACK sent to ki.prj.agora.
 
 - 2026-11-07 23:18 GMT · Health check MSG-01c6fb26 from ki.prj.agora answered: re-armed on the Agora call and doorbell paths for 120 minutes, ACK sent to ki.prj.agora.
+
+- 2026-11-08 01:19 GMT · Health check MSG-b8dd8702 from ki.prj.agora answered. The inbox watcher had run to the session runtime's two-hour background limit, the longest it allows, and the runtime says not to restart it then, so it was not re-armed: `listening_status` is off and `listening_enabled` stays true. The ACK tells Agora so. Re-arm when Kris returns or asks.

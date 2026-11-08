@@ -7,14 +7,14 @@ beat: null
 mark: 2026-11-07T04:52:00Z
 method_read: d5ede6dd
 listening_enabled: true
-listening_status: on
+listening_status: off
 workers:
   - role: guildmaster
     tier: managers
     focus: [roles, skills]
     since: 2026-11-06T16:54:00Z
     status: active
-    listening: on
+    listening: off
 ---
 
 # ki.reg.guilds state
