@@ -874,3 +874,5 @@ REFRESH ACKs: 1 more packages ACKed the reply-format REFRESH; 8 still awaited.
 - 2026-11-08 21:12 GMT · ki.sop.tools ACKed the STD-BASE check (Agora 01a1bd00): a `ki` command in tools-ki, launched once tools-index reports; commit to follow.
 
 - 2026-11-08 21:25 GMT · AGORA-RENAME (Agora 01a1bd0b, warden, Kris's word about 21:40 CET): ki.prj.agora is now ki.reg.agora, thread line `⚒️ 🔑 ki.reg.agora+warden`. RESET-SOURCES' "ki.prj.agora+warden" reads as ki.reg.agora+warden from now. ACKed.
+
+- 2026-11-08 21:29 GMT · MARK: Kris: "mark". Struck; the Summary since 16:52 GMT follows. Prune and decisions life-cycle tidy stay parked under RESET-PARK.

@@ -4,7 +4,7 @@ state: with-worker
 since: 2026-11-06T18:54:52Z
 received: 2026-11-06T16:54:00Z
 beat: null
-mark: 2026-11-08T16:52:00Z
+mark: 2026-11-08T21:29:00Z
 method_read: d5ede6dd
 listening_enabled: true
 listening_status: on
@@ -21,6 +21,7 @@ workers:
 
 ## Now
 
+- 2026-11-08 21:29 GMT: mark struck at Kris's word; the mark's prune and decisions tidy stay parked under RESET-PARK.
 - 2026-11-08 20:42 GMT: INDEX-ENTRY and STORE-TERRITORY taken from personal.reg.inbox; standard split stages 6–7 shelved (SPLIT-SHELVED).
 - 2026-11-08 17:22 GMT: RESET. Everything below in Now, Next steps and Held is parked under RESET-PARK until Kris says otherwise; act only on Kris and the six sessions RESET-SOURCES names. Thread line `⚖️ 🔑 ki.reg.guilds+guildmaster` (THREAD-ROLE).
 - 2026-11-08 16:52 GMT: re-bootstrapped on sol under Kris's "do not make any changes just yet"; mark struck at his word "take a mark also", its Summary since 7 November 04:52 GMT serving as the owed return report. Prune and decisions tidy deferred while the no-changes word stands; nothing launched.
