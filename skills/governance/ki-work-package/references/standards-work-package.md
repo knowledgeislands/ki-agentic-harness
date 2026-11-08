@@ -1,6 +1,6 @@
 # Work-package standard
 
-A work package is one piece of work above a work item, packaged as a skill is: a definition read first and changed rarely, and detail files read only when a reader needs them. It lives in its work folder, `+/_WORK/<id>/`, which holds its five files - the work file `work.md`, the state file `state.md`, the discussion file `discussions.md`, `messages.md` and the decisions log `decisions.md` - beside one folder per focus area holding its runs' briefs and reports and its design notes. Together they let a fresh agent, or State of play routing new work, understand the work and pick it up without relying on a transcript, private runtime state or a vendor session. Git is the logbook: each move is a commit, so the package keeps no moves list and no history.
+A work package is one piece of work above a work item, packaged as a skill is: a definition read first and changed rarely, and detail files read only when a reader needs them. It lives in its work folder, `+/_WORK/<id>/`, which holds its five files - the work file `_index.md`, the state file `state.md`, the discussion file `discussions.md`, `messages.md` and the decisions log `decisions.md` - beside one folder per focus area holding its runs' briefs and reports and its design notes. Together they let a fresh agent, or State of play routing new work, understand the work and pick it up without relying on a transcript, private runtime state or a vendor session. Git is the logbook: each move is a commit, so the package keeps no moves list and no history.
 
 The work model is the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note's, decided by [GDR-KI-PRINCIPAL-009](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md). The skill was `ki-checkpoint` until Kris answered WORK-FOLDER-NAME on 18 October 2026, read back as `ki-work-folder`, and became `ki-work-package` when Kris answered on 19 October 2026, "I want `ki-work-package` please, where it lives is a folder", read back as PACKAGE-NAME: "the idea and its skill are the work package, `ki-work-package` (renamed from `ki-work-folder`); the place it lives is still called the work folder, `+/_WORK/<id>/`". Under STATE-FILE the same day a package has five files, and under FILES-AT-CREATION all five exist from creation, "so others can queue work into `messages.md` at once". The session-level checkpoint remains the conversational word for writing the package's state before a pause.
 
@@ -51,11 +51,11 @@ This standard is the one specification of `+/_WORK/<id>/` and `+/_WORK_REVIEW/<i
 
 ## Location and identity
 
-A work package lives in one work folder, `+/_WORK/<id>/`, one per piece of work above a work item; a work item has no package, because its record is its home. `<id>` is the work's dotted id under `ki-coordination`'s [Work naming](../../../change-management/ki-coordination/references/standards-opening.md#work-naming), which defines the id, slug and title: lower-case kebab segments joined by `.`, never a host, an underscore or a runtime session identifier. The folder name, the `id` field of `work.md` and of `state.md`, and each file's H1 agree exactly.
+A work package lives in one work folder, `+/_WORK/<id>/`, one per piece of work above a work item; a work item has no package, because its record is its home. `<id>` is the work's dotted id under `ki-coordination`'s [Work naming](../../../change-management/ki-coordination/references/standards-opening.md#work-naming), which defines the id, slug and title: lower-case kebab segments joined by `.`, never a host, an underscore or a runtime session identifier. The folder name, the `id` field of `_index.md` and of `state.md`, and each file's H1 agree exactly.
 
 `+/_WORK/` holds only work folders, each a physical directory with its work file. Symlinked, nested, timestamped, archived and alternate layouts are invalid. Migrated work awaiting review sits in `+/_WORK_REVIEW/<id>/` under [Work awaiting review](#work-awaiting-review); its files are checked only when the folder leaves review.
 
-Every package defaults to its territory's Capital. Every Project package remains Capital-homed; this rule adds no Project-home exception. Regular or ad hoc work may deliberately retain an owner-approved member-repository home, declared as `Home:` in `work.md`'s Scope and referenced in its parent State of play's existing Scope, with the id in `covers`. Preserve existing deliberate exceptions such as Acquire intake; no package is moved by this rule. One physical home holds the authoritative package, state and incoming queue; a Capital home reference is not a second package or inbox. Records remain in the repositories that own their plans, priority and acceptance; a record's `project` resolves through the Capital's registry without execution authority. A record without `project` goes first to its regular or ad hoc owner, then to State of play only when unresolved.
+Every package defaults to its territory's Capital. Every Project package remains Capital-homed; this rule adds no Project-home exception. Regular or ad hoc work may deliberately retain an owner-approved member-repository home, declared as `Home:` in `_index.md`'s Scope and referenced in its parent State of play's existing Scope, with the id in `covers`. Preserve existing deliberate exceptions such as Acquire intake; no package is moved by this rule. One physical home holds the authoritative package, state and incoming queue; a Capital home reference is not a second package or inbox. Records remain in the repositories that own their plans, priority and acceptance; a record's `project` resolves through the Capital's registry without execution authority. A record without `project` goes first to its regular or ad hoc owner, then to State of play only when unresolved.
 
 Every package below the main State of play names its coordinating State of play as `parent`, including a secondary, a Project, regular work and ad hoc work; a [sub-package](#sub-packages) names its parent package instead. For ad hoc work this is the coordinating State of play, not the regular-work prefix in its id. The main keeps `covers` as the register of the Project, regular umbrella and ad hoc work it coordinates, including work covered through a secondary, before a package exists and after it is pruned. Secondary `covers` lists remain its assigned subset. Check package parents against that register, same-territory membership, unique coverage by secondaries and absence of cycles; never infer coverage from the presence of a package.
 
@@ -75,12 +75,12 @@ A work folder holds these kinds and nothing else:
 
 | Kind | Path | Kept until |
 | --- | --- | --- |
-| Work file | `work.md` | The mark that closes finished work |
+| Work file | `_index.md` | The mark that closes finished work |
 | State file | `state.md` | The mark that closes finished work |
 | Discussion file | `discussions.md`, or `queries.md` for the DISCUSSIONS tolerance window | The mark that closes finished work |
 | Messages file | `messages.md` | The mark that closes finished work |
 | Decisions log | `decisions.md` | The mark that closes finished work |
-| Focus folder | `<focus-id>/`, one per focus area `work.md` declares under [Focus areas](#focus-areas), starting with `_index.md` and holding the kinds below | It holds nothing but its `_index.md`, or the mark that closes finished work |
+| Focus folder | `<focus-id>/`, one per focus area `_index.md` declares under [Focus areas](#focus-areas), starting with `_index.md` and holding the kinds below | It holds nothing but its `_index.md`, or the mark that closes finished work |
 | Run report | `<focus-id>/<run>.report.md` | A tidy finds its outcome homed, its queries having been copied into `discussions.md` at receive |
 | Brief | `<focus-id>/<run>.brief.md` | Its run's report is received |
 | Design note | `<focus-id>/<slug>.md`, or `<focus-id>/<subject>/` holding the same kinds | It graduates under `ki-work-design` or is recorded as superseded |
@@ -94,7 +94,7 @@ For the layout tolerance window the type folders stay readable beside or instead
 
 The five package files exist from the work's creation, `discussions.md`, `messages.md` and `decisions.md` starting as `None`, so a reader never meets a missing file and a sender never creates one. Anything else does not belong: scripts, screenshots and other images that are not a diagram's render, `scratch/` folders and the output of tools. Temporary output belongs in the run's temporary directory, `$TMPDIR/ki-agents/<run>/<name>/`, outside every repository, under the `ki-delegation` [run packet](../../ki-delegation/references/standards-background-runs.md#run-packet). The rubric's FOLDER family fails a file outside this list and warns on each tidy that is due. A coordinator's own Summary is a message, not a run report, and is not saved into the folder.
 
-The top level holds only the five package files, as Kris directed under PACKAGE-LAYOUT on 30 October 2026. Everything else sits in the folder of the focus area it belongs to, so that a reader opening one focus folder finds that area's briefs, reports and designs together. Kris set this layout under LAYOUT-PILLARS, relayed on 2 November 2026 after the pilot on the four Personal pillars: five top-level files with `discussions.md`, a `## Focus` section in `work.md` listing focus areas with ids, always including the holding area, `_emerging` since EMERGING-FOCUS, and "one flat folder per focus area holding briefs (`<run>.brief.md`), reports (`<run>.report.md`) and designs; no `briefs/`, `design/` or `reports/`". It answers LAYOUT-SHAPE and supersedes the `reports/` folder TOP-LEVEL-NOW applied on 1 November 2026. A run's report sits in the focus folder its brief sits in, the launcher homing it there once its focus-folder change ships; readers look for a report in its brief's focus folder first, then in `reports/`, then at the top level. For a tolerance window, until the sweep of reports already at the top level is done, a top-level `<name>.report.md` is a stray file the rubric warns on rather than fails.
+The top level holds only the five package files, as Kris directed under PACKAGE-LAYOUT on 30 October 2026. Everything else sits in the folder of the focus area it belongs to, so that a reader opening one focus folder finds that area's briefs, reports and designs together. Kris set this layout under LAYOUT-PILLARS, relayed on 2 November 2026 after the pilot on the four Personal pillars: five top-level files with `discussions.md`, a `## Focus` section in `_index.md` listing focus areas with ids, always including the holding area, `_emerging` since EMERGING-FOCUS, and "one flat folder per focus area holding briefs (`<run>.brief.md`), reports (`<run>.report.md`) and designs; no `briefs/`, `design/` or `reports/`". It answers LAYOUT-SHAPE and supersedes the `reports/` folder TOP-LEVEL-NOW applied on 1 November 2026. A run's report sits in the focus folder its brief sits in, the launcher homing it there once its focus-folder change ships; readers look for a report in its brief's focus folder first, then in `reports/`, then at the top level. For a tolerance window, until the sweep of reports already at the top level is done, a top-level `<name>.report.md` is a stray file the rubric warns on rather than fails.
 
 ### Entry points
 
@@ -117,7 +117,7 @@ Every writer is a named entry point with its permitted kinds, and every other pa
 | The owner, by hand | One `messages.md` line carrying feedback on a document, committed alone | Any other edit |
 | The owner, through the Observatory | One `feedback/<date>-<slug>.md` package and one `messages.md` line linking it, committed together, for the tolerance window below | Any other edit |
 
-† The work's own steward includes its explicitly assigned State of play. It may write `work.md`, `state.md`, `discussions.md` and `decisions.md`, remove disposed lines from `messages.md`, write `findings/<tag>.md` and briefs, write one `messages.md` line word for word from the owner's feedback, and make tidy deletions.
+† The work's own steward includes its explicitly assigned State of play. It may write `_index.md`, `state.md`, `discussions.md` and `decisions.md`, remove disposed lines from `messages.md`, write `findings/<tag>.md` and briefs, write one `messages.md` line word for word from the owner's feedback, and make tidy deletions.
 
 Findings use `findings/<tag>.md`, one file per tag, holding exactly the text the report carries under the owner-report Findings rule. The work's own steward writes and settles them; package pick-up reads every open finding with the five package files. A background run never writes `findings/<tag>.md`, even when its brief names the finding: it puts the finding in its run report, goal first, and the steward copies it into the file at receive, as it copies queries, so the report-to-steward path is the only route a finding takes into a package. Kris settled this under INTERIM-FINDING-WRITER on 26 October 2026, taking the recommended option, "Keep the standard's steward-only package writer", and declining the design note's proposal of a run writing the file its brief names.
 
@@ -125,7 +125,7 @@ Owner feedback on a document the work produced arrives as a message: a line in t
 
 For the tolerance window, until the Observatory's `feedback-send` sends a message line instead, a `feedback/<date>-<slug>.md` package it writes stays readable and is received with the line linking it: the package carries no words but the owner's beyond its header and the passages it quotes, and the tidy rule below judges it by the homes of its points. No other entry point writes a feedback package.
 
-The `description` in `work.md` is written by the work's steward, at seeding with State of play; State of play proposes a change to it by a line in `messages.md`. Readers, such as `ki work status`, the Observatory, `ki agent close` and the rubrics, change nothing; a change of shape names them as consumers.
+The `description` in `_index.md` is written by the work's steward, at seeding with State of play; State of play proposes a change to it by a line in `messages.md`. Readers, such as `ki work status`, the Observatory, `ki agent close` and the rubrics, change nothing; a change of shape names them as consumers.
 
 ### Assigned package stewardship
 
@@ -208,7 +208,7 @@ A message may carry an optional `@<host-or-category>` requirement immediately af
 
 ### Work file
 
-`work.md` is the definition: what the work is, its goals and what it takes. It is read first and changes rarely, so `git log -- work.md` is the history of what the work is.
+`_index.md` is the definition: what the work is, its goals and what it takes. It is read first and changes rarely, so `git log -- _index.md` is the history of what the work is. Its leading underscore sorts it first in the folder, as Kris set under INDEX-ENTRY on 8 November 2026: "a good time to change that now, put it into the standard". Until every package is renamed, a folder whose entry file is still `work.md` is read the same, and one holding both fails, under [the entry-file migration](standards-index-entry-migration.md).
 
 ```yaml
 ---
@@ -273,7 +273,7 @@ Nothing else belongs in the work file: no state, next steps, evidence or history
 
 ### Focus areas
 
-A focus area is one strand of the work's attention, and the unit its work folder is grouped by, as Kris set under LAYOUT-PILLARS and FOCUS-IN-WORK, "one of the key things in work is knowing what your focus is. So I think focus should be a key thing in work.md". `work.md`'s `## Focus` lists them, one list item each, in order, the item leading with the area's id as a code span and then a line saying what it holds:
+A focus area is one strand of the work's attention, and the unit its work folder is grouped by, as Kris set under LAYOUT-PILLARS and FOCUS-IN-WORK, "one of the key things in work is knowing what your focus is. So I think focus should be a key thing in work.md". `_index.md`'s `## Focus` lists them, one list item each, in order, the item leading with the area's id as a code span and then a line saying what it holds:
 
 ```markdown
 ## Focus
@@ -318,7 +318,7 @@ The field set is closed:
 
 | Field | Presence | Value |
 | --- | --- | --- |
-| `id` | required | the work's id, agreeing with `work.md` and the folder, so the file read alone identifies itself |
+| `id` | required | the work's id, agreeing with `_index.md` and the folder, so the file read alone identifies itself |
 | `state` | required | `with-worker`, `handoff-to-supervisor`, `with-supervisor`, `handoff-to-worker`, `handoff`, `on-hold` or `finished` |
 | `target` | required in `handoff`, else absent | the holder the work is in transit to |
 | `hold` | required in `on-hold`, else absent | a mapping of `reason`, `paused`, or `more-expected` for Snoozing until `ki` accepts `snoozing`, `release`, the condition in words, and an optional `set_by`, `owner` or `worker`, the worker setting only the idle `more-expected` hold under `ki-coordination`'s [Putting work on hold](../../../change-management/ki-coordination/references/standards-holds.md#putting-work-on-hold); absent reads `owner` |
@@ -334,7 +334,7 @@ The field set is closed:
 | `syncing_status` | required while `syncing_enabled` is `true`, else absent | `on` while host sync runs, `off` otherwise |
 | `workers` | optional | the package's live seats, each a mapping of `role` and `tier` and at most `focus`, `since`, `status` and `listening`, under [the role standard's fields](standards-roles.md#role-fields); absent or empty when no seat is live |
 
-A holder is `owner`, `agent`, `run/<name>`, `work/<id>`, `person/<handle>` or `repo/<name>`. The holder the work lies with now and its role are derived from `state` and `target` in `state.md` and `worker` and `supervisor` in `work.md`, never stored. Timestamps use UTC RFC 3339 second precision; quote `title` and `label` in YAML because they contain `>`. The four capability fields record the thread capabilities under `ki-coordination`'s [Thread capabilities](../../../change-management/ki-coordination/references/standards-listening.md#thread-capabilities), as Kris set under FOOTER-CAPABILITY-STATUS-2, relayed on 1 November 2026: each thread carries `listening_enabled`, `listening_status`, `syncing_enabled` and `syncing_status`, and if `syncing_enabled` is true, `listening_enabled` must be true, because a syncing thread is always a listening thread. `_enabled` says whether the thread has the capability; `_status` says whether it is on now, and the banner's mode lines read both. These are the fields the Work Process note's Observatory fields read through `ki work status`. `method_read` replaces the body line a coordinator once wrote under its refresh rule; setting it is the confirmation that a `REFRESH` line has been acted on, under `ki-coordination`'s [Refreshing this guidance](../../../change-management/ki-coordination/references/standards-coordination.md#refreshing-this-guidance).
+A holder is `owner`, `agent`, `run/<name>`, `work/<id>`, `person/<handle>` or `repo/<name>`. The holder the work lies with now and its role are derived from `state` and `target` in `state.md` and `worker` and `supervisor` in `_index.md`, never stored. Timestamps use UTC RFC 3339 second precision; quote `title` and `label` in YAML because they contain `>`. The four capability fields record the thread capabilities under `ki-coordination`'s [Thread capabilities](../../../change-management/ki-coordination/references/standards-listening.md#thread-capabilities), as Kris set under FOOTER-CAPABILITY-STATUS-2, relayed on 1 November 2026: each thread carries `listening_enabled`, `listening_status`, `syncing_enabled` and `syncing_status`, and if `syncing_enabled` is true, `listening_enabled` must be true, because a syncing thread is always a listening thread. `_enabled` says whether the thread has the capability; `_status` says whether it is on now, and the banner's mode lines read both. These are the fields the Work Process note's Observatory fields read through `ki work status`. `method_read` replaces the body line a coordinator once wrote under its refresh rule; setting it is the confirmation that a `REFRESH` line has been acted on, under `ki-coordination`'s [Refreshing this guidance](../../../change-management/ki-coordination/references/standards-coordination.md#refreshing-this-guidance).
 
 Coordinating work, at `territory` or `project` level, is valid only in a repository whose `.ki.toml` declares `[skills.ki-coordination]`. Regular and ad hoc work is valid anywhere the capability is declared. The level is the one authority for the kind of work: not the title, a native session name, the folder name, the repository declaration, an output style, a hook line or a cached copy.
 
@@ -402,7 +402,7 @@ The limits are soft, warned and never failed, like a skill's budgets:
 | File | Limit |
 | --- | --- |
 | `description` | at most 500 characters |
-| `work.md` body | at most 300 words, its `## Focus` section aside |
+| `_index.md` body | at most 300 words, its `## Focus` section aside |
 | `state.md` body | at most 400 words; `## Now` at most five lines; no bulk history |
 | `messages.md` | each line at most 60 words; no line older than 7 days on work that is not on hold |
 | `decisions.md` | at most 400 lines |
@@ -415,8 +415,8 @@ The package reads in four levels, by analogy with a skill's metadata, body and r
 
 | Level | Files | Who reads it, when |
 | --- | --- | --- |
-| 1. Register | `work.md` and `state.md` front matter | State of play at each routing; `ki work status`, the Observatory and `ki work` views; an opener |
-| 2. Definition | `work.md` body | State of play when two descriptions match; the owner checking a routing; a new session before it reads state |
+| 1. Register | `_index.md` and `state.md` front matter | State of play at each routing; `ki work status`, the Observatory and `ki work` views; an opener |
+| 2. Definition | `_index.md` body | State of play when two descriptions match; the owner checking a routing; a new session before it reads state |
 | 3. Pick-up | Package detail and open findings† | The work's own worker at each pick-up |
 | 4. On demand | focus folders: reports, briefs and design notes | only when `state.md` or `discussions.md` names one |
 
@@ -426,12 +426,12 @@ Routing reads level 1 only, and a sender reads nothing in the receiver's folder:
 
 ## The single-file shape
 
-Until the migration pass moves each live folder, a work folder may still be in the single-file shape, in which `work.md` carries both the definition and the state: the closed front matter `id`, `level`, `title`, `label`, `project`, `theme`, `worker`, `supervisor`, `state`, `target`, `hold`, `blocking`, `since`, `received`, `beat`, `mark` and `created_at`, under the same rules as above, and the body headings `# <id>`, `## Next steps`, `## Messages` and `## Parked`, each saying something. `Next steps` may carry a coordinator's `ki-coordination read at <revision>` line; `Messages` carries the queue's lines; `Parked` carries one item per parked query, its tag, one line of context and its recommended option.
+Until the migration pass moves each live folder, a work folder may still be in the single-file shape, in which `_index.md` carries both the definition and the state: the closed front matter `id`, `level`, `title`, `label`, `project`, `theme`, `worker`, `supervisor`, `state`, `target`, `hold`, `blocking`, `since`, `received`, `beat`, `mark` and `created_at`, under the same rules as above, and the body headings `# <id>`, `## Next steps`, `## Messages` and `## Parked`, each saying something. `Next steps` may carry a coordinator's `ki-coordination read at <revision>` line; `Messages` carries the queue's lines; `Parked` carries one item per parked query, its tag, one line of context and its recommended option.
 
 A folder is in one shape at a time, told apart by whether `state.md` exists:
 
-- **Single-file:** no `state.md`. Its state lives in `work.md`, and senders write to its `## Messages` section. The rubric reads it under its old form and warns, naming the package as its new shape.
-- **Package:** `state.md` exists, and so do the discussion file, `messages.md` and `decisions.md`. The rubric fails a package whose `work.md` still carries a state field, or a `## Next steps`, `## Messages` or `## Parked` section, so a session that rewrites `work.md` from memory is caught at its next gate rather than silently forking the state.
+- **Single-file:** no `state.md`. Its state lives in `_index.md`, and senders write to its `## Messages` section. The rubric reads it under its old form and warns, naming the package as its new shape.
+- **Package:** `state.md` exists, and so do the discussion file, `messages.md` and `decisions.md`. The rubric fails a package whose `_index.md` still carries a state field, or a `## Next steps`, `## Messages` or `## Parked` section, so a session that rewrites `_index.md` from memory is caught at its next gate rather than silently forking the state.
 
 Every reader, `ki work status` and the Observatory included, accepts both shapes before any folder moves; the pass waits for that. The window closes for live folders at the pass, and for the rest when an inventory of live, review-held and old-shape folders shows none left.
 
@@ -466,16 +466,16 @@ A runtime-specific reminder consumer is separately opt-in. It may act only when 
 
 1. The repository declares `ki-work-package` and resolves to one physical repository root.
 2. The runtime adapter is explicitly enabled in that runtime's own configuration; the portable `ki-work-package` declaration remains an empty capability marker.
-3. The adapter receives one exact, human-selected work id from that explicit runtime configuration. It resolves only `+/_WORK/<id>/state.md`, or `+/_WORK/<id>/work.md` in the single-file shape, or, for the tolerance window, `+/_CHECKPOINTS/<thread>.md`; directory scans, newest-record selection, runtime-derived names, and archived or nested fallback are forbidden.
+3. The adapter receives one exact, human-selected work id from that explicit runtime configuration. It resolves only `+/_WORK/<id>/state.md`, or `+/_WORK/<id>/_index.md` in the single-file shape, or, for the tolerance window, `+/_CHECKPOINTS/<thread>.md`; directory scans, newest-record selection, runtime-derived names, and archived or nested fallback are forbidden.
 4. The resolved record is a regular file that satisfies this standard's identity and closed-schema requirements.
 
 The only first-delivery action is a compact reminder that the already-selected package may need an explicit update. The consumer does not create, update, remove, select, or reword a package file; infer work state or completion; invoke `ki-recap`; read a transcript or vendor session; or expose a session identifier. Repeated, interrupted, malformed, unknown, absent, or otherwise unsafe input is a quiet no-op. The native runtime adapter owns its event semantics, registration, timeout, exit behaviour, and any actionable failure text; the portable contract supplies no shared hook or fallback.
 
 ## Update lifecycle
 
-Every send, receive, mark and hold rewrites `state.md`'s front matter, `## Now` and next steps, under `ki-coordination`'s [Picking work up](../../../change-management/ki-coordination/references/standards-bootstrap.md#picking-work-up), and otherwise the package changes only on explicit user request or a documented repository-local trigger, such as before context compaction or a known pause. `work.md` changes only when the work's definition does. A generic Stop event is not authority to create or choose a package.
+Every send, receive, mark and hold rewrites `state.md`'s front matter, `## Now` and next steps, under `ki-coordination`'s [Picking work up](../../../change-management/ki-coordination/references/standards-bootstrap.md#picking-work-up), and otherwise the package changes only on explicit user request or a documented repository-local trigger, such as before context compaction or a known pause. `_index.md` changes only when the work's definition does. A generic Stop event is not authority to create or choose a package.
 
-An update replaces the current state in place. It never appends a moves list, timestamped copies or transcript history. Only sends and the supervisor's receives commit, each subject carrying the move, as in `docs(work): ki.ways-of-working send to owner`; `git log -- +/_WORK/<id>/` is the logbook. In the single-file shape the same update rewrites `work.md`'s front matter and next steps.
+An update replaces the current state in place. It never appends a moves list, timestamped copies or transcript history. Only sends and the supervisor's receives commit, each subject carrying the move, as in `docs(work): ki.ways-of-working send to owner`; `git log -- +/_WORK/<id>/` is the logbook. In the single-file shape the same update rewrites `_index.md`'s front matter and next steps.
 
 Other work may add one line to a work's `messages.md` under [Messages lines](#messages-lines) and commit that path alone; that is a send to the work, not an update of its state. The work's own next update removes each line it has acted on.
 
@@ -493,7 +493,7 @@ The manual portable flow is deliberately small:
 
 1. Require the user-selected work id or, from an opener, the Project slug.
 2. Resolve to one exact folder: `+/_WORK/<id>/`; for the tolerance window, when no work folder exists, the single old checkpoint whose stem maps to that id. If no folder or file, or more than one, matches, stop and ask the human which record is meant.
-3. Read the five package files in full, or `work.md` alone in the single-file shape, and every open `findings/<tag>.md`; validate the package's identity and schema.
+3. Read the five package files in full, or `_index.md` alone in the single-file shape, and every open `findings/<tag>.md`; validate the package's identity and schema.
 4. Act on its state as `ki-coordination`'s Picking work up sets it, the message queue first, important lines first, and continue from its next steps.
 
 The title and label never take part in resolution. Do not search archived or nested paths as a fallback. Resume creates a fresh working context; it does not reopen, locate, or authenticate to the conversation that last held the work.

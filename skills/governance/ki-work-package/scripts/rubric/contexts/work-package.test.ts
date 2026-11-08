@@ -379,7 +379,7 @@ const workFixture = (coordination = true): string => {
 
 const writeWork = (repository: string, folder: string, content: string): void => {
   mkdirSync(join(repository, '+', '_WORK', folder), { recursive: true })
-  writeFileSync(join(repository, '+', '_WORK', folder, 'work.md'), content)
+  writeFileSync(join(repository, '+', '_WORK', folder, '_index.md'), content)
 }
 
 const statuses = (value: WorkPackageRubricContext): Record<string, string | undefined> => ({
@@ -409,7 +409,7 @@ test('a well-formed work file passes every record check', () => {
     })
   )
   mkdirSync(join(repository, '+', '_WORK_REVIEW', 'ki.unsure'), { recursive: true })
-  writeFileSync(join(repository, '+', '_WORK_REVIEW', 'ki.unsure', 'work.md'), 'not yet checked')
+  writeFileSync(join(repository, '+', '_WORK_REVIEW', 'ki.unsure', '_index.md'), 'not yet checked')
 
   expect(Object.values(statuses(context(repository)))).toEqual(Array(6).fill('PASS'))
 })
@@ -521,7 +521,7 @@ const packageFiles = (
     messages?: string
   } = {}
 ): Record<string, string> => ({
-  'work.md': [
+  '_index.md': [
     '---',
     ...Object.entries({
       id,
@@ -649,6 +649,17 @@ test('a well-formed five-file package passes every check without a legacy or siz
   expect(run(LIFECYCLE, 'LIFECYCLE-3', value)[0]?.status).toBe('PASS')
 })
 
+// INDEX-ENTRY (Kris, 8 November 2026): during the rollout a package whose entry file is still `work.md` is read the same.
+test('a package whose entry file is still work.md passes every check under its old name', () => {
+  const repository = workFixture()
+  const { '_index.md': entry, ...files } = packageFiles()
+  writePackage(repository, 'ki.ways-of-working', { ...files, 'work.md': entry ?? '' })
+  const value = context(repository)
+
+  expect(Object.values(statuses(value))).toEqual(Array(6).fill('PASS'))
+  expect(run(STRUCTURE, 'STRUCTURE-2', value)[0]?.status).toBe('PASS')
+})
+
 test('a single-file work folder is read under its old form with a legacy warning', () => {
   const repository = workFixture()
   writeWork(repository, 'ki.ways-of-working', workFile())
@@ -657,11 +668,11 @@ test('a single-file work folder is read under its old form with a legacy warning
 
   expect(statuses(value)['RECORD-2']).toBe('PASS')
   expect(run(STRUCTURE, 'STRUCTURE-2', value).map((outcome) => outcome.subject)).toEqual([
-    '+/_WORK/ki.ways-of-working/work.md'
+    '+/_WORK/ki.ways-of-working/_index.md'
   ])
 })
 
-test("a package's work.md that still carries state fails the schema", () => {
+test("a package's _index.md that still carries state fails the schema", () => {
   const repository = workFixture()
   writePackage(repository, 'ki.ways-of-working', packageFiles('ki.ways-of-working', { work: { state: 'with-worker' } }))
 
@@ -712,7 +723,7 @@ const DEFINITION = [
   ''
 ].join('\n')
 
-test('under LAYOUT-PILLARS work.md admits a Focus section after Scope, listing _emerging only while used', () => {
+test('under LAYOUT-PILLARS _index.md admits a Focus section after Scope, listing _emerging only while used', () => {
   const repository = workFixture()
   writePackage(
     repository,
@@ -774,7 +785,7 @@ test('a Focus section above Goals warns for the tolerance window, and anywhere e
   )
 })
 
-test("the Focus section stays outside work.md's word limit", () => {
+test("the Focus section stays outside _index.md's word limit", () => {
   const repository = workFixture()
   const long = `${FOCUS}\n${Array(320).fill('word').join(' ')}\n`
   writePackage(
@@ -922,8 +933,8 @@ test('territory work may keep a Queue after Now', () => {
   )
   const files = packageFiles('ki')
   writeFileSync(
-    join(repository, '+', '_WORK', 'ki', 'work.md'),
-    (files['work.md'] ?? '').replace('project: ways-of-working\n', '').replace('level: project', 'level: territory')
+    join(repository, '+', '_WORK', 'ki', '_index.md'),
+    (files['_index.md'] ?? '').replace('project: ways-of-working\n', '').replace('level: project', 'level: territory')
   )
 
   expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
@@ -933,7 +944,7 @@ const territoryPackage = (repository: string, id: string, extra: readonly string
   const files = packageFiles(id, { work: { level: 'territory', title: "'HNR > SoP (5ge)'" } })
   writePackage(repository, id, {
     ...files,
-    'work.md': (files['work.md'] ?? '')
+    '_index.md': (files['_index.md'] ?? '')
       .replace('project: ways-of-working\n', '')
       .replace('covers: []\n', extra.some((line) => line.startsWith('covers:')) ? '' : 'covers: []\n')
       .replace(`parent: ${id.split('.')[0]}\n`, '')
@@ -1052,14 +1063,14 @@ test('package parents and coverage reject missing, cross-territory and conflicti
   }
   const missing = workFixture()
   const files = packageFiles()
-  files['work.md'] = (files['work.md'] ?? '').replace('parent: ki\n', '')
+  files['_index.md'] = (files['_index.md'] ?? '').replace('parent: ki\n', '')
   writePackage(missing, 'ki.ways-of-working', files)
   expect(statuses(context(missing))['RECORD-2']).toBe('VIOLATION')
 
   const repository = workFixture()
   territoryPackage(repository, 'ki', ['covers: [ki.ways-of-working]'])
   // Replace the helper's inherited empty main register rather than authoring duplicate YAML keys.
-  const main = join(repository, '+', '_WORK', 'ki', 'work.md')
+  const main = join(repository, '+', '_WORK', 'ki', '_index.md')
   writeFileSync(main, readFileSync(main, 'utf8').replace('covers: []\n', ''))
   territoryPackage(repository, 'ki.sop.model', ['parent: ki', 'covers: [ki.ways-of-working]'])
   writePackage(
@@ -1079,7 +1090,7 @@ test('ad hoc parent names a State of play and host requirements preserve queue s
     work: { level: 'regular', parent: 'ki.sop.operations' },
     messages: `# ${id} messages\n\n## Inbound\n\n- IMPORTANT · 2026-10-25 @terra · HOST-WORK · KI State of play: plan intake.\n- 2026-10-25 @macos · HOST-NEXT · KI State of play: receive evidence.\n\n## Outbound\n\nNone.\n`
   })
-  files['work.md'] = (files['work.md'] ?? '').replace('project: ways-of-working\n', '')
+  files['_index.md'] = (files['_index.md'] ?? '').replace('project: ways-of-working\n', '')
   writePackage(repository, id, files)
   expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
 })
@@ -1090,7 +1101,7 @@ test('regular umbrella and child packages are assigned through covers without re
   territoryPackage(repository, 'ki.sop.operations', ['parent: ki', 'covers: [ki.regular, ki.regular.intake]'])
   for (const id of ['ki.regular', 'ki.regular.intake']) {
     const files = packageFiles(id, { work: { level: 'regular', parent: 'ki.sop.operations' } })
-    files['work.md'] = (files['work.md'] ?? '').replace('project: ways-of-working\n', '')
+    files['_index.md'] = (files['_index.md'] ?? '').replace('project: ways-of-working\n', '')
     writePackage(repository, id, files)
   }
   expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
@@ -1098,7 +1109,7 @@ test('regular umbrella and child packages are assigned through covers without re
   const ordinary = workFixture()
   writeFileSync(join(ordinary, '.ki.toml'), '[skills.ki-work-package]\n')
   const files = packageFiles('ki.regular', { work: { level: 'regular', parent: 'ki' } })
-  files['work.md'] = (files['work.md'] ?? '').replace('project: ways-of-working\n', '')
+  files['_index.md'] = (files['_index.md'] ?? '').replace('project: ways-of-working\n', '')
   writePackage(ordinary, 'ki.regular', files)
   expect(statuses(context(ordinary))['RECORD-4']).toBe('PASS')
   // Existing main and secondary coverage must both retain the umbrella.
@@ -1106,7 +1117,7 @@ test('regular umbrella and child packages are assigned through covers without re
   expect(run(RECORD, 'RECORD-2', context(repository))).toContainEqual(
     expect.objectContaining({
       status: 'VIOLATION',
-      subject: '+/_WORK/ki.regular/work.md',
+      subject: '+/_WORK/ki.regular/_index.md',
       message: 'parent covers does not include this work'
     })
   )
@@ -1127,7 +1138,7 @@ test('typed main, secondary, Project and regular packages pass without changing 
       }
     })
   )
-  const mainPath = join(repository, '+/_WORK/ki.sop.main/work.md')
+  const mainPath = join(repository, '+/_WORK/ki.sop.main/_index.md')
   writeFileSync(
     mainPath,
     readFileSync(mainPath, 'utf8')
@@ -1141,7 +1152,7 @@ test('typed main, secondary, Project and regular packages pass without changing 
   )
   for (const id of ['ki.reg.main', 'ki.reg.topic']) {
     writePackage(repository, id, packageFiles(id, { work: { level: 'regular', parent: 'ki.sop.main' } }))
-    const file = join(repository, '+/_WORK', id, 'work.md')
+    const file = join(repository, '+/_WORK', id, '_index.md')
     writeFileSync(file, readFileSync(file, 'utf8').replace(/^project:.*\n/gm, ''))
   }
   expect(statuses(context(repository))['RECORD-2']).toBe('PASS')
@@ -1165,7 +1176,7 @@ test('a sub-package names its parent package, stays off the main register and al
       work: { level: 'territory', project: '', parent: '', covers: '[ki.reg.topic]', title: "'KI > SoP'" }
     })
   )
-  const mainPath = join(repository, '+/_WORK/ki.sop.main/work.md')
+  const mainPath = join(repository, '+/_WORK/ki.sop.main/_index.md')
   writeFileSync(
     mainPath,
     readFileSync(mainPath, 'utf8')
@@ -1177,7 +1188,7 @@ test('a sub-package names its parent package, stays off the main register and al
     ['ki.reg.topic.viewer', 'ki.reg.topic']
   ] as const) {
     writePackage(repository, id, packageFiles(id, { work: { level: 'regular', parent } }))
-    const file = join(repository, '+/_WORK', id, 'work.md')
+    const file = join(repository, '+/_WORK', id, '_index.md')
     writeFileSync(file, readFileSync(file, 'utf8').replace(/^project:.*\n/gm, ''))
   }
   expect(run(RECORD, 'RECORD-2', context(repository))).toEqual([expect.objectContaining({ status: 'PASS' })])
@@ -1285,12 +1296,12 @@ test('a workers entry still carrying a name, uri or old words warns rather than 
   expect(outcomes.map((outcome) => outcome.message).join('\n')).toContain('uri')
 })
 
-test('a package with no role warns, and an old role word in work.md warns', () => {
+test('a package with no role warns, and an old role word in _index.md warns', () => {
   const repository = workFixture()
   const files = packageFiles()
   writePackage(repository, 'ki.ways-of-working', {
     ...files,
-    'work.md': (files['work.md'] ?? '').replace('role: warden\n', '')
+    '_index.md': (files['_index.md'] ?? '').replace('role: warden\n', '')
   })
   expect(run(RECORD, 'RECORD-2', context(repository))).toEqual([
     expect.objectContaining({ level: 'WARN', message: expect.stringContaining('names no role') })
@@ -1302,7 +1313,7 @@ test('a package with no role warns, and an old role word in work.md warns', () =
 })
 
 for (const [name, change] of [
-  ['an unknown role in work.md', { work: { role: 'chancellor' } }],
+  ['an unknown role in _index.md', { work: { role: 'chancellor' } }],
   ['two roles for one package', { work: { role: '[governor, guildmaster]' } }],
   ['an unknown seat role', { state: { workers: seat('- role: liaison', '  tier: managers') } }],
   ['a seat with several roles', { state: { workers: seat('- role: [governor, guildmaster]', '  tier: leaders') } }],
@@ -1372,7 +1383,7 @@ test('under MESSAGE-WORDS urgent lines stand first and alone carry a deadline, a
   )
 })
 
-test('under VALUES-HOME work.md admits one Values line between Scope and Focus, outside the word limit', () => {
+test('under VALUES-HOME _index.md admits one Values line between Scope and Focus, outside the word limit', () => {
   const repository = workFixture()
   const values = '## Values\n\nThe [shared values](https://example.org/values), and care for the reader.\n'
   writePackage(

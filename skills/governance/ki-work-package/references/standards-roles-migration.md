@@ -5,8 +5,8 @@ This file holds the tolerance for the forms [the role standard](standards-roles.
 | Old form | Read as | Where it is warned on |
 | --- | --- | --- |
 | `🧵 <work-id>` closing a session whose package names a role | The same session; it moves to `<role glyph> 🔑 <work-id>` at its next bootstrap | The footer hook passes it; reports are judged by `ki-coordination` |
-| `work.md` without `role` | The package's role not yet declared | RECORD-2 warns |
-| `role:` or `tier:` at the top level of `state.md` | The package's seat, to be moved into `workers` and `role` into `work.md` | RECORD-2 warns |
+| `_index.md` without `role` | The package's role not yet declared | RECORD-2 warns |
+| `role:` or `tier:` at the top level of `state.md` | The package's seat, to be moved into `workers` and `role` into `_index.md` | RECORD-2 warns |
 | `role: assistant` | gatekeeper | RECORD-2 warns |
 | `role: keeper` | warden | RECORD-2 warns |
 | `tier: enablers` | managers | RECORD-2 warns |

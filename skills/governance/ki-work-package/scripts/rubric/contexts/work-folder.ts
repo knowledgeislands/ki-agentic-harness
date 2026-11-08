@@ -1,6 +1,6 @@
 /**
  * The work folder's closed list and tidy, read for the `ki-work-package` FOLDER family: each `+/_WORK/<id>/` against
- * its closed list, the focus folders its `work.md` declares included, the tidy candidates (answered reports, received briefs, finished folders outliving their closing
+ * its closed list, the focus folders its `_index.md` declares included, the tidy candidates (answered reports, received briefs, finished folders outliving their closing
  * mark, open queries beyond the limit), decisions-log text the `ki agent close` gate cannot read as an entry, the
  * `+/_WORK_REVIEW/` index, and for the tolerance window each thread folder `+/_THREADS/<run>/` against its old closed
  * list. The listings name candidates; they are never permission to delete.
@@ -18,11 +18,20 @@ const DECISIONS_LOG = 'decisions.md'
 /** The discussion file, `discussions.md`, or `queries.md` for the DISCUSSIONS tolerance window, read in that order. */
 const DISCUSSION_FILES = ['discussions.md', 'queries.md'] as const
 const STATE_FILE = 'state.md'
-const WORK_FILE = 'work.md'
+/** The package's entry file under INDEX-ENTRY (Kris, 8 November 2026), its leading underscore sorting it first. */
+export const ENTRY_FILE = '_index.md'
+/** The entry file's earlier name, still read during the INDEX-ENTRY rollout; `standards-index-entry-migration.md` retires it. */
+export const LEGACY_ENTRY_FILE = 'work.md'
+/** The entry files a work folder holds, `_index.md` first; holding both fails the closed list. */
+export const entryFiles = (folder: string): readonly string[] =>
+  [ENTRY_FILE, LEGACY_ENTRY_FILE].filter((name) => existsSync(join(folder, name)))
+/** The entry file a reader takes: `_index.md` where present, else `work.md`, else `_index.md` as the name it lacks. */
+export const entryFile = (folder: string): string => entryFiles(folder)[0] ?? ENTRY_FILE
 const MESSAGES_FILE = 'messages.md'
-/** The five package files; a single-file work folder holds only `work.md` of them. */
+/** The five package files, either entry name read; a single-file work folder holds only its entry file of them. */
 const PACKAGE_FILES: ReadonlySet<string> = new Set([
-  WORK_FILE,
+  ENTRY_FILE,
+  LEGACY_ENTRY_FILE,
   STATE_FILE,
   ...DISCUSSION_FILES,
   MESSAGES_FILE,
@@ -40,7 +49,7 @@ const TYPE_FOLDERS = [BRIEFS_FOLDER, DESIGN_FOLDER, REPORTS_FOLDER] as const
 export const RESERVED_FOLDERS: ReadonlySet<string> = new Set([...TYPE_FOLDERS, ...MARKDOWN_FOLDERS])
 /** A brief in a focus folder, `<focus-id>/<run>.brief.md`. */
 const BRIEF_SUFFIX = '.brief.md'
-/** A focus area's id, leading its list item under `work.md`'s `## Focus` as a code span. */
+/** A focus area's id, leading its list item under `_index.md`'s `## Focus` as a code span. */
 const FOCUS_ITEM = /^(?:\d+[.)]|[-*+])[ \t]+`([^`\n]+)`/
 export const FOCUS_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 /**
@@ -116,11 +125,11 @@ export const focusIdsIn = (focus: string): readonly string[] =>
   })
 
 /**
- * The focus ids a work folder's `work.md` declares under `## Focus` under LAYOUT-PILLARS, in order: each list item
+ * The focus ids a work folder's `_index.md` declares under `## Focus` under LAYOUT-PILLARS, in order: each list item
  * leading with its id as a code span. A folder whose work file has no Focus section declares none.
  */
 export const focusIds = (folder: string): readonly string[] => {
-  const path = join(folder, WORK_FILE)
+  const path = join(folder, entryFile(folder))
   if (!existsSync(path) || !lstatSync(path).isFile()) return []
   return focusIdsIn(/^## Focus[ \t]*$([\s\S]*?)(?=^#{1,2} |(?![\s\S]))/m.exec(readFileSync(path, 'utf8'))?.[1] ?? '')
 }
@@ -276,10 +285,10 @@ const frontField = (path: string, field: string): string | undefined => {
 /**
  * Whether a finished work's folder is still standing and so awaits its close-out, whatever its mark: no coordinator
  * reads a Finished work's folder, so territory work closes it under the `ki-work-package` close-out. The state comes from
- * `state.md` where the package has one, otherwise from the single-file `work.md`.
+ * `state.md` where the package has one, otherwise from the single-file entry file.
  */
 export const awaitsCloseOut = (folder: string): boolean => {
-  const file = existsSync(join(folder, STATE_FILE)) ? join(folder, STATE_FILE) : join(folder, WORK_FILE)
+  const file = existsSync(join(folder, STATE_FILE)) ? join(folder, STATE_FILE) : join(folder, entryFile(folder))
   return frontField(file, 'state') === 'finished'
 }
 
@@ -288,7 +297,7 @@ export const awaitsCloseOut = (folder: string): boolean => {
  * November 2026) a held folder keeps nothing already dealt with, so its tidy candidates fail rather than warn.
  */
 export const heldFolder = (folder: string): boolean => {
-  const file = existsSync(join(folder, STATE_FILE)) ? join(folder, STATE_FILE) : join(folder, WORK_FILE)
+  const file = existsSync(join(folder, STATE_FILE)) ? join(folder, STATE_FILE) : join(folder, entryFile(folder))
   return frontField(file, 'state') === 'on-hold'
 }
 
@@ -381,7 +390,13 @@ export const folderOutcomes = (root: string): FolderOutcomes => {
     if (stray.length > 0)
       closed.push({
         status: 'VIOLATION',
-        message: `a work folder holds only the five package files, one folder per focus area its \`work.md\` declares under \`## Focus\` holding briefs, reports and design notes with their diagram sources and renders, \`findings/\`, \`feedback/\` and, for the tolerance window, \`${REPORTS_FOLDER}/<name>${REPORT_SUFFIX}\`, \`briefs/\` and \`design/\`; outside the closed list: ${stray.join(', ')}`,
+        message: `a work folder holds only the five package files, one folder per focus area its \`${ENTRY_FILE}\` declares under \`## Focus\` holding briefs, reports and design notes with their diagram sources and renders, \`findings/\`, \`feedback/\` and, for the tolerance window, \`${REPORTS_FOLDER}/<name>${REPORT_SUFFIX}\`, \`briefs/\` and \`design/\`; outside the closed list: ${stray.join(', ')}`,
+        subject: subject(folder)
+      })
+    if (entryFiles(folder).length > 1)
+      closed.push({
+        status: 'VIOLATION',
+        message: `a work folder holds one entry file, \`${ENTRY_FILE}\`; during the INDEX-ENTRY rollout \`${LEGACY_ENTRY_FILE}\` is read in its place, never beside it, so keep one`,
         subject: subject(folder)
       })
     const typed = typeFoldersBesideFocus(folder)

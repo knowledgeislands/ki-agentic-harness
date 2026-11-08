@@ -1021,7 +1021,7 @@ describe('local repository evidence', () => {
     for (const area of ['_WORK', '_WORK_REVIEW']) {
       const root = repository()
       mkdirSync(join(root, '+', area, 'ki.example'), { recursive: true })
-      writeFileSync(join(root, '+', area, 'ki.example', 'work.md'), '# ki.example\n')
+      writeFileSync(join(root, '+', area, 'ki.example', '_index.md'), '# ki.example\n')
       writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\n')
 
       const findings = (await collectAuditFindings([root])).findings.filter((finding) => finding.code === 'COV-1')

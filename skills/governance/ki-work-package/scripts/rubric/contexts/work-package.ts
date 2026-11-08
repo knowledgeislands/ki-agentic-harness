@@ -10,6 +10,8 @@ import type {
 } from '../../shared/rubric.ts'
 import {
   EMERGING_FOCUS,
+  ENTRY_FILE,
+  entryFile,
   type FolderOutcomes,
   focusIdNamesFolder,
   focusIdsIn,
@@ -18,7 +20,6 @@ import {
 } from './work-folder.ts'
 
 const ACTIVE_FIELDS = ['type', 'thread', 'state', 'created_at', 'updated_at'] as const
-const WORK_FILE = 'work.md'
 const WORK_REQUIRED = ['id', 'level', 'title', 'worker', 'supervisor', 'state', 'since'] as const
 const WORK_FIELDS: ReadonlySet<string> = new Set([
   ...WORK_REQUIRED,
@@ -511,11 +512,11 @@ const inspectWork = (directory: string, root: string): { works: WorkFolder[]; vi
       })
       continue
     }
-    const path = join(folder, WORK_FILE)
+    const path = join(folder, entryFile(folder))
     if (!physicalFile(path)) {
       violations.push({
         status: 'VIOLATION',
-        message: 'a work folder holds its work file, work.md, as a regular file',
+        message: `a work folder holds its entry file, ${ENTRY_FILE}, or work.md during the INDEX-ENTRY rollout, as a regular file`,
         subject: relative(root, folder)
       })
       continue
@@ -808,7 +809,7 @@ const roleOutcome = (
   }
 }
 
-/** `work.md`'s `role`: one catalogue role, its absence warned on until each territory's packages are in line. */
+/** The entry file's `role`: one catalogue role, its absence warned on until each territory's packages are in line. */
 const definitionRoleChecks = (
   record: ParsedRecord,
   fields: Readonly<Record<string, unknown>>,
@@ -816,10 +817,10 @@ const definitionRoleChecks = (
   catalogue: ReadonlyMap<string, CatalogueRole>
 ): void => {
   if (!('role' in fields)) {
-    evidence.schema.push(warning(record, 'work.md names no role from the role catalogue'))
+    evidence.schema.push(warning(record, `${basename(record.path)} names no role from the role catalogue`))
     return
   }
-  const outcome = roleOutcome(record, fields.role, 'work.md', catalogue)
+  const outcome = roleOutcome(record, fields.role, basename(record.path), catalogue)
   if (outcome) evidence.schema.push(outcome)
 }
 
@@ -841,7 +842,7 @@ const workersChecks = (
   }
   for (const field of ['role', 'tier'] as const)
     if (field in fields)
-      warn(`state.md carries a top-level ${field}; record the seat in workers and the role in work.md`)
+      warn(`state.md carries a top-level ${field}; record the seat in workers and the role in ${ENTRY_FILE}`)
   if (!('workers' in fields) || fields.workers === null) return
   if (!Array.isArray(fields.workers)) {
     fail('workers must be a list of seats, each a mapping with role and tier')
@@ -887,7 +888,7 @@ const chronology = (record: ParsedRecord, created: unknown, since: unknown, evid
     })
 }
 
-/** A single-file work folder: `work.md` carries the definition and the state under its old form. */
+/** A single-file work folder: its entry file carries the definition and the state under its old form. */
 const singleFileEvidence = (work: ParsedRecord, coordinationDeclared: boolean, evidence: Evidence): void => {
   const fields = work.fields
   if (!fields) {
@@ -1076,9 +1077,10 @@ const historyOutcome = (state: ParsedRecord): AuditOutcome | undefined => {
   }
 }
 
-/** A work package: the definition in `work.md` and the state, queries, messages and decisions beside it. */
+/** A work package: the definition in `_index.md` and the state, queries, messages and decisions beside it. */
 const packageEvidence = (folder: WorkFolder, coordinationDeclared: boolean, now: number, evidence: Evidence): void => {
   const { work } = folder
+  const entry = basename(work.path)
   const fields = work.fields
   if (!fields) {
     evidence.schema.push({
@@ -1099,19 +1101,19 @@ const packageEvidence = (folder: WorkFolder, coordinationDeclared: boolean, now:
   if (strayState.length > 0)
     fail(
       work,
-      `a package's work.md carries no state field (${strayState.join(', ')}); its state lives in ${STATE_FILE}`
+      `a package's ${entry} carries no state field (${strayState.join(', ')}); its state lives in ${STATE_FILE}`
     )
   else if (
     DEFINITION_REQUIRED.some((field) => !keys.includes(field)) ||
     keys.some((field) => !DEFINITION_FIELDS.has(field))
   )
-    fail(work, 'work.md front matter must use only its closed definition field set')
+    fail(work, `${entry} front matter must use only its closed definition field set`)
   const focusFirst = sameOutline(work.body, work.stem, [FOCUS_HEADING, ...DEFINITION_HEADINGS])
   if (focusFirst)
     evidence.schema.push({
       status: 'VIOLATION',
       level: 'WARN',
-      message: `tolerance: work.md's ## ${FOCUS_HEADING} stands after Goals and Scope, not above them`,
+      message: `tolerance: ${entry}'s ## ${FOCUS_HEADING} stands after Goals and Scope, not above them`,
       subject: work.path
     })
   else if (
@@ -1121,7 +1123,7 @@ const packageEvidence = (folder: WorkFolder, coordinationDeclared: boolean, now:
   )
     fail(
       work,
-      `a package's work.md headings must be the id H1, Goals, Scope, an optional Values and an optional Focus; its state lives in ${STATE_FILE}`
+      `a package's ${entry} headings must be the id H1, Goals, Scope, an optional Values and an optional Focus; its state lives in ${STATE_FILE}`
     )
   const definition = h2Sections(work.body)
   for (const heading of DEFINITION_HEADINGS)
@@ -1160,7 +1162,7 @@ const packageEvidence = (folder: WorkFolder, coordinationDeclared: boolean, now:
     fail(work, 'Values is one line, linking the shared values and adding any of the work its own')
   const aside = words(definition.get(FOCUS_HEADING) ?? '') + words(values ?? '')
   if (words(work.body) - aside > LIMITS.definitionWords)
-    warn(work, `work.md body runs past ${LIMITS.definitionWords} words, its Values and Focus sections aside`)
+    warn(work, `${entry} body runs past ${LIMITS.definitionWords} words, its Values and Focus sections aside`)
   definitionChecks(work, fields, coordinationDeclared, evidence, true)
   const catalogue = roleCatalogue()
   definitionRoleChecks(work, fields, evidence, catalogue)

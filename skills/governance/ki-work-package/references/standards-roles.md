@@ -82,14 +82,14 @@ A package records its role in its definition and its live seats in its state, as
 
 | Field | File | Value |
 | --- | --- | --- |
-| `role` | `work.md` | The package's role: one catalogue role. Every package names one |
+| `role` | `_index.md` | The package's role: one catalogue role. Every package names one |
 | `workers` | `state.md` | A list of the package's live seats, each a mapping with the keys below; absent or empty when no seat is live |
 
 | `workers` key | Requirement | Value |
 | --- | --- | --- |
 | `role` | required | One catalogue role |
 | `tier` | required | The catalogue tier of that role: `leaders`, `managers` or `makers` |
-| `focus` | optional | A list of focus ids from `work.md`'s Focus section |
+| `focus` | optional | A list of focus ids from `_index.md`'s Focus section |
 | `since` | optional | UTC time the seat took the package up |
 | `status` | optional | `active` or `idle` |
 | `listening` | optional | `on` or `off` |
@@ -104,7 +104,7 @@ The thread line is the one string that names a session's seat. It closes every b
 thread-line = role-glyph " 🔑 " work-id   ; a session whose seat has a role
             | "🧵 " work-id               ; a session with no role yet, and every background run
 role-glyph  = the catalogue glyph of the seat's one role
-work-id     = the authoritative id from work.md
+work-id     = the authoritative id from _index.md
 ```
 
 Examples: `⚖️ 🔑 ki.reg.guilds`, `🏛️ 🔑 ki.sop.main`, `🏠 🔑 personal.reg.household-sol`, `🦉 🔑 personal.reg.inbox-terra`. The role glyph standing ahead of the work id says the role, so the work id stays the package's own id; a seat address beyond it waits for the seat rules. A background run closes its report with `🧵 <work-id>` of the work it reports to, as Kris took RUN-THREAD-LINE a) under ROLES-WRITE.

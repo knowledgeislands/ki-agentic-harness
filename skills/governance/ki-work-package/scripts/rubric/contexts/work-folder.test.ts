@@ -43,7 +43,7 @@ const queries = (...tags: string[]): string =>
   `# Run\n\n## Queries\n\n${tags.map((tag) => `### ${tag} - Which?\n\n`).join('')}\`\`\`text\n### FENCED - not a query\n\`\`\`\n`
 
 const pkg = (root: string): string => {
-  for (const name of ['work.md', 'state.md', 'queries.md', 'messages.md', 'decisions.md'])
+  for (const name of ['_index.md', 'state.md', 'queries.md', 'messages.md', 'decisions.md'])
     write(root, join(WORK, name), `# ${name}\n`)
   return join(root, WORK)
 }
@@ -60,6 +60,24 @@ describe('work folder closed list', () => {
     expect(statuses(folderOutcomes(root).closed)).toEqual(['PASS'])
     write(root, join(WORK, 'discussions.md'), '# discussions.md\n')
     expect(statuses(folderOutcomes(root).closed)).toEqual(['PASS'])
+  })
+
+  // INDEX-ENTRY (Kris, 8 November 2026): the entry file is `_index.md`; `work.md` is read in its place during the
+  // rollout, never beside it.
+  test('a folder whose entry file is still work.md passes and is read, and one holding both fails', () => {
+    const root = fixture()
+    const folder = join(root, WORK)
+    for (const name of ['work.md', 'state.md', 'discussions.md', 'messages.md', 'decisions.md'])
+      write(root, join(WORK, name), `# ${name}\n`)
+    write(root, join(WORK, 'work.md'), '# ki.ways-of-working\n\n## Focus\n\n- `layout` - the folder layout\n')
+    expect(statuses(folderOutcomes(root).closed)).toEqual(['PASS'])
+    expect(focusIds(folder)).toEqual(['layout'])
+
+    write(root, join(WORK, '_index.md'), '# ki.ways-of-working\n\n## Focus\n\n- `roles` - the role model\n')
+    expect(focusIds(folder)).toEqual(['roles'])
+    const closed = folderOutcomes(root).closed
+    expect(statuses(closed)).toEqual(['VIOLATION'])
+    expect(closed[0]?.message).toContain('one entry file')
   })
 
   test('reports/ holds only run reports, and a top-level report warns during the tolerance window', () => {
@@ -141,19 +159,19 @@ Each focus area has an id, which is also its folder.
 `
 
 describe('focus folders', () => {
-  test("work.md's Focus section declares its ids, each leading its list item as a code span", () => {
+  test("_index.md's Focus section declares its ids, each leading its list item as a code span", () => {
     const root = fixture()
     const folder = pkg(root)
-    write(root, join(WORK, 'work.md'), FOCUS_WORK)
+    write(root, join(WORK, '_index.md'), FOCUS_WORK)
     expect(focusIds(folder)).toEqual(['layout', '_emerging'])
-    write(root, join(WORK, 'work.md'), '# ki.ways-of-working\n\n## Goals\n\n- `layout` is not a focus\n')
+    write(root, join(WORK, '_index.md'), '# ki.ways-of-working\n\n## Goals\n\n- `layout` is not a focus\n')
     expect(focusIds(folder)).toEqual([])
   })
 
   test('a declared focus folder holds briefs, reports and design notes; an undeclared folder fails', () => {
     const root = fixture()
     const folder = pkg(root)
-    write(root, join(WORK, 'work.md'), FOCUS_WORK)
+    write(root, join(WORK, '_index.md'), FOCUS_WORK)
     write(root, join(WORK, 'layout', 'pilot.brief.md'), '# Brief\n')
     write(root, join(WORK, 'layout', 'pilot.report.md'), '# Run\n')
     write(root, join(WORK, 'layout', 'options.md'), '# Options\n')
@@ -176,7 +194,7 @@ describe('focus folders', () => {
     write(root, join(WORK, 'reports', 'run.report.md'), '# Run\n')
     write(root, join(WORK, 'design', 'note.md'), '# Note\n')
     expect(statuses(folderOutcomes(root).closed)).toEqual(['PASS'])
-    write(root, join(WORK, 'work.md'), FOCUS_WORK)
+    write(root, join(WORK, '_index.md'), FOCUS_WORK)
     write(root, join(WORK, '_emerging', 'notes.md'), '# Notes\n')
     write(root, join(WORK, '_emerging', '_index.md'), '# Emerging\n')
     const outcomes = folderOutcomes(root).closed
@@ -187,7 +205,7 @@ describe('focus folders', () => {
   test('under EMERGING-ONLY-WHEN-USED a listed _emerging warns while it holds nothing', () => {
     const root = fixture()
     const folder = pkg(root)
-    write(root, join(WORK, 'work.md'), FOCUS_WORK)
+    write(root, join(WORK, '_index.md'), FOCUS_WORK)
     expect(idleEmerging(folder)).toBe(true)
     const outcomes = folderOutcomes(root).closed
     expect(statuses(outcomes)).toEqual(['WARN'])
@@ -205,7 +223,7 @@ describe('focus folders', () => {
   test('under INDEX-NAME a focus folder holding something without _index.md warns, index.md named', () => {
     const root = fixture()
     const folder = pkg(root)
-    write(root, join(WORK, 'work.md'), FOCUS_WORK)
+    write(root, join(WORK, '_index.md'), FOCUS_WORK)
     write(root, join(WORK, 'layout', 'index.md'), '# Layout\n')
     write(root, join(WORK, '_emerging', 'notes.md'), '# Notes\n')
     expect(focusIndexFindings(folder)).toEqual(['layout/index.md', '_emerging/'])
@@ -220,7 +238,7 @@ describe('focus folders', () => {
   test('FOLDER-2 and FOLDER-3 look inside focus folders', () => {
     const root = fixture()
     pkg(root)
-    write(root, join(WORK, 'work.md'), FOCUS_WORK)
+    write(root, join(WORK, '_index.md'), FOCUS_WORK)
     write(root, join(WORK, 'decisions.md'), '# Decisions\n\n- PMO-CI answered\n')
     write(root, join(WORK, 'layout', 'pilot.report.md'), queries('PMO-CI'))
     write(root, join(WORK, 'layout', 'pilot.brief.md'), '# Brief\n')
@@ -235,7 +253,7 @@ describe('focus folders', () => {
   test('under HOLD-TIDY a folder On hold that keeps dealt-with reports or briefs fails rather than warns', () => {
     const root = fixture()
     pkg(root)
-    write(root, join(WORK, 'work.md'), FOCUS_WORK)
+    write(root, join(WORK, '_index.md'), FOCUS_WORK)
     write(root, join(WORK, 'decisions.md'), '# Decisions\n\n- PMO-CI answered\n')
     write(root, join(WORK, 'layout', 'pilot.report.md'), queries('PMO-CI'))
     write(root, join(WORK, 'layout', 'pilot.brief.md'), '# Brief\n')
@@ -298,8 +316,8 @@ describe('work folder tidy', () => {
     const root = fixture()
     pkg(root)
     write(root, join('+', '_WORK_REVIEW', 'README.md'), '# Review\n\n- [[ki.held]] - why\n- `ki.gone/` - why\n')
-    write(root, join('+', '_WORK_REVIEW', 'ki.held', 'work.md'), '# Held\n')
-    write(root, join('+', '_WORK_REVIEW', 'ki.stray', 'work.md'), '# Stray\n')
+    write(root, join('+', '_WORK_REVIEW', 'ki.held', '_index.md'), '# Held\n')
+    write(root, join('+', '_WORK_REVIEW', 'ki.stray', '_index.md'), '# Stray\n')
     const outcomes = folderOutcomes(root).review
     expect(statuses(outcomes)).toEqual(['VIOLATION', 'VIOLATION'])
     expect(outcomes[0]?.message).toEndWith(': ki.stray')

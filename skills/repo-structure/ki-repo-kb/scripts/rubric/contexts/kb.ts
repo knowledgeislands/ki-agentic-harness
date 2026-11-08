@@ -19,6 +19,7 @@ const CONFIG_TABLE = 'ki-repo-kb'
 const SNAKE_CASE = /^[a-z][a-z0-9_]*$/
 const TRADE_RECORD = /^TRD-[0-9a-f]{8}\.md$/
 const WORK_PACKAGE_FILES: ReadonlySet<string> = new Set([
+  '_index.md',
   'work.md',
   'state.md',
   'discussions.md',

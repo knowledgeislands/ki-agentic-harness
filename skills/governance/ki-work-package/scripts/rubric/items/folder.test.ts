@@ -23,7 +23,7 @@ describe('FOLDER family levels', () => {
   test('every outcome level, including HOLD-TIDY failures, is one its item declares', () => {
     const root = mkdtempSync(join(tmpdir(), 'ki-folder-levels-'))
     roots.push(root)
-    for (const name of ['work.md', 'queries.md', 'messages.md']) write(root, join(WORK, name), `# ${name}\n`)
+    for (const name of ['_index.md', 'queries.md', 'messages.md']) write(root, join(WORK, name), `# ${name}\n`)
     write(root, join(WORK, 'state.md'), '---\nid: ki.held\nstate: on-hold\n---\n# state\n')
     write(root, join(WORK, 'decisions.md'), '# Decisions\n\n- PMO-CI answered\n')
     write(root, join(WORK, 'reports', 'pilot.report.md'), '# Run\n\n## Queries\n\n### PMO-CI - Which?\n')

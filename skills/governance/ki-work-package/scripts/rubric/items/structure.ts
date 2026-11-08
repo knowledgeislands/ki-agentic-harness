@@ -7,7 +7,7 @@ const STRUCTURE_1: RubricItem<ScaffoldContext> = {
   code: 'STRUCTURE-1',
   title: 'the work area holds only work folders',
   description:
-    '`+/_WORK/` is a physical directory holding only physical work folders, each with its regular `work.md` work file and, once `state.md` exists, all five package files as regular files. While the legacy `+/_CHECKPOINTS/` directory exists it retains its exact `README.md` scaffold and only flat Markdown records beside it; once `+/_WORK/` exists, neither retired `+/_THREADS/` nor `+/_CHECKPOINTS/` exists beside it, tracked or not. Symlinks, unsupported files, retired-record directories, and nested or timestamped layouts are invalid.',
+    '`+/_WORK/` is a physical directory holding only physical work folders, each with its regular `_index.md` work file and, once `state.md` exists, all five package files as regular files. While the legacy `+/_CHECKPOINTS/` directory exists it retains its exact `README.md` scaffold and only flat Markdown records beside it; once `+/_WORK/` exists, neither retired `+/_THREADS/` nor `+/_CHECKPOINTS/` exists beside it, tracked or not. Symlinks, unsupported files, retired-record directories, and nested or timestamped layouts are invalid.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
@@ -21,7 +21,7 @@ const STRUCTURE_2: RubricItem<ScaffoldContext> = {
   code: 'STRUCTURE-2',
   title: 'single-file work folders and old checkpoints are read for the tolerance window',
   description:
-    "Each single-file work folder, whose `work.md` carries its state and which has no `state.md`, and each old checkpoint under `+/_CHECKPOINTS/` is still read and checked under its old form, with a warning naming its new home, the five-file work package in `+/_WORK/<id>/`, until its territory's migration moves it; the window closes when an inventory shows none left.",
+    "Each single-file work folder, whose `_index.md` carries its state and which has no `state.md`, and each old checkpoint under `+/_CHECKPOINTS/` is still read and checked under its old form, with a warning naming its new home, the five-file work package in `+/_WORK/<id>/`, until its territory's migration moves it; the window closes when an inventory shows none left.",
   sources: [`${SOURCE}#old-checkpoints`],
   mechanical: {
     level: 'WARN',
