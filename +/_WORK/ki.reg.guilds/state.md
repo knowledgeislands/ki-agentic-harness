@@ -21,6 +21,7 @@ workers:
 
 ## Now
 
+- 2026-11-08 17:22 GMT: RESET. Everything below in Now, Next steps and Held is parked under RESET-PARK until Kris says otherwise; act only on Kris and the six sessions RESET-SOURCES names. Thread line `⚖️ 🔑 ki.reg.guilds+guildmaster` (THREAD-ROLE).
 - 2026-11-08 16:52 GMT: re-bootstrapped on sol under Kris's "do not make any changes just yet"; mark struck at his word "take a mark also", its Summary since 7 November 04:52 GMT serving as the owed return report. Prune and decisions tidy deferred while the no-changes word stands; nothing launched.
 - 2026-11-08 12:23 GMT: Kris is back and the away window that opened at 05:00 GMT on 7 November is closed. The keep-awake is released.
 - 12:23 GMT: Kris said "drain down ready to stop working, we are moving host in some way". The package is drained: nothing is running or queued, the listener is stopped and nothing new launches.
@@ -29,6 +30,8 @@ workers:
 - REPLY-FORMAT REFRESH: 9 of 17 packages ACKed, 8 awaiting. PLAIN-QUERY-NAMES is with the inbox design session for its next round.
 
 ## Next steps
+
+Parked under RESET-PARK, 8 November 17:22 GMT.
 
 - AWAY-WINDOW from 05:00 GMT until Kris returns: build the agreed skills and land the agreed standards; no knowledge at top level, nothing done with the knowledge itself. One editing run per repository; primary checkouts.
 
@@ -49,6 +52,8 @@ Excluded: `legal-merge` (waits on LEGAL-ACCESS, Kris creating Cloudflare Access)
 3. Waiting: Kris creating the Cloudflare Access application for `legal.midnight.ninja` (LEGAL-ACCESS); Kris verifying vega's key (VEGA-KEY); personal.reg.inbox-sol's state of coordination (COORD-OVERLAP).
 
 ## Held
+
+Parked under RESET-PARK, 8 November 17:22 GMT.
 
 - REPO-SHAPE-PACKAGES (ki.sop.main MSG-7e674180, from ki.prj.stoa): Kris, 7 November: "It probably does mean that we should have a skill for whatever structure this thing might have. It seems like it's a new repo shape really, doesn't it?" A `ki-repo-*` shape skill for package repositories (vendored package tree, workbench app, release and re-vendor rule); packages-stoa is declared as tools today. STOA-SHAPE finding received (ki.prj.stoa MSG-6adb77c9, 04:28): for REPO-SHAPE-PACKAGES (routed to you as MSG-7e674180): the STOA-SHAPE finding, how a package repository such as packages-stoa differs from the tools shape and what a package-repository skill would own, is in [ki-repo-0-32-0's report](https://github.com/knowledgeislands/ki-principal/blob/34b5faeb/+/_WORK/ki.prj.stoa/reports/ki-repo-0-32-0.report.md#stoa-shape---how-a-package-repository-differs-from-the-tools-shape). packages-stoa is declared `ki-repo-project` meanwhile, because `ki-repo-tools` needs a `bin/` command. Please ACK. Ready for a design run after the query pass.
 - DOER-LESSONS (ki.prj.agora MSG-991aa6ad, 04:03 GMT): Kris asked through Claude Design (CD-63) for tonight's doer-coordination lessons to become durable in the coordination skills; verbatim in `ki-principal/+/_WORK/ki.prj.agora/identity/claude-design/messages.md` (CD-63). Addendum DOER-LESSONS-2 (MSG-275b0e5b, ILL-26 from the illustrator, verbatim in `ki-principal/+/_WORK/ki.prj.agora/identity/chatgpt/messages.md`) rides with it. Plan unit 4.
