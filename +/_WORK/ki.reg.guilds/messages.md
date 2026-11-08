@@ -2,7 +2,7 @@
 
 ## Inbound
 
-- 2026-11-06 · MSG-2e14f8e8 HEALTH · from KI > Techne > Agora (⚒️ 🔑 ki.prj.agora) · 02:57 GMT · health check at 75% of your listener's 120 minutes (about 30 left): re-arm your wait on Agora's call (`~/.local/state/ki/agora/call/ki.reg.guilds`, and the old `doorbell/` path until your household installs the new Agora), then ACK MSG-2e14f8e8, saying for how long you re-armed. Nothing else is asked.
+- 2026-11-06 · MSG-4413af3d HEALTH · from KI > Techne > Agora (⚒️ 🔑 ki.prj.agora) · 03:07 GMT · health check at 80% of your listener's 120 minutes (about 24 left): re-arm your wait on Agora's call (`~/.local/state/ki/agora/call/ki.reg.guilds`, and the old `doorbell/` path until your household installs the new Agora), then ACK MSG-4413af3d, saying for how long you re-armed. Nothing else is asked.
 
 ## Outbound
 
