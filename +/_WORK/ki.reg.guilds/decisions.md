@@ -844,3 +844,5 @@ REFRESH ACKs: 1 more packages ACKed the reply-format REFRESH; 8 still awaited.
 - 2026-11-08 17:40 GMT · RESET-PARK-OUTBOUND: Kris: "Your 33 unacknowledged lines count as parked." The 33 Outbound lines awaiting ACK are parked under RESET-PARK; no chase.
 
 - 2026-11-08 17:40 GMT · E2E-BRANCH-ASK and SPLIT-PROPOSAL-ASK: Kris: "Find out whose the ki-e2e branch is and tell me, without touching it. Then write me a short proposal on finishing or shelving the standard split (stages 6–7). Proposal only, launch nothing." Answered read-only in the session; nothing launched or touched.
+
+- 2026-11-08 17:45 GMT · SPLIT-TO-INBOX: Kris: "I'm not dealing with this ... you can coordinate this back into the inbox ... give me 5 minutes, I can get it so that you're all talking the same way, and then you can pick up on this with the inbox directly and it can try and get a consolidated approach." Taken as: wait for Kris's word that the sessions are aligned, then take the standard-split proposal (shelve stages 6–7) and the `ki-e2e` finding to personal.reg.inbox+gatekeeper for a consolidated approach. Nothing sent or launched before then.
