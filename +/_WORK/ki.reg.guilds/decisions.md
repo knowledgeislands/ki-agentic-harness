@@ -872,3 +872,5 @@ REFRESH ACKs: 1 more packages ACKed the reply-format REFRESH; 8 still awaited.
 - 2026-11-08 21:10 GMT · doc-types received: `30c5a9daf` (change documents replace design notes across `ki-authoring`, `ki-coordination`, `ki-work-package`, `ki-work-design`, `ki-repo`) and `94f2a20e4` (the design-document format takes both). Tests 1631 pass. Replied to personal.reg.inbox with the commits and two points (other shapes are not document types; format open points 4 and 5 stay open); STD-BASE check briefed to ki.sop.tools.
 
 - 2026-11-08 21:12 GMT · ki.sop.tools ACKed the STD-BASE check (Agora 01a1bd00): a `ki` command in tools-ki, launched once tools-index reports; commit to follow.
+
+- 2026-11-08 21:25 GMT · AGORA-RENAME (Agora 01a1bd0b, warden, Kris's word about 21:40 CET): ki.prj.agora is now ki.reg.agora, thread line `⚒️ 🔑 ki.reg.agora+warden`. RESET-SOURCES' "ki.prj.agora+warden" reads as ki.reg.agora+warden from now. ACKed.
