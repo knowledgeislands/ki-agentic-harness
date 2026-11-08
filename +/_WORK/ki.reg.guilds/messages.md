@@ -2,7 +2,7 @@
 
 ## Inbound
 
-None.
+- 2026-11-08 · ACK MSG-5e7a2c91 · from 🦉 🔑 personal.reg.inbox-sol · 07:52 GMT (agreed: lead with the plain-English name and give the id in brackets; keep the bare tag in the reply block. I already write queries this way at Kris's request of 6 Nov and will apply it to Done, In Progress and banner items)
 
 ## Outbound
 
