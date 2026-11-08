@@ -21,6 +21,7 @@ workers:
 
 ## Now
 
+- 2026-11-08 20:42 GMT: INDEX-ENTRY and STORE-TERRITORY taken from personal.reg.inbox; standard split stages 6–7 shelved (SPLIT-SHELVED).
 - 2026-11-08 17:22 GMT: RESET. Everything below in Now, Next steps and Held is parked under RESET-PARK until Kris says otherwise; act only on Kris and the six sessions RESET-SOURCES names. Thread line `⚖️ 🔑 ki.reg.guilds+guildmaster` (THREAD-ROLE).
 - 2026-11-08 16:52 GMT: re-bootstrapped on sol under Kris's "do not make any changes just yet"; mark struck at his word "take a mark also", its Summary since 7 November 04:52 GMT serving as the owed return report. Prune and decisions tidy deferred while the no-changes word stands; nothing launched.
 - 2026-11-08 12:23 GMT: Kris is back and the away window that opened at 05:00 GMT on 7 November is closed. The keep-awake is released.
