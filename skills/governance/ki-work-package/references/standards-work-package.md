@@ -15,7 +15,6 @@ The work model is the [Work Process](https://github.com/knowledgeislands/ki-prin
   - [Assigned package stewardship](#assigned-package-stewardship)
 - [Tidying the work folder](#tidying-the-work-folder)
   - [Messages lines](#messages-lines)
-  - [Work awaiting review](#work-awaiting-review)
 - [Exact package form](#exact-package-form)
   - [Work file](#work-file)
   - [State file](#state-file)
@@ -40,7 +39,7 @@ The work model is the [Work Process](https://github.com/knowledgeislands/ki-prin
 
 The capability is optional. A repository declares `ki-work-package` in `.ki.toml`; the declaration is an empty capability marker and requires no physical subarea, because a work folder is created when its work opens. The repository owns its work packages; Git supplies any recovery history.
 
-This standard is the one specification of `+/_WORK/<id>/` and `+/_WORK_REVIEW/<id>/`, as Kris answered WORK-FOLDER-OWNER on 18 October 2026, read back as "the work-folder skill is the canonical specification; ki-coordination timing and judgement; ki-delegation run side only; ki-work-design graduation; others check in on the four-point contract". It owns the package's shape, its closed list, its entry points, the tidy and prune rules, the review area and the Messages line shape, and each file's form at every level, coordinated or not. The other owners keep only their side and link here for the rest:
+This standard is the one specification of `+/_WORK/<id>/`, as Kris answered WORK-FOLDER-OWNER on 18 October 2026, read back as "the work-folder skill is the canonical specification; ki-coordination timing and judgement; ki-delegation run side only; ki-work-design graduation; others check in on the four-point contract". It owns the package's shape, its closed list, its entry points, the tidy and prune rules and the Messages line shape, and each file's form at every level, coordinated or not. The other owners keep only their side and link here for the rest:
 
 | Concern | Owner |
 | --- | --- |
@@ -53,7 +52,7 @@ This standard is the one specification of `+/_WORK/<id>/` and `+/_WORK_REVIEW/<i
 
 A work package lives in one work folder, `+/_WORK/<id>/`, one per piece of work above a work item; a work item has no package, because its record is its home. `<id>` is the work's dotted id under `ki-coordination`'s [Work naming](../../../change-management/ki-coordination/references/standards-opening.md#work-naming), which defines the id, slug and title: lower-case kebab segments joined by `.`, never a host, an underscore or a runtime session identifier. The folder name, the `id` field of `_index.md` and of `state.md`, and each file's H1 agree exactly.
 
-`+/_WORK/` holds only work folders, each a physical directory with its work file. Symlinked, nested, timestamped, archived and alternate layouts are invalid. Migrated work awaiting review sits in `+/_WORK_REVIEW/<id>/` under [Work awaiting review](#work-awaiting-review); its files are checked only when the folder leaves review.
+`+/_WORK/` holds only work folders, each a physical directory with its work file. Symlinked, nested, timestamped, archived and alternate layouts are invalid. There is no holding area beside it for work awaiting review, as Kris set under WORK-REVIEW-RETIRE on 8 November 2026: live work is a package here, and work that is not live is deleted, Git keeping its history.
 
 Every package defaults to its territory's Capital. Every Project package remains Capital-homed; this rule adds no Project-home exception. Regular or ad hoc work may deliberately retain an owner-approved member-repository home, declared as `Home:` in `_index.md`'s Scope and referenced in its parent State of play's existing Scope, with the id in `covers`. Preserve existing deliberate exceptions such as Acquire intake; no package is moved by this rule. One physical home holds the authoritative package, state and incoming queue; a Capital home reference is not a second package or inbox. Records remain in the repositories that own their plans, priority and acceptance; a record's `project` resolves through the Capital's registry without execution authority. A record without `project` goes first to its regular or ad hoc owner, then to State of play only when unresolved.
 
@@ -197,14 +196,6 @@ The sender adds or replaces only its own line, or its ACK line, and edits nothin
 Every writer edits `messages.md` from a fresh pull just before it commits, changing only the lines its part here lets it add, replace or remove, and resolves a conflict in the file by keeping both sides; no commit writes the file back from an earlier copy, which would drop lines added since. Every time a line carries is read from the writer's clock as it writes the line, with its zone, never recalled or copied from another line. Both close gaps the design runtime reported to `ki.prj.agora` in CD-63 on 7 November 2026, which Kris asked to be made durable: Inbound lines vanished from a `messages.md` during a commit at 22:59 GMT, and a line carried 23:30 for 23:02.
 
 A message may carry an optional `@<host-or-category>` requirement immediately after its date, using a name resolved through the territory's machine inventory. It restricts device-dependent execution only. Any coordinator may acknowledge, plan, ask about or dispatch the line to an eligible host, preserving IMPORTANT and queue order. An unfulfilled requirement stays queued and counted; flag its age when no eligible host has taken it, without using age as takeover authority. A concrete host matches that inventory entry; a category matches inventory membership, never a guessed alias. Unknown or renamed names need resolution before execution.
-
-### Work awaiting review
-
-`+/_WORK_REVIEW/<id>/` is the holding area for migrated work a territory's migration was not confident is live, as Kris set under MIGRATION-REVIEW on 18 October: "put everything which you're confident in into the work folder and then put everything else into a underscore work review folder ... you're not waiting on me to answer those, and then we can pick up on the review ones later". Its folders keep the work-folder shape they were moved in, and its index note, `+/_WORK_REVIEW/README.md`, gives one line per folder saying why it is there.
-
-- **Not live:** work awaiting review is neither picked up, dispatched nor counted against the cap; `ki work status` keeps it out of the five views and shows it as a count.
-- **Leaving review:** the owner, or the work itself at its next mark, moves a folder to `+/_WORK/<id>/` by `git mv` when it is live, moving it to the package shape in the same change, or deletes it when it is not, removing its index line in the same commit.
-- **Checks:** the rubric accepts the holding area, warns on a folder with no index line, and applies no closed-list or record check to it until the folder leaves review.
 
 ## Exact package form
 

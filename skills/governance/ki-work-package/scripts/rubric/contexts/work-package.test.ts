@@ -408,8 +408,6 @@ test('a well-formed work file passes every record check', () => {
       omit: ['project', 'blocking']
     })
   )
-  mkdirSync(join(repository, '+', '_WORK_REVIEW', 'ki.unsure'), { recursive: true })
-  writeFileSync(join(repository, '+', '_WORK_REVIEW', 'ki.unsure', '_index.md'), 'not yet checked')
 
   expect(Object.values(statuses(context(repository)))).toEqual(Array(6).fill('PASS'))
 })

@@ -88,15 +88,17 @@ const FOLDER_4: RubricItem<FolderOutcomes> = {
 
 const FOLDER_5: RubricItem<FolderOutcomes> = {
   code: 'FOLDER-5',
-  title: 'every folder awaiting review has its index line',
+  title: 'no retired `+/_WORK_REVIEW/` holding area remains',
   description:
-    "Each folder under `+/_WORK_REVIEW/` has one line in the holding area's `README.md` saying why it is there, and each index line names a folder still held.",
-  sources: [`${SOURCE}#work-awaiting-review`],
+    '`+/_WORK/` is the one work area: a `+/_WORK_REVIEW/` left from the holding area WORK-REVIEW-RETIRE retired holds no accepted work. During its rollout a leftover area warns rather than fails.',
+  sources: [`${SOURCE}#location-and-identity`],
   mechanical: {
-    level: 'WARN',
+    level: 'FAIL',
+    overrideLevels: ['WARN'],
     remediation: {
       class: 'diagnostic',
-      guidance: 'Add the missing index line, or remove the line in the same commit that moves or deletes its folder.'
+      guidance:
+        'Move each folder that is live to `+/_WORK/<id>/` by `git mv`, bringing it to the package shape in the same change, delete each that is not, Git keeping its history, then remove `+/_WORK_REVIEW/`.'
     },
     audit: { phase: 'INSPECT', run: ({ review }) => review }
   }

@@ -136,7 +136,7 @@ describe('work folder closed list', () => {
     const outcomes = folderOutcomes(fixture())
     expect(statuses(outcomes.closed)).toEqual(['NOT_APPLICABLE'])
     expect(statuses(outcomes.briefs)).toEqual(['NOT_APPLICABLE'])
-    expect(statuses(outcomes.review)).toEqual(['NOT_APPLICABLE'])
+    expect(statuses(outcomes.review)).toEqual(['PASS'])
   })
 })
 
@@ -312,16 +312,16 @@ describe('work folder tidy', () => {
     expect(statuses(folderOutcomes(root).finished)).toEqual(['PASS'])
   })
 
-  test('an unindexed review folder and an orphaned index line are listed', () => {
+  test('a leftover of the retired review area warns during the rollout, naming what it holds', () => {
     const root = fixture()
     pkg(root)
-    write(root, join('+', '_WORK_REVIEW', 'README.md'), '# Review\n\n- [[ki.held]] - why\n- `ki.gone/` - why\n')
+    expect(statuses(folderOutcomes(root).review)).toEqual(['PASS'])
+    write(root, join('+', '_WORK_REVIEW', 'README.md'), '# Review\n')
     write(root, join('+', '_WORK_REVIEW', 'ki.held', '_index.md'), '# Held\n')
-    write(root, join('+', '_WORK_REVIEW', 'ki.stray', '_index.md'), '# Stray\n')
     const outcomes = folderOutcomes(root).review
-    expect(statuses(outcomes)).toEqual(['VIOLATION', 'VIOLATION'])
-    expect(outcomes[0]?.message).toEndWith(': ki.stray')
-    expect(outcomes[1]?.message).toEndWith(': ki.gone')
+    expect(statuses(outcomes)).toEqual(['WARN'])
+    expect(outcomes[0]?.message).toContain('WORK-REVIEW-RETIRE')
+    expect(outcomes[0]?.message).toEndWith(': ki.held, README.md')
   })
 
   test('more than eight open queries is listed', () => {

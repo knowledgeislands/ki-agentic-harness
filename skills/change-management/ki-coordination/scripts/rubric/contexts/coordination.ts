@@ -2,8 +2,7 @@
  * Read-only discovery of a repository's coordinating work for the thin `ki-coordination` rubric.
  *
  * Boundary: reads the repository's `.ki.toml` identity, its work files `+/_WORK/<id>/_index.md` and the reports and
- * decisions logs beside them, the holding area `+/_WORK_REVIEW/`, which it only counts, and for the tolerance window
- * its `+/_CHECKPOINTS/` records and the thread reports under `+/_THREADS/<run>/`, each old shape passing with a
+ * decisions logs beside them, and for the tolerance window its `+/_CHECKPOINTS/` records and the thread reports under `+/_THREADS/<run>/`, each old shape passing with a
  * warning; on a Capital the `Streams/Projects/`, `Streams/Themes/` and legacy `Streams/Initiatives/` registry; and the
  * coordinator binding: the repository's and the user's Claude Code settings, of which it reads only the output style and the hook
  * commands, and the deployed output style; and for the owner-queue cap the front matter of the roadmap records in the
@@ -26,7 +25,6 @@ export const ACTIVE_THREAD_CAP = 4
 const MASTER_THREAD = '_state-of-play'
 const CHECKPOINT_DIRECTORY = join('+', '_CHECKPOINTS')
 const WORK_DIRECTORY = join('+', '_WORK')
-const WORK_REVIEW_DIRECTORY = join('+', '_WORK_REVIEW')
 const PROJECTS_DIRECTORY = join('Streams', 'Projects')
 const THEMES_DIRECTORY = join('Streams', 'Themes')
 const INITIATIVES_DIRECTORY = join('Streams', 'Initiatives')
@@ -528,23 +526,6 @@ const capOutcomes = (records: readonly Checkpoint[], works: readonly Work[]): Au
 }
 
 /**
- * The work folders awaiting review under `+/_WORK_REVIEW/`, which are counted and otherwise not checked; a non-empty
- * area warns, so that territory work raises it to the owner as one `REVIEW-HOLD` query.
- */
-const reviewOutcomes = (root: string): AuditOutcome[] => {
-  const review = folders(join(root, WORK_REVIEW_DIRECTORY))
-  if (!review || review.length === 0) return []
-  return [
-    {
-      status: 'VIOLATION',
-      level: 'WARN',
-      message: `${review.length} work folder(s) await review under \`+/_WORK_REVIEW/\`; they are not live and not counted, and territory work raises them as one \`REVIEW-HOLD\` query until the area is empty`,
-      subject: WORK_REVIEW_DIRECTORY
-    }
-  ]
-}
-
-/**
  * The focus folders a work folder's `_index.md` declares under `## Focus`, LAYOUT-PILLARS (2 November 2026): each list
  * item leading with its kebab-case id as a code span, under the `ki-work-package` focus areas.
  */
@@ -941,14 +922,11 @@ export const createCoordinationSession = ({
       )
     },
     cap: {
-      outcomes: [
-        ...one(
-          [...capOutcomes(records ?? [], works ?? []), ...queueOutcomes(root, workFolders ?? [])],
-          'The active Project work and its records awaiting acceptance are within the cap.',
-          absent
-        ),
-        ...reviewOutcomes(root)
-      ]
+      outcomes: one(
+        [...capOutcomes(records ?? [], works ?? []), ...queueOutcomes(root, workFolders ?? [])],
+        'The active Project work and its records awaiting acceptance are within the cap.',
+        absent
+      )
     },
     links: {
       outcomes: one(

@@ -1017,24 +1017,22 @@ describe('local repository evidence', () => {
     ])
   })
 
-  test('takes either work-model area as the checkpoint signal', async () => {
-    for (const area of ['_WORK', '_WORK_REVIEW']) {
-      const root = repository()
-      mkdirSync(join(root, '+', area, 'ki.example'), { recursive: true })
-      writeFileSync(join(root, '+', area, 'ki.example', '_index.md'), '# ki.example\n')
-      writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\n')
+  test('takes the work area as the checkpoint signal', async () => {
+    const root = repository()
+    mkdirSync(join(root, '+', '_WORK', 'ki.example'), { recursive: true })
+    writeFileSync(join(root, '+', '_WORK', 'ki.example', '_index.md'), '# ki.example\n')
+    writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\n')
 
-      const findings = (await collectAuditFindings([root])).findings.filter((finding) => finding.code === 'COV-1')
-      expect(findings).toContainEqual(
-        expect.objectContaining({
-          level: 'FAIL',
-          message: expect.stringContaining('looks governed by ki-work-package')
-        })
-      )
+    const findings = (await collectAuditFindings([root])).findings.filter((finding) => finding.code === 'COV-1')
+    expect(findings).toContainEqual(
+      expect.objectContaining({
+        level: 'FAIL',
+        message: expect.stringContaining('looks governed by ki-work-package')
+      })
+    )
 
-      writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\n\n[skills.ki-work-package]\n')
-      expect((await collectAuditFindings([root])).findings.filter((finding) => finding.code === 'COV-1')).toEqual([])
-    }
+    writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\n\n[skills.ki-work-package]\n')
+    expect((await collectAuditFindings([root])).findings.filter((finding) => finding.code === 'COV-1')).toEqual([])
   })
 
   test('warns on a thread folder as a thread-model working area', async () => {

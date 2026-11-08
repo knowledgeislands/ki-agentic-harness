@@ -16,3 +16,4 @@ This file holds the tolerance for the forms [the role standard](standards-roles.
 | ⭐ or 🔧 in a glyph run, as in `🦉⭐ 🔑 personal.reg.inbox-terra` | The role glyph alone; neither is a role, and ⭐ and 🔧 leave the thread line under MARKS-RETIRE | The footer hook warns |
 | `🧵 🔑 <work-id>` | `🧵 <work-id>`, or the role glyph's key form once the seat has a role | The footer hook warns |
 | A worker register held in `state.md`'s body | The `workers` field, moved into the front matter | Not checked |
+| A `+/_WORK_REVIEW/` holding area, retired under WORK-REVIEW-RETIRE on 8 November 2026 | No accepted work: move each live folder to `+/_WORK/<id>/` in the package shape and delete the rest; delete this line, and FOLDER-5 fails a leftover area | FOLDER-5 warns |

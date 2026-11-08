@@ -71,7 +71,6 @@ custom-output/
       writeFileSync(join(root, '.gitignore'), content)
       const files = [
         join('+', '_WORK', 'ki.prj.example', 'reports', 'x.report.md'),
-        join('+', '_WORK_REVIEW', 'ki.prj.example', 'reports', 'x.report.md'),
         join('x', 'reports', 'x.report.md')
       ]
       for (const file of files) {
@@ -81,7 +80,7 @@ custom-output/
       expect(spawnSync('git', ['init', '-q'], { cwd: root }).status).toBe(0)
       const ignored = (file: string): boolean =>
         spawnSync('git', ['check-ignore', '-q', '--no-index', file], { cwd: root }).status === 0
-      expect(files.map(ignored)).toEqual([false, false, true])
+      expect(files.map(ignored)).toEqual([false, true])
     } finally {
       rmSync(root, { recursive: true, force: true })
     }

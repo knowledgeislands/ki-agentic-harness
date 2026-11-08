@@ -107,7 +107,7 @@ The Work Process note's Words table owns the model's words: work, work item, the
 | [Holds](standards-holds.md) | draining, the paused hold, Snoozing and release |
 | [Unattended windows](standards-unattended.md) | away grants, unattended windows, scheduled wakes and headless passes |
 | [Listening and host sync](standards-listening.md) | the inbox watch, the two session capabilities and host sync |
-| [Territory work](standards-territory.md) | States of play, Project work under them, assigned packages, the owner queue, work awaiting review and the worktree sweep |
+| [Territory work](standards-territory.md) | States of play, Project work under them, assigned packages, the owner queue and the worktree sweep |
 | [Opening and naming](standards-opening.md) | the levels and forms, work naming and the openers |
 | [Bootstrap and re-anchoring](standards-bootstrap.md) | bootstrap, resolving the opener, re-anchoring after compaction, picking work up, red-x recovery and targeted refresh |
 | [Messages and surfaces](standards-messages.md) | messages between work and the surfaces a coordinator reads |
@@ -463,7 +463,7 @@ The native rubric is thin and complements `ki-work-package`'s. It checks only wh
 - each package holds only its closed list, and reports with open queries;
 - no work is over the owner-queue cap of eight open queries or eight records awaiting acceptance.
 
-It accepts `+/_WORK_REVIEW/` as a holding area, warning while it holds anything so the State of play raises it. It cannot judge whether a coordinator kept its turn budget, whether a report took the owner-report shape under its heading and closed with the banner, whether a spoken answer was read back, whether a Summary covered the window since the mark, whether decisions were struck, pointed or kept, or whether the coordinator refreshed this guidance. The COORD judgement items review those from transcripts, reports and packages the owner selects.
+It cannot judge whether a coordinator kept its turn budget, whether a report took the owner-report shape under its heading and closed with the banner, whether a spoken answer was read back, whether a Summary covered the window since the mark, whether decisions were struck, pointed or kept, or whether the coordinator refreshed this guidance. The COORD judgement items review those from transcripts, reports and packages the owner selects.
 
 ## Moved sections
 
@@ -496,7 +496,6 @@ Sections that moved out of this file keep an anchor here, so an old link lands o
 | <a id="territory-work"></a>[Territory work](standards-territory.md#territory-work) | [standards-territory.md](standards-territory.md) |
 | <a id="coordinating-assigned-packages"></a>[Coordinating assigned packages](standards-territory.md#coordinating-assigned-packages) | [standards-territory.md](standards-territory.md) |
 | <a id="secondary-states-of-play"></a>[Secondary States of play](standards-territory.md#secondary-states-of-play) | [standards-territory.md](standards-territory.md) |
-| <a id="work-awaiting-review"></a>[Work awaiting review](standards-territory.md#work-awaiting-review) | [standards-territory.md](standards-territory.md) |
 | <a id="worktree-sweep"></a>[Worktree sweep](standards-territory.md#worktree-sweep) | [standards-territory.md](standards-territory.md) |
 | <a id="levels-and-forms"></a>[Levels and forms](standards-opening.md#levels-and-forms) | [standards-opening.md](standards-opening.md) |
 | <a id="work-naming"></a>[Work naming](standards-opening.md#work-naming) | [standards-opening.md](standards-opening.md) |

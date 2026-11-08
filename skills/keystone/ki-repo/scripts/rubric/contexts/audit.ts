@@ -732,9 +732,8 @@ const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Si
   {
     skill: 'work-package',
     table: skillTable('ki-work-package'),
-    artifact: '+/_WORK/ or +/_WORK_REVIEW/ subarea',
-    detect: (s) =>
-      [...s.tree].some((p) => ['+/_WORK/', '+/_WORK_REVIEW/', '+/_CHECKPOINTS/'].some((area) => p.startsWith(area)))
+    artifact: '+/_WORK/ subarea',
+    detect: (s) => [...s.tree].some((p) => ['+/_WORK/', '+/_CHECKPOINTS/'].some((area) => p.startsWith(area)))
   }
 ]
 // The declared skills whose `ki-depends-on` closure requires each coverage table. A required

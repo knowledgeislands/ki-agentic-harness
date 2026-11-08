@@ -401,8 +401,6 @@ test('adapter and protocol records delegate note-type metadata to their owning s
     '+/_WORK/ki.other/discussions.md',
     '+/_WORK/ki.ways-of-working/messages.md',
     '+/_WORK/ki.ways-of-working/decisions.md',
-    '+/_WORK_REVIEW/ki.unsure/_index.md',
-    '+/_WORK_REVIEW/ki.unsure/state.md',
     '+/_ACQUIRE/granola/2026-07-28--example.md',
     '+/_TRADES/sender/repository/TRD-01234567.md',
     '-/_TRADES/receiver/repository/TRD-89abcdef.md'

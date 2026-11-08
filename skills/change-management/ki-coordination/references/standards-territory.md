@@ -1,6 +1,6 @@
 # Coordinating-work standard: territory work
 
-This file holds States of play, Project work under them, assigned packages, the owner queue, work awaiting review and the worktree sweep. It extends [the core](standards-coordination.md).
+This file holds States of play, Project work under them, assigned packages, the owner queue and the worktree sweep. It extends [the core](standards-coordination.md).
 
 ## Contents
 
@@ -9,7 +9,6 @@ This file holds States of play, Project work under them, assigned packages, the 
   - [Coordinating assigned packages](#coordinating-assigned-packages)
   - [Secondary States of play](#secondary-states-of-play)
 - [Owner queue](#owner-queue)
-- [Work awaiting review](#work-awaiting-review)
 - [Worktree sweep](#worktree-sweep)
 
 ## Coordinating work
@@ -117,11 +116,11 @@ A territory always has its main State of play and may add secondaries where it h
   - Work with no secondary stays with the main.
 - **Creating:** the owner decides each secondary and its coverage at the main, which logs the decision and prepares the package On hold until the owner opens it. Changing coverage is a main decision, made in both `_index.md` files in one commit.
 - **Front door:** the main stays the owner's only front door and the single dispatch coordinator. Owner dumps, units with no clear owner, method improvements, and anything touching more than one secondary, or a secondary and uncovered work, come to the main.
-- **Main owns:** the registry, membership and Known Lands; releases and priorities across secondaries; the territory-wide ceiling on active Project work; method stewardship; the worktree sweep and `REVIEW-HOLD`; and every decision touching more than one secondary.
+- **Main owns:** the registry, membership and Known Lands; releases and priorities across secondaries; the territory-wide ceiling on active Project work; method stewardship; the worktree sweep; and every decision touching more than one secondary.
 - **Secondary owns,** for its covered work alone: cross-Project priorities; its queue in its own `state.md` `## Queue`, within its share of the main's ceiling; acceptance bundles; decisions touching more than one covered Project; and routing between them. It rolls up the five views across its covered work; the main rolls up all.
 - **Routing down:** the main routes a unit within one secondary's coverage as one `ROUTE` line into that secondary's `messages.md`, and the secondary routes it on. A unit for one named covered work may go straight there.
 - **Routing up and across:** covered work sends a matter across its covered Projects to its secondary, and a `METHOD` line or anything beyond the coverage to the main. A secondary sends cross-cutting matters to the main and may message another secondary directly where the matter's owner is clear. A secondary returns a part it cannot place to the main, once; the main places it or asks the owner.
-- **Acceptance and review:** each secondary brings its covered work's acceptance bundles first at its own bootstrap and resume; the main brings the rest and shows each secondary's count. `+/_WORK_REVIEW/` stays with the main.
+- **Acceptance:** each secondary brings its covered work's acceptance bundles first at its own bootstrap and resume; the main brings the rest and shows each secondary's count.
 - **Opening:** the owner opens a secondary with the [secondary opener](standards-opening.md#opening-work), and gets every opener for the territory from `ki agent prompts <territory>`.
 
 Sources: SECONDARY-SOP in [the decision register](sources.md#decision-register).
@@ -135,14 +134,6 @@ Each piece of Project work is capped at eight records awaiting acceptance and at
 - The rubric warns over either cap, under [Pruning the work folder](standards-mark.md#pruning-the-work-folder).
 
 Sources: OWNER-QUEUE in [the decision register](sources.md#decision-register).
-
-## Work awaiting review
-
-`+/_WORK_REVIEW/<id>/` holds migrated work a territory's migration was not confident is live. Its shape, index note, leaving rules and checks are the `ki-work-package` [Work awaiting review](../../../governance/ki-work-package/references/standards-work-package.md#work-awaiting-review) section's. It is not live: never picked up, dispatched or counted against the cap, and `ki work status` keeps it out of the five views and shows it as a count.
-
-**Raising the holdings.** At bootstrap, resume and re-anchoring, the State of play lists every item in its territory's `+/_WORK_REVIEW/` areas and raises them as one `REVIEW-HOLD` query, with a live-or-dead recommendation per item: a live item moves into `+/_WORK/` as a package under the work-package standard, and a dead item is deleted, Git keeping its history. It raises the query again each time it comes back, until every area is empty. The native rubric warns while a Capital's area holds anything.
-
-Sources: MIGRATION-REVIEW and REVIEW-SURFACE in [the decision register](sources.md#decision-register).
 
 ## Worktree sweep
 

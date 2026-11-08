@@ -240,7 +240,7 @@ The detection signals `ki-repo` uses (one recursive tree read + `package.json`):
 | `ki-subagents` | Claude Markdown or Codex TOML projection | `[skills.ki-subagents]` |
 | `ki-subagents-claude` | `subagents/**/*.md` | `[skills.ki-subagents-claude]` |
 | `ki-subagents-chatgpt` | `.codex/agents/**/*.toml` | `[skills.ki-subagents-chatgpt]` |
-| `ki-work-package` | `+/_WORK/` or `+/_WORK_REVIEW/` subarea, or the old `+/_CHECKPOINTS/` | `[skills.ki-work-package]` |
+| `ki-work-package` | `+/_WORK/` subarea, or the old `+/_CHECKPOINTS/` | `[skills.ki-work-package]` |
 
 For the work model's tolerance window the old `+/_CHECKPOINTS/` subarea still satisfies the `ki-work-package` signal, and each thread-model area present, `+/_CHECKPOINTS/` or `+/_THREADS/`, adds one COV-1 warning naming its new home, `+/_WORK/<id>/`, until its territory's migration moves it.
 

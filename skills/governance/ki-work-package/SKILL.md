@@ -9,16 +9,16 @@ owns: ['+/_CHECKPOINTS/README.md']
 description: >
   Own the work package of one piece of work, its five files in its work folder `+/_WORK/<id>/`: the definition
   `_index.md` with its routing description, goals and scope, `state.md`, `discussions.md`, the `messages.md` queue and
-  `decisions.md`, plus the folder's closed list, entry points, tidy and close-out rules and the `+/_WORK_REVIEW/`
-  holding area. Use to create, update, resume, audit, tidy or remove a package, or to pick work up without a
-  transcript or vendor session; Git is the logbook, durable knowledge stays with its owners, and single-file work
-  folders and old `+/_CHECKPOINTS/` records stay readable for the tolerance window.
+  `decisions.md`, plus the folder's closed list, entry points, tidy and close-out rules. Use to create, update,
+  resume, audit, tidy or remove a package, or to pick work up without a transcript or vendor session; Git is the
+  logbook, durable knowledge stays with its owners, and single-file work folders and old `+/_CHECKPOINTS/` records
+  stay readable for the tolerance window.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh | remove <id> | resume <id> | update <id>'
 ---
 
 # Knowledge Islands work package
 
-This governance skill is the canonical specification of the work package and of the work folder it lives in, `+/_WORK/<id>/`: its five files, its closed list, its entry points, its tidy rules, its review area, its message queue and the four-point contract other skills check in on. The package lets a fresh agent, or State of play routing new work, understand a piece of work and pick it up without claiming access to the session that last held it, under the work model that the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note describes. Read [the work-package standard](references/standards-work-package.md) before reading, creating, updating, or removing a package, and [the role standard](references/standards-roles.md) for the role catalogue, each role's tier and glyph, the `role` and `workers` fields and the thread line, with its deletable [role migration file](references/standards-roles-migration.md); [the generated rubric](references/rubric.md) publishes its mechanical and judgment criteria, and [the sources](references/sources.md) record the contract's provenance.
+This governance skill is the canonical specification of the work package and of the work folder it lives in, `+/_WORK/<id>/`: its five files, its closed list, its entry points, its tidy rules, its message queue and the four-point contract other skills check in on. The package lets a fresh agent, or State of play routing new work, understand a piece of work and pick it up without claiming access to the session that last held it, under the work model that the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note describes. Read [the work-package standard](references/standards-work-package.md) before reading, creating, updating, or removing a package, and [the role standard](references/standards-roles.md) for the role catalogue, each role's tier and glyph, the `role` and `workers` fields and the thread line, with its deletable [role migration file](references/standards-roles-migration.md); [the generated rubric](references/rubric.md) publishes its mechanical and judgment criteria, and [the sources](references/sources.md) record the contract's provenance.
 
 ## Shared model
 

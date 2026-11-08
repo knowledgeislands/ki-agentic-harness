@@ -1,8 +1,8 @@
 /**
  * The work folder's closed list and tidy, read for the `ki-work-package` FOLDER family: each `+/_WORK/<id>/` against
  * its closed list, the focus folders its `_index.md` declares included, the tidy candidates (answered reports, received briefs, finished folders outliving their closing
- * mark, open queries beyond the limit), decisions-log text the `ki agent close` gate cannot read as an entry, the
- * `+/_WORK_REVIEW/` index, and for the tolerance window each thread folder `+/_THREADS/<run>/` against its old closed
+ * mark, open queries beyond the limit), decisions-log text the `ki agent close` gate cannot read as an entry, a
+ * leftover of the retired `+/_WORK_REVIEW/` holding area, and for the tolerance window each thread folder `+/_THREADS/<run>/` against its old closed
  * list. The listings name candidates; they are never permission to delete.
  */
 import { type Dirent, existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
@@ -11,8 +11,8 @@ import type { AuditOutcome } from '../../shared/rubric.ts'
 
 const WORK_DIRECTORY = join('+', '_WORK')
 const THREADS_DIRECTORY = join('+', '_THREADS')
-const REVIEW_DIRECTORY = join('+', '_WORK_REVIEW')
-const REVIEW_INDEX = 'README.md'
+/** The holding area WORK-REVIEW-RETIRE (8 November 2026) retired; `standards-roles-migration.md` holds its rollout. */
+const RETIRED_REVIEW_DIRECTORY = join('+', '_WORK_REVIEW')
 const REPORT_SUFFIX = '.report.md'
 const DECISIONS_LOG = 'decisions.md'
 /** The discussion file, `discussions.md`, or `queries.md` for the DISCUSSIONS tolerance window, read in that order. */
@@ -70,8 +70,6 @@ export const OPEN_QUERY_LIMIT = 8
 const NEEDS_TAG = '[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*'
 const QUERY_HEADING = new RegExp(`^### (?:\\[(${NEEDS_TAG})\\]\\([^)\\s]*\\)|(${NEEDS_TAG})) - `, 'gm')
 const FENCED_BLOCK = /^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[ \t]*$/gm
-/** An index line's work id: a wikilink, a Markdown link or a code span leading the list item. */
-const INDEX_ID = /^- +(?:\[\[([^\]/|#]+)|\[[^\]]*\]\(<?([^)/>#]+)|`([^`/]+)\/?`)/
 /** A decisions-log entry: the `ki agent close` gate opens one at every `## ` heading, whatever its text. */
 const ENTRY_HEADING = '## '
 /** Entry-shaped text before the first entry: a list item, or a heading deeper than an entry's. */
@@ -351,25 +349,6 @@ const decisionLogOutcome = (folder: string, subject: (path: string) => string): 
     : undefined
 }
 
-/** The `+/_WORK_REVIEW/` folders with no index line, and the index lines naming no folder. */
-export const reviewIndexFindings = (
-  directory: string
-): { readonly unindexed: readonly string[]; readonly orphaned: readonly string[] } => {
-  const held = (folders(directory) ?? []).map((folder) => relative(directory, folder))
-  const index = join(directory, REVIEW_INDEX)
-  const indexed = existsSync(index)
-    ? readFileSync(index, 'utf8')
-        .split(/\r?\n/)
-        .map((line) => INDEX_ID.exec(line))
-        .flatMap((match) => (match ? [(match[1] ?? match[2] ?? match[3] ?? '').trim()] : []))
-        .filter(Boolean)
-    : []
-  return {
-    unindexed: held.filter((id) => !indexed.includes(id)),
-    orphaned: indexed.filter((id) => !held.includes(id))
-  }
-}
-
 export const folderOutcomes = (root: string): FolderOutcomes => {
   const work = folders(join(root, WORK_DIRECTORY))
   const threads = folders(join(root, THREADS_DIRECTORY))
@@ -491,23 +470,18 @@ export const folderOutcomes = (root: string): FolderOutcomes => {
       message: `legacy: ${threads.length} thread folder(s) under \`+/_THREADS/\` are the thread-model shape; each moves into its work folder \`+/_WORK/<id>/\` at the territory's migration`,
       subject: THREADS_DIRECTORY
     })
-  const reviewDirectory = join(root, REVIEW_DIRECTORY)
-  const review: AuditOutcome[] = []
-  if (physicalDirectory(reviewDirectory)) {
-    const { unindexed, orphaned } = reviewIndexFindings(reviewDirectory)
-    if (unindexed.length > 0)
-      review.push({
-        status: 'VIOLATION',
-        message: `each folder awaiting review has one line in \`${REVIEW_INDEX}\` saying why it is there; no line names: ${unindexed.join(', ')}`,
-        subject: subject(join(reviewDirectory, REVIEW_INDEX))
-      })
-    if (orphaned.length > 0)
-      review.push({
-        status: 'VIOLATION',
-        message: `an index line goes with its folder when the folder leaves review; no folder holds: ${orphaned.join(', ')}`,
-        subject: subject(join(reviewDirectory, REVIEW_INDEX))
-      })
-  }
+  const retired = join(root, RETIRED_REVIEW_DIRECTORY)
+  const leftover = physicalDirectory(retired) ? entries(retired).map((entry) => entry.name) : []
+  const review: AuditOutcome[] = existsSync(retired)
+    ? [
+        {
+          status: 'VIOLATION',
+          level: 'WARN',
+          message: `rollout: \`+/_WORK_REVIEW/\` is retired under WORK-REVIEW-RETIRE and holds no accepted work; move each folder that is live to \`+/_WORK/<id>/\` in the package shape, delete the rest, then remove the area${leftover.length > 0 ? `: ${leftover.join(', ')}` : ''}`,
+          subject: RETIRED_REVIEW_DIRECTORY
+        }
+      ]
+    : []
   const count = (work?.length ?? 0) + (threads?.length ?? 0)
   const noWork = work ? undefined : 'No `+/_WORK/` folder is present.'
   return {
@@ -515,11 +489,7 @@ export const folderOutcomes = (root: string): FolderOutcomes => {
     answered: one(answered, 'No folder keeps a report whose every query is answered.', absent),
     briefs: one(briefs, "No folder keeps a brief whose run's report it has received.", noWork),
     finished: one(finished, "No finished work's folder is left standing.", noWork),
-    review: one(
-      review,
-      'Every folder awaiting review has its index line, and every index line its folder.',
-      physicalDirectory(reviewDirectory) ? undefined : 'No `+/_WORK_REVIEW/` holding area is present.'
-    ),
+    review: one(review, 'No `+/_WORK_REVIEW/` holding area remains.'),
     queries: one(queries, `No work package holds more than ${OPEN_QUERY_LIMIT} open queries.`, noWork),
     decisions: one(decisions, 'Every decisions log is read by the close gate as `## ` entries alone.', absent)
   }

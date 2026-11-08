@@ -682,15 +682,10 @@ describe('work files', () => {
     expect(statuses(context(root).cap.outcomes)).toEqual(['PASS'])
   })
 
-  test('work awaiting review is counted, not checked, and warns while the area holds anything', () => {
+  test('a leftover review folder is neither counted nor raised, `ki-work-package` warning on it instead', () => {
     const root = fixture(capital)
-    mkdirSync(join(root, '+', '_WORK_REVIEW'), { recursive: true })
-    expect(context(root).cap.outcomes.some((outcome) => outcome.level === 'WARN')).toBe(false)
     mkdirSync(join(root, '+', '_WORK_REVIEW', 'ki.old-thread'), { recursive: true })
-    const warning = context(root).cap.outcomes.find((outcome) => outcome.level === 'WARN')
-    expect(warning?.status).toBe('VIOLATION')
-    expect(warning?.message).toContain('1 work folder(s) await review')
-    expect(warning?.message).toContain('REVIEW-HOLD')
+    expect(context(root).cap.outcomes.some((outcome) => outcome.status === 'VIOLATION')).toBe(false)
   })
 
   test('a report in a work folder has its links checked', () => {

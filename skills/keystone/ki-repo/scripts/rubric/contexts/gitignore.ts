@@ -70,7 +70,6 @@ export const managedGitignoreBlocks = (
     block('ki-repo', 'Generated reports, disposable tmp output, local metadata, logs, and runtime projections.', [
       'reports/',
       '!/+/_WORK/*/reports/',
-      '!/+/_WORK_REVIEW/*/reports/',
       'tmp/',
       '.DS_Store',
       'Thumbs.db',
