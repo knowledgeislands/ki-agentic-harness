@@ -7,7 +7,7 @@ beat: null
 mark: 2026-11-08T16:52:00Z
 method_read: d5ede6dd
 listening_enabled: true
-listening_status: off
+listening_status: on
 workers:
   - role: guildmaster
     tier: managers
