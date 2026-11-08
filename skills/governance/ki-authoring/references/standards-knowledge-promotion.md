@@ -19,6 +19,26 @@ Choose the narrowest durable home that reaches the people and agents who need th
 | Personal cross-project configuration | A durable user preference or machine convention, not a repository rule | It applies across repositories for one user | The user's synchronised configuration | Remove repository copies unless the repository has an independent reason to state it |
 | Roadmap or plan | Unfinished work, a dependency, or a future decision | It needs prioritisation or execution, not merely recall | The owning repository's roadmap or plan | Do not disguise open work as a convention or memory |
 
+## Document types
+
+A durable document is one of two types:
+
+- **Standard:** the rule itself, in the owning skill's `references/`, as the placement ladder above routes it.
+- **Change document:** a proposed change to one or more standards, named `<slug>.change.md` and kept in the work package of the work that proposes it. It carries the design outline and a planning section. There is no separate design type: a design note is a change document.
+
+Run briefs, run reports and the work package's own files keep the shapes their owning skills set.
+
+A change document opens with its title, then two header lines:
+
+- `Base: ki-agentic-harness@<commit>`, the harness commit it was written against;
+- `Touches:`, each standard file it changes, by its repository path.
+
+There are no version numbers and no per-file hashes. To rebase a change document, read `git diff <base>..main -- <touched files>`, update the document to match, then move `Base:` to the new commit. `ki-work-design` owns its life cycle, from draft to graduation and deletion.
+
+Migration: an existing `.design.md` design note stays readable as a change document during the rollout and is not renamed; delete this line once none remains.
+
+Sources: DOC-TYPES and STD-BASE in [the sources](sources.md#internally-owned-judgment).
+
 ## Promotion loop
 
 1. Capture the observation with enough context to judge it, but do not make a durable write by default.

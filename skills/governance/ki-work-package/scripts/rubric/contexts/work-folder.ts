@@ -62,7 +62,7 @@ export const LEGACY_EMERGING_FOCUS = 'aside'
 /** A focus id names its folder: kebab-case, or the holding area, and never a reserved folder's name. */
 export const focusIdNamesFolder = (id: string): boolean =>
   (FOCUS_ID.test(id) || id === EMERGING_FOCUS) && !RESERVED_FOLDERS.has(id)
-/** Design notes, diagram sources such as `*.architecture.json` and Mermaid, and their `.svg` and `.html` renders. */
+/** Change documents and `.design.md` design notes, diagram sources such as `*.architecture.json` and Mermaid, and their `.svg` and `.html` renders. */
 const DESIGN_EXTENSIONS: ReadonlySet<string> = new Set(['.md', '.json', '.mmd', '.svg', '.html'])
 /** More open queries than this in the discussion file is a coordination smell, warned on rather than failed. */
 export const OPEN_QUERY_LIMIT = 8
@@ -109,7 +109,7 @@ const one = (outcomes: readonly AuditOutcome[], pass: string, absent?: string): 
 const plainFile = (entry: Dirent): boolean => entry.isFile() && !entry.isSymbolicLink()
 const report = (entry: Dirent): boolean => plainFile(entry) && entry.name.endsWith(REPORT_SUFFIX)
 
-/** Entries of `design/` that are not design notes, diagram sources or renders, recursing into subject folders. */
+/** Entries of `design/` that are not change documents, diagram sources or renders, recursing into subject folders. */
 const strayDesign = (folder: string, prefix: string): string[] =>
   entries(folder).flatMap((entry) => {
     const path = `${prefix}/${entry.name}`
@@ -139,7 +139,7 @@ const focusFolders = (folder: string): readonly string[] => focusIds(folder).fil
 
 /**
  * Entries of a work folder outside its closed list: each declared focus folder read as `design/` is, its briefs,
- * reports and design notes with their diagram sources and renders, and `design/`, `findings/`, `briefs/`, `feedback/`
+ * reports and change documents with their diagram sources and renders, and `design/`, `findings/`, `briefs/`, `feedback/`
  * and `reports/` read one level down. A top-level `<name>.report.md` is left to {@link topLevelReports} for the
  * tolerance window.
  */
@@ -390,7 +390,7 @@ export const folderOutcomes = (root: string): FolderOutcomes => {
     if (stray.length > 0)
       closed.push({
         status: 'VIOLATION',
-        message: `a work folder holds only the five package files, one folder per focus area its \`${ENTRY_FILE}\` declares under \`## Focus\` holding briefs, reports and design notes with their diagram sources and renders, \`findings/\`, \`feedback/\` and, for the tolerance window, \`${REPORTS_FOLDER}/<name>${REPORT_SUFFIX}\`, \`briefs/\` and \`design/\`; outside the closed list: ${stray.join(', ')}`,
+        message: `a work folder holds only the five package files, one folder per focus area its \`${ENTRY_FILE}\` declares under \`## Focus\` holding briefs, reports and change documents with their diagram sources and renders, \`findings/\`, \`feedback/\` and, for the tolerance window, \`${REPORTS_FOLDER}/<name>${REPORT_SUFFIX}\`, \`briefs/\` and \`design/\`; outside the closed list: ${stray.join(', ')}`,
         subject: subject(folder)
       })
     if (entryFiles(folder).length > 1)
@@ -404,7 +404,7 @@ export const folderOutcomes = (root: string): FolderOutcomes => {
       closed.push({
         status: 'VIOLATION',
         level: 'WARN',
-        message: `tolerance: a package that declares its focus areas keeps briefs, reports and design notes in their focus folders, not in type folders; move the contents of ${typed.map((name) => `\`${name}/\``).join(', ')} into the focus folder each belongs to`,
+        message: `tolerance: a package that declares its focus areas keeps briefs, reports and change documents in their focus folders, not in type folders; move the contents of ${typed.map((name) => `\`${name}/\``).join(', ')} into the focus folder each belongs to`,
         subject: subject(folder)
       })
     const unindexed = focusIndexFindings(folder)

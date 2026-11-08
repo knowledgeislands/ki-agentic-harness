@@ -32,6 +32,7 @@ This file holds temporary adjustments to [the coordinating-work standard](standa
 - [Old thread run folders](#old-thread-run-folders)
 - [Pre-focus and numbered decisions-log entries](#pre-focus-and-numbered-decisions-log-entries)
 - [The earlier design-note home](#the-earlier-design-note-home)
+- [Design notes named `.design.md`](#design-notes-named-designmd)
 - [Observatory feedback packages](#observatory-feedback-packages)
 - [Openers that name the re-bootstrap report](#openers-that-name-the-re-bootstrap-report)
 
@@ -176,7 +177,11 @@ A decisions-log entry written before the work declared focus areas carries no `f
 
 ## The earlier design-note home
 
-The earlier `+/_DESIGN/<subject-slug>/` home for design notes is read for the tolerance window and moves with its territory's migration. Adjusts [Design notes](standards-decisions.md#design-notes).
+The earlier `+/_DESIGN/<subject-slug>/` home for design notes is read for the tolerance window and moves with its territory's migration. Adjusts [Change documents](standards-decisions.md#change-documents).
+
+## Design notes named `.design.md`
+
+An existing `.design.md` design note stays readable as a change document during the rollout and is not renamed; a new one is written as `<slug>.change.md` with its `Base:` and `Touches:` header. Delete this section once no `.design.md` file remains. Adjusts [Change documents](standards-decisions.md#change-documents).
 
 ## Observatory feedback packages
 

@@ -1,6 +1,6 @@
-# Coordinating-work standard: decisions and design notes
+# Coordinating-work standard: decisions and change documents
 
-This file holds `decisions.md`, decision classes, their life cycle and design notes. It extends [the core](standards-coordination.md).
+This file holds `decisions.md`, decision classes, their life cycle and change documents. It extends [the core](standards-coordination.md).
 
 ## Decisions and design
 
@@ -61,12 +61,12 @@ Who homes each class:
 
 The work's `decisions.md` is its one decisions list for its whole life: successive sessions share it, and it stays in the package, not beside the Project note. A design loop's own decisions file is a stage artefact holding only the answers to its report's tagged decisions, and each answer is also an entry in `decisions.md`, logged in the turn it arrived.
 
-### Design notes
+### Change documents
 
-Design notes of every kind, options papers, mocks, loop reports and their stage decisions, live in the package of the work whose concern they design: in the folder of the focus area they serve, `+/_WORK/<id>/<focus-id>/`, or in `+/_WORK/<id>/design/` where the package declares no focus areas, under the `ki-work-design` standard and the `ki-work-package` [closed list](../../../governance/ki-work-package/references/standards-work-package.md#closed-list). No `design/` folder sits under `Streams/`, which holds only definitions and records. Design work with no coordinating work of its own takes an ad hoc package.
+<a id="design-notes"></a>A design is written as a change document, `<slug>.change.md`, one of the two document types `ki-authoring` sets under its [document types](../../../governance/ki-authoring/references/standards-knowledge-promotion.md#document-types), with its `Base:` and `Touches:` header; there is no separate design note. Change documents and the working material beside them, options papers, mocks, loop reports and their stage decisions, live in the package of the work whose concern they design: in the folder of the focus area they serve, `+/_WORK/<id>/<focus-id>/`, or in `+/_WORK/<id>/design/` where the package declares no focus areas, under the `ki-work-design` standard and the `ki-work-package` [closed list](../../../governance/ki-work-package/references/standards-work-package.md#closed-list). No `design/` folder sits under `Streams/`, which holds only definitions and records. Design work with no coordinating work of its own takes an ad hoc package.
 
-- The `ki-work-design` [artefact home](../../ki-work-design/references/standards-work-design.md#artefact-home) owns a note's life cycle, draft, under review, graduated or deleted, its graduation, and the rule that nothing cites a deleted note.
+- The `ki-work-design` [artefact home](../../ki-work-design/references/standards-work-design.md#artefact-home) owns a change document's life cycle, draft, under review, graduated or deleted, its graduation, and the rule that nothing cites a deleted document.
 - The `ki-work-package` [closed list](../../../governance/ki-work-package/references/standards-work-package.md#closed-list) sets which file kinds a focus folder or `design/` may hold.
-- This standard reviews the notes at each mark, under [Pruning the work folder](standards-mark.md#pruning-the-work-folder), and resolves them before Project work finishes.
+- This standard reviews the change documents at each mark, under [Pruning the work folder](standards-mark.md#pruning-the-work-folder), and resolves them before Project work finishes.
 
-Sources: DESIGN-RETENTION in [the decision register](sources.md#decision-register).
+Sources: DESIGN-RETENTION, DOC-TYPES and STD-BASE in [the decision register](sources.md#decision-register).

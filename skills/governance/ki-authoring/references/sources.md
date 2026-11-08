@@ -37,6 +37,11 @@ Advisory sources inform local judgment conventions but are not specifications, m
 
 [Industry white-paper authoring](standards-whitepapers.md) is an owner-directed synthesis of editorial practice: reader-led argument, calibrated claims, practical implications and substantive review. It is an internal authoring convention, not an external specification or a prescribed chapter model. Private production evidence and the promotion receipt remain with the originating repository; this public standard carries only the generalised rules.
 
+[Document types](standards-knowledge-promotion.md#document-types) rest on two owner decisions:
+
+- **DOC-TYPES**, 2026-11-08: Kris's word at 22:05 CET, relayed by `personal.reg.inbox`: two document types only, the change document (`.change.md`), carrying the design outline and a planning section, and the standard; a design note becomes a change document.
+- **STD-BASE**, 2026-11-08: Kris's word at 22:05 CET, relayed by `personal.reg.inbox`: every change document carries `Base: ki-agentic-harness@<commit>` and a `Touches:` line listing the standard files it changes, with no version numbers and no per-file hashes, and is rebased by reading `git diff <base>..main -- <touched files>`, updating the document and moving `Base:`.
+
 ## Last review
 
 REFRESH last run **2026-10-18** under KI-HARNESS-GOV-194. Every source was re-fetched: CommonMark, rumdl rules, global settings, CLI and releases, GitHub alerts, TOML, and the Standard Readme repository and `spec.md`. The previous run was 2026-10-06. A same-day upgrade then installed rumdl 0.3.0 and re-ran the reproductions.

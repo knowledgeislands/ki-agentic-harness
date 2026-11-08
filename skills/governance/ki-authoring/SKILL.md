@@ -69,7 +69,7 @@ Each set is a self-contained reference, loaded on demand. Read the one relevant 
 - **[TOML formatting](references/standards-toml.md)** — value quoting, short arrays, comments, neighbourhood banners, and compact dotted child keys; `ki-repo` owns key and table semantics.
 - **[README composition](references/standards-readme.md)** — purpose-first entry points, proportional navigation and examples, discoverable user routes, and explicit library-template exclusions.
 - **[Industry white papers](references/standards-whitepapers.md)** — reader-led argument, evidence, deployment implications, and editorial review; load when authoring or reviewing a white paper.
-- **[Knowledge promotion](references/standards-knowledge-promotion.md)** — runtime-neutral placement, evidence, and reconciliation for durable learnings; it routes knowledge deliberately without mining transcripts or creating guide areas automatically.
+- **[Knowledge promotion](references/standards-knowledge-promotion.md)** — runtime-neutral placement, evidence, and reconciliation for durable learnings, and the two durable document types, the standard and the change document (`.change.md`) with its `Base:` and `Touches:` header; it routes knowledge deliberately without mining transcripts or creating guide areas automatically.
 - **[Worked exemplars](references/exemplars.md)** — annotated illustrations of the conventions in practice: the footnote-marker series and table spill, relative-link style, and a well-formed `.ki.toml` structure. Reach for these when a rule's application is a judgment call.
 
 Out of scope by design, with their natural homes:

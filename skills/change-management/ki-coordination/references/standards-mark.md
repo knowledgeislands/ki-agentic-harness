@@ -11,7 +11,7 @@ The mark is only a timestamp, `mark: <UTC timestamp>` in `state.md`'s front matt
 - **Work at the mark,** in order:
   1. run the [repository level check](standards-sync.md#repository-level-check) before reporting the mark;
   2. work the [decisions life cycle](standards-decisions.md#decisions-life-cycle);
-  3. [prune the package](#pruning-the-work-folder) and review its design notes;
+  3. [prune the package](#pruning-the-work-folder) and review its change documents;
   4. [close out Orca workers](#closing-out-orca-workers);
   5. commit the package and confirm in one line.
 - **Open items carry forward:** a mark resets only the window of `## Summary`. Open and parked queries in `discussions.md`, open records in the work's scope, running and queued background agents and parked tangents stay on the status table and in `## Queries`; a mark never drops, closes or hides them.
@@ -36,7 +36,7 @@ Sources: HELD-VS-RECORD in [the decision register](sources.md#decision-register)
 At every send and every mark, prune your own package, so `+/_WORK/<id>/` shows only what is still open and Git holds the rest. The `ki-work-package` [Tidying the work folder](../../../governance/ki-work-package/references/standards-work-package.md#tidying-the-work-folder) rules, over its [closed list](../../../governance/ki-work-package/references/standards-work-package.md#closed-list), set what goes, what stays, how and who; the five package files always stay. This standard sets the timing and the judgement.
 
 - **Judgement:** whether a report's outcome, or every point of a feedback package, has a durable home in a record, `decisions.md`, the package or a commit. In a five-file package, a report is eligible for its steward's tidy once its outcome is homed and every query has been copied in full into `discussions.md`; the queries need not be answered yet. Keep a report whose outcome has no durable home, without homing it in haste. A later [Summary](standards-report-forms.md#the-summary) reads a deleted report from its last revision.
-- **Design notes:** at each mark, review the design notes in the focus folders or `design/`. Delete each note that has graduated under the `ki-work-design` [artefact home](../../ki-work-design/references/standards-work-design.md#artefact-home), or that the package records as superseded; keep drafts, notes under review and any in doubt. The mark prompts a review, never an automatic deletion. Beyond graduation, a note goes only when every outcome it carried is homed, the owner's words and any grant included, and every link into it has been rewritten first. A diagram's source and its renders go together.
+- **Change documents:** at each mark, review the change documents in the focus folders or `design/`, a `.design.md` design note among them. Delete each one that has graduated under the `ki-work-design` [artefact home](../../ki-work-design/references/standards-work-design.md#artefact-home), or that the package records as superseded; keep drafts, documents under review and any in doubt. The mark prompts a review, never an automatic deletion. Beyond graduation, a change document goes only when every outcome it carried is homed, the owner's words and any grant included, and every link into it has been rewritten first. A diagram's source and its renders go together.
 - **Temporary output:** delete, by explicit path, each of your own `tmp/<run>/` folders whose output is superfluous.
 - **Record threshold:** deletion is operational work under the [record threshold](standards-decisions.md#decision-classes) and opens no record.
 - **Flagging:** the `ki-work-package` rubric's [FOLDER](../../../governance/ki-work-package/references/rubric.md) items fail a package holding a file outside the closed list. They list as prune candidates every report whose tags `decisions.md` all names, every brief whose run's report is received, every finished work's package, and an unmatched `+/_WORK_REVIEW/` folder or index line.
@@ -71,7 +71,7 @@ Sources: ORCA-WORKER-CLEANUP, ORCA-CLOSE-OUT, ACCEPT-BY-CRITERIA, WORKER-LEFTOVE
 Project work moves to Finished once only, on the owner's `finish`, after the close-out:
 
 1. every logged decision is homed under the [decisions life cycle](standards-decisions.md#decisions-life-cycle), none left homeless or held;
-2. its design notes, in its focus folders or `design/`, are resolved: every note graduated and deleted;
+2. its change documents, in its focus folders or `design/`, are resolved: every one graduated and deleted;
 3. `state.md` is set to `state: finished`, its durable information routed, and the commit `docs(work): <id> finish` made;
 4. the package is deleted at the mark that closes it, under the `ki-work-package` [close-out](../../../governance/ki-work-package/references/standards-work-package.md#tidying-the-work-folder), Git keeping it, and the runs are archived by `ki agent close`, whose gate stays strict, with `--reconciled` as the owner's waiver. Where the package outlives the finishing session, the State of play closes it at an owner-authorised mark of its own whose report names the package, rather than by a line in the finished work's `messages.md`, which no coordinator reads.
 
