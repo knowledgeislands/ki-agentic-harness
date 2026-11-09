@@ -1,14 +1,14 @@
 import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
 import type { OutcomeContext, WorkPackageRubricContext } from '../contexts/work-package.ts'
 
-const SOURCE = 'standards-work-package.md'
+const SOURCE = 'standard-work-package.md'
 
 const CONFIG_1: RubricItem<OutcomeContext> = {
   code: 'CONFIG-1',
   title: 'the declaration has no private options',
   description:
     'The optional `ki-work-package` declaration is an empty capability marker. It carries no runtime, session, retention, or lifecycle options; repository policy and optional adapters remain separate owners.',
-  sources: [SOURCE],
+  sources: [`${SOURCE}#41-activation-and-ownership`],
   mechanical: {
     level: 'WARN',
     remediation: { class: 'diagnostic', guidance: 'Remove unsupported declaration options, then rerun the audit.' },

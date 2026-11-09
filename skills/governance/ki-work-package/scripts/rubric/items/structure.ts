@@ -1,53 +1,53 @@
 import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
-import type { ScaffoldContext, WorkPackageRubricContext } from '../contexts/work-package.ts'
+import type { StructureContext, WorkPackageRubricContext } from '../contexts/work-package.ts'
 
-const SOURCE = 'standards-work-package.md'
+const SOURCE = 'standard-work-package.md'
 
-const STRUCTURE_1: RubricItem<ScaffoldContext> = {
+const STRUCTURE_1: RubricItem<StructureContext> = {
   code: 'STRUCTURE-1',
-  title: 'the work area holds only work folders',
+  title: '`work/` holds only territory folders of packages',
   description:
-    '`+/_WORK/` is a physical directory holding only physical work folders, each with its regular `_index.md` work file and, once `state.md` exists, all five package files as regular files. While the legacy `+/_CHECKPOINTS/` directory exists it retains its exact `README.md` scaffold and only flat Markdown records beside it; once `+/_WORK/` exists, neither retired `+/_THREADS/` nor `+/_CHECKPOINTS/` exists beside it, tracked or not. Symlinks, unsupported files, retired-record directories, and nested or timestamped layouts are invalid.',
-  sources: [SOURCE],
+    "`work/` is a physical directory holding only territory folders, each named by the first segment of its packages' ids and holding only package folders, each a physical directory with its regular `_index.md`. Symlinks, loose files, empty folders, and timestamped, archived or alternate layouts are invalid; the one nesting is a sub-package.",
+  sources: [`${SOURCE}#42-location-and-identity`, `${SOURCE}#43-the-shape`],
   mechanical: {
     level: 'FAIL',
-    remediation: { class: 'automatic' },
-    audit: { phase: 'INSPECT', run: ({ outcomes }) => outcomes },
-    conform: { phase: 'PRIMARY', run: (context) => context.ensureScaffold?.() }
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        "Move each stray entry to its owning package or delete it where it is temporary output, and remove empty folders. Fix only your own work's package; tell other work by a message."
+    },
+    audit: { phase: 'INSPECT', run: ({ outcomes }) => outcomes }
   }
 }
 
-const STRUCTURE_2: RubricItem<ScaffoldContext> = {
+const STRUCTURE_2: RubricItem<StructureContext> = {
   code: 'STRUCTURE-2',
-  title: 'single-file work folders and old checkpoints are read for the tolerance window',
+  title: 'earlier copies of packages are listed',
   description:
-    "Each single-file work folder, whose `_index.md` carries its state and which has no `state.md`, and each old checkpoint under `+/_CHECKPOINTS/` is still read and checked under its old form, with a warning naming its new home, the five-file work package in `+/_WORK/<id>/`, until its territory's migration moves it; the window closes when an inventory shows none left.",
-  sources: [`${SOURCE}#old-checkpoints`],
+    'A retired working area, `+/_WORK/`, `+/_WORK_REVIEW/`, `+/_THREADS/` or `+/_CHECKPOINTS/`, left in a declaring repository holds earlier copies of packages. Each is listed for its owner, who moves any live package to `work/<territory>/<id>/` in the Agora store; the listing is never permission to delete.',
+  sources: [`${SOURCE}#410-the-tidy`],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'guarded',
       guidance:
-        "Move the work to its five-file package at the territory's migration, deleting the old form in the same commit."
+        "Move any live package to the store under the tidy, then remove the earlier copy on its owner's word, Git keeping its history."
     },
-    audit: { phase: 'INSPECT', run: ({ legacy }) => legacy }
+    audit: { phase: 'INSPECT', run: ({ earlier }) => earlier }
   },
   judgment: {
-    scope:
-      'Every single-file work folder, every old checkpoint under `+/_CHECKPOINTS/`, and the package named as its new home.',
-    prompt:
-      "Is the older shape still awaiting its territory's migration, rather than kept beside a package that replaces it?",
-    outcomes: ['awaiting migration', 'move at migration'],
-    guidance:
-      "Leave the older shape until its territory's migration; then write the five package files and delete the old form in one commit."
+    scope: 'Every retired working area the listing names, and the package in `work/` that replaces each copy.',
+    prompt: 'Is each listed copy already replaced by a package in the store, or still the only copy of live work?',
+    outcomes: ["replaced, remove on the owner's word", 'move to the store first', 'escalate to owner'],
+    guidance: "Remove an earlier copy only on its owner's word, and never before its live work is in the store."
   }
 }
 
-export const STRUCTURE: RubricFamily<WorkPackageRubricContext, ScaffoldContext> = {
+export const STRUCTURE: RubricFamily<WorkPackageRubricContext, StructureContext> = {
   code: 'STRUCTURE',
   title: 'Work-package locations',
   description:
-    'One flat folder per piece of work holds its package files, and older shapes stay readable; Git supplies history.',
+    'One folder per piece of work, under its territory in `work/`, holds its package; earlier copies are listed; Git supplies history.',
   standard: SOURCE,
   selectContext: (context) => context.structure,
   items: [STRUCTURE_1, STRUCTURE_2]

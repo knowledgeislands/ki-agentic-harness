@@ -1,30 +1,30 @@
 import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
 import type { OutcomeContext, WorkPackageRubricContext } from '../contexts/work-package.ts'
 
-const SOURCE = 'standards-work-package.md'
+const SOURCE = 'standard-work-package.md'
 
 const BOUNDARY_1: RubricItem<OutcomeContext> = {
   code: 'BOUNDARY-1',
   title: 'a work package contains current state only',
   description:
-    'A work package, single-file work file or old checkpoint has no vendor-session field, conversation locator, role-by-role transcript, or mechanically recognisable claim that a fresh agent can reopen the originating session. It is current state, not session continuity.',
-  sources: [SOURCE],
+    "A package's `_index.md` has no vendor-session field, conversation locator, role-by-role transcript, or mechanically recognisable claim that a fresh agent can reopen the originating session. It is the work's definition and current state, not session continuity.",
+  sources: [`${SOURCE}#416-prohibited-payloads-and-claims`],
   mechanical: {
     level: 'FAIL',
     heuristic: true,
     remediation: {
       class: 'guarded',
-      guidance: 'Remove session-continuity material only through an explicit user-authorised work-file update.'
+      guidance: 'Remove session-continuity material only through an explicit user-authorised update of the entry file.'
     },
     audit: { phase: 'INSPECT', run: ({ outcomes }) => outcomes }
   },
   judgment: {
-    scope: 'Every work package, single-file work file and old checkpoint and its content.',
+    scope: 'Every package and sub-package, its entry file and its change documents.',
     prompt:
       'Would this package let an agent with no transcript or vendor-session access pick the work up, without implying that the originating conversation can be reopened?',
     outcomes: ['conforming', 'explicit update required', 'escalate to user'],
     guidance:
-      'Do not edit work-file content without explicit authority; ask the user when its content or ownership is uncertain.'
+      'Do not edit package content without explicit authority; ask the user when its content or ownership is uncertain.'
   }
 }
 

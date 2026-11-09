@@ -2,11 +2,10 @@ import { expect, test } from 'bun:test'
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-
 import type { RubricItem } from '../../shared/rubric.ts'
 import { BOUNDARY } from '../items/boundary.ts'
 import { RECORD } from '../items/records.ts'
-import { checkpointReadme, createWorkPackageSession } from './work-package.ts'
+import { createWorkPackageSession } from './work-package.ts'
 
 const mechanical = <Context>(family: { items: readonly RubricItem<Context>[] }, code: string) => {
   const item = family.items.find((candidate) => candidate.code === code)
@@ -16,56 +15,61 @@ const mechanical = <Context>(family: { items: readonly RubricItem<Context>[] }, 
 
 test('fresh agent can reconstruct a portable hand-off without transcript or runtime state', () => {
   const repository = mkdtempSync(join(tmpdir(), 'ki-work-package-handoff-'))
-  const checkpointDirectory = join(repository, '+', '_CHECKPOINTS')
+  const folder = join(repository, 'work', 'ki', 'ki.prj.remote-agent-proof')
 
   try {
-    mkdirSync(checkpointDirectory, { recursive: true })
-    writeFileSync(join(repository, checkpointReadme.path), checkpointReadme.content)
+    mkdirSync(folder, { recursive: true })
     writeFileSync(
-      join(checkpointDirectory, 'remote-agent-proof.md'),
+      join(folder, '_index.md'),
       [
         '---',
-        'type: ki-checkpoint',
-        'thread: remote-agent-proof',
-        'state: active',
+        'id: ki.prj.remote-agent-proof',
+        'parent: ki.sop.main',
+        'level: project',
+        "title: 'KI > Remote agent proof'",
+        'project: remote-agent-proof',
+        'description: Delivers the approved remote-agent proof. Takes proof units. Not for provider choice.',
+        'worker: agent',
+        'supervisor: owner',
+        'role: warden',
         'created_at: 2026-09-15T12:00:00Z',
-        'updated_at: 2026-09-15T13:00:00Z',
+        'repositories:',
+        '  - ki-agentic-harness',
+        'state: with-worker',
+        'since: 2026-09-15T13:00:00Z',
         '---',
         '',
-        '# remote-agent-proof',
+        '# ki.prj.remote-agent-proof',
         '',
-        '## Objective',
+        '## Goals',
         '',
         'Deliver the approved remote-agent proof.',
         '',
-        '## Current state',
+        '## Scope',
         '',
-        `Repository ${repository} is at immutable baseline ${'a'.repeat(40)}.`,
+        'In: the proof. Out: provider choice. Works mainly in ki-agentic-harness and may change others.',
         '',
-        '## Decisions made',
+        '## Now',
         '',
-        'Follow the accepted roadmap boundary; no provider choice is authorised.',
+        `- Repository ${repository} is at immutable baseline ${'a'.repeat(40)}; return the result after \`bun test\`.`,
         '',
-        '## Files touched',
+        '## Held',
         '',
-        'No uncommitted files; the immutable baseline contains the complete work state.',
+        'None',
         '',
-        '## Open questions',
+        '## Changes',
         '',
-        'None.',
-        '',
-        '## Next step',
-        '',
-        'Return the result to the roadmap review packet after running `bun test`.',
+        '- [10-proof.change.md](10-proof.change.md) - the proof, in hand.',
         ''
       ].join('\n')
     )
+    writeFileSync(join(folder, '10-proof.change.md'), '# Proof\n')
 
     const session = createWorkPackageSession({
       mode: 'audit',
       repository,
       userHome: tmpdir(),
-      configuration: { skills: { 'ki-work-package': {} } }
+      configuration: {}
     })
     const context = session.subjects[0]?.context()
     if (!context) throw new Error('ki-work-package session did not expose its repository subject')

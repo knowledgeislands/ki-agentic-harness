@@ -17,28 +17,28 @@ const write = (root: string, path: string, text: string): void => {
   writeFileSync(file, text)
 }
 
-const WORK = join('+', '_WORK', 'ki.held')
+const PACKAGE = join('work', 'ki', 'ki.reg.held')
 
 describe('FOLDER family levels', () => {
-  test('every outcome level, including HOLD-TIDY failures, is one its item declares', () => {
+  test('every outcome level is one its item declares', () => {
     const root = mkdtempSync(join(tmpdir(), 'ki-folder-levels-'))
     roots.push(root)
-    for (const name of ['_index.md', 'queries.md', 'messages.md']) write(root, join(WORK, name), `# ${name}\n`)
-    write(root, join(WORK, 'state.md'), '---\nid: ki.held\nstate: on-hold\n---\n# state\n')
-    write(root, join(WORK, 'decisions.md'), '# Decisions\n\n- PMO-CI answered\n')
-    write(root, join(WORK, 'reports', 'pilot.report.md'), '# Run\n\n## Queries\n\n### PMO-CI - Which?\n')
-    write(root, join(WORK, 'briefs', 'pilot.md'), '# Brief\n')
+    write(root, join(PACKAGE, '_index.md'), '---\nid: ki.reg.held\nstate: finished\n---\n# ki.reg.held\n')
+    write(root, join(PACKAGE, '10-held.change.md'), '# Held\n')
+    write(root, join(PACKAGE, 'state.md'), '# state\n')
     const outcomes = folderOutcomes(root)
-    const levels = FOLDER.items.flatMap(({ code, mechanical }) => {
+    const found = FOLDER.items.flatMap(({ code, mechanical }) => {
       if (!mechanical) return []
       const declared = [mechanical.level, ...(mechanical.overrideLevels ?? [])]
       return mechanical.audit
         .run(outcomes)
         .flatMap((outcome) =>
-          outcome.status === 'VIOLATION' && outcome.level ? [{ code, declared: declared.includes(outcome.level) }] : []
+          outcome.status === 'VIOLATION'
+            ? [{ code, declared: declared.includes(outcome.level ?? mechanical.level) }]
+            : []
         )
     })
-    expect(levels.filter(({ code }) => code === 'FOLDER-2' || code === 'FOLDER-3').length).toBe(2)
-    expect(levels.filter(({ declared }) => !declared)).toEqual([])
+    expect(found.map(({ code }) => code)).toEqual(['FOLDER-1', 'FOLDER-4', 'FOLDER-8'])
+    expect(found.filter(({ declared }) => !declared)).toEqual([])
   })
 })

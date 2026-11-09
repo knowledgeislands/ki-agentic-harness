@@ -1,17 +1,76 @@
+---
+type: sources@2026-11-09T21:36:32Z
+revised: 2026-11-09T23:23:32Z
+refresh: canonical · on-change
+---
+
 # Work-package sources
 
-**Refresh:** canonical · on-change
+## Contents
 
-| Source | Last reviewed | Governs |
+- [1. Introduction](#1-introduction)
+- [2. Outside sources](#2-outside-sources)
+  - [2.1 Authoritative](#21-authoritative)
+  - [2.2 Advisory](#22-advisory)
+- [3. Decisions](#3-decisions)
+- [4. Last review](#4-last-review)
+
+## 1. Introduction
+
+The sources behind [the work-package standard](standard-work-package.md), [the role standard](standard-roles.md) and its [migration file](standards-roles-migration.md), and the generated [rubric](rubric.md). The standards are owned in house, so the sources are decisions and the designs behind them rather than outside specifications.
+
+[Back to contents](#contents)
+
+## 2. Outside sources
+
+The designs and skills the standards draw on.
+
+### 2.1 Authoritative
+
+| Source | Governs | Last reviewed |
 | --- | --- | --- |
-| Local checkpoint standard and focused fixtures | 2026-09-15 | House-owned active-only schema, explicit removal authority, and negative-path safety evidence; not a completed reconstruction outcome |
-| The `ki.ways-of-working` work-package design note and decisions log in Knowledge Islands Principal, now `ki.prj.ways-of-working` | 2026-10-31 | The five-file package, routing description, message queue and important flag, size limits, progressive reveal and the rename to `ki-work-package` |
-| `ki-recap` | 2026-08-06 | User-facing recap and durable learning boundary |
-| `ki-repo` | 2026-08-06 | Optional capability declaration and generic working-area ownership |
-| [Role-catalogue brief](https://github.com/krisb/dotfiles/blob/2fe13be/+/_WORK/personal.reg.household-terra/housekeeping/role-catalogue.brief.md), the `ki.reg.guilds` roles design and decisions log | 2026-11-07 | The role standard: catalogue, tiers, glyphs, `role` and `workers` fields, thread line and the role migration file |
+| Local checkpoint standard and focused fixtures | House-owned active-only schema, explicit removal authority, and negative-path safety evidence; not a completed reconstruction outcome | 2026-09-15 |
+| The `ki.ways-of-working` work-package design note and decisions log in Knowledge Islands Principal, now `ki.prj.ways-of-working` | The five-file package, routing description, message queue and important flag, size limits, progressive reveal and the rename to `ki-work-package` | 2026-10-31 |
+| `ki-recap` | User-facing recap and durable learning boundary | 2026-08-06 |
+| `ki-repo` | Optional capability declaration and generic working-area ownership | 2026-08-06 |
+| [Role-catalogue brief](https://github.com/krisb/dotfiles/blob/2fe13be/+/_WORK/personal.reg.household-terra/housekeeping/role-catalogue.brief.md), the `ki.reg.guilds` roles design and decisions log | The role standard: catalogue, tiers, glyphs, `role` and `workers` fields, thread line and the role migration file | 2026-11-07 |
+| The work package format change, phase 1, `01-work-package-format.change.md` in the Agora store's `agora.sop.main` package | The store location, the package shape, the state in `_index.md`, change documents, `repositories:`, messages through the store and the tidy | 2026-11-09 |
 
-## Last review
+[Back to contents](#contents)
 
+### 2.2 Advisory
+
+None.
+
+[Back to contents](#contents)
+
+## 3. Decisions
+
+The phase 1 work package format change, agreed by Kris on 9 November 2026, gives the decisions dated that day; the earlier decisions it replaces are kept, superseded. Other decisions behind the rules are named where the standards state them.
+
+| Id | Decision | Date | Backs | Status |
+| --- | --- | --- | --- | --- |
+| STATE-FILE | A package has five files, the state in `state.md`, rewritten at every move. | 2026-10-19 | [work package](standard-work-package.md) | Superseded by PACKAGE-STATE |
+| FILES-AT-CREATION | All five package files exist from creation, "so others can queue work into `messages.md` at once". | 2026-10-19 | [work package](standard-work-package.md) | Superseded by PACKAGE-SHAPE |
+| QUERIES-FILE | Every open and parked query lives in full in the package's discussion file. | 2026-10-19 | [work package](standard-work-package.md) | Superseded by PACKAGE-DECISIONS |
+| PACKAGE-LAYOUT | The top level holds only the five package files. | 2026-10-30 | [work package](standard-work-package.md) | Superseded by PACKAGE-SHAPE |
+| LAYOUT-PILLARS | Focus areas listed in `_index.md`, each a folder holding its briefs, reports and designs. | 2026-11-02 | [work package](standard-work-package.md) | Superseded by PACKAGE-SHAPE |
+| SUB-PACKAGE | A sub-package is a doer's own short-lived five-file package for one focus area of its parent. | 2026-11-02 | [work package](standard-work-package.md#47-sub-packages) | Superseded by PACKAGE-SHAPE |
+| THREAD-TIDY | At each mark the thread deletes every report whose queries are answered and whose outcome has a durable home. | 2026-10-14 | [work package](standard-work-package.md#410-the-tidy) | Superseded by PACKAGE-TIDY |
+| MSG-SECTIONS | `messages.md` keeps `## Inbound` and `## Outbound`, ACK lines at the top of Inbound. | 2026-11-04 | [work package](standard-work-package.md#48-messages) | Superseded by PACKAGE-MESSAGES |
+| PACKAGE-STORE | A package lives in the Agora store, at `work/<territory>/<work id>/`; where the store sits on each rig is whatever that rig sets. | 2026-11-09 | [work package](standard-work-package.md#42-location-and-identity) | In force |
+| PACKAGE-SHAPE | A package is its `_index.md` and its change documents, `NN-<slug>.change.md`, numbered in tens by group; where it holds more than one strand of work, each is a sub-package of the same shape. There are no other package files and no focus folders. | 2026-11-09 | [work package](standard-work-package.md#43-the-shape) | In force |
+| PACKAGE-STATE | The state lives in `_index.md`, which is enough to recover from: at most five Now lines, Held and `workers`, with no history. | 2026-11-09 | [work package](standard-work-package.md#45-the-state), [roles](standard-roles.md#45-role-fields) | In force |
+| PACKAGE-DECISIONS | Decisions live in the change document they belong to until each goes to its durable home and the change is deleted; open points live in its Open section. | 2026-11-09 | [work package](standard-work-package.md#46-change-documents) | In force |
+| PACKAGE-REPOSITORIES | `_index.md`'s front matter carries `repositories:`, the repositories the package mainly works in, with a Scope line saying it may still change others. | 2026-11-09 | [work package](standard-work-package.md#44-the-entry-file) | In force |
+| PACKAGE-MESSAGES | Messages between work live in the Agora store, through its MCP; a package keeps no message queue of its own. | 2026-11-09 | [work package](standard-work-package.md#48-messages) | In force |
+| PACKAGE-TIDY | The tidy's ten steps bring each package to the shape, ending with a rubric check and a short report. | 2026-11-09 | [work package](standard-work-package.md#410-the-tidy) | In force |
+
+[Back to contents](#contents)
+
+## 4. Last review
+
+- 2026-11-09 - Landed the [work package format change](#3-decisions), phase 1, agreed by Kris on 9 November 2026: a package lives in the Agora store at `work/<territory>/<work id>/` and is its `_index.md` and its `NN-<slug>.change.md` change documents, with sub-packages of the same shape; the state folds into `_index.md`; decisions and open points live in their change document; `repositories:` names where it works; messages go through the Agora store; and the tidy brings each package to the shape. `standards-work-package.md` and `standards-roles.md` became `standard-work-package.md` and `standard-roles.md` in the standard format, and the finished entry-file migration file was deleted. No external source refreshed.
 - 2026-11-08 - Under run `work-review-retire` of `ki.reg.guilds`, after Kris's WORK-REVIEW-RETIRE at 21:47 GMT that day, "do it now", following "delete `+/_WORK_REVIEW`" a minute earlier: the `+/_WORK_REVIEW/` holding area MIGRATION-REVIEW set on 18 October 2026 is retired. Live work is a package in `+/_WORK/`, the rest is deleted, and FOLDER-5 warns on a leftover area during the rollout, under one deletable line in `standards-roles-migration.md`. No external source refreshed.
 - 2026-11-08 - Under run `doc-types` of `ki.reg.guilds`, after Kris took DOC-TYPES a and STD-BASE a at 22:05 CET that day, relayed by `personal.reg.inbox`: the closed list's design note becomes the change document, `<slug>.change.md`, the `ki-authoring` document type carrying `Base:` and `Touches:`; an existing `.design.md` file stays readable during the rollout under the closed list's migration footnote.
 - 2026-11-08 - Under run `harness-index` of `ki.reg.guilds`, after Kris's INDEX-ENTRY that day, relayed by `personal.reg.inbox`: "a good time to change that now, put it into the standard". A package's entry file is `_index.md`, was `work.md`, with the same front matter and content, so that it sorts first. Checks read either name during the rollout, prefer `_index.md` and fail a folder holding both, under the deletable `standards-index-entry-migration.md`.
@@ -35,3 +94,5 @@
 - 2026-10-15 — Adopted the ` > ` thread label form, `<Space> > <Initiative> > <project in words>`, `<Space> > SoP` and `<Space> > <topic>`, from the thread list Kris showed on 2026-10-15 and approved with "this is a better way I think", and the host suffix in his words "no, the machine is only added if its limited to that machine, so intake and chezmoi misc are machine specific". Earlier labels stay valid until the owner approves each change; the transition mapping sits in Thread label.
 - 2026-09-15 — Simplified the lifecycle to active records plus explicit deletion, with Git as the only recovery history. This establishes the authored safety contract only; it does not prove a successful fresh-agent reconstruction trial or that the six-section schema outperforms a smaller record.
 - Current runtime resume and compaction features are supporting platform context, not part of the portable checkpoint contract and not evidence that one system can generate or activate another.
+
+[Back to contents](#contents)

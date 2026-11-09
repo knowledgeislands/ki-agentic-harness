@@ -2,144 +2,66 @@ import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
 import type { FolderOutcomes } from '../contexts/work-folder.ts'
 import type { WorkPackageRubricContext } from '../contexts/work-package.ts'
 
-const SOURCE = 'standards-work-package.md'
-const TIDY = `${SOURCE}#tidying-the-work-folder`
+const SOURCE = 'standard-work-package.md'
+const TIDY = `${SOURCE}#410-the-tidy`
 
 const FOLDER_1: RubricItem<FolderOutcomes> = {
   code: 'FOLDER-1',
-  title: 'every work folder holds only its closed list',
+  title: 'every package holds only its closed list',
   description:
-    'Each work folder `+/_WORK/<id>/` holds only the five package files, one folder `<focus-id>/` per focus area its `_index.md` declares under `## Focus`, holding its briefs `<run>.brief.md`, run reports `<run>.report.md` and change documents `<slug>.change.md`, an existing `<slug>.design.md` design note staying readable for the rollout, subject folders of the same kinds, diagram sources and their `.svg` and `.html` renders, per-tag Markdown findings `findings/<tag>.md` and Markdown feedback packages under `feedback/`. Scripts, screenshots, scratch folders, undeclared folders and tool output fail. For the tolerance window until the layout sweep is done, the type folders stay readable: run reports `reports/<name>.report.md` and nothing else in `reports/`, Markdown briefs under `briefs/`, and under `design/` what a focus folder may hold, each warned on in a package that declares its focus areas; and a `<name>.report.md` still at the top level is a stray file warned on rather than failed. Under INDEX-NAME a focus folder holding anything starts with `_index.md`, giving its goal, contents and what it sends out; for its tolerance window a focus folder without one, or still using `index.md`, is warned on rather than failed. For the tolerance window a thread folder `+/_THREADS/<run>/` is checked against its old closed list, `decisions.md` and `<name>.report.md`, with a warning naming its new home.',
-  sources: [`${SOURCE}#closed-list`],
+    'A package holds only its `_index.md`, its change documents `NN-<slug>.change.md`, and sub-packages of the same shape, each a folder named by a lower-case kebab slug holding its own `_index.md` and one or more change documents. Any other file or folder fails: `state.md`, `decisions.md`, `discussions.md`, `messages.md`, focus folders, run reports, briefs, findings, feedback, scripts, screenshots, scratch folders and tool output.',
+  sources: [`${SOURCE}#43-the-shape`, `${SOURCE}#47-sub-packages`],
   mechanical: {
     level: 'FAIL',
-    overrideLevels: ['WARN'],
     remediation: {
       class: 'diagnostic',
       guidance:
-        "Move each stray file to its owning home, or delete it where it is temporary output, which belongs in the run's temporary directory. Fix only your own work's folder; tell other work by one line in its `messages.md`."
+        "Under the tidy, fold the state into `_index.md`, move live decisions and open points into the change document they belong to, and delete what has a durable home or is temporary output, which belongs in the run's temporary directory. Fix only your own work's package; tell other work by a message."
     },
     audit: { phase: 'INSPECT', run: ({ closed }) => closed }
   }
 }
 
-const FOLDER_2: RubricItem<FolderOutcomes> = {
-  code: 'FOLDER-2',
-  title: 'no work folder keeps a report whose queries are all answered',
-  description:
-    "A run report, in a focus folder, in `reports/` or at the top level, whose every Needs tag the folder's decisions log names, or which has no queries, is a candidate for the tidy once its outcome has a durable home. Whether it has one stays the steward's judgement; the listing is never permission to delete. Under HOLD-TIDY a folder whose work is On hold keeps nothing already dealt with, so there the listing fails rather than warns.",
-  sources: [TIDY],
-  mechanical: {
-    level: 'WARN',
-    overrideLevels: ['FAIL'],
-    remediation: {
-      class: 'diagnostic',
-      guidance:
-        "At the steward's next send or mark, delete by explicit path each listed report whose outcome has a durable home, keeping any whose home is unclear."
-    },
-    heuristic: true,
-    audit: { phase: 'INSPECT', run: ({ answered }) => answered }
-  },
-  judgment: {
-    scope: 'The flagged work folders, their decisions logs and the work files and records the reports name.',
-    prompt:
-      "Does each flagged report's outcome have a durable home, a work record, the decisions log, the work package or a commit, and is every query it raised answered in the log, so that the owning steward may delete it, and did territory work name the flagged folders at its mark?",
-    outcomes: ['conforming', 'prune the work folder', 'home the outcome first', 'escalate to owner'],
-    guidance:
-      'Delete by explicit path only the reports whose outcome is homed; home an unhomed outcome before deleting its report, and leave another work folder to its own steward, told by a line in its `messages.md`.'
-  }
-}
-
-const FOLDER_3: RubricItem<FolderOutcomes> = {
-  code: 'FOLDER-3',
-  title: "no work folder keeps a brief whose run's report it has received",
-  description:
-    "A brief `<focus-id>/<run>.brief.md`, or for the tolerance window `briefs/<run>.md`, goes once its run's report has been received, which the folder shows by holding `<run>.report.md` in a focus folder, in `reports/` or, for the tolerance window, at the top level. Under HOLD-TIDY a folder whose work is On hold keeps no such brief, so there the listing fails rather than warns.",
-  sources: [TIDY],
-  mechanical: {
-    level: 'WARN',
-    overrideLevels: ['FAIL'],
-    remediation: {
-      class: 'diagnostic',
-      guidance:
-        "Delete each listed brief by explicit path at the steward's next send or mark, unless its handoff is open."
-    },
-    heuristic: true,
-    audit: { phase: 'INSPECT', run: ({ briefs }) => briefs }
-  }
-}
-
 const FOLDER_4: RubricItem<FolderOutcomes> = {
   code: 'FOLDER-4',
-  title: "no finished work's folder is left standing",
+  title: "no finished work's package is left standing",
   description:
-    "Finished work keeps its package with `state: finished` only until its close-out; no coordinator reads a Finished work's folder, so every folder whose state is `finished` is due for close-out, whatever its mark.",
-  sources: [`${SOURCE}#tidying-the-work-folder`, `${SOURCE}#removal-lifecycle`],
+    "Finished work keeps its package with `state: finished` only until its close-out; no coordinator reads a Finished work's package, so every package whose state is `finished` is due for close-out, whatever its mark.",
+  sources: [TIDY, `${SOURCE}#415-removal-lifecycle`],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
       guidance:
-        "The finishing coordinator deletes the folder at the mark that closes it; where the folder outlives the finishing thread, territory work closes it at an owner-authorised mark whose report names it: once every close-out check holds, it archives the work's runs with `ki agent close` under its strict gate and deletes the folder in one commit, Git keeping it, and otherwise deletes nothing and asks the owner in its own `queries.md`."
+        "The finishing coordinator deletes the package at the mark that closes it; where the package outlives the finishing thread, territory work closes it at an owner-authorised mark whose report names it: once every close-out check holds, it archives the work's runs with `ki agent close` under its strict gate and deletes the package in one commit, Git keeping it, and otherwise deletes nothing and puts one open point to the owner in a change document of its own."
     },
     audit: { phase: 'INSPECT', run: ({ finished }) => finished }
   }
 }
 
-const FOLDER_5: RubricItem<FolderOutcomes> = {
-  code: 'FOLDER-5',
-  title: 'no retired `+/_WORK_REVIEW/` holding area remains',
+const FOLDER_8: RubricItem<FolderOutcomes> = {
+  code: 'FOLDER-8',
+  title: 'every change document and sub-package is linked from Changes',
   description:
-    '`+/_WORK/` is the one work area: a `+/_WORK_REVIEW/` left from the holding area WORK-REVIEW-RETIRE retired holds no accepted work. During its rollout a leftover area warns rather than fails.',
-  sources: [`${SOURCE}#location-and-identity`],
+    "A package's `_index.md` Changes section links every change document and every sub-package the package holds, so that an agent pointed at the entry file reaches all of its work.",
+  sources: [`${SOURCE}#44-the-entry-file`, `${SOURCE}#47-sub-packages`],
   mechanical: {
     level: 'FAIL',
-    overrideLevels: ['WARN'],
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Move each folder that is live to `+/_WORK/<id>/` by `git mv`, bringing it to the package shape in the same change, delete each that is not, Git keeping its history, then remove `+/_WORK_REVIEW/`.'
+        "Add one list item under `## Changes` for each unlinked change document or sub-package, saying in a line what it is and where it stands. Fix only your own work's package; tell other work by a message."
     },
-    audit: { phase: 'INSPECT', run: ({ review }) => review }
-  }
-}
-
-const FOLDER_6: RubricItem<FolderOutcomes> = {
-  code: 'FOLDER-6',
-  title: 'no work package holds more than eight open queries',
-  description:
-    "More than eight queries under the discussion file's `## Open`, in `discussions.md` or `queries.md`, is a coordination smell and warns.",
-  sources: [`${SOURCE}#queries-file`],
-  mechanical: {
-    level: 'WARN',
-    remediation: { class: 'diagnostic', guidance: 'Answer, park or merge open queries until eight or fewer remain.' },
-    audit: { phase: 'INSPECT', run: ({ queries }) => queries }
-  }
-}
-
-const FOLDER_7: RubricItem<FolderOutcomes> = {
-  code: 'FOLDER-7',
-  title: 'every decisions log reads to the close gate as entries',
-  description:
-    "The `ki agent close` gate opens one entry at every `##` heading, timestamped, dated, numbered or free text, and reads nothing else. A list item or deeper heading before the first `##` heading is a decision the gate never sees, a heading with no text is one it cannot name, and a repeated heading is one `ki agent reconcile` cannot address. Thread folders' logs are read too, since the gate reads whichever log a run's home holds.",
-  sources: [`${SOURCE}#decisions-log`],
-  mechanical: {
-    level: 'WARN',
-    remediation: {
-      class: 'diagnostic',
-      guidance:
-        "Give each unread decision its own `## <YYYY-MM-DD HH:MM zone> - <title>` heading, the form `ki agent decide` writes, title any empty heading, and make repeated headings distinct. Fix only your own work's log; tell other work by one line in its `messages.md`."
-    },
-    audit: { phase: 'INSPECT', run: ({ decisions }) => decisions }
+    audit: { phase: 'INSPECT', run: ({ changes }) => changes }
   }
 }
 
 export const FOLDER: RubricFamily<WorkPackageRubricContext, FolderOutcomes> = {
   code: 'FOLDER',
-  title: 'Work-folder closed list and tidy',
+  title: 'Work-package closed list and tidy',
   description:
-    'Each work folder holds only its closed list, and what is due for the tidy is listed for its steward, so folders stay pruned without relying on memory.',
+    'Each package holds only its closed list and links all of its work, and what is due for close-out is listed, so packages stay pruned without relying on memory.',
   standard: SOURCE,
   selectContext: (context) => context.folder,
-  items: [FOLDER_1, FOLDER_2, FOLDER_3, FOLDER_4, FOLDER_5, FOLDER_6, FOLDER_7]
+  items: [FOLDER_1, FOLDER_4, FOLDER_8]
 }
