@@ -139,7 +139,7 @@ export const LAYOUT: RubricFamily<KiSkillsRubricContext, LayoutRubricContext> = 
   code: 'LAY',
   title: 'File existence & layout',
   description: 'Portable skill layout and supporting-file structure.',
-  standard: 'standards-agent-skills.md#2-layout',
+  standard: 'standard-agent-skills.md#431-layout',
   selectContext: (context: KiSkillsRubricContext) => selectKiSkillsContext(context, 'layout'),
   items: [LAY_1, LAY_2, LAY_3, LAY_4, LAY_5, LAY_6]
 }

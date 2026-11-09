@@ -71,7 +71,7 @@ EDUCATE is one of the universal four. It teaches or creates the governed artifac
 Create a well-formed agent definition from a plain-English description of the agent's role.
 
 1. **Gather inputs.** If the description is missing a lane boundary (what it defers), ask for it — the own-vs-defer line is the most important judgment call and cannot be inferred from a role alone.
-2. **Read [the Agent Skills standard](standards-agent-skills.md)** before writing — do not generate frontmatter from memory.
+2. **Read [the Agent Skills standard](standard-agent-skills.md)** before writing — do not generate frontmatter from memory.
 3. **Draft the frontmatter** (`name`, `description`, optional `model` / `tools`) then the system prompt (role declaration, grounding statement, own-vs-defer boundary, operating notes).
 4. **Run the host** from the repository root: `ki repo audit --skill ki-subagents`. Fix any FAIL findings before delivering.
 5. Return the complete `.md` file content, annotated with the reasoning for any non-obvious choices.

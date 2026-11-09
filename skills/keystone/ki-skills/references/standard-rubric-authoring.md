@@ -1,38 +1,94 @@
+---
+type: standard@2026-11-09T21:36:32Z
+revised: 2026-11-09T22:38:25Z
+status: in force
+---
+
 # Rubric authoring standard
+
+## Contents
+
+- [1. Introduction](#1-introduction)
+- [2. Scope](#2-scope)
+  - [2.1 In scope](#21-in-scope)
+  - [2.2 Out of scope](#22-out-of-scope)
+- [3. Terms and definitions](#3-terms-and-definitions)
+- [4. Rules](#4-rules)
+  - [4.1 Normative language](#41-normative-language)
+  - [4.2 The knowledge chain](#42-the-knowledge-chain)
+  - [4.3 Target layout](#43-target-layout)
+  - [4.4 Reviewing structural consistency](#44-reviewing-structural-consistency)
+  - [4.5 Rubric families and items](#45-rubric-families-and-items)
+  - [4.6 Maintaining a rubric](#46-maintaining-a-rubric)
+  - [4.7 Target type shape](#47-target-type-shape)
+  - [4.8 Rubric execution and phasing](#48-rubric-execution-and-phasing)
+  - [4.9 Generated publication and optional projections](#49-generated-publication-and-optional-projections)
+  - [4.10 Context and evidence](#410-context-and-evidence)
+  - [4.11 Host and session boundary](#411-host-and-session-boundary)
+  - [4.12 Educate boundary](#412-educate-boundary)
+  - [4.13 Host findings and reporting](#413-host-findings-and-reporting)
+  - [4.14 Generated rubric publication](#414-generated-rubric-publication)
+  - [4.15 Verification](#415-verification)
+  - [4.16 Review boundary](#416-review-boundary)
+  - [4.17 Implementation units](#417-implementation-units)
+  - [4.18 Rollout checklist](#418-rollout-checklist)
+
+## 1. Introduction
 
 This is the target model for turning a governance standard into an executable rubric.
 
 `ki-skills` proves the model as the self-governing root of the governance-skill system; later skills adopt it one at a time rather than inventing their own checker architecture, so they are focused on the what, how and why, not the how-to-build.
 
-Use this guide when creating or refactoring a governance skill's rubric implementation.
+Use this guide when creating or refactoring a governance skill's rubric implementation. The decisions behind these rules are in [the sources file](sources.md#3-decisions).
 
-## Contents
+[Back to contents](#contents)
 
-- [Normative language](#normative-language)
-- [The knowledge chain](#the-knowledge-chain)
-- [Target layout](#target-layout)
-- [Rubric families and items](#rubric-families-and-items)
-- [Maintaining a rubric](#maintaining-a-rubric)
-- [Target type shape](#target-type-shape)
-- [Rubric execution and phasing](#rubric-execution-and-phasing)
-- [Generated publication and optional projections](#generated-publication-and-optional-projections)
-- [Context and evidence](#context-and-evidence)
-- [Host and session boundary](#host-and-session-boundary)
-- [Educate boundary](#educate-boundary)
-- [Host findings and reporting](#host-findings-and-reporting)
-- [Generated rubric publication](#generated-rubric-publication)
-- [Verification](#verification)
-- [Review boundary](#review-boundary)
-- [Implementation units](#implementation-units)
-- [Rollout checklist](#rollout-checklist)
+## 2. Scope
 
-## Normative language
+How a governance skill's standard becomes a structured, executable rubric hosted by `ki`.
+
+### 2.1 In scope
+
+- The knowledge chain from sources to host-owned findings, and the target layout.
+- Rubric families and items, their maintenance, and the shared type shape.
+- Execution and phasing, context and evidence, and the host and session boundary.
+- The generated `rubric.md` publication and any optional projection.
+- The EDUCATE boundary, host findings and reporting, verification, review, implementation units and rollout.
+
+[Back to contents](#contents)
+
+### 2.2 Out of scope
+
+- What a good skill looks like: [the Agent Skills standard](standard-agent-skills.md) and [the Knowledge Islands skill standard](standard-knowledge-islands.md).
+- The generic host runtime, its contract and its tests: `tools-ki`.
+
+[Back to contents](#contents)
+
+## 3. Terms and definitions
+
+| Term | Definition |
+| --- | --- |
+| **Rubric family** | A group of criteria assessing one coherent concern, such as `NAME`, exported as one complete `RubricFamily`. **Standard:** this one, [4.5](#45-rubric-families-and-items) |
+| **Rubric item** | One criterion with a stable code, title, description, sources, and a mechanical aspect, a judgment aspect, or both. **Standard:** this one, [4.5](#45-rubric-families-and-items) |
+| **Remediation class** | What the host may do after a mechanical violation: `automatic`, `diagnostic` or `guarded`. **Standard:** this one, [4.7](#47-target-type-shape) |
+| **Phase** | A step of the shared ordered vocabulary `PREPARE → INSPECT → PRIMARY → DERIVED → NORMALISE`. **Standard:** this one, [4.8](#48-rubric-execution-and-phasing) |
+| **Rubric host** | The `ki` host that validates the catalogue and session, executes actions, derives findings and owns safe publication. **Standard:** this one, [4.2](#42-the-knowledge-chain) |
+
+[Back to contents](#contents)
+
+## 4. Rules
+
+The rules, part by part.
+
+### 4.1 Normative language
 
 Uppercase normative terms such as `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, and `MAY` use the BCP 14 meanings defined by [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) and [RFC 8174](https://www.rfc-editor.org/rfc/rfc8174).
 
 Lowercase forms are ordinary prose.
 
-## The knowledge chain
+[Back to contents](#contents)
+
+### 4.2 The knowledge chain
 
 ```text
 sources → standard → structured rubric
@@ -56,7 +112,9 @@ Each layer has one responsibility:
 - `rubric.md` is a deterministic human-readable publication generated from the structured rubric. It is never a second authored source of truth. It contains a statement at the start of it to make this clear to readers and agents.
 - `exemplars.md` shows representative good outcomes; it does not define requirements.
 
-## Target layout
+[Back to contents](#contents)
+
+### 4.3 Target layout
 
 ```text
 scripts/
@@ -91,7 +149,9 @@ The one target shared module is `scripts/shared/rubric.ts`. It is materialised o
 
 A dependent governance skill declares `ki-shared-dependencies: [ki-skills:rubric]` and imports only its local `scripts/shared/rubric.ts` copy.
 
-## Reviewing structural consistency
+[Back to contents](#contents)
+
+### 4.4 Reviewing structural consistency
 
 When reviewing a governed skill beyond its policy content, compare it with the strongest relevant exemplar rather than mechanically copying a directory layout.
 
@@ -108,7 +168,9 @@ Assess these boundaries, recording whether each difference is intentional concer
 
 Do not make test-file count, context count, renderer style, or other cosmetic similarity a requirement. Promote a recurring pattern to a rubric item only when its policy is genuinely shared and its mechanical evidence can be made trustworthy; otherwise retain it as review guidance or a focused follow-up.
 
-## Rubric families and items
+[Back to contents](#contents)
+
+### 4.5 Rubric families and items
 
 A family groups criteria that assess one coherent concern, such as `NAME`, `DESCRIPTION`, or `KI-SHAPE`.
 
@@ -152,7 +214,9 @@ Helpers, constants, and types used only by one item action or session builder re
 
 Skill-specific behaviour shared by both commands belongs in `scripts/rubric/contexts/`; only behaviour deliberately reusable across other skills belongs in `scripts/shared/`.
 
-## Maintaining a rubric
+[Back to contents](#contents)
+
+### 4.6 Maintaining a rubric
 
 Once a skill conforms to this structure, ordinary maintenance SHOULD be isolated to the rule being changed:
 
@@ -168,7 +232,9 @@ A change MAY cross those boundaries only when it introduces a genuinely new rubr
 
 This boundary is the payoff from codifying the rubric: most future work becomes a local policy change with local evidence and tests rather than another edit to a large audit or conform program.
 
-## Target type shape
+[Back to contents](#contents)
+
+### 4.7 Target type shape
 
 The shared rubric model should be small enough to understand from its public types.
 
@@ -338,7 +404,9 @@ The concrete implementation may use a typed family helper to preserve heterogene
 
 The definition is the one object passed to host validation, execution, and rubric-publication rendering.
 
-## Rubric execution and phasing
+[Back to contents](#contents)
+
+### 4.8 Rubric execution and phasing
 
 A rubric execution is the executable side of a mechanical rubric aspect.
 
@@ -372,7 +440,9 @@ The structured rubric is the authored source of phasing.
 
 Several actions MAY touch the same file. They act in order on one session-owned draft, and the session emits one final write for that file. A skill MUST NOT dispatch or coalesce behaviour by inspecting criterion codes; any item-specific behaviour belongs on the item itself.
 
-## Generated publication and optional projections
+[Back to contents](#contents)
+
+### 4.9 Generated publication and optional projections
 
 The structured TypeScript definition is the authored source.
 
@@ -390,7 +460,9 @@ It MUST contain no callbacks or filesystem paths to source modules, and it MUST 
 
 No additional machine projection is a prerequisite for proving the root `ki-skills` catalogue unless a concrete consumer cannot use the loaded definition.
 
-## Context and evidence
+[Back to contents](#contents)
+
+### 4.10 Context and evidence
 
 Rubric items receive prepared domain evidence rather than reading files, parsing frontmatter, invoking the reporter, or knowing CLI arguments.
 
@@ -422,7 +494,9 @@ Name an extracted function when it exposes a domain operation, defines a useful 
 
 Keep a one-use expression inline when extracting it would only hide straightforward work.
 
-## Host and session boundary
+[Back to contents](#contents)
+
+### 4.11 Host and session boundary
 
 The skill-owned boundary should read as a short construction sequence:
 
@@ -451,7 +525,9 @@ Judgment work is not emitted as synthetic findings or accumulated in a private T
 
 The response summary MUST report the number of selected rubric items carrying a judgment aspect that AUDIT or CONFORM did not mechanically evaluate.
 
-## Educate boundary
+[Back to contents](#contents)
+
+### 4.12 Educate boundary
 
 EDUCATE is a sibling universal mode, not a checker mode.
 
@@ -461,7 +537,9 @@ An EDUCATE implementation may eventually consume rubric-derived templates or inv
 
 The retired `scripts/educate.ts` wrapper MUST NOT be restored as a compatibility path. The active plan decides whether each former scaffolding concern belongs in bootstrap, a separate `ki` command, or deliberate retirement.
 
-## Host findings and reporting
+[Back to contents](#contents)
+
+### 4.13 Host findings and reporting
 
 Finding conversion and reporting are host infrastructure, not a policy engine.
 
@@ -473,7 +551,9 @@ Presentation may render `${code}: ${title}`, subjects, progress, totals, or anot
 
 A skill adopts the host contract atomically. There is no Markdown-policy fallback, legacy adapter, per-skill reporter, or dual execution path.
 
-## Generated rubric publication
+[Back to contents](#contents)
+
+### 4.14 Generated rubric publication
 
 The readable `references/rubric.md` remains useful for people and agents, but it is generated rather than maintained alongside the TypeScript catalogue.
 
@@ -495,7 +575,9 @@ Runtime code never parses the generated Markdown back into policy.
 
 An unmigrated skill remains broken against the new contract until it is cut directly to the final catalogue shape; compatibility execution is not retained.
 
-## Verification
+[Back to contents](#contents)
+
+### 4.15 Verification
 
 Tests sit beside the domain module they cover, while generic host behaviour is tested in `tools-ki`.
 
@@ -515,7 +597,9 @@ At minimum, a structured rubric proves:
 - generated `rubric.md` exactly matches the structured catalogue; and
 - the materialised rubric type contract behaves the same as its source module.
 
-## Review boundary
+[Back to contents](#contents)
+
+### 4.16 Review boundary
 
 The root exemplar refactor changes `skills/keystone/ki-skills/` and the generic contract/runtime in `tools-ki`.
 
@@ -527,7 +611,9 @@ Those consumers are addressed only after the root catalogue, family, session, co
 
 The target contains no legacy aliases, compatibility adapters, dual response names, or Markdown policy fallback.
 
-## Implementation units
+[Back to contents](#contents)
+
+### 4.17 Implementation units
 
 Complete these units in order, keeping each independently reviewable.
 
@@ -541,7 +627,9 @@ Complete these units in order, keeping each independently reviewable.
 
 Do not migrate another skill until these seven units and the context review pass for `ki-skills`.
 
-## Rollout checklist
+[Back to contents](#contents)
+
+### 4.18 Rollout checklist
 
 Apply the model to one governance skill at a time after `ki-skills` proves it.
 
@@ -563,3 +651,5 @@ Use an exemplar-first rollout. Finish and review `ki-skills`, record the per-ski
 - Test the source catalogue through `ki repo audit`, `ki repo conform --dry-run`, and the generated-publication command.
 - Migrate one skill atomically; broken intermediate states are acceptable inside the commit sequence, but the committed unit contains no compatibility path.
 - Record any reusable improvement in this guide before moving to the next skill.
+
+[Back to contents](#contents)

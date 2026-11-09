@@ -1,19 +1,74 @@
-# Knowledge Islands skill standard
+---
+type: standard@2026-11-09T21:36:32Z
+revised: 2026-11-09T22:38:25Z
+status: in force
+---
 
-The Knowledge Islands conventions added to the portable [Agent Skills standard](standards-agent-skills.md). The [rubric](rubric.md) derives its KI-LINK, PORT, KI-SHAPE, KI-INVOKE, and COLL families from this standard and the decision records they cite.
+# Knowledge Islands skill standard
 
 ## Contents
 
-1. [Linking and portability](#1-linking-and-portability)
-2. [Skill shape](#2-skill-shape)
-3. [Cross-skill collision](#3-cross-skill-collision)
-4. [Runtime portability](#4-runtime-portability)
+- [1. Introduction](#1-introduction)
+- [2. Scope](#2-scope)
+  - [2.1 In scope](#21-in-scope)
+  - [2.2 Out of scope](#22-out-of-scope)
+- [3. Terms and definitions](#3-terms-and-definitions)
+- [4. Rules](#4-rules)
+  - [4.1 Linking and portability](#41-linking-and-portability)
+  - [4.2 Skill shape](#42-skill-shape)
+  - [4.3 Cross-skill collision](#43-cross-skill-collision)
+  - [4.4 Runtime portability](#44-runtime-portability)
 
-## 1. Linking and portability
+## 1. Introduction
+
+The Knowledge Islands conventions added to the portable [Agent Skills standard](standard-agent-skills.md). The [rubric](rubric.md) derives its KI-LINK, PORT, KI-SHAPE, KI-INVOKE, and COLL families from this standard and the decision records they cite. The decisions behind these rules are in [the sources file](sources.md#3-decisions).
+
+[Back to contents](#contents)
+
+## 2. Scope
+
+The conventions a Knowledge Islands skill follows beyond the portable contract.
+
+### 2.1 In scope
+
+- Linking and portability across relocation and symlinking.
+- Skill shape: applicability, kind, composition and dependencies, shared modules, runtime compatibility, `.ki.toml` tables, governance modes, the reference vocabulary, `.ki-meta/` and the repository-local `ki-self`.
+- Collision between sibling skills.
+- Runtime portability of a portable contract.
+
+[Back to contents](#contents)
+
+### 2.2 Out of scope
+
+- The portable Agent Skills contract and established practice: [the Agent Skills standard](standard-agent-skills.md).
+- The `.ki.toml` contract: `ki-repo`.
+- The standard and sources formats: `ki-authoring`.
+
+[Back to contents](#contents)
+
+## 3. Terms and definitions
+
+| Term | Definition |
+| --- | --- |
+| **Governance skill** | A skill that holds a house standard, declared `ki-kind: governance`. **Standard:** this one, [4.2](#42-skill-shape) |
+| **Process skill** | A skill carrying an operational procedure, declared `ki-kind: process`. **Standard:** this one, [4.2](#42-skill-shape) |
+| **Composition** | Selecting one skill necessarily selects and runs another governance capability before adding its own delta, declared in `ki-depends-on:`. **Standard:** this one, [4.2](#42-skill-shape) |
+| **Optional augmentation** | A capability used only when it is active in the same scope, declared in `ki-optional-depends-on:`. **Standard:** this one, [4.2](#42-skill-shape) |
+| **Off-ramp** | A description or sentence routing the reader to an adjacent skill, which declares no dependency. **Standard:** this one, [4.2](#42-skill-shape), [4.3](#43-cross-skill-collision) |
+
+[Back to contents](#contents)
+
+## 4. Rules
+
+The rules, part by part.
+
+### 4.1 Linking and portability
 
 Knowledge Islands skills survive relocation and symlinking. Internal links are **standard relative markdown links, not Obsidian wikilinks**, and every relative target resolves on disk (use the CommonMark angle-bracket form for paths with spaces). Reference **another skill by its `name`** ("the `ki-repo-kb` skill"), never by file path — a skill's on-disk location is not stable. The house toolchain passes: Biome (TS/JSON), rumdl (markdown). (ADR-KI-HARNESS-SKILLS-004; `ki-authoring`; `ki-engineering`)
 
-## 2. Skill shape
+[Back to contents](#contents)
+
+### 4.2 Skill shape
 
 Every KI skill declares one orthogonal repository-applicability value in exact frontmatter: `ki-applicability: baseline | detected | declaration-only | invocation-only`. The complete baseline is exactly `ki-repo` and `ki-authoring`. Every process skill is `invocation-only`; a governance skill must not be `invocation-only`. `detected` means `ki-repo` has executable repository evidence for the capability, while `declaration-only` requires explicit selection without repository-shape inference. Applicability does not replace kind, dependency composition, runtime compatibility, or host activation. Only `ki-repo` may declare `ki-detects`, and every other skill must omit it. (ADR-KI-HARNESS-SKILLS-014)
 
@@ -45,10 +100,16 @@ When a KI-governed skill needs durable, generated local state that is neither a 
 
 A committed repository-local `.agents/skills/ki-self/` source is the one direct-governance exception to installed-Harness resolution. It still publishes `scripts/rubric/items/index.ts`, is executable only when the repository explicitly declares `[skills.ki-self]`, and remains subject to the retired-runner prohibition. Its REFRESH mode names the repository-owned source rather than a Harness owner.
 
-## 3. Cross-skill collision
+[Back to contents](#contents)
+
+### 4.3 Cross-skill collision
 
 Most conventions audit one `SKILL.md` in isolation; these check it against its **siblings** (so an audit runs the linter over the whole set, not one skill). No two descriptions in a set should declare the **same quoted trigger phrase** — two skills firing on the identical phrase compete at selection time. Beyond exact strings, where two skills could plausibly fire on one request, **each** description names the other as the off-ramp — the reciprocal `ki-repo-mcp` ↔ `ki-skills` pattern; a one-directional guard is a half-fix. This promotes the per-skill _option_ of naming non-triggers into a **set-level requirement** wherever real overlap exists. (COMMUNITY, ki-agentic-harness README)
 
-## 4. Runtime portability
+[Back to contents](#contents)
+
+### 4.4 Runtime portability
 
 A portable contract describes behaviour without assuming one vendor, agent runtime, runtime-specific home, or interaction model. Name a runtime only when the text makes its boundary explicit: a skill whose entire purpose is runtime binding declares `ki-runtime-binding: true` in its frontmatter; a mixed contract puts the bounded material beneath a `##`–`###### Runtime binding` heading; tracked `references/sources.md` material is attribution rather than instruction; and a same-line comparison may name two or more runtimes to describe their difference. Do not use these boundaries to preserve incidental historical wording: move or rewrite a genuine portable rule until it has no vendor-specific premise. (KI)
+
+[Back to contents](#contents)

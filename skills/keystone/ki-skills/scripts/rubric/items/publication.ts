@@ -3,6 +3,6 @@ import { type KiSkillsRubricContext, selectKiSkillsContext } from '../contexts/c
 
 export const RUBRIC = createRubricPublicationFamily<KiSkillsRubricContext>(
   (context) => selectKiSkillsContext(context, 'rubric'),
-  'standards-rubric-authoring.md',
-  ['standards-rubric-authoring.md#generated-rubric-publication']
+  'standard-rubric-authoring.md',
+  ['standard-rubric-authoring.md#414-generated-rubric-publication']
 )

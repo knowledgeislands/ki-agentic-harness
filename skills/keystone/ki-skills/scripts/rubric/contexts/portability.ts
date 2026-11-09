@@ -27,6 +27,9 @@ const runtimeComparison = (line: string): boolean => {
   return namedRuntimes.size >= 2
 }
 
+// A contents entry only links to a heading in the same document; the heading itself is checked where it stands.
+const contentsEntry = (line: string): boolean => /^\s*[-*]\s+\[[^\]]*\]\(#[^)\s]*\)\s*$/.test(line)
+
 const explicitlyQualifiedRuntimeBinding = (line: string): boolean =>
   /\b(?:runtime[- ](?:specific|only)|Claude[- ]Code[- ](?:specific|only)|CC[- ]only)\b|\(CC\)/i.test(line)
 
@@ -47,7 +50,8 @@ export const unqualifiedRuntimeAssumptions = ({
     if (heading) {
       const depth = heading[1]?.length ?? 0
       if (runtimeBindingHeadingDepth !== null && depth <= runtimeBindingHeadingDepth) runtimeBindingHeadingDepth = null
-      if (/^runtime (?:bindings?|overlay)\b/i.test(heading[2] ?? '')) runtimeBindingHeadingDepth = depth
+      if (/^(?:\d+(?:\.\d+)*\.?\s+)?runtime (?:bindings?|overlay)\b/i.test(heading[2] ?? ''))
+        runtimeBindingHeadingDepth = depth
     }
 
     if (/^>\s*(?:\*\*)?Source(?:\*\*)?:\s+/i.test(line)) attributedQuote = true
@@ -57,6 +61,7 @@ export const unqualifiedRuntimeAssumptions = ({
       runtimeBindingHeadingDepth !== null ||
       attributedQuote ||
       runtimeComparison(line) ||
+      contentsEntry(line) ||
       explicitlyQualifiedRuntimeBinding(line)
     )
       continue

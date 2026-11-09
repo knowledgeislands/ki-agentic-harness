@@ -25,7 +25,7 @@ The boundary ruleset is selected conditionally by DESIGN-2: prefer `.dependency-
 ## What this skill owns
 
 1. **Code design and the common toolchain** — comprehension-first modularity and reuse, plus the baseline every TS/Bun repo meets and capability conditionals that fire only when a repo opts into a capability. The full, quotable standard is [the engineering standard](references/standards-engineering.md); the line-by-line items are in [the rubric](references/rubric.md).
-2. **The governance-skill rubric model** — the shared mechanism for turning any standard into structured criteria, focused evidence, phased audit and conform execution, and canonical checker responses. It is owned by `ki-skills` in [the rubric-authoring standard](../../keystone/ki-skills/references/standards-rubric-authoring.md); this skill conforms to it.
+2. **The governance-skill rubric model** — the shared mechanism for turning any standard into structured criteria, focused evidence, phased audit and conform execution, and canonical checker responses. It is owned by `ki-skills` in [the rubric-authoring standard](../../keystone/ki-skills/references/standard-rubric-authoring.md); this skill conforms to it.
 
 **Artifact-specific rules are not here.** Anything meaningful only for one artifact type (an MCP's `bin`, `ki:server:mcp:*` scripts, coverage-exclude list, tool surface) lives in that artifact's skill. A repo is fully audited by running this coverage-detected standard alongside its declared artifact standard — see below.
 

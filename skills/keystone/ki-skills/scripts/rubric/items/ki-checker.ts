@@ -8,8 +8,8 @@ const KI_CHECKER_1: RubricItem<KiCheckerRubricContext> = {
   description:
     '`ki repo audit` and `ki repo conform` pass the repository root to `createSession`. The skill discovers only its governed subjects beneath that root and represents an absent scope explicitly with `NOT_APPLICABLE`; it does not reinterpret the root as its content directory, scan unrelated files, or claim a vacuous pass.',
   sources: [
-    'standards-rubric-authoring.md#context-and-evidence',
-    'standards-rubric-authoring.md#host-and-session-boundary'
+    'standard-rubric-authoring.md#410-context-and-evidence',
+    'standard-rubric-authoring.md#411-host-and-session-boundary'
   ],
   judgment: judgment(
     'Does the rubric session discover only its governed subjects and represent an absent scope explicitly?'
@@ -98,7 +98,7 @@ const KI_CHECKER_4: RubricItem<KiCheckerRubricContext> = {
   title: 'structured rubric items follow the uniform family layout',
   description:
     '`scripts/rubric/items/index.ts` is catalogue wiring only. Each family is imported from one semantic family module, which exports only that complete ordered `RubricFamily`; item constants and helpers remain private. Rule definitions and execution callbacks do not live in the catalogue index.',
-  sources: ['standards-rubric-authoring.md#rubric-families-and-items'],
+  sources: ['standard-rubric-authoring.md#45-rubric-families-and-items'],
   mechanical: {
     level: 'FAIL',
     remediation: {
@@ -197,7 +197,7 @@ export const KI_CHECKER: RubricFamily<KiSkillsRubricContext, KiCheckerRubricCont
   code: 'KI-CHECKER',
   title: 'Knowledge Islands rubric contract',
   description: 'Knowledge Islands catalogue, session, and packaging responsibilities.',
-  standard: 'standards-rubric-authoring.md',
+  standard: 'standard-rubric-authoring.md',
   selectContext: (context: KiSkillsRubricContext) => selectKiSkillsContext(context, 'checker'),
   items: [KI_CHECKER_1, KI_CHECKER_2, KI_CHECKER_3, KI_CHECKER_4, KI_CHECKER_5]
 }

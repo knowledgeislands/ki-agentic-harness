@@ -196,7 +196,7 @@ export const NAME: RubricFamily<KiSkillsRubricContext, NameRubricContext> = {
   code: 'NAME',
   title: 'Frontmatter: name',
   description: 'The portable skill name contract.',
-  standard: 'standards-agent-skills.md#4-frontmatter-name',
+  standard: 'standard-agent-skills.md#433-frontmatter-name',
   selectContext: (context: KiSkillsRubricContext) => selectKiSkillsContext(context, 'name'),
   items: [NAME_1, NAME_2, NAME_3, NAME_4, NAME_5, NAME_6, NAME_7]
 }

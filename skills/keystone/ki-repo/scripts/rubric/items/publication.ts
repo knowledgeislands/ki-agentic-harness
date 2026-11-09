@@ -3,6 +3,6 @@ import type { RepoRubricContext } from '../contexts/repository.ts'
 
 export const RUBRIC = createRubricPublicationFamily<RepoRubricContext>(
   ({ rubric }) => rubric,
-  '../../ki-skills/references/standards-rubric-authoring.md',
-  ['../../ki-skills/references/standards-rubric-authoring.md#generated-rubric-publication']
+  '../../ki-skills/references/standard-rubric-authoring.md',
+  ['../../ki-skills/references/standard-rubric-authoring.md#414-generated-rubric-publication']
 )

@@ -22,7 +22,7 @@ export const PROCESS: RubricFamily<KiSkillsRubricContext, KiSkillsRubricContext>
   code: 'PROC',
   title: 'Process / meta',
   description: 'Evaluation and real-usage evidence for the skill.',
-  standard: 'standards-agent-skills.md#11-process--evaluation',
+  standard: 'standard-agent-skills.md#445-process--evaluation',
   selectContext: (context: KiSkillsRubricContext) => context,
   items: [PROC_1, PROC_2]
 }

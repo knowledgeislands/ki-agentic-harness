@@ -88,9 +88,9 @@ A collection governance skill that exposes NEW MUST use it to author exactly one
 
 _Conformance:_ conforming
 
-_Verify:_ the collection skills exposing `### Mode NEW` (`ki-decision-records`, `ki-specs`, `ki-repo-kb-activities`, `ki-repo-kb-live-artifacts`) each also expose EDUCATE; the fixed meaning is pinned in [`skills/keystone/ki-skills/references/standards-knowledge-islands.md`](../../skills/keystone/ki-skills/references/standards-knowledge-islands.md).
+_Verify:_ the collection skills exposing `### Mode NEW` (`ki-decision-records`, `ki-specs`, `ki-repo-kb-activities`, `ki-repo-kb-live-artifacts`) each also expose EDUCATE; the fixed meaning is pinned in [`skills/keystone/ki-skills/references/standard-knowledge-islands.md`](../../skills/keystone/ki-skills/references/standard-knowledge-islands.md).
 
-_Evidence:_ the collection skills exposing `### Mode NEW` (`ki-decision-records`, `ki-specs`, `ki-repo-kb-activities`, `ki-repo-kb-live-artifacts`) each also expose EDUCATE; the fixed meaning is pinned in [`skills/keystone/ki-skills/references/standards-knowledge-islands.md`](../../skills/keystone/ki-skills/references/standards-knowledge-islands.md).
+_Evidence:_ the collection skills exposing `### Mode NEW` (`ki-decision-records`, `ki-specs`, `ki-repo-kb-activities`, `ki-repo-kb-live-artifacts`) each also expose EDUCATE; the fixed meaning is pinned in [`skills/keystone/ki-skills/references/standard-knowledge-islands.md`](../../skills/keystone/ki-skills/references/standard-knowledge-islands.md).
 
 ### MODE-009 — OPTIMISE pushes toward excellent
 
@@ -98,9 +98,9 @@ A skill that exposes OPTIMISE MUST use it only to push an already-compliant arti
 
 _Conformance:_ conforming
 
-_Verify:_ `ki-skills`'s `### Mode OPTIMISE`; the fixed meaning is pinned in [`skills/keystone/ki-skills/references/standards-knowledge-islands.md`](../../skills/keystone/ki-skills/references/standards-knowledge-islands.md).
+_Verify:_ `ki-skills`'s `### Mode OPTIMISE`; the fixed meaning is pinned in [`skills/keystone/ki-skills/references/standard-knowledge-islands.md`](../../skills/keystone/ki-skills/references/standard-knowledge-islands.md).
 
-_Evidence:_ `ki-skills`'s `### Mode OPTIMISE`; the fixed meaning is pinned in [`skills/keystone/ki-skills/references/standards-knowledge-islands.md`](../../skills/keystone/ki-skills/references/standards-knowledge-islands.md).
+_Evidence:_ `ki-skills`'s `### Mode OPTIMISE`; the fixed meaning is pinned in [`skills/keystone/ki-skills/references/standard-knowledge-islands.md`](../../skills/keystone/ki-skills/references/standard-knowledge-islands.md).
 
 ## No-mode routing
 

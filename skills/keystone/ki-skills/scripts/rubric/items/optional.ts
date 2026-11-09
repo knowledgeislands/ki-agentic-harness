@@ -220,7 +220,7 @@ export const OPTIONAL: RubricFamily<KiSkillsRubricContext, OptionalRubricContext
   code: 'OPT',
   title: 'Frontmatter: optional fields',
   description: 'Optional portable and runtime-specific frontmatter fields.',
-  standard: 'standards-agent-skills.md#6-frontmatter-optional-fields',
+  standard: 'standard-agent-skills.md#435-frontmatter-optional-fields',
   selectContext: (context: KiSkillsRubricContext) => selectKiSkillsContext(context, 'optional'),
   items: [OPT_1, OPT_2, OPT_3, OPT_4, OPT_5, OPT_6, OPT_7]
 }

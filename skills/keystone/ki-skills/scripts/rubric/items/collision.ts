@@ -69,7 +69,7 @@ export const COLLISION: RubricFamily<KiSkillsRubricContext, CollisionRubricConte
   code: 'COLL',
   title: 'Cross-skill collision',
   description: 'Selection boundaries across a set of skills.',
-  standard: 'standards-knowledge-islands.md#3-cross-skill-collision',
+  standard: 'standard-knowledge-islands.md#43-cross-skill-collision',
   selectContext: (context: KiSkillsRubricContext) => selectKiSkillsContext(context, 'collision'),
   items: [COLL_1, COLL_2]
 }

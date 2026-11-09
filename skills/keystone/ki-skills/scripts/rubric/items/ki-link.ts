@@ -87,7 +87,7 @@ export const KI_LINK: RubricFamily<KiSkillsRubricContext, KiLinkRubricContext> =
   code: 'KI-LINK',
   title: 'Knowledge Islands linking & portability',
   description: 'Knowledge Islands link and toolchain portability.',
-  standard: 'standards-knowledge-islands.md#1-linking-and-portability',
+  standard: 'standard-knowledge-islands.md#41-linking-and-portability',
   selectContext: (context: KiSkillsRubricContext) => selectKiSkillsContext(context, 'link'),
   items: [KI_LINK_1, KI_LINK_2, KI_LINK_3, KI_LINK_4]
 }

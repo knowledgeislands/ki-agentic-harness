@@ -38,7 +38,7 @@ export const PORTABILITY: RubricFamily<KiSkillsRubricContext, PortabilityRubricC
   code: 'PORT',
   title: 'Runtime portability',
   description: 'Portable contracts make runtime-specific boundaries explicit.',
-  standard: 'standards-knowledge-islands.md#4-runtime-portability',
+  standard: 'standard-knowledge-islands.md#44-runtime-portability',
   selectContext: (context: KiSkillsRubricContext) => selectKiSkillsContext(context, 'portability'),
   items: [PORT_1]
 }

@@ -141,7 +141,7 @@ const KI_SHAPE_7: RubricItem<KiShapeRubricContext> = {
   title: 'behaviour-changing skills define and check their anchor',
   description:
     '_A behaviour-changing skill defines its gate — and checks the anchor._ A skill that changes a **default behaviour** — installs a gate, a standing "always do X before Y" rule, or a routing intercept — cannot rely on its own `description` to fire it, because skills load **on demand** and the triggering request often won\'t mention the skill (e.g. "edit this note" never says "proposal"). Such a skill must **anchor the behaviour in always-loaded context** (the base/repo `CLAUDE.md` / `AGENTS.md`, or a companion skill that _does_ reliably load handing off to it), **and its rubric must verify the anchor is present** so it can\'t be silently lost. The hosted audit surfaces candidates mechanically (strong gate phrasing in the body or a reference file — body + references scanned as one unit, since mode-routing lifts procedures out of the body — without an anchor its rubric reads); the **[J]** call is whether the skill genuinely changes a default and so _needs_ a gate. Realised as `ki-repo-kb-streams`\' **GATE-1** (the Enactment gate) and `ki-repo-kb`\'s **MEM-2** (the memory cascade); `ki-repo`\'s `.ki.toml` marker is the same pattern (anchor + checked).',
-  sources: ['standards-knowledge-islands.md §2', 'standards-rubric-authoring.md#context-and-evidence'],
+  sources: ['standard-knowledge-islands.md §4.2', 'standard-rubric-authoring.md#410-context-and-evidence'],
   mechanical: {
     level: 'WARN',
     remediation: {
@@ -179,7 +179,7 @@ const KI_SHAPE_9: RubricItem<KiShapeRubricContext> = {
   title: 'mechanical work belongs in the structured rubric',
   description:
     '_Mechanical work belongs in the structured rubric, not in tokens._ A criterion a script can decide deterministically — no judgment, no AI benefit — is tagged **[M]** and implemented in `scripts/rubric/items/`; a **[J]** tag is earned by the judgment a criterion genuinely needs, never by "no implementation written yet". The reader\'s context is spent only on the **[J]** items, so a mechanical criterion left to prose, or a **[J]** the rubric already decides, is drift — it **moves into the structured rubric and flips to [M]**. The linter surfaces the mechanical heuristic — a rubric carrying **[M]** criteria but shipping no structured rubric (nor a documented toolchain delegation to a skill-scoped audit) — as a WARN; the **[J]** gate is whether each remaining **[J]** genuinely needs a reader rather than a script.',
-  sources: ['[Rubric authoring](standards-rubric-authoring.md)'],
+  sources: ['[Rubric authoring](standard-rubric-authoring.md)'],
   mechanical: {
     level: 'WARN',
     remediation: {
@@ -212,7 +212,7 @@ const KI_SHAPE_10: RubricItem<KiShapeRubricContext> = {
   title: 'skills do not assume private user configuration',
   description:
     "_A skill must not assume personal runtime configuration._ A Knowledge Islands skill is installed by any contributor, not only its author. It must not assume the user has any particular private configuration or imported topic files — plan-mode gates, house style rules, footnote conventions, workflow preferences. Any behaviour a skill requires beyond what the open spec guarantees must be **anchored in always-loaded repo context** (`CLAUDE.md`, `AGENTS.md`, or a KI-SHAPE-7-style companion hook) — not in the author's private config. Where a skill cross-checks a convention that _might_ live in personal config, it must degrade gracefully rather than silently rely on that content being present.",
-  sources: ['standards-knowledge-islands.md §2'],
+  sources: ['standard-knowledge-islands.md §4.2'],
   judgment: judgment('Does the skill avoid assuming private personal configuration?')
 }
 
@@ -415,7 +415,7 @@ const KI_SHAPE_15: RubricItem<KiShapeRubricContext> = {
   title: 'governance skills expose no legacy runner entrypoints',
   description:
     '_Direct governance operation shape._ A governance skill exposes its rubric catalogue from `scripts/rubric/items/index.ts`; `ki` resolves and hosts that catalogue from a verified installed Harness or the exact explicitly declared repository-local `.agents/skills/ki-self/` source. `scripts/govern.ts`, `scripts/educate.ts`, `scripts/audit.ts`, and `scripts/conform.ts` are retired, with no compatibility runner or fallback. Process skills are exempt.',
-  sources: ['standards-knowledge-islands.md §2', 'ADR-KI-HARNESS-007'],
+  sources: ['standard-knowledge-islands.md §4.2', 'ADR-KI-HARNESS-007'],
   mechanical: {
     level: 'FAIL',
     remediation: {
@@ -516,7 +516,7 @@ const KI_SHAPE_18: RubricItem<KiShapeRubricContext> = {
   title: 'runtime compatibility is explicit and bounded',
   description:
     'A vendor-bound skill declares `ki-supported-runtimes:` as a non-empty, duplicate-free flow list of recognised repository runtime identifiers and also declares `ki-runtime-binding: true`; an absent list means the skill is portable across supported runtimes.',
-  sources: ['standards-knowledge-islands.md §2'],
+  sources: ['standard-knowledge-islands.md §4.2'],
   mechanical: {
     level: 'FAIL',
     remediation: {
@@ -593,7 +593,7 @@ const KI_SHAPE_19: RubricItem<KiShapeRubricContext> = {
   title: 'repository applicability is explicit',
   description:
     'Every canonical Knowledge Islands skill declares one orthogonal `ki-applicability: baseline | detected | declaration-only | invocation-only`. Only `ki-repo` and `ki-authoring` are baseline; every process skill is invocation-only; governance skills are detected or declaration-only. `ki-repo` alone declares a non-empty, duplicate-free `ki-detects:` flow list.',
-  sources: ['ADR-KI-HARNESS-SKILLS-014', 'standards-knowledge-islands.md §2'],
+  sources: ['ADR-KI-HARNESS-SKILLS-014', 'standard-knowledge-islands.md §4.2'],
   mechanical: {
     level: 'FAIL',
     remediation: {
@@ -671,7 +671,7 @@ const KI_SHAPE_20: RubricItem<KiShapeRubricContext> = {
   title: 'dependency declarations resolve and are acyclic',
   description:
     'Every name in `ki-depends-on:` and `ki-optional-depends-on:` is a sibling skill of the same collection, is not the skill itself, and appears in only one of the two lists; `ki-optional-depends-on:`, when present, is a single-line flow list. No skill lies on a cycle over the union of hard and optional edges, because the edges define a prerequisite partial order. The declared edge set is the source of the published skill graph, so a stale or dangling declaration misdraws the graph.',
-  sources: ['ADR-KI-HARNESS-SKILLS-006', 'standards-knowledge-islands.md §2'],
+  sources: ['ADR-KI-HARNESS-SKILLS-006', 'standard-knowledge-islands.md §4.2'],
   mechanical: {
     level: 'FAIL',
     remediation: {
@@ -741,7 +741,7 @@ const KI_SHAPE_21: RubricItem<KiShapeRubricContext> = {
   title: 'body references to sibling skills are declared or routed',
   description:
     'Every backticked `ki-*` skill name in the `SKILL.md` body resolves to a skill in the same collection, the skill itself, or the source harness, so a rename leaves no dangling reference. A mention preceded by a reliance cue — "composes", "follow", "per", "apply", "according to", "defined by", "as defined in", "consult" — expresses reliance on that skill’s standard and must be declared in `ki-depends-on:` or `ki-optional-depends-on:`. Other mentions are routing or off-ramps and need no declaration.',
-  sources: ['ADR-KI-HARNESS-SKILLS-006', 'standards-knowledge-islands.md §2'],
+  sources: ['ADR-KI-HARNESS-SKILLS-006', 'standard-knowledge-islands.md §4.2'],
   mechanical: {
     level: 'WARN',
     heuristic: true,
@@ -798,7 +798,7 @@ export const KI_SHAPE: RubricFamily<KiSkillsRubricContext, KiShapeRubricContext>
   code: 'KI-SHAPE',
   title: 'Knowledge Islands skill shape',
   description: 'The common shape of a Knowledge Islands governance skill.',
-  standard: 'standards-knowledge-islands.md#2-skill-shape',
+  standard: 'standard-knowledge-islands.md#42-skill-shape',
   selectContext: (context: KiSkillsRubricContext) => selectKiSkillsContext(context, 'shape'),
   items: [
     KI_SHAPE_1,

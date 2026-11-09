@@ -1,107 +1,159 @@
+---
+type: sources@2026-11-09T21:36:32Z
+revised: 2026-11-09T22:38:25Z
+refresh: external-spec · monthly
+---
+
 # Sources — where the standard comes from
-
-**Refresh:** external-spec · monthly
-
-The authoritative and community sources behind the [Agent Skills](standards-agent-skills.md), [Knowledge Islands](standards-knowledge-islands.md), and [rubric-authoring](standards-rubric-authoring.md) standards and their [rubric](rubric.md). Mode REFRESH reads this file, re-fetches each source, diffs it against those standards and the rubric, then **bumps the `last reviewed` dates** and refreshes the `## Last review` block below (what changed is recorded in the commit, not a changelog). This is the skill's memory of where best practice comes from — keep it current.
-
-Abbreviations match the `(SOURCE)` tags in the standards and [rubric](rubric.md).
 
 ## Contents
 
-- [Portable Agent Skills contract](#portable-agent-skills-contract)
-- [Established authoring practice](#established-authoring-practice)
-- [Anthropic practice](#anthropic-practice)
-- [Runtime overlay: OpenAI](#runtime-overlay-openai)
-- [OpenAI practice](#openai-practice)
-- [Knowledge Islands house standard](#knowledge-islands-house-standard)
-- [Runtime overlay: Claude Code](#runtime-overlay-claude-code)
-- [Last review](#last-review)
+- [1. Introduction](#1-introduction)
+- [2. Outside sources](#2-outside-sources)
+  - [2.1 Authoritative](#21-authoritative)
+    - [2.1.1 Portable Agent Skills contract](#211-portable-agent-skills-contract)
+    - [2.1.2 Established authoring practice](#212-established-authoring-practice)
+    - [2.1.3 Runtime overlay: OpenAI](#213-runtime-overlay-openai)
+    - [2.1.4 Knowledge Islands house standard](#214-knowledge-islands-house-standard)
+    - [2.1.5 Runtime overlay: Claude Code](#215-runtime-overlay-claude-code)
+  - [2.2 Advisory](#22-advisory)
+    - [2.2.1 Anthropic practice](#221-anthropic-practice)
+    - [2.2.2 OpenAI practice](#222-openai-practice)
+    - [2.2.3 Community](#223-community)
+- [3. Decisions](#3-decisions)
+- [4. Last review](#4-last-review)
 
-## Portable Agent Skills contract
+## 1. Introduction
 
-| Tag  | Source                               | Scope                  | Last reviewed |
-| ---- | ------------------------------------ | ---------------------- | ------------- |
-| SPEC | [Agent Skills specification][spec]   | Format and constraints | 2026-09-26    |
-| —    | [`skills-ref validate`][skills-ref]‡ | Demonstration validator | 2026-09-26   |
+**Refresh:** external-spec · monthly
+
+The authoritative and community sources behind the [Agent Skills](standard-agent-skills.md), [Knowledge Islands](standard-knowledge-islands.md), and [rubric-authoring](standard-rubric-authoring.md) standards and their [rubric](rubric.md). Mode REFRESH reads this file, re-fetches each source, diffs it against those standards and the rubric, then **bumps the `last reviewed` dates** and refreshes the [Last review](#4-last-review) block below (what changed is recorded in the commit, not a changelog). This is the skill's memory of where best practice comes from — keep it current.
+
+Abbreviations match the `(SOURCE)` tags in the standards and [rubric](rubric.md).
+
+[Back to contents](#contents)
+
+## 2. Outside sources
+
+The specifications, practice and runtime documentation the standards follow or draw on. Each source carries its tag, as the standards and rubric cite it.
+
+### 2.1 Authoritative
+
+The portable contract, established practice, the runtime overlays and the house standard.
+
+[Back to contents](#contents)
+
+#### 2.1.1 Portable Agent Skills contract
+
+| Source | Governs | Last reviewed |
+| --- | --- | --- |
+| SPEC — [Agent Skills specification][spec] | Format and constraints | 2026-09-26 |
+| — [`skills-ref validate`][skills-ref]‡ | Demonstration validator | 2026-09-26 |
 
 ‡ The reference library explicitly says it is demonstration-only and unsuitable as a production validator; it remains supporting validation evidence subordinate to the specification.
 
-## Established authoring practice
+[Back to contents](#contents)
 
-### Agent Skills documentation set
+#### 2.1.2 Established authoring practice
 
 The Agent Skills [documentation index][agentskills-index] is the inventory authority for this set. Every REFRESH fetches it first, reconciles this table with its current pages, then reviews every listed page individually. The index currently lists the nine documentation pages below; the index itself is also tracked because it detects additions and removals.
 
-| Tag | Source                                                     | Scope                 | Last reviewed |
-| --- | ---------------------------------------------------------- | --------------------- | ------------- |
-| AS  | [Agent Skills documentation index][agentskills-index]      | Page inventory        | 2026-09-26    |
-| AS  | [Agent Skills overview][home]                              | Conceptual overview   | 2026-09-26    |
-| AS  | [Skill-creator quickstart][quickstart]                     | First-skill workflow  | 2026-09-26    |
-| AS  | [Skill-creator best practices][agentskills-best-practices] | Authoring guidance    | 2026-09-26    |
-| AS  | [Optimising descriptions][optimizing-descriptions]         | Description quality   | 2026-09-26    |
-| AS  | [Evaluating skills][evaluating-skills]                     | Evaluation practice   | 2026-09-26    |
-| AS  | [Using scripts][using-scripts]                             | Script execution      | 2026-09-26    |
-| AS  | [Client showcase][clients]                                 | Client inventory      | 2026-09-26    |
-| AS  | [Adding skills support][adding-skills-support]             | Client implementation | 2026-09-26    |
-| BP  | [Skill authoring best practices][bp]                       | Authoring checklist   | 2026-09-26    |
-| ENG | [Equipping agents with Agent Skills][eng]†                 | Design rationale      | 2026-09-26    |
+| Source | Governs | Last reviewed |
+| --- | --- | --- |
+| AS — [Agent Skills documentation index][agentskills-index] | Page inventory | 2026-09-26 |
+| AS — [Agent Skills overview][home] | Conceptual overview | 2026-09-26 |
+| AS — [Skill-creator quickstart][quickstart] | First-skill workflow | 2026-09-26 |
+| AS — [Skill-creator best practices][agentskills-best-practices] | Authoring guidance | 2026-09-26 |
+| AS — [Optimising descriptions][optimizing-descriptions] | Description quality | 2026-09-26 |
+| AS — [Evaluating skills][evaluating-skills] | Evaluation practice | 2026-09-26 |
+| AS — [Using scripts][using-scripts] | Script execution | 2026-09-26 |
+| AS — [Client showcase][clients] | Client inventory | 2026-09-26 |
+| AS — [Adding skills support][adding-skills-support] | Client implementation | 2026-09-26 |
+| BP — [Skill authoring best practices][bp] | Authoring checklist | 2026-09-26 |
+| ENG — [Equipping agents with Agent Skills][eng]† | Design rationale | 2026-09-26 |
 
 † Published 2025-10-16; updated to announce the open standard 2025-12-18.
 
-## Anthropic practice
+[Back to contents](#contents)
 
-The Claude blog is a discovery source, not a normative standard. On each REFRESH, scan its landing page for new articles materially relevant to agent skills, agentic practice, or authoring workflows; open and assess only those relevant articles.
+#### 2.1.3 Runtime overlay: OpenAI
 
-| Tag  | Source                     | Scope                                            | Last reviewed |
-| ---- | -------------------------- | ------------------------------------------------ | ------------- |
-| BLOG | [Claude blog][claude-blog] | Agentic-practice and authoring article discovery | 2026-09-26    |
-
-## Runtime overlay: OpenAI
-
-| Tag | Source | Scope | Last reviewed |
-| --- | --- | --- | --- |
-| OA | [OpenAI Build skills][openai-skills] | ChatGPT/Codex runtime overlay | 2026-09-26 |
+| Source | Governs | Last reviewed |
+| --- | --- | --- |
+| OA — [OpenAI Build skills][openai-skills] | ChatGPT/Codex runtime overlay | 2026-09-26 |
 
 `OA` documents OpenAI runtime discovery, listing, path metadata, implicit invocation, and `agents/openai.yaml`. It qualifies runtime claims but never changes the portable Agent Skills contract.
 
-## OpenAI practice
+[Back to contents](#contents)
 
-The OpenAI News page is a discovery source, not a normative standard. On each REFRESH, scan its landing page for new articles materially relevant to agent skills, agentic practice, or authoring workflows; open and assess only those relevant articles.
+#### 2.1.4 Knowledge Islands house standard
 
-| Tag    | Source                     | Scope                                            | Last reviewed |
-| ------ | -------------------------- | ------------------------------------------------ | ------------- |
-| OPENAI | [OpenAI News][openai-news] | Agentic-practice and authoring article discovery | 2026-09-26    |
-
-## Community
-
-| Tag | Source | Scope | Last reviewed |
-| --- | --- | --- | --- |
-| COMMUNITY | [Skill Authoring Patterns][patterns] | Patterns and feedback | 2026-09-26 |
-| COMMUNITY | [obra/superpowers writing-skills][superpowers]† | Convergent conventions | 2026-09-26 |
-| COMMUNITY | [skills.sh — Open Agent Skills Ecosystem][skills-sh] | Registry and security | 2026-09-26 |
-| FAFF | [shftwst/faff][faff] | Claude Code delivery-harness and autonomy-gate discovery | 2026-09-26 |
-
-† Community restatement of the best-practices document.
-
-## Knowledge Islands house standard
-
-| Tag                       | Source                       | Scope            | Last reviewed |
-| ------------------------- | ---------------------------- | ---------------- | ------------- |
-| ki-agentic-harness README | The repo's own `README.md` | Harness structure | 2026-09-26 |
-| ADR-KI-HARNESS-SKILLS-004 | Local decision record | Standalone skills and variation | 2026-09-26 |
-| ADR-KI-HARNESS-SKILLS-006 | Local decision record | Kind, taxonomy, and dependencies | 2026-09-26 |
+| Source | Governs | Last reviewed |
+| --- | --- | --- |
+| ki-agentic-harness README — The repo's own `README.md` | Harness structure | 2026-09-26 |
+| ADR-KI-HARNESS-SKILLS-004 — Local decision record | Standalone skills and variation | 2026-09-26 |
+| ADR-KI-HARNESS-SKILLS-006 — Local decision record | Kind, taxonomy, and dependencies | 2026-09-26 |
 
 The README is cited only for the harness's four-part structure. Local decision records, rather than the README, support the semantic house claims.
 
-## Runtime overlay: Claude Code
+[Back to contents](#contents)
 
-| Tag | Source                     | Scope                   | Last reviewed |
-| --- | -------------------------- | ----------------------- | ------------- |
-| CC  | [Claude Code — skills][cc] | Claude runtime overlay† | 2026-09-26    |
+#### 2.1.5 Runtime overlay: Claude Code
+
+| Source | Governs | Last reviewed |
+| --- | --- | --- |
+| CC — [Claude Code — skills][cc] | Claude runtime overlay† | 2026-09-26 |
 
 † Claude Code extensions and runtime behaviour. This overlay may qualify a portable or Knowledge Islands rule for Claude Code, but never weakens the portable contract.
 
-## Last review
+[Back to contents](#contents)
+
+### 2.2 Advisory
+
+Discovery and community sources: supporting evidence, not normative rules.
+
+[Back to contents](#contents)
+
+#### 2.2.1 Anthropic practice
+
+The Claude blog is a discovery source, not a normative standard. On each REFRESH, scan its landing page for new articles materially relevant to agent skills, agentic practice, or authoring workflows; open and assess only those relevant articles.
+
+| Source | Informs | Last reviewed |
+| --- | --- | --- |
+| BLOG — [Claude blog][claude-blog] | Agentic-practice and authoring article discovery | 2026-09-26 |
+
+[Back to contents](#contents)
+
+#### 2.2.2 OpenAI practice
+
+The OpenAI News page is a discovery source, not a normative standard. On each REFRESH, scan its landing page for new articles materially relevant to agent skills, agentic practice, or authoring workflows; open and assess only those relevant articles.
+
+| Source | Informs | Last reviewed |
+| --- | --- | --- |
+| OPENAI — [OpenAI News][openai-news] | Agentic-practice and authoring article discovery | 2026-09-26 |
+
+[Back to contents](#contents)
+
+#### 2.2.3 Community
+
+| Source | Informs | Last reviewed |
+| --- | --- | --- |
+| COMMUNITY — [Skill Authoring Patterns][patterns] | Patterns and feedback | 2026-09-26 |
+| COMMUNITY — [obra/superpowers writing-skills][superpowers]† | Convergent conventions | 2026-09-26 |
+| COMMUNITY — [skills.sh — Open Agent Skills Ecosystem][skills-sh] | Registry and security | 2026-09-26 |
+| FAFF — [shftwst/faff][faff] | Claude Code delivery-harness and autonomy-gate discovery | 2026-09-26 |
+
+† Community restatement of the best-practices document.
+
+[Back to contents](#contents)
+
+## 3. Decisions
+
+None.
+
+[Back to contents](#contents)
+
+## 4. Last review
 
 REFRESH last run **2026-09-26**. It fetched [the documentation index][agentskills-index] first; it still lists the same nine pages and the specification retains the portable format and budgets. The review found no immediate standard or rubric change; its material follow-ups were dispositioned on 2026-10-06, as recorded below.
 
@@ -121,6 +173,8 @@ REFRESH last run **2026-09-26**. It fetched [the documentation index][agentskill
 - **Open watch-items:** none; no source disagreement requires a standard or rubric change.
 
 (What past reviews changed in the standard / rubric / linter is in git.)
+
+[Back to contents](#contents)
 
 [spec]: https://agentskills.io/specification
 [agentskills-index]: https://agentskills.io/llms.txt

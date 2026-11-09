@@ -100,7 +100,7 @@ export const LONGEVITY: RubricFamily<KiSkillsRubricContext, LongevityRubricConte
   code: 'LONG',
   title: 'Longevity',
   description: 'Refresh paths and cadence for knowledge that changes over time.',
-  standard: 'standards-agent-skills.md#12-longevity',
+  standard: 'standard-agent-skills.md#446-longevity',
   selectContext: (context: KiSkillsRubricContext) => selectKiSkillsContext(context, 'longevity'),
   items: [LONG_1, LONG_2, LONG_3, LONG_4]
 }

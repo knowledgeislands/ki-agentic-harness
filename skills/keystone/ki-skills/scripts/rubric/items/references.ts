@@ -82,7 +82,7 @@ export const REFERENCES: RubricFamily<KiSkillsRubricContext, ReferencesRubricCon
   code: 'REF',
   title: 'Progressive disclosure & references',
   description: 'How a skill routes supporting detail into references.',
-  standard: 'standards-agent-skills.md#8-progressive-disclosure',
+  standard: 'standard-agent-skills.md#442-progressive-disclosure',
   selectContext: (context: KiSkillsRubricContext) => selectKiSkillsContext(context, 'references'),
   items: [REF_1, REF_2, REF_3, REF_4, REF_5]
 }

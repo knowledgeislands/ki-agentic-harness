@@ -13,11 +13,11 @@ Line-by-line criteria for auditing ki-repo-website-cloudflare. Classifications a
 
 ## RUBRIC — Generated rubric publication
 
-→ [standard](../../../keystone/ki-skills/references/standards-rubric-authoring.md)
+→ [standard](../../../keystone/ki-skills/references/standard-rubric-authoring.md)
 
 The tracked readable rubric is the exact publication of the structured catalogue.
 
-- **RUBRIC-1 [M] — structured catalogue publication is exact** — A structured catalogue tracks `references/rubric.md` as its exact generated publication. The host supplies only validated publication evidence: a missing or differing file is a FAIL; during CONFORM this item requests the host-owned derived write without choosing its path or bytes. (../../../keystone/ki-skills/references/standards-rubric-authoring.md#generated-rubric-publication)
+- **RUBRIC-1 [M] — structured catalogue publication is exact** — A structured catalogue tracks `references/rubric.md` as its exact generated publication. The host supplies only validated publication evidence: a missing or differing file is a FAIL; during CONFORM this item requests the host-owned derived write without choosing its path or bytes. (../../../keystone/ki-skills/references/standard-rubric-authoring.md#414-generated-rubric-publication)
   - _Remediation:_ automatic
 
 ## WCF — Cloudflare hosting

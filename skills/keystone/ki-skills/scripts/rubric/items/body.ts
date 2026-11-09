@@ -70,7 +70,7 @@ export const BODY: RubricFamily<KiSkillsRubricContext, KiSkillsRubricContext> = 
   code: 'BODY',
   title: 'Body content quality',
   description: 'The quality and usability of the skill instructions.',
-  standard: 'standards-agent-skills.md#9-body-content-quality',
+  standard: 'standard-agent-skills.md#443-body-content-quality',
   selectContext: (context: KiSkillsRubricContext) => context,
   items: [BODY_1, BODY_2, BODY_3, BODY_4, BODY_5, BODY_6, BODY_7, BODY_8]
 }

@@ -14,9 +14,9 @@ A checker MUST grade findings on the unified FAIL / WARN / FIXED / INFO / NOT_AP
 
 _Conformance:_ conforming
 
-_Verify:_ [standards-rubric-authoring.md](../../skills/keystone/ki-skills/references/standards-rubric-authoring.md) and the shared checker tests enumerate and enforce the six levels.
+_Verify:_ [standard-rubric-authoring.md](../../skills/keystone/ki-skills/references/standard-rubric-authoring.md) and the shared checker tests enumerate and enforce the six levels.
 
-_Evidence:_ [standards-rubric-authoring.md](../../skills/keystone/ki-skills/references/standards-rubric-authoring.md) and the shared checker tests enumerate and enforce the six levels.
+_Evidence:_ [standard-rubric-authoring.md](../../skills/keystone/ki-skills/references/standard-rubric-authoring.md) and the shared checker tests enumerate and enforce the six levels.
 
 ### CHK-002 — Exit non-zero iff a FAIL exists
 

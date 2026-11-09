@@ -38,4 +38,17 @@ describe('runtime-portability evidence', () => {
     expect(findings('This Claude-Code-only extension is optional.')).toEqual([])
     expect(findings('## Runtime overlay: Claude Code\nUse ~/.claude.')).toEqual([])
   })
+
+  test('accepts a numbered runtime-binding section, as the standard format numbers headings', () => {
+    expect(
+      findings(
+        '### 4.5 Runtime binding\n\n#### 4.5.1 Claude Code\nUse ~/.claude.\n\n### 4.6 Portable behaviour\nUse Claude Code.'
+      )
+    ).toEqual([{ line: 7, reference: 'Claude Code' }])
+  })
+
+  test('accepts a contents entry, whose heading is checked where it stands', () => {
+    expect(findings('- [4.5.1 Claude Code differences](#451-claude-code-differences)')).toEqual([])
+    expect(findings('- [Claude Code](other.md#claude-code)')).toEqual([{ line: 1, reference: 'Claude Code' }])
+  })
 })

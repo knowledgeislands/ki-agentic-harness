@@ -117,7 +117,7 @@ export const SCRIPTS: RubricFamily<KiSkillsRubricContext, ScriptsRubricContext> 
   code: 'SCRIPT',
   title: 'Scripts & executable code',
   description: 'The quality and autonomy of executable skill support.',
-  standard: 'standards-agent-skills.md#10-scripts',
+  standard: 'standard-agent-skills.md#444-scripts',
   selectContext: (context: KiSkillsRubricContext) => selectKiSkillsContext(context, 'scripts'),
   items: [SCRIPT_1, SCRIPT_2, SCRIPT_3, SCRIPT_4, SCRIPT_5, SCRIPT_6, SCRIPT_7, SCRIPT_8]
 }

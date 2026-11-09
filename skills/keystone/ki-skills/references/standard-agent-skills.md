@@ -1,37 +1,97 @@
+---
+type: standard@2026-11-09T21:36:32Z
+revised: 2026-11-09T22:38:25Z
+status: in force
+---
+
 # Agent Skills standard
+
+## Contents
+
+- [1. Introduction](#1-introduction)
+- [2. Scope](#2-scope)
+  - [2.1 In scope](#21-in-scope)
+  - [2.2 Out of scope](#22-out-of-scope)
+- [3. Terms and definitions](#3-terms-and-definitions)
+- [4. Rules](#4-rules)
+  - [4.1 Authority order](#41-authority-order)
+  - [4.2 Two-aspect model](#42-two-aspect-model)
+  - [4.3 Portable Agent Skills contract](#43-portable-agent-skills-contract)
+    - [4.3.1 Layout](#431-layout)
+    - [4.3.2 Frontmatter document](#432-frontmatter-document)
+    - [4.3.3 Frontmatter: name](#433-frontmatter-name)
+    - [4.3.4 Frontmatter: description](#434-frontmatter-description)
+    - [4.3.5 Frontmatter: optional fields](#435-frontmatter-optional-fields)
+  - [4.4 Established authoring practice](#44-established-authoring-practice)
+    - [4.4.1 Size & conciseness](#441-size--conciseness)
+    - [4.4.2 Progressive disclosure](#442-progressive-disclosure)
+    - [4.4.3 Body content quality](#443-body-content-quality)
+    - [4.4.4 Scripts](#444-scripts)
+    - [4.4.5 Process / evaluation](#445-process--evaluation)
+    - [4.4.6 Longevity](#446-longevity)
+  - [4.5 Runtime binding](#45-runtime-binding)
+    - [4.5.1 Claude Code differences and moving targets](#451-claude-code-differences-and-moving-targets)
+    - [4.5.2 Codex skill-list budget](#452-codex-skill-list-budget)
+  - [4.6 Exact numbers](#46-exact-numbers)
+
+## 1. Introduction
 
 The normative reference behind `ki-skills`: what a _good_ Agent Skill looks like, and why. The [Audit Rubric](rubric.md) is the line-by-line checklist derived from this — each rubric criterion (`NAME-1`, `DESC-2`, …) verifies a convention stated here. Read the standard to understand or quote a convention; run `ki repo audit --skill ki-skills` to check a repository's skills against it.
 
-A skill is a directory with a `SKILL.md` (YAML frontmatter + markdown body) per the [Agent Skills open standard](https://agentskills.io/), optionally with `references/`, `scripts/`, `assets/`. Source abbreviations resolve in [the source list](sources.md).
+A skill is a directory with a `SKILL.md` (YAML frontmatter + markdown body) per the [Agent Skills open standard](https://agentskills.io/), optionally with `references/`, `scripts/`, `assets/`. Source abbreviations resolve in [the source list](sources.md). The decisions behind these rules are in [the sources file](sources.md#3-decisions).
 
-## Authority order
+[Back to contents](#contents)
+
+## 2. Scope
+
+What a good Agent Skill looks like, from the portable contract to the runtime overlays.
+
+### 2.1 In scope
+
+- The order of authority among the portable contract, established practice and the house standard.
+- The two aspects of a rubric criterion.
+- The portable Agent Skills contract: layout and frontmatter.
+- Established authoring practice: size, progressive disclosure, body quality, scripts, evaluation and longevity.
+- Runtime binding for Claude Code and Codex, and the exact numbers.
+
+[Back to contents](#contents)
+
+### 2.2 Out of scope
+
+- The conventions Knowledge Islands adds: [the Knowledge Islands skill standard](standard-knowledge-islands.md).
+- How a governance standard becomes an executable rubric: [the rubric authoring standard](standard-rubric-authoring.md).
+
+[Back to contents](#contents)
+
+## 3. Terms and definitions
+
+| Term | Definition |
+| --- | --- |
+| **Runtime overlay** | A runtime's own documentation, such as `CC` or `OA`, which may extend or qualify a portable or KI rule but never weakens the portable contract. **Standard:** this one, [4.1](#41-authority-order) |
+| **Mechanical aspect** | The deterministically checkable part of a rubric criterion, owned by the bundled linter. **Standard:** this one, [4.2](#42-two-aspect-model) |
+| **Judgment aspect** | The part of a rubric criterion that needs a model reading the skill. **Standard:** this one, [4.2](#42-two-aspect-model) |
+| **Progressive disclosure** | Keeping detailed or rarely used material in separate files loaded on demand. **Standard:** this one, [4.4.2](#442-progressive-disclosure) |
+| **Mode-router shape** | A body holding the shared model and a dispatch table, with each independently invoked mode's procedure in its own `references/mode-<name>.md`. **Standard:** this one, [4.4.2](#442-progressive-disclosure) |
+
+[Back to contents](#contents)
+
+## 4. Rules
+
+The rules, part by part.
+
+### 4.1 Authority order
 
 Read this standard from the most portable authority to the most local:
 
 1. **Portable Agent Skills contract** — `SPEC` defines the cross-runtime requirements a skill must meet.
 2. **Established authoring practice** — `AS`, `BP`, `ENG`, and `COMMUNITY` explain effective patterns where the portable contract leaves room for judgment.
-3. **Knowledge Islands house standard** — [the separate KI standard](standards-knowledge-islands.md) defines conventions added by this harness.
+3. **Knowledge Islands house standard** — [the separate KI standard](standard-knowledge-islands.md) defines conventions added by this harness.
 
 `CC` and `OA` are **runtime overlays**, not additional portable authority levels. They may extend or qualify a portable or KI rule for Claude Code or OpenAI products, but never weaken the portable contract. Runtime-only requirements remain explicitly labelled so a skill can distinguish portability from a supported runtime feature.
 
-## Contents
+[Back to contents](#contents)
 
-1. [Two-aspect model](#1-two-aspect-model)
-2. [Layout](#2-layout)
-3. [Frontmatter document](#3-frontmatter-document)
-4. [Frontmatter: name](#4-frontmatter-name)
-5. [Frontmatter: description](#5-frontmatter-description)
-6. [Frontmatter: optional fields](#6-frontmatter-optional-fields)
-7. [Size & conciseness](#7-size--conciseness)
-8. [Progressive disclosure](#8-progressive-disclosure)
-9. [Body content quality](#9-body-content-quality)
-10. [Scripts](#10-scripts)
-11. [Process / evaluation](#11-process--evaluation)
-12. [Longevity](#12-longevity)
-13. [Runtime binding](#runtime-binding)
-14. [Exact numbers](#14-exact-numbers)
-
-## 1. Two-aspect model
+### 4.2 Two-aspect model
 
 Every rubric criterion carries one or both of two aspects, and the distinction is a contract with the `ki` rubric host:
 
@@ -40,27 +100,37 @@ Every rubric criterion carries one or both of two aspects, and the distinction i
 
 The rubric tags each criterion `[M]`, `[J]`, or `[M + J]` accordingly. If part of a judgment criterion becomes mechanically enforceable, that aspect moves into the linter; any remaining judgment stays on the same stable criterion code.
 
-## Portable Agent Skills contract
+[Back to contents](#contents)
 
-### 2. Layout
+### 4.3 Portable Agent Skills contract
+
+#### 4.3.1 Layout
 
 `SKILL.md` is the required entrypoint and lives at the skill root — a directory named after the skill, not a bare `.md`. Optional subdirectories use the conventional names `references/` (docs), `scripts/` (executables), `assets/` (templates/data); other files are allowed but these names are the convention. File references use forward slashes (`scripts/helper.ts`), never backslashes, which break on Unix. Supporting files sit **one level deep** from `SKILL.md` — every file links directly from it, with no nested chains (`SKILL → a → b → c`) that cause partial reads to miss content — and are named by content (`form-validation-rules.md`, not `doc2.md`). (SPEC, CC, BP)
 
-### 3. Frontmatter document
+[Back to contents](#contents)
+
+#### 4.3.2 Frontmatter document
 
 `SKILL.md` begins at byte zero with an opening `---` line, a closing `---` line, and YAML between them that parses to a mapping. This document establishes the metadata contract; without a valid mapping, its individual fields cannot be interpreted reliably, so field-level checks stop. (SPEC, CC)
 
-### 4. Frontmatter: name
+[Back to contents](#contents)
+
+#### 4.3.3 Frontmatter: name
 
 `name` is required by the open spec (a runtime overlay may default it to the directory name, but a portable skill states it explicitly — see ※1). It is ≤ 64 characters; lowercase letters, digits, and hyphens only (no uppercase, spaces, or underscores); no leading/trailing or consecutive hyphens; and matches the parent directory name exactly. It carries no XML tags and no reserved words (`anthropic`, `claude`). A Knowledge Islands runtime adapter may use its vendor word only when its frontmatter explicitly binds and restricts the skill to that vendor's runtime. Make it **specific, not generic** — avoid `helper`, `utils`, `tools`, `data`; a gerund (`processing-pdfs`), noun phrase (`pdf-processing`), or action form (`process-pdfs`) all read well. (SPEC, BP, KI)
 
-### 5. Frontmatter: description
+[Back to contents](#contents)
+
+#### 4.3.4 Frontmatter: description
 
 The `description` is the **primary portable signal for implicit selection** among potentially 100+ skills, so it is the highest-leverage field in the skill. Supported runtimes may list further metadata such as a path, but implicit matching depends on the description. It is present, non-empty, ≤ 1024 characters (spec hard cap — see ※2), and free of XML tags (angle-bracket placeholders inside backticks are fine). It must state **both what the skill does and when to use it** (capability + trigger, never one alone); use an **activation-oriented voice** — either direct imperative ("Use this skill when…") or third person ("Audits skills…"), never first-person or second-person explanation; include concrete **trigger keywords/phrases** a user would actually say (file types, verbs, nouns); and avoid vague phrasing ("helps with documents"). Lean toward firing — agents tend to _under_-trigger — and front-load the most important trigger, since the listing truncates. Where skill-collision is likely, it may end with explicit non-triggers ("Do NOT use for…"). (SPEC, AS, BP, CC, OA, ENG, COMMUNITY)
 
 Descriptions are standing source cost in runtimes that advertise them, so reviewers judge whether every phrase earns its place. Retain scope, the primary trigger, and only collision guidance needed for reliable selection; move mode and workflow detail into the body or on-demand references. Do not impose a universal word target: close neighbours can need a longer discriminator. Source measurements can rank optimisation work, but cannot establish undisclosed runtime shortening, routing budgets, or billing tokens. (KI)
 
-### 6. Frontmatter: optional fields
+[Back to contents](#contents)
+
+#### 4.3.5 Frontmatter: optional fields
 
 Open-spec optional fields are validated when present: `compatibility` (1–500 chars, only for real environment requirements), `metadata` (string→string map), experimental `allowed-tools` (a space-separated string of valid tool rules), and `license` (mechanically, a non-empty YAML string scalar; prefer a short name or bundled-file reference). `disallowed-tools` is **Claude-Code-only**, where it may be a space- or comma-separated string or YAML list of valid tool rules. A larger set of fields is also **Claude-Code-only** (`disable-model-invocation`, `user-invocable`, `context`, `agent`, `paths`, `model`, `effort`, `when_to_use`, `argument-hint`, `arguments`, `background`, `hooks`, `shell`) — CC extensions, not in the open spec, to flag when cross-platform portability matters (see ※3). Three carry behavioural nuance worth stating:
 
@@ -68,40 +138,54 @@ Open-spec optional fields are validated when present: `compatibility` (1–500 c
 - **`disallowed-tools`** removes tools from Claude's available pool for the current turn — the restriction clears on the next user message. Use it for autonomous or background-loop skills that must never call certain tools (e.g. blocking `AskUserQuestion` in a skill meant to run without human intervention). Contrast with per-session permission settings, which persist across turns. (CC)
 - **`argument-hint`** is set by a skill with **discrete operating modes** (e.g. AUDIT / CONFORM / REFRESH) so the modes surface in the `/` menu and a user can route as `/<name> <mode>` without reading the body. Prefer this over splitting one cohesive skill into a slash command per mode (each resident description costs ~100 tokens and fragments the trigger surface). **Name the modes, don't letter them** (named modes keep cross-references stable and read consistently across the skill set — a shared `REFRESH` means the same everywhere), and **order them alphabetically** in both body and `argument-hint` so a new mode has one obvious insertion point. (SPEC, CC, COMMUNITY)
 
-## Established authoring practice
+[Back to contents](#contents)
 
-### 7. Size & conciseness
+### 4.4 Established authoring practice
+
+#### 4.4.1 Size & conciseness
 
 The `SKILL.md` body stays under **500 lines** and **~5,000 tokens** (the recommended progressive-disclosure budget; metadata adds ~100 tokens). Both are soft performance recommendations, not hard caps (see ※5). Beyond raw size: spend no token on what a competent agent already knows — apply the "does the agent need this?" test to every paragraph — and write `SKILL.md` as an **overview that routes to detail**, not all detail inlined, because once loaded it persists across turns as recurring context cost. (SPEC, BP, CC)
 
-### 8. Progressive disclosure
+[Back to contents](#contents)
+
+#### 4.4.2 Progressive disclosure
 
 Detailed or rarely-used material lives in separate files loaded on demand, and mutually-exclusive domains are split (`references/finance.md` vs `references/sales.md`) so irrelevant context never loads. Every supporting file is referenced from `SKILL.md` with a note on what it holds and when to load it — no orphan files. Reference files longer than 100 lines open with a table of contents, so a partial read still shows full scope. Execution intent is explicit per script: "Run `x.ts`" (execute) vs "see `x.ts` for the algorithm" (read). (BP, ENG, SPEC, COMMUNITY)
 
 **The mode-router shape.** When a skill's body is dominated by many _independently-invoked_ modes — a governance skill with a dozen modes, where any one fire uses one mode — treat the unused modes as the mutually-exclusive domains above: keep the **shared model and a dispatch table** in `SKILL.md`, and move each mode's _procedure_ to its own flat `references/mode-<name>.md` that the table names with its when-to-load. Only the invoked mode loads, instead of every mode on every fire. One file owns one mode: `mode-audit-conform.md` is split into `mode-audit.md` and `mode-conform.md`, and each procedure states its own preconditions without requiring a reference chain. **Keep in the body** anything every mode needs (the shared model) and any _behaviour anchor_ a checker verifies (a gate, a standing cascade) — never push an always-on rule onto an on-demand path. Use it when the body would otherwise carry many independent mode procedures and the footprint's body component dominates; **not** when modes are few, short, or call-chained, or the body already routes. (BP, ENG)
 
-### 9. Body content quality
+[Back to contents](#contents)
+
+#### 4.4.3 Body content quality
 
 Match **degrees of freedom to task fragility**: prose + judgment for open-ended work; parameterised scripts for preferred-but-flexible; exact commands + "do not modify" for fragile/destructive. Keep no time-sensitive content in the main body ("before August 2025…") — legacy goes in a collapsed "old patterns" note. Use **consistent terminology** (one term per concept, always "field", never field/box/element). Give **concrete examples** (2–3 input/output pairs) where output quality depends on style. Offer **one default approach with an escape hatch**, not a menu of options. Match template strictness to the contract ("use this exact structure" for data; "sensible default, adapt" for flexible documents). Provide a copyable checklist for multi-step tasks and a feedback loop (run validator → fix → repeat) for quality-critical ones. And state the **why alongside each rule**, not bare MUST/NEVER. (BP, COMMUNITY)
 
-### 10. Scripts
+[Back to contents](#contents)
+
+#### 4.4.4 Scripts
 
 Scripts solve problems rather than punt back to the agent — they handle expected errors (missing file, permissions) explicitly. Every config value is justified in a comment (no unexplained magic numbers). Required packages are listed and verified for the target runtime (a model API has no network/runtime install); when a skill invokes MCP tools, use fully-qualified `ServerName:tool_name` names so the agent can locate the tool when multiple MCP servers are loaded. Deterministic, frequently-reused logic is pre-written as a script rather than regenerated each run. Validation scripts are verbose — error messages name the problem and the valid options. For batch/destructive operations, follow plan-validate-execute: produce a verifiable intermediate artifact, validate it, then act. Every supported non-test script directly under `scripts/` is a public command entry point. Its leading documentation comment states `Purpose:`, the canonical `Run: bun scripts/<name> --help` invocation, and `Boundary:` (the no-write guarantee or exact mutation boundary); it exits successfully for `-h` and `--help` and prints useful usage or help text. Private reusable modules live under `scripts/internal/`; only modules explicitly published for cross-skill use live under `scripts/shared/`. The retired `scripts/lib/` directory is a packaging error. When adding a regex- or text-based mechanical check, run it against focused adversarial fixtures before considering it complete: fixture strings often resemble real violations, so the evidence builder must scan only the production files the rule actually governs rather than matching test data as source. (AS, BP, COMMUNITY, KI)
 
-### 11. Process / evaluation
+[Back to contents](#contents)
+
+#### 4.4.5 Process / evaluation
 
 These are not checkable from the files alone. A good skill is built **evaluation-first** — at least three evaluation scenarios against a no-skill baseline before extensive docs — and is **tested across the models it will run on** (Haiku/Sonnet/Opus) with real usage. (BP, ENG)
 
-### 12. Longevity
+[Back to contents](#contents)
+
+#### 4.4.6 Longevity
 
 These check the skill against **time** — they matter most once it ships into a shared or cloud catalogue, long-lived and far from its author.
 
 - **Volatile facts need a refresh path.** A skill that hard-codes facts that drift — model IDs/prices, API/SDK versions, tool/MCP-server names, CLI flags, dated spec numbers, third-party URLs — rots silently. It must either **(a)** resolve the volatile fact at runtime, or **(b)** carry a tracked source list with `last reviewed` dates **and** a REFRESH mode that re-anchors it (as `ki-skills` and `ki-repo-mcp` do). The refresh path must name what to re-fetch and how to tell it has gone stale. This extends "no time-sensitive content in the body" from prose hygiene to a durability guarantee.
 - **A cadence, not just a capability.** A REFRESH mode nobody runs decays as surely as no refresh. A skill that ships a refresh path should also state a **cadence** (periodic, or a clear "run when X" trigger) and, where the host supports it, register a scheduled run. Treat the schedule as a recommendation, but a refresh capability with no stated cadence is a half-measure. (BP, COMMUNITY)
 
-## Runtime binding
+[Back to contents](#contents)
 
-### 13. Claude Code differences and moving targets
+### 4.5 Runtime binding
+
+#### 4.5.1 Claude Code differences and moving targets
 
 - **※1 `name` required vs optional.** Open spec: required, must match the directory. Claude Code: optional (defaults to directory name). For portable skills, always state it and match the directory.
 - **※2 Description length.** Authoring cap is **1024 chars** (spec, BP). Claude Code's _runtime_ listing truncates `description` + `when_to_use` at **1,536 chars** (configurable; budget scales ~1% of context). Author to 1024; the larger number is a display limit, not an authoring target.
@@ -109,11 +193,15 @@ These check the skill against **time** — they matter most once it ships into a
 - **※4 Commands → skills.** In Claude Code, `.claude/commands/*.md` and `.claude/skills/<name>/SKILL.md` both yield `/<name>`; skills are the recommended form. Suggest migrating old command files.
 - **※5 Budgets are soft.** "< 500 lines" and "< 5,000 tokens" are performance recommendations, not enforced — the linter reports them as WARN, never FAIL. The reference validator (`skills-ref validate`) checks frontmatter/naming only.
 
-### Codex skill-list budget
+[Back to contents](#contents)
+
+#### 4.5.2 Codex skill-list budget
 
 Codex initially lists each skill's name, description, and file path within at most two per cent of the model context, or 8,000 characters when the context size is unknown. With many installed skills it shortens descriptions first and may then omit skills with a warning. Treat this as a shared runtime budget, not a per-description target: optimise the complete description set, front-load the key use case and trigger words, and test realistic positive and negative prompts. A description-only rewrite cannot promise that every skill remains listed because names, paths, and skills outside the current set also consume the budget. (OA, KI)
 
-## 14. Exact numbers
+[Back to contents](#contents)
+
+### 4.6 Exact numbers
 
 | Item                               | Value               | Hard/Soft | Source     |
 | ---------------------------------- | ------------------- | --------- | ---------- |
@@ -130,3 +218,5 @@ Codex initially lists each skill's name, description, and file path within at mo
 | CC combined post-compaction budget | 25,000 tok combined | runtime   | CC         |
 
 † Claude-Code-specific runtime limit, configurable; distinct from the portable 1024-char authoring cap.
+
+[Back to contents](#contents)

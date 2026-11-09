@@ -151,7 +151,7 @@ export const DESC: RubricFamily<KiSkillsRubricContext, DescriptionRubricContext>
   code: 'DESC',
   title: 'Frontmatter: description',
   description: 'The portable skill description contract.',
-  standard: 'standards-agent-skills.md#5-frontmatter-description',
+  standard: 'standard-agent-skills.md#434-frontmatter-description',
   selectContext: (context: KiSkillsRubricContext) => selectKiSkillsContext(context, 'description'),
   items: [DESC_1, DESC_2, DESC_3, DESC_4, DESC_5, DESC_6, DESC_7, DESC_8, DESC_9, DESC_10]
 }

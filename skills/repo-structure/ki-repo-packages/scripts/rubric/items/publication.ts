@@ -3,6 +3,6 @@ import type { PackagesContext } from '../contexts/packages.ts'
 
 export const RUBRIC = createRubricPublicationFamily<PackagesContext>(
   ({ rubric }) => rubric,
-  '../../../keystone/ki-skills/references/standards-rubric-authoring.md',
-  ['../../../keystone/ki-skills/references/standards-rubric-authoring.md#generated-rubric-publication']
+  '../../../keystone/ki-skills/references/standard-rubric-authoring.md',
+  ['../../../keystone/ki-skills/references/standard-rubric-authoring.md#414-generated-rubric-publication']
 )
