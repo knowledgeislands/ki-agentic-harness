@@ -7,7 +7,7 @@ ki-shared-dependencies: [ki-skills:rubric]
 owns: ['.editorconfig', '.rumdl.toml']
 contributes: ['.githooks/pre-commit']
 description: >
-  Govern KI Markdown, TOML, README composition, industry white papers, and durable knowledge placement. Use to format or audit
+  Govern KI document formats, Markdown, TOML, README composition, industry white papers, and durable knowledge placement. Use to format or audit
   authored documents, shape a README, or decide where learning belongs; use `ki-skills` for SKILL.md quality,
   `ki-repo` for repository contracts, and `ki-engineering` for code toolchains.
 argument-hint: 'audit <path> | conform <path> | educate <target> | help | refresh'
@@ -18,6 +18,10 @@ argument-hint: 'audit <path> | conform <path> | educate <target> | help | refres
 You are applying the **Knowledge Islands authoring conventions** — the foundational authoring and formatting rules every other skill, repository, and base in this work builds on rather than restates. Conventions are a common theme across the skill set; this skill is the one place they live, so the rest can assume them. It is the **single source of truth**: a repository's always-loaded orientation carries a one-line pointer here instead of restating the rules, keeping that standing context small and the detail in one versioned place.
 
 This is a **standard, base-agnostic governance skill** — it hard-codes no single base and assumes no knowledge-base structure. Install it anywhere the conventions should apply. How it sits alongside the other skills in this repository, and where it must not overlap them, is documented once in the ki-agentic-harness `README.md`, not repeated here.
+
+## Document formats come first
+
+Every standard, change document and sources file follows the format standard for its type, and every format standard follows the [format format](references/standard-formats-format.md): the [standard](references/standard-formats-standard.md), [change document](references/standard-formats-change.md) and [sources file](references/standard-formats-sources.md) formats. These formats are the baseline the other conventions build on; a document is written to its format before anything else here applies. AUDIT reports a document that does not follow its format, or follows an older version of it, and CONFORM brings it into line when it is next changed.
 
 ## The two layers
 

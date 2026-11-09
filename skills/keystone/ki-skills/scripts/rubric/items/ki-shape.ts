@@ -102,7 +102,7 @@ const KI_SHAPE_6: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-6',
   title: 'Knowledge Islands skills use the closed reference vocabulary',
   description:
-    '_Closed reference vocabulary — Knowledge Islands skills only._ Every top-level Markdown reference is `standards-<topic>.md`, generated `rubric.md`, `sources.md`, optional `exemplars.md`, or one-mode-only `mode-<verb>.md`; a skill includes only the classes it needs. Normative formats, process doctrine, and shared mode contracts are standards. Combined mode names, bare `standards.md`, `<topic>-standards.md`, nested references, and ad hoc guide, format, or contract filenames are retired. Templates and reusable output material live in `assets/`. A skill tracking a moving external spec keeps a current-state `## Last review` block in `sources.md`. Skills outside the Knowledge Islands set are exempt.',
+    '_Closed reference vocabulary — Knowledge Islands skills only._ Every top-level Markdown reference is `standard-<topic>.md` (or the older `standards-<topic>.md` until renamed), generated `rubric.md`, `sources.md`, optional `exemplars.md`, or one-mode-only `mode-<verb>.md`; a skill includes only the classes it needs. Normative formats, process doctrine, and shared mode contracts are standards, following the `ki-authoring` standard format; `sources.md` follows its sources format. Combined mode names, bare `standards.md`, `<topic>-standards.md`, nested references, and ad hoc guide, format, or contract filenames are retired. Templates and reusable output material live in `assets/`. A skill tracking a moving external spec keeps a current-state `## Last review` block in `sources.md`. Skills outside the Knowledge Islands set are exempt.',
   sources: ['ki-agentic-harness README'],
   mechanical: {
     level: 'FAIL',
@@ -116,7 +116,7 @@ const KI_SHAPE_6: RubricItem<KiShapeRubricContext> = {
       run: ({ skill }) => {
         if (!skill?.knowledgeIslandsSkill)
           return [{ status: 'NOT_APPLICABLE', message: 'the target is not a Knowledge Islands skill' }]
-        const allowed = /^(?:exemplars|rubric|sources|standards-[a-z0-9]+(?:-[a-z0-9]+)*|mode-[a-z0-9]+)\.md$/
+        const allowed = /^(?:exemplars|rubric|sources|standards?-[a-z0-9]+(?:-[a-z0-9]+)*|mode-[a-z0-9]+)\.md$/
         const violations = skill.referencePaths
           .filter((path) => path.endsWith('.md') && !allowed.test(path))
           .map((path) => ({
@@ -132,7 +132,7 @@ const KI_SHAPE_6: RubricItem<KiShapeRubricContext> = {
     }
   },
   judgment: judgment(
-    'Does each retained reference class serve a distinct reader need, with templates and executable helpers elsewhere?'
+    'Does each retained reference class serve a distinct reader need, with templates and executable helpers elsewhere, and does each standard and sources file follow its `ki-authoring` format standard?'
   )
 }
 

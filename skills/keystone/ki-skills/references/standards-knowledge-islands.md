@@ -33,13 +33,13 @@ A **governance skill** — one that holds a house standard — exposes a common 
 
 Every top-level Markdown file in a Knowledge Islands skill's `references/` directory belongs to this closed vocabulary:
 
-- `standards-<topic>.md` holds a normative standard, process doctrine, artifact format, or shared mode contract.
+- `standard-<topic>.md` holds a normative standard, process doctrine, artifact format, or shared mode contract, and follows the [standard format](../../ki-authoring/references/standard-formats-standard.md). The older plural, `standards-<topic>.md`, is accepted until each standard is next changed and renamed.
 - `rubric.md` is the generated readable publication of executable pass/fail criteria.
-- `sources.md` tracks provenance and refresh state.
+- `sources.md` tracks provenance, refresh state and the decisions behind the standards, and follows the [sources format](../../ki-authoring/references/standard-formats-sources.md).
 - `exemplars.md` holds optional worked examples.
 - `mode-<verb>.md` holds exactly one independently invoked procedure; combined names such as `mode-audit-conform.md` are split, and each procedure states its own preconditions.
 
-A skill includes only the classes it needs. A bare `standards.md`, `<topic>-standards.md`, nested `references/` content, and ad hoc `guide`, `contract`, or `format` filenames are not alternate classes. Templates and other reusable output material live under `assets/`. The executable catalogue remains `scripts/rubric/items/index.ts`; domain-specific executable helpers remain under `scripts/`. This is a convention of the `ki-*` set rather than a requirement on every Agent Skill, so a skill outside a Knowledge Islands repo is exempt for now (rubric **KI-SHAPE-6**). (ki-agentic-harness README)
+A standard or sources file that does not yet follow its format is out of date: AUDIT reports it, and it is brought into line when next changed. A skill includes only the classes it needs. A bare `standards.md`, `<topic>-standards.md`, nested `references/` content, and ad hoc `guide`, `contract`, or `format` filenames are not alternate classes. Templates and other reusable output material live under `assets/`. The executable catalogue remains `scripts/rubric/items/index.ts`; domain-specific executable helpers remain under `scripts/`. This is a convention of the `ki-*` set rather than a requirement on every Agent Skill, so a skill outside a Knowledge Islands repo is exempt for now (rubric **KI-SHAPE-6**). (ki-agentic-harness README)
 
 When a KI-governed skill needs durable, generated local state that is neither a source script nor a reference, it stores it in a root `.ki-meta/` directory. This is the one KI-specific addition to the portable `references/` / `scripts/` / `assets/` support-directory vocabulary; it remains local implementation state, not a second skill root. (rubric **LAY-3**)
 
