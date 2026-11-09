@@ -1,10 +1,33 @@
-# Sources — where the authoring conventions come from
+---
+type: sources@2026-11-09T21:36:32Z
+revised: 2026-11-09T21:36:32Z
+refresh: external-spec · monthly
+---
 
-**Refresh:** external-spec · monthly
+# Sources for authoring
 
-The sources behind [the enforcement standard](standards-authoring.md), [the Markdown standard](standards-markdown.md), and [the TOML standard](standards-toml.md). Mode REFRESH reads this file, re-fetches each source, diffs it against the conventions, then **bumps the `last reviewed` dates** and refreshes the `## Last review` block below (what changed is recorded in the commit, not a changelog). The house style is mostly internally owned, but it sits on top of these external tools and specs, which move — so this is the skill's memory of what it rests on.
+## Contents
 
-## Authoritative
+- [1. Introduction](#1-introduction)
+- [2. Outside sources](#2-outside-sources)
+  - [2.1 Authoritative](#21-authoritative)
+  - [2.2 Advisory](#22-advisory)
+- [3. Decisions](#3-decisions)
+- [4. Last review](#4-last-review)
+
+## 1. Introduction
+
+The sources behind [the enforcement standard](standards-authoring.md), [the Markdown standard](standards-markdown.md), [the TOML standard](standards-toml.md), [the white-paper standard](standards-whitepapers.md), [knowledge promotion](standards-knowledge-promotion.md), and the four format standards: [format](standard-formats-format.md), [standard](standard-formats-standard.md), [change](standard-formats-change.md) and [sources](standard-formats-sources.md). Mode REFRESH reads this file, re-fetches each outside source, diffs it against the conventions, then **bumps the `last reviewed` dates** and refreshes [Last review](#4-last-review) (what changed is recorded in the commit, not a changelog). The house style is mostly internally owned, but it sits on top of these external tools and specs, which move — so this is the skill's memory of what it rests on.
+
+[Industry white-paper authoring](standards-whitepapers.md) is an owner-directed synthesis of editorial practice: reader-led argument, calibrated claims, practical implications and substantive review. It is an internal authoring convention, not an external specification or a prescribed chapter model. Private production evidence and the promotion receipt remain with the originating repository; this public standard carries only the generalised rules.
+
+[Back to contents](#contents)
+
+## 2. Outside sources
+
+The specifications and tools the standards follow or draw on.
+
+### 2.1 Authoritative
 
 | Source                      | Governs                                                     | Last reviewed |
 | --------------------------- | ----------------------------------------------------------- | ------------- |
@@ -16,7 +39,9 @@ The sources behind [the enforcement standard](standards-authoring.md), [the Mark
 | [GitHub alert guidance][ga] | GitHub alert labels, purpose, and Markdown form             | 2026-10-18    |
 | [TOML spec][toml]           | TOML syntax for the shared `.ki.toml`                | 2026-10-18    |
 
-## Advisory
+[Back to contents](#contents)
+
+### 2.2 Advisory
 
 Advisory sources inform local judgment conventions but are not specifications, mechanical findings, or universal Knowledge Islands policy.
 
@@ -33,16 +58,22 @@ Advisory sources inform local judgment conventions but are not specifications, m
 [toml]: https://toml.io/en/v1.1.0
 [sr]: https://github.com/RichardLitt/standard-readme
 
-## Internally owned judgment
+[Back to contents](#contents)
 
-[Industry white-paper authoring](standards-whitepapers.md) is an owner-directed synthesis of editorial practice: reader-led argument, calibrated claims, practical implications and substantive review. It is an internal authoring convention, not an external specification or a prescribed chapter model. Private production evidence and the promotion receipt remain with the originating repository; this public standard carries only the generalised rules.
+## 3. Decisions
 
-[Document types](standards-knowledge-promotion.md#document-types) rest on two owner decisions:
+| Id | Decision | Date | Backs | Status |
+| --- | --- | --- | --- | --- |
+| DOC-TYPES | Kris's word at 22:05 CET, relayed by `personal.reg.inbox`: two document types only, the change document (`.change.md`), carrying the design outline and a planning section, and the standard; a design note becomes a change document. | 2026-11-08 | [knowledge promotion](standards-knowledge-promotion.md#document-types) | Superseded by FORMATS-FORMAT |
+| STD-BASE | Kris's word at 22:05 CET, relayed by `personal.reg.inbox`: every change document carries `Base: ki-agentic-harness@<commit>` and a `Touches:` line listing the standard files it changes, with no version numbers and no per-file hashes, and is rebased by reading `git diff <base>..main -- <touched files>`, updating the document and moving `Base:`. | 2026-11-08 | [knowledge promotion](standards-knowledge-promotion.md#document-types) | Superseded by FORMATS-CHANGE |
+| FORMATS-FORMAT | Every document has a type, named in its `type` field and its file name, and each type has one format standard, `standard-formats-<type>.md`, saying what is particular to it; what all types share is set once. | 2026-11-09 | [format format](standard-formats-format.md), [knowledge promotion](standards-knowledge-promotion.md#document-types) | In force |
+| FORMATS-STANDARD | A standard carries `type`, `revised` and `status`, and has four sections ending in Rules, with none of a change's parts; its decisions are kept in its skill's sources file. | 2026-11-09 | [standard format](standard-formats-standard.md) | In force |
+| FORMATS-CHANGE | A change document carries front matter with its status, inputs and outputs in place of `Base:` and `Touches:`, and has seven sections ending in Open, which empties before it is done. | 2026-11-09 | [change format](standard-formats-change.md) | In force |
+| FORMATS-SOURCES | A skill's sources file records its outside sources and its decisions, each decision given an id when it lands and kept when superseded. | 2026-11-09 | [sources format](standard-formats-sources.md) | In force |
 
-- **DOC-TYPES**, 2026-11-08: Kris's word at 22:05 CET, relayed by `personal.reg.inbox`: two document types only, the change document (`.change.md`), carrying the design outline and a planning section, and the standard; a design note becomes a change document.
-- **STD-BASE**, 2026-11-08: Kris's word at 22:05 CET, relayed by `personal.reg.inbox`: every change document carries `Base: ki-agentic-harness@<commit>` and a `Touches:` line listing the standard files it changes, with no version numbers and no per-file hashes, and is rebased by reading `git diff <base>..main -- <touched files>`, updating the document and moving `Base:`.
+[Back to contents](#contents)
 
-## Last review
+## 4. Last review
 
 REFRESH last run **2026-10-18** under KI-HARNESS-GOV-194. Every source was re-fetched: CommonMark, rumdl rules, global settings, CLI and releases, GitHub alerts, TOML, and the Standard Readme repository and `spec.md`. The previous run was 2026-10-06. A same-day upgrade then installed rumdl 0.3.0 and re-ran the reproductions.
 
@@ -81,3 +112,5 @@ REFRESH last run **2026-10-18** under KI-HARNESS-GOV-194. Every source was re-fe
   - Biome does not support Markdown at all (no `markdown` key in its schema); if that changes it would displace rumdl's formatter role but not its linter role, since the structural and link-integrity rules have no Biome counterpart.
 
 A bounded 28 October 2026 CAPTURE-QUOTES review reproduced the independent frontmatter walker ignoring `.rumdl.toml` exclusions. The direct check and proposals now honour repository exclusion patterns, preserving capture bytes without adding a capture-specific exemption. Focused evidence also retains a new, non-excluded report in scope.
+
+[Back to contents](#contents)

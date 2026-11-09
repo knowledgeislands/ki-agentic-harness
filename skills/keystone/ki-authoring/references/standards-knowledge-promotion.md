@@ -21,23 +21,17 @@ Choose the narrowest durable home that reaches the people and agents who need th
 
 ## Document types
 
-A durable document is one of two types:
+A durable document has a type, and each type has its format standard, all following the [format format](standard-formats-format.md):
 
-- **Standard:** the rule itself, in the owning skill's `references/`, as the placement ladder above routes it.
-- **Change document:** a proposed change to one or more standards, named `<slug>.change.md` and kept in the work package of the work that proposes it. It carries the design outline and a planning section. There is no separate design type: a design note is a change document.
+- **Standard:** the rule itself, in the owning skill's `references/`, as the placement ladder above routes it; its format is the [standard format](standard-formats-standard.md).
+- **Change document:** a proposed change to one or more standards, kept in the work package of the work that proposes it, carrying the design outline and a planning section; its format is the [change format](standard-formats-change.md). There is no separate design type: a design note is a change document. `ki-work-design` owns its life cycle, from draft to graduation and deletion.
+- **Sources file:** a skill's record of the outside specifications and decisions its standards rest on; its format is the [sources format](standard-formats-sources.md).
 
 Run briefs, run reports and the work package's own files keep the shapes their owning skills set.
 
-A change document opens with its title, then two header lines:
-
-- `Base: ki-agentic-harness@<commit>`, the harness commit it was written against;
-- `Touches:`, each standard file it changes, by its repository path.
-
-There are no version numbers and no per-file hashes. To rebase a change document, read `git diff <base>..main -- <touched files>`, update the document to match, then move `Base:` to the new commit. `ki-work-design` owns its life cycle, from draft to graduation and deletion.
-
 Migration: an existing `.design.md` design note stays readable as a change document during the rollout and is not renamed; delete this line once none remains.
 
-Sources: DOC-TYPES and STD-BASE in [the sources](sources.md#internally-owned-judgment).
+Sources: FORMATS-FORMAT in [the sources](sources.md#3-decisions).
 
 ## Promotion loop
 

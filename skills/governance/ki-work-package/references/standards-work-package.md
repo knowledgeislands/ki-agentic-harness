@@ -82,7 +82,7 @@ A work folder holds these kinds and nothing else:
 | Focus folder | `<focus-id>/`, one per focus area `_index.md` declares under [Focus areas](#focus-areas), starting with `_index.md` and holding the kinds below | It holds nothing but its `_index.md`, or the mark that closes finished work |
 | Run report | `<focus-id>/<run>.report.md` | A tidy finds its outcome homed, its queries having been copied into `discussions.md` at receive |
 | Brief | `<focus-id>/<run>.brief.md` | Its run's report is received |
-| Change document | `<focus-id>/<slug>.change.md`, the `ki-authoring` [document type](../../ki-authoring/references/standards-knowledge-promotion.md#document-types), or `<focus-id>/<subject>/` holding the same kinds‡ | It graduates under `ki-work-design` or is recorded as superseded |
+| Change document | `<focus-id>/<name>.change.md`, under the `ki-authoring` [change format](../../../keystone/ki-authoring/references/standard-formats-change.md), or `<focus-id>/<subject>/` holding the same kinds‡ | It graduates under `ki-work-design` or is recorded as superseded |
 | Design artefact | `<focus-id>/**/*.architecture.json` and the other diagram sources, with their `.svg` and `.html` renders | Its change document goes |
 | Finding | `findings/<tag>.md` | Settlement under the owner-report Findings rule† |
 | Feedback package | `feedback/<date>-<slug>.md`, the owner's consolidated feedback on a document the work produced, written by the Observatory for the tolerance window | A tidy finds every point in it homed |
