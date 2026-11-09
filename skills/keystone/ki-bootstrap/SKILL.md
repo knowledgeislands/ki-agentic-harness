@@ -14,9 +14,9 @@ argument-hint: 'help | refresh'
 
 The `ki` CLI owns installation, activation, and repository operations. This guidance-only skill explains that command surface; it has no executable catalogue, checker, or alternative executor.
 
-Read [the bootstrap standard](references/standards-bootstrap.md) when the installation, activation, or trust boundary matters. Use [the exemplars](references/exemplars.md) for concrete command sequences.
+Read [the bootstrap standard](references/standard-bootstrap.md) when the installation, activation, or trust boundary matters. Use [the exemplars](references/exemplars.md) for concrete command sequences.
 
-When delegating work into another repository, name each governance skill it needs with a readable source path, because a recipient invokes only its user-scope skills and its start repository's projection; see [skill access in delegated work](references/standards-bootstrap.md#skill-access-in-delegated-work).
+When delegating work into another repository, name each governance skill it needs with a readable source path, because a recipient invokes only its user-scope skills and its start repository's projection; see [skill access in delegated work](references/standard-bootstrap.md#44-skill-access-in-delegated-work).
 
 ## First-time user setup
 
@@ -46,7 +46,7 @@ Missing, incompatible, undeclared, or ambiguous skills fail before an audit or c
 
 ## Machine readiness for coordinating work
 
-A coordinating session needs more than the skills `ki bootstrap` activates: the user environment must bind the coordinator hook and the coordinator output style, `output-styles/ki-coordinator.md` in the harness, the Capital must declare its governance skills, and the session must open in the Capital under the work's name. The [machine-readiness checklist](references/standards-bootstrap.md#machine-readiness-for-coordinating-work) is the one path from a fresh machine to a working coordinator. It ends in a **Ready to coordinate** result, given only when every check passes, with observable checks that the hook and the output style actually work; a failing check names the owner that repairs it, never a copy or edit across managed surfaces. `ki-coordination`'s Bootstrap begins at the opener and cites the checklist as its "Before the opener" step. Kris homed the checklist here under BOOT-HOME on 26 October 2026; a `ki doctor` readiness check in `tools-ki` may back it later, and readiness never depends on it before it exists.
+A coordinating session needs more than the skills `ki bootstrap` activates: the user environment must bind the coordinator hook and the coordinator output style, `output-styles/ki-coordinator.md` in the harness, the Capital must declare its governance skills, and the session must open in the Capital under the work's name. The [machine-readiness checklist](references/standard-bootstrap.md#47-machine-readiness-for-coordinating-work) is the one path from a fresh machine to a working coordinator. It ends in a **Ready to coordinate** result, given only when every check passes, with observable checks that the hook and the output style actually work; a failing check names the owner that repairs it, never a copy or edit across managed surfaces. `ki-coordination`'s Bootstrap begins at the opener and cites the checklist as its "Before the opener" step. Kris homed the checklist here under BOOT-HOME on 26 October 2026; a `ki doctor` readiness check in `tools-ki` may back it later, and readiness never depends on it before it exists.
 
 ## Development boundary
 
@@ -65,5 +65,5 @@ Explain the first-time bootstrap, installed-harness, user-activation, repository
 This mode refreshes guidance, not user or repository state.
 
 1. Read [the source list](references/sources.md) and re-check the delivered `tools-ki` command surface, the compatible-harness contract, and the repository declaration contract.
-2. Diff them against [the bootstrap standard](references/standards-bootstrap.md), this routing overview, and [the exemplars](references/exemplars.md).
+2. Diff them against [the bootstrap standard](references/standard-bootstrap.md), this routing overview, and [the exemplars](references/exemplars.md).
 3. Update only this skill's guidance and source review record. Record behavioural history in git rather than adding a changelog.

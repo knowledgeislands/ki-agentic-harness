@@ -1,24 +1,35 @@
-# Bootstrap standard
+---
+type: standard@2026-11-09T21:36:32Z
+revised: 2026-11-09T22:38:25Z
+status: in force
+---
 
-This standard implements the architecture in [ADR-KI-HARNESS-012](../../../../docs/decisions/ADR-KI-HARNESS-012-compatible-harness-publication-and-governed-rubric-boundary.md).
+# Bootstrap standard
 
 ## Contents
 
-- [Scope and ownership](#scope-and-ownership)
-- [Authoritative installed harnesses](#authoritative-installed-harnesses)
-- [Declarative repository selection](#declarative-repository-selection)
-- [Explicit activation scopes](#explicit-activation-scopes)
-- [Skill access in delegated work](#skill-access-in-delegated-work)
-- [Native repository operations](#native-repository-operations)
-- [First-time bootstrap](#first-time-bootstrap)
-- [Machine readiness for coordinating work](#machine-readiness-for-coordinating-work)
-- [Local harness development](#local-harness-development)
-- [Managed-state recovery](#managed-state-recovery)
-- [Unowned repository state](#unowned-repository-state)
-- [CI and direct automation](#ci-and-direct-automation)
-- [Scope and safety separation](#scope-and-safety-separation)
+- [1. Introduction](#1-introduction)
+- [2. Scope](#2-scope)
+  - [2.1 In scope](#21-in-scope)
+  - [2.2 Out of scope](#22-out-of-scope)
+- [3. Terms and definitions](#3-terms-and-definitions)
+- [4. Rules](#4-rules)
+  - [4.1 Authoritative installed harnesses](#41-authoritative-installed-harnesses)
+  - [4.2 Declarative repository selection](#42-declarative-repository-selection)
+  - [4.3 Explicit activation scopes](#43-explicit-activation-scopes)
+  - [4.4 Skill access in delegated work](#44-skill-access-in-delegated-work)
+  - [4.5 Native repository operations](#45-native-repository-operations)
+  - [4.6 First-time bootstrap](#46-first-time-bootstrap)
+  - [4.7 Machine readiness for coordinating work](#47-machine-readiness-for-coordinating-work)
+  - [4.8 Local harness development](#48-local-harness-development)
+  - [4.9 Managed-state recovery](#49-managed-state-recovery)
+  - [4.10 Unowned repository state](#410-unowned-repository-state)
+  - [4.11 CI and direct automation](#411-ci-and-direct-automation)
+  - [4.12 Scope and safety separation](#412-scope-and-safety-separation)
 
-## Scope and ownership
+## 1. Introduction
+
+This standard implements the architecture in [ADR-KI-HARNESS-012](../../../../docs/decisions/ADR-KI-HARNESS-012-compatible-harness-publication-and-governed-rubric-boundary.md). The decisions behind its rules are in [the sources file](sources.md#3-decisions).
 
 `ki-bootstrap` is guidance for the delivered user setup and capability-activation model. It does not publish a rubric, register a native repository operation, or own public command grammar.
 
@@ -26,7 +37,50 @@ This standard implements the architecture in [ADR-KI-HARNESS-012](../../../../do
 
 Run `ki --help` for the installed command grammar. This standard explains the boundaries those commands preserve.
 
-## Authoritative installed harnesses
+[Back to contents](#contents)
+
+## 2. Scope
+
+The user setup and capability-activation model, and the boundaries the `ki` commands preserve.
+
+### 2.1 In scope
+
+- The verified installed harness set, and how harnesses are installed, replaced and uninstalled.
+- Declarative repository selection through `.ki.toml`, and the user and repository activation scopes.
+- Skill access when work is delegated into another repository.
+- Native repository operations and what they never execute.
+- First-time bootstrap, and the machine-readiness checklist for coordinating work.
+- Local harness development, managed-state recovery, unowned repository state, and CI and direct automation.
+- The separation of user and repository state.
+
+[Back to contents](#contents)
+
+### 2.2 Out of scope
+
+- The installed command grammar: `ki --help`.
+- The executable, harness acquisition, activation, repository resolution, rubric host, transactions, reporting and diagnostics: `tools-ki`.
+- The schema, creation and declared coverage of `.ki.toml`: `ki-repo`.
+- What happens from the opener onwards in coordinating work: `ki-coordination`'s Bootstrap.
+
+[Back to contents](#contents)
+
+## 3. Terms and definitions
+
+| Term | Definition |
+| --- | --- |
+| **Canonical harness** | `knowledgeislands/ki-agentic-harness`, always registered and installed by `ki bootstrap`, and never uninstalled. **Standard:** this one, [4.1](#41-authoritative-installed-harnesses) |
+| **Activation** | Changing the managed discovery links and configuration that make a skill available, for the user's runtimes or for one repository; separate from installing a harness. **Standard:** this one, [4.3](#43-explicit-activation-scopes) |
+| **Ready to coordinate** | The result when every step of the machine-readiness checklist passes. **Standard:** this one, [4.7](#47-machine-readiness-for-coordinating-work) |
+| **User state** | The XDG-owned harness registry and data, configuration, cache, state, and user-runtime activation. **Standard:** this one, [4.12](#412-scope-and-safety-separation) |
+| **Repository state** | `.ki.toml`, repository-scope activation links, and registered native-operation writes. **Standard:** this one, [4.12](#412-scope-and-safety-separation) |
+
+[Back to contents](#contents)
+
+## 4. Rules
+
+The rules, part by part.
+
+### 4.1 Authoritative installed harnesses
 
 One verified, XDG-managed harness set exists per user. The canonical `knowledgeislands/ki-agentic-harness` is always registered and installed by `ki bootstrap`; each additional compatible harness is installed explicitly.
 
@@ -42,7 +96,9 @@ If a required harness is unavailable, untrusted, or incompatible, the command mu
 
 The canonical harness cannot be uninstalled. `ki harness uninstall <harness-id>` applies only to an installed non-canonical harness and removes it only after ownership checks pass.
 
-## Declarative repository selection
+[Back to contents](#contents)
+
+### 4.2 Declarative repository selection
 
 `.ki.toml` declares the governance coverage of one repository through explicit `[ki-<skill>]` tables.
 
@@ -54,7 +110,9 @@ Dependencies must be declared explicitly; a resolver must not inject a baseline,
 
 Missing, incompatible, undeclared, or untrusted skills are fail-closed errors before an operation writes.
 
-## Explicit activation scopes
+[Back to contents](#contents)
+
+### 4.3 Explicit activation scopes
 
 Harness installation and skill activation are separate. Installing a harness does not activate all its skills.
 
@@ -64,13 +122,17 @@ Harness installation and skill activation are separate. Installing a harness doe
 
 Activation resolves a bare skill name only when one installed harness provides it. Ambiguous, missing, foreign, altered, or escaping targets fail closed. Existing KI-managed links are re-pointed only through the command's explicit replacement option.
 
-## Skill access in delegated work
+[Back to contents](#contents)
+
+### 4.4 Skill access in delegated work
 
 A session can invoke only the user-scope skills (the process skills) and the skills projected into the repository it started in. It does not gain the target repository's declared skills by working there, so a recipient sent into another repository may lack a governance skill that repository declares. Observed for Claude Code (`.claude/skills/`) and Codex (`.agents/skills/`) on 2026-10-04; Cowork has not been verified.
 
 A delegator sending work into another repository therefore names each governance skill the work needs with a readable source: the target's projection (`<target>/.agents/skills/<name>/SKILL.md` or `<target>/.claude/skills/<name>/SKILL.md`) or the canonical harness source. The recipient reads that file when the skill is absent from its own list, rather than discovering the gap by a failed invocation. `ki repo audit --skill <name>` runs from the target repository without runtime invocation. A missing or dangling projection is reported as an activation repair, not repaired by the recipient.
 
-## Native repository operations
+[Back to contents](#contents)
+
+### 4.5 Native repository operations
 
 A governance skill may publish a compatible in-process rubric catalogue for its mechanical operations. `ki repo educate`, `ki repo audit`, and `ki repo conform` resolve the selected repository's declarations and execute the applicable catalogues in dependency order through one host-owned model.
 
@@ -80,7 +142,9 @@ AUDIT is read-only. CONFORM validates the complete proposed write set, preserves
 
 The host never executes `scripts/govern.ts`, `.ki/bin` wrappers, copied checkers, a nearby harness checkout, or an ad hoc child process as a fallback.
 
-## First-time bootstrap
+[Back to contents](#contents)
+
+### 4.6 First-time bootstrap
 
 `ki bootstrap` establishes the minimum user environment:
 
@@ -93,7 +157,9 @@ Repeated bootstrap is idempotent over correctly managed state. `ki bootstrap --r
 
 Bootstrap does not declare governance in any repository and does not activate every skill in the canonical harness.
 
-## Machine readiness for coordinating work
+[Back to contents](#contents)
+
+### 4.7 Machine readiness for coordinating work
 
 This checklist is the one path from a fresh machine to a working coordinator. Kris homed it in this skill under BOOT-HOME on 26 October 2026, so that a hook or an output style that fails silently has one accountable place; `ki-coordination`'s Bootstrap begins at the opener and cites this as its "Before the opener" step. How a hook is shipped, installed and registered is set once in the harness hooks README's [How hooks are expected to work](../../../../hooks/README.md#how-hooks-are-expected-to-work); steps 2 and 5 apply it. Run it on a fresh machine, after a chezmoi, harness or runtime change, and whenever a coordinator looks right but drifts. Each step says what to check and who repairs a failure; no step copies or edits files across the source, installed and runtime-discovery surfaces.
 
@@ -115,7 +181,9 @@ A member home must be the existing deliberately approved regular/ad hoc exceptio
 
 **Ready to coordinate** is the result when every step passes; the first reply after the opener is then the full re-bootstrap report, heading and banner exact. Any failing step is not ready: name it, repair it with its owner's tool, and run the checklist again. A later `ki doctor` check in `tools-ki` may carry steps 1 to 5; readiness never depends on it before it exists.
 
-## Local harness development
+[Back to contents](#contents)
+
+### 4.8 Local harness development
 
 Installed verified payloads remain authoritative during ordinary use.
 
@@ -129,19 +197,25 @@ The exposure is widest where harness edits and harness-dependent verification ov
 
 `ki diag --full` distinguishes the two cases after the fact. `Installation` and the local harness `source` and `mode` lines say whether governance came from a mutable tree, so an audit or conform result that moved while the target repository did not is explained there rather than in the repository.
 
-## Managed-state recovery
+[Back to contents](#contents)
+
+### 4.9 Managed-state recovery
 
 Harness source, installed payloads, runtime-discovery links, and repository declarations are separate owned surfaces. A command refuses unfamiliar, altered, escaping, or unsafe managed state before it overwrites or removes anything. Treat that refusal as a diagnostic: inspect it with `ki diag --full`, `ki doctor`, or the applicable `ki harness`, `ki skill`, or `ki repo skill` command rather than copying or deleting files across surfaces.
 
 After a command changes a managed skill link or switches the selected development source, start a new agent session so the runtime re-scans its discovery directories. An already-running session is not evidence that the new activation is loaded.
 
-## Unowned repository state
+[Back to contents](#contents)
+
+### 4.10 Unowned repository state
 
 Native operations execute only the declared catalogues resolved from verified installed harnesses. A repository directory, executable, manifest, or runtime payload does not become an operation source merely by being present.
 
 Normal repository operations leave unowned material unchanged. They never infer ownership, run it as a fallback, or turn repository maintenance into a broad cleanup operation.
 
-## CI and direct automation
+[Back to contents](#contents)
+
+### 4.11 CI and direct automation
 
 CI and direct automation explicitly establish the verified installed harnesses, then invoke the native `ki repo` operation required by the repository declaration.
 
@@ -151,7 +225,9 @@ If acquisition, verification, registry loading, or declared-skill resolution fai
 
 Recovery guidance must identify the failed layer: CLI release, harness acquisition, harness integrity, repository declaration, compatibility, or operation availability.
 
-## Scope and safety separation
+[Back to contents](#contents)
+
+### 4.12 Scope and safety separation
 
 User state comprises the XDG-owned harness registry and data, configuration, cache, state, and user-runtime activation.
 
@@ -160,3 +236,5 @@ Repository state comprises `.ki.toml`, repository-scope activation links, and re
 No unscoped operation infers or crosses either boundary.
 
 Every mutating operation resolves its selected scope first, calculates and validates its complete write or removal set, and refuses unsafe state before any partial change.
+
+[Back to contents](#contents)

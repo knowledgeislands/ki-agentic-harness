@@ -1,6 +1,6 @@
 # Bootstrap exemplars
 
-These examples illustrate the scope boundaries in [the bootstrap standard](standards-bootstrap.md). For the exact options supported by an installed release, use `ki --help`.
+These examples illustrate the scope boundaries in [the bootstrap standard](standard-bootstrap.md). For the exact options supported by an installed release, use `ki --help`.
 
 ## First-time setup
 
