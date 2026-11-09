@@ -1154,8 +1154,8 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
         <text x="404" y="336" class="t-database" font-size="7" text-anchor="middle">R24 · CL · F4</text>
         </g>
 
-        <g id="node-ki-authoring" data-node-id="ki-authoring" data-node-label="ki-authoring" tabindex="0" role="button" aria-label="Focus ki-authoring, governance · always on, Fundamentals · Repository and writing" aria-pressed="false" data-node-kind="security" data-node-sublabel="governance · always on" data-node-tag="R4 · CM · F11" data-node-context="Fundamentals · Repository and writing">
-          <title>ki-authoring · governance · always on · Fundamentals · Repository and writing · R4 · CM · F11</title>
+        <g id="node-ki-authoring" data-node-id="ki-authoring" data-node-label="ki-authoring" tabindex="0" role="button" aria-label="Focus ki-authoring, keystone · always on, Fundamentals · Repository and writing" aria-pressed="false" data-node-kind="security" data-node-sublabel="keystone · always on" data-node-tag="R4 · CM · F13" data-node-context="Fundamentals · Repository and writing">
+          <title>ki-authoring · keystone · always on · Fundamentals · Repository and writing · R4 · CM · F13</title>
           <rect x="44" y="908" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="44" y="908" width="208" height="76" rx="8" class="c-security" data-animate="node" style="--step: 4; --flow-node-name: archify-relay-node-7;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(50 914) scale(0.6875)">
@@ -1163,8 +1163,8 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
             <path d="m5.8 8 1.5 1.5 3-3"/>
           </g>
           <text data-node-label="" x="148" y="944" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-authoring</text>
-        <text x="148" y="960" class="t-muted" font-size="9" text-anchor="middle">governance · always on</text>
-        <text x="148" y="976" class="t-security" font-size="7" text-anchor="middle">R4 · CM · F11</text>
+        <text x="148" y="960" class="t-muted" font-size="9" text-anchor="middle">keystone · always on</text>
+        <text x="148" y="976" class="t-security" font-size="7" text-anchor="middle">R4 · CM · F13</text>
         </g>
 
         <g id="node-ki-delegation" data-node-id="ki-delegation" data-node-label="ki-delegation" tabindex="0" role="button" aria-label="Focus ki-delegation, governance · opt-in, Coordination · Delegation and programme" aria-pressed="false" data-node-kind="database" data-node-sublabel="governance · opt-in" data-node-tag="R6 · CM · F4" data-node-context="Coordination · Delegation and programme">

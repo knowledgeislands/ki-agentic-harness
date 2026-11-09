@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "bfa418dddcdd35cf55ef554a5b199005b243de01"
+      "revision": "61229e2d5afafa404de35ce70375c993d7e83528"
     },
     "legend": {
       "mode": "auto",
@@ -113,13 +113,13 @@
       "id": "ki-authoring",
       "type": "security",
       "label": "ki-authoring",
-      "sublabel": "governance · always on",
+      "sublabel": "keystone · always on",
       "sources": [
         {
-          "path": "skills/governance/ki-authoring/SKILL.md"
+          "path": "skills/keystone/ki-authoring/SKILL.md"
         }
       ],
-      "tag": "R4 · CM · F11",
+      "tag": "R4 · CM · F13",
       "pos": [
         588,
         268

@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "80fde15b648d3a93ab4a0a16c46e4c0dcab05a1a"
+      "revision": "61229e2d5afafa404de35ce70375c993d7e83528"
     },
     "legend": {
       "mode": "auto",
@@ -30,6 +30,25 @@
   },
   "components": [
     {
+      "id": "ki-authoring",
+      "type": "security",
+      "label": "ki-authoring",
+      "sublabel": "fundamentals + records · always on",
+      "sources": [
+        {
+          "path": "skills/keystone/ki-authoring/SKILL.md"
+        }
+      ],
+      "pos": [
+        32,
+        64
+      ],
+      "size": [
+        200,
+        60
+      ]
+    },
+    {
       "id": "ki-repo",
       "type": "security",
       "label": "ki-repo",
@@ -40,7 +59,7 @@
         }
       ],
       "pos": [
-        32,
+        240,
         64
       ],
       "size": [
@@ -87,25 +106,6 @@
       ]
     },
     {
-      "id": "ki-authoring",
-      "type": "security",
-      "label": "ki-authoring",
-      "sublabel": "fundamentals + records · always on",
-      "sources": [
-        {
-          "path": "skills/governance/ki-authoring/SKILL.md"
-        }
-      ],
-      "pos": [
-        712,
-        64
-      ],
-      "size": [
-        200,
-        60
-      ]
-    },
-    {
       "id": "ki-diagrams",
       "type": "database",
       "label": "ki-diagrams",
@@ -116,7 +116,7 @@
         }
       ],
       "pos": [
-        920,
+        712,
         64
       ],
       "size": [
@@ -135,7 +135,7 @@
         }
       ],
       "pos": [
-        1128,
+        920,
         64
       ],
       "size": [
@@ -1327,6 +1327,7 @@
       "kind": "region",
       "label": "Fundamentals · Repository and writing",
       "wraps": [
+        "ki-authoring",
         "ki-repo"
       ],
       "pad": 10
@@ -1349,8 +1350,9 @@
     },
     {
       "kind": "region",
-      "label": "Keystone · 3 skills",
+      "label": "Keystone · 4 skills",
       "wraps": [
+        "ki-authoring",
         "ki-repo",
         "ki-skills",
         "ki-bootstrap"
@@ -1361,7 +1363,6 @@
       "kind": "region",
       "label": "Fundamentals · Repository and writing",
       "wraps": [
-        "ki-authoring",
         "ki-diagrams",
         "ki-git"
       ],
@@ -1414,9 +1415,8 @@
     },
     {
       "kind": "region",
-      "label": "Governance · 13 skills",
+      "label": "Governance · 12 skills",
       "wraps": [
-        "ki-authoring",
         "ki-diagrams",
         "ki-git",
         "ki-decision-records",
