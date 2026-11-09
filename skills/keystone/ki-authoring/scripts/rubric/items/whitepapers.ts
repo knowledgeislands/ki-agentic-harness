@@ -6,7 +6,7 @@ const ARGUMENT: RubricItem<AuthoringRubricContext> = {
   title: 'white papers serve an outside reader and decision',
   description:
     'Industry white papers build a reader-led argument from problem and scope through approach, findings and meaning to deployment choices and justified action; structure follows purpose.',
-  sources: ['standards-whitepapers.md#purpose-and-argument'],
+  sources: ['standard-whitepapers.md#41-purpose-and-argument'],
   judgment: {
     scope: 'Industry white-paper authoring and review only; other authored documents are excluded.',
     prompt:
@@ -22,7 +22,7 @@ const EVIDENCE: RubricItem<AuthoringRubricContext> = {
   title: 'white-paper claims and presentation preserve evidence meaning',
   description:
     'Claims distinguish observation, intention, modelling and future work; material conditions, coherent terms, explanatory figures and publicly usable citations preserve traceability.',
-  sources: ['standards-whitepapers.md#evidence-and-presentation'],
+  sources: ['standard-whitepapers.md#42-evidence-and-presentation'],
   judgment: {
     scope: 'Claims, figures, terminology and public references in industry white papers only.',
     prompt:
@@ -38,7 +38,7 @@ const REVIEW: RubricItem<AuthoringRubricContext> = {
   title: 'white-paper drafting and review validate the resulting argument',
   description:
     'The body supports conclusions and summaries; substantive and line review assess coverage and meaning, including AI restructuring, while editorial instructions stay outside the paper.',
-  sources: ['standards-whitepapers.md#lean-authoring-and-review'],
+  sources: ['standard-whitepapers.md#43-lean-authoring-and-review'],
   judgment: {
     scope: 'The drafting and review evidence for an industry white paper, when available.',
     prompt:
@@ -53,7 +53,7 @@ export const WHITEPAPERS: RubricFamily<AuthoringRubricContext, AuthoringRubricCo
   code: 'WP',
   title: 'Industry white papers',
   description: 'Judgment for industry white-paper tasks only, not general Markdown authoring.',
-  standard: 'standards-whitepapers.md',
+  standard: 'standard-whitepapers.md',
   selectContext: (context) => context,
   items: [ARGUMENT, EVIDENCE, REVIEW]
 }

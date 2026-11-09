@@ -1,16 +1,68 @@
-# Authoring enforcement standard
+---
+type: standard@2026-11-09T21:36:32Z
+revised: 2026-11-09T22:09:53Z
+status: in force
+---
 
-The cross-format mechanical contract for Knowledge Islands authoring. It is separate from the Markdown and TOML standards because it governs the formatter/linter boundary, wholly owned repository configuration, and safe hosted execution rather than human choices inside either document format.
+# Authoring enforcement standard
 
 ## Contents
 
-- [Owned configuration](#owned-configuration)
-- [Markdown gate](#markdown-gate)
-- [Commit gate](#commit-gate)
-- [Hosted conform safety](#hosted-conform-safety)
-- [Synchronisation](#synchronisation)
+- [1. Introduction](#1-introduction)
+- [2. Scope](#2-scope)
+  - [2.1 In scope](#21-in-scope)
+  - [2.2 Out of scope](#22-out-of-scope)
+- [3. Terms and definitions](#3-terms-and-definitions)
+- [4. Rules](#4-rules)
+  - [4.1 Owned configuration](#41-owned-configuration)
+  - [4.2 Adopting a mechanical tool](#42-adopting-a-mechanical-tool)
+  - [4.3 Markdown gate](#43-markdown-gate)
+  - [4.4 Commit gate](#44-commit-gate)
+  - [4.5 Hosted conform safety](#45-hosted-conform-safety)
+  - [4.6 Synchronisation](#46-synchronisation)
 
-## Owned configuration
+## 1. Introduction
+
+The cross-format mechanical contract for Knowledge Islands authoring. It is separate from the Markdown and TOML standards because it governs the formatter/linter boundary, wholly owned repository configuration, and safe hosted execution rather than human choices inside either document format. The decisions behind these rules are in [the sources file](sources.md#3-decisions).
+
+[Back to contents](#contents)
+
+## 2. Scope
+
+The mechanical side of authoring, across document formats.
+
+### 2.1 In scope
+
+- The configuration files `ki-authoring` wholly owns, and evidenced exceptions to them.
+- Adopting or upgrading a formatter or linter.
+- The Markdown gate and the commit gate.
+- Safe hosted conform execution.
+- Keeping the standards, rubric catalogue, generated rubric and source record in step.
+
+[Back to contents](#contents)
+
+### 2.2 Out of scope
+
+- The judgment choices inside Markdown: the [Markdown authoring standard](standard-markdown.md).
+- TOML presentation: the [TOML formatting standard](standard-toml.md).
+- The commit hook's existence, frame and canonical text: `ki-repo`.
+
+[Back to contents](#contents)
+
+## 3. Terms and definitions
+
+| Term | Definition |
+| --- | --- |
+| **Owned file** | A file the `ki-authoring` skill wholly owns: `.editorconfig` and `.rumdl.toml`. **Standard:** this one, [4.1](#41-owned-configuration) |
+| **Evidenced exception** | The narrow safety valve for a repository whose regular owned file must remain non-canonical, declared in `owned_file_exceptions`. **Standard:** this one, [4.1](#41-owned-configuration) |
+
+[Back to contents](#contents)
+
+## 4. Rules
+
+The rules, part by part.
+
+### 4.1 Owned configuration
 
 The `ki-authoring` skill wholly owns `.editorconfig` and `.rumdl.toml`. AUDIT compares each regular file with its canonical template, and CONFORM scaffolds a missing file or replaces a drifted regular file.
 
@@ -30,7 +82,9 @@ AUDIT reports declared non-canonical drift as INFO with its reason; it does not 
 
 A path that exists but is not a regular non-symlink file is a violation and is not proposed for replacement. This makes the ownership rule explicit without following a link or replacing a directory, device, or other unsafe target.
 
-## Adopting a mechanical tool
+[Back to contents](#contents)
+
+### 4.2 Adopting a mechanical tool
 
 A gate reporting clean is not evidence that a fix was safe. It says the result satisfies the rules, which is a different claim, and the gap between the two is where a formatter does its worst damage: an autofix that corrupts a document usually produces something the same tool then accepts, so the corruption is invisible to exactly the check meant to catch it.
 
@@ -40,15 +94,19 @@ The same caution applies to a rule-selection flag. Confirm the tool is running t
 
 Every canonical template must be stored already formatted to the house width, so that CONFORM's output is a fixed point of the formatter that governs that file type. A template the repository's own rumdl or Biome would rewrite makes CONFORM non-idempotent: the write lands, the next formatter pass — a `rumdl check --fix` by hand or CONFORM's own NORMALISE — reformats it, and the following AUDIT reports drift again, in every repository the template reaches. Round-trip each template when adding or editing one: write it, run the governing formatter, and confirm the diff is empty.
 
-## Markdown gate
+[Back to contents](#contents)
 
-AUDIT runs `rumdl check` against the repository's authored Markdown. The excluded paths — Git metadata, generated, vendored, dependency, and runtime-projection material — are declared in `.rumdl.toml` itself rather than passed as a glob list, so a bare `rumdl check` at the repository root means exactly what the gate means. Trade records are authored Markdown like any other and are formatted with the rest: their integrity is proven by the `ki-trades` `AUTH-1` comparison against the sender's copy, which is insensitive to formatting and sensitive to meaning, so an exclusion list is neither needed nor sufficient — it only avoided touching the records, never checked them, and never covered Biome. It also inspects Markdown frontmatter for safely removable scalar quotes under the [Markdown authoring standard](standards-markdown.md#frontmatter). The commands receive fixed argument arrays; no repository path or file content is interpolated into a shell program.
+### 4.3 Markdown gate
+
+AUDIT runs `rumdl check` against the repository's authored Markdown. The excluded paths — Git metadata, generated, vendored, dependency, and runtime-projection material — are declared in `.rumdl.toml` itself rather than passed as a glob list, so a bare `rumdl check` at the repository root means exactly what the gate means. Trade records are authored Markdown like any other and are formatted with the rest: their integrity is proven by the `ki-trades` `AUTH-1` comparison against the sender's copy, which is insensitive to formatting and sensitive to meaning, so an exclusion list is neither needed nor sufficient — it only avoided touching the records, never checked them, and never covered Biome. It also inspects Markdown frontmatter for safely removable scalar quotes under the [Markdown authoring standard](standard-markdown.md#45-frontmatter). The commands receive fixed argument arrays; no repository path or file content is interpolated into a shell program.
 
 CONFORM requests `rumdl check --fix --preflight` in the rubric's `NORMALISE` phase — `check --fix` rather than `fmt`, because `fmt` exits zero even when unfixable violations remain and would let CONFORM report success over a file it could not settle, and `--preflight` so that a batch with a file it cannot write is refused whole rather than left half-fixed, together with host-validated direct writes for safely canonicalized frontmatter. The formatter commands are part of the session's final proposal rather than launched by a rubric item.
 
-The [Markdown authoring standard](standards-markdown.md) defines the judgment choices left after this mechanical gate.
+The [Markdown authoring standard](standard-markdown.md) defines the judgment choices left after this mechanical gate.
 
-## Commit gate
+[Back to contents](#contents)
+
+### 4.4 Commit gate
 
 A repository's committed `pre-commit` checks the Markdown it stages, check-only, so a commit never carries Markdown the audit would reject ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)). Where a package exists, lint-staged runs `rumdl check` over the staged Markdown under `ki-engineering` `PKG-6`, check-only: a commit never rewrites, as Kris chose COMMIT-VS-CI a) on 26 October 2026, and `--fix` stays with CONFORM. Where none does, the canonical hook lists the staged Markdown and checks it where it stands:
 
@@ -60,12 +118,18 @@ git diff --cached --name-only --diff-filter=ACMR -z -- '*.md' | xargs -0 -r rumd
 
 The direct frontmatter quote check and its conform proposals honour the repository-relative `global.exclude` patterns in `.rumdl.toml`, including directory descendants. This keeps byte-preserved capture and vendored material outside both Markdown repair paths while newly authored, non-excluded work-package and report Markdown remains checked.
 
-## Hosted conform safety
+[Back to contents](#contents)
+
+### 4.5 Hosted conform safety
 
 Rubric items change only operation-scoped drafts or request a bounded command. The session emits one final proposal: owned configuration writes first, then Markdown normalisation commands. The `ki` host validates and publishes writes transactionally, executes commands without a shell, and re-audits persistent state before deriving fixed findings.
 
 AUDIT never exposes draft capabilities, CONFORM never writes directly from the skill, and neither mode carries a skill-local reporter or transaction layer.
 
-## Synchronisation
+[Back to contents](#contents)
+
+### 4.6 Synchronisation
 
 The authored standards, structured rubric catalogue, generated `rubric.md` publication, and `sources.md` refresh record describe the same conventions. A convention change updates the applicable standard and catalogue item, regenerates the publication, and reconciles the source record when provenance or refresh state changed.
+
+[Back to contents](#contents)

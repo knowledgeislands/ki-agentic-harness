@@ -44,7 +44,7 @@ const OWN_1: RubricItem<OwnedRubricContext> = {
   title: 'owned authoring configuration matches the house templates',
   description:
     'The skill owns `.editorconfig` and `.rumdl.toml` wholly (SHAPE-16 `owns:`): AUDIT warns on unexplained drift from the house templates, while CONFORM transactionally scaffolds missing files and overwrites drifted regular files. A reasoned `owned_file_exceptions` declaration reports INFO and suppresses only the named regular drifted-file write; missing, unsafe, malformed, and stale exceptions remain WARN. An exception is never a local template. Each template is stored already formatted to the house width so CONFORM output is a fixed point of the governing formatter; a template the repository would reformat leaves every governed repository permanently drifted.',
-  sources: ['standards-authoring.md#owned-configuration'],
+  sources: ['standard-authoring.md#41-owned-configuration'],
   mechanical: {
     level: 'WARN',
     remediation: { class: 'automatic' },
@@ -71,7 +71,7 @@ const OWN_2: RubricItem<OwnedRubricContext> = {
   title: 'retired Markdown configuration is absent',
   description:
     'rumdl owns Markdown formatting and linting together, so `.prettierrc.json`, `.prettierignore`, and `.markdownlint-cli2.jsonc` are retired: AUDIT warns while any of them survives and CONFORM removes them. A leftover file is not inert — an editor extension reads it and reformats Markdown against a standard the repository no longer holds, producing drift that the gate then reports without explaining.',
-  sources: ['standards-authoring.md#owned-configuration'],
+  sources: ['standard-authoring.md#41-owned-configuration'],
   mechanical: {
     level: 'WARN',
     remediation: { class: 'automatic' },
@@ -103,7 +103,7 @@ export const OWNED: RubricFamily<AuthoringRubricContext, OwnedRubricContext> = {
   code: 'OWN',
   title: 'Owned authoring configuration',
   description: 'Configuration files wholly owned by the authoring convention.',
-  standard: 'standards-authoring.md#owned-configuration',
+  standard: 'standard-authoring.md#41-owned-configuration',
   selectContext: (context: AuthoringRubricContext) => context.owned,
   items: [OWN_1, OWN_2]
 }

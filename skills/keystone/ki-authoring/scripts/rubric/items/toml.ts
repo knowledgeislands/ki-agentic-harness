@@ -6,7 +6,7 @@ const TOML_VALUES: RubricItem<TomlRubricContext> = {
   title: 'TOML values use the house formatting',
   description:
     'Strings are double-quoted, arrays are multiline with one element per line and a trailing comma, there are no inline tables, and comments sit on the line above.',
-  sources: ['standards-toml.md#keys-and-values'],
+  sources: ['standard-toml.md#41-keys-and-values'],
   judgment: {
     scope: 'Every authored TOML string, array, map and comment in the convention scope.',
     prompt: 'Assess whether TOML strings, arrays, maps and comments follow the house formatting.',
@@ -21,7 +21,7 @@ const TOML_STRUCTURE: RubricItem<TomlRubricContext> = {
   title: 'TOML configuration remains compact and navigable',
   description:
     'Mechanically valid `.ki.toml` structure uses the neighbourhood banners in their fixed order with each declaration under its most meaningful banner, `[skills.ki-trades]` last in Relationships, while readable short subordinate maps use dotted keys under their explicit owner root.',
-  sources: ['standards-toml.md#configuration-structure'],
+  sources: ['standard-toml.md#42-configuration-structure'],
   judgment: {
     scope: 'Every substantial `.ki.toml` and each short subordinate map in convention scope.',
     prompt:
@@ -36,7 +36,7 @@ const TOML_COMMENTS: RubricItem<TomlRubricContext> = {
   code: 'TOML-comments',
   title: 'non-obvious TOML keys explain their rationale',
   description: 'Non-obvious keys carry a preceding `#` comment explaining why they exist.',
-  sources: ['standards-toml.md#keys-and-values'],
+  sources: ['standard-toml.md#41-keys-and-values'],
   judgment: {
     scope: 'Every non-obvious authored TOML key in the convention scope.',
     prompt: 'Assess whether non-obvious TOML keys carry a preceding rationale comment.',
@@ -49,7 +49,7 @@ export const TOML: RubricFamily<AuthoringRubricContext, TomlRubricContext> = {
   code: 'TOML',
   title: 'TOML formatting',
   description: 'Reviewer-applied TOML formatting conventions.',
-  standard: 'standards-toml.md',
+  standard: 'standard-toml.md',
   selectContext: (context: AuthoringRubricContext) => context.toml,
   items: [TOML_VALUES, TOML_STRUCTURE, TOML_COMMENTS]
 }

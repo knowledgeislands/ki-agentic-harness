@@ -1,6 +1,6 @@
 # The `.ki.toml` contract
 
-The cross-cutting contract for the shared **`.ki.toml`** file every Knowledge Islands repo carries. It is owned by `ki-repo` because **a Knowledge Islands repo is defined by carrying this file** — its presence is the compliance marker, and `ki-repo` governs the repo's compliance. Every other standard-holding skill reads its own table within it. (The TOML _formatting_ style — key case, quoting, comments — is the `ki-authoring` skill's; see its `standards-toml.md` reference. This document governs the _contract_: the file's meaning and the cross-skill protocol.)
+The cross-cutting contract for the shared **`.ki.toml`** file every Knowledge Islands repo carries. It is owned by `ki-repo` because **a Knowledge Islands repo is defined by carrying this file** — its presence is the compliance marker, and `ki-repo` governs the repo's compliance. Every other standard-holding skill reads its own table within it. (The TOML _formatting_ style — key case, quoting, comments — is the `ki-authoring` skill's; see its `standard-toml.md` reference. This document governs the _contract_: the file's meaning and the cross-skill protocol.)
 
 ## Contents
 

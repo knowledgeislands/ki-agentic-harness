@@ -1,10 +1,68 @@
+---
+type: standard@2026-11-09T21:36:32Z
+revised: 2026-11-09T22:09:53Z
+status: in force
+---
+
 # Knowledge promotion
+
+## Contents
+
+- [1. Introduction](#1-introduction)
+- [2. Scope](#2-scope)
+  - [2.1 In scope](#21-in-scope)
+  - [2.2 Out of scope](#22-out-of-scope)
+- [3. Terms and definitions](#3-terms-and-definitions)
+- [4. Rules](#4-rules)
+  - [4.1 Placement ladder](#41-placement-ladder)
+  - [4.2 Document types](#42-document-types)
+  - [4.3 Promotion loop](#43-promotion-loop)
+  - [4.4 Classifying user-level instructions](#44-classifying-user-level-instructions)
+  - [4.5 Replaceable execution environments](#45-replaceable-execution-environments)
+  - [4.6 Boundaries](#46-boundaries)
+
+## 1. Introduction
 
 Useful knowledge starts as a local observation and becomes durable only when its scope and evidence warrant it.
 
-This is a manual routing standard, not a transcript miner or a reason to create a new guide area.
+This is a manual routing standard, not a transcript miner or a reason to create a new guide area. The decisions behind these rules are in [the sources file](sources.md#3-decisions).
 
-## Placement ladder
+[Back to contents](#contents)
+
+## 2. Scope
+
+Where durable knowledge goes, and the types of durable document.
+
+### 2.1 In scope
+
+- The placement ladder of durable homes, and the evidence for each.
+- The durable document types and their format standards.
+- The promotion loop, and classifying user-level instructions.
+- Keeping knowledge independent of a replaceable execution environment.
+
+[Back to contents](#contents)
+
+### 2.2 Out of scope
+
+- The format of each document type: its format standard.
+- Permission to write an approved learning: user confirmation governs it.
+
+[Back to contents](#contents)
+
+## 3. Terms and definitions
+
+| Term | Definition |
+| --- | --- |
+| **Placement ladder** | The table of durable homes, from session context to roadmap or plan, used to choose the narrowest durable home that reaches the people and agents who need the knowledge. **Standard:** this one, [4.1](#41-placement-ladder) |
+| **Document type** | The kind of a document, such as standard, change or sources: the same word in its `type` field and its file name. **Standard:** [format format](standard-formats-format.md#41-document-types) |
+
+[Back to contents](#contents)
+
+## 4. Rules
+
+The rules, part by part.
+
+### 4.1 Placement ladder
 
 Choose the narrowest durable home that reaches the people and agents who need the knowledge.
 
@@ -19,7 +77,9 @@ Choose the narrowest durable home that reaches the people and agents who need th
 | Personal cross-project configuration | A durable user preference or machine convention, not a repository rule | It applies across repositories for one user | The user's synchronised configuration | Remove repository copies unless the repository has an independent reason to state it |
 | Roadmap or plan | Unfinished work, a dependency, or a future decision | It needs prioritisation or execution, not merely recall | The owning repository's roadmap or plan | Do not disguise open work as a convention or memory |
 
-## Document types
+[Back to contents](#contents)
+
+### 4.2 Document types
 
 A durable document has a type, and each type has its format standard, all following the [format format](standard-formats-format.md):
 
@@ -33,7 +93,9 @@ Migration: an existing `.design.md` design note stays readable as a change docum
 
 Sources: FORMATS-FORMAT in [the sources](sources.md#3-decisions).
 
-## Promotion loop
+[Back to contents](#contents)
+
+### 4.3 Promotion loop
 
 1. Capture the observation with enough context to judge it, but do not make a durable write by default.
 2. Classify its scope: session, repository, shared governance, reusable operation, personal configuration, or unfinished work.
@@ -42,7 +104,9 @@ Sources: FORMATS-FORMAT in [the sources](sources.md#3-decisions).
 5. Reconcile the source layer: remove a duplicate, replace it with a pointer, or explicitly retain it only when it serves a different audience.
 6. Revisit the placement when its scope changes; promotion is not a reason to preserve obsolete lower-layer copies.
 
-## Classifying user-level instructions
+[Back to contents](#contents)
+
+### 4.4 Classifying user-level instructions
 
 Use this method when an owner asks for an existing user-level instruction file, such as a rendered personal runtime instruction file or one it imports, to be reviewed for content that belongs elsewhere. The input is prose the owner supplies or a tracked source the owner points to, never a scan of a home directory.
 
@@ -58,16 +122,22 @@ Use this method when an owner asks for an existing user-level instruction file, 
 
 The `ki-repo-dotfiles-chezmoi` agent-instruction layering rule points here; `ki-skills`' `KI-SHAPE-10` remains the skill-level portability judgment.
 
-## Replaceable execution environments
+[Back to contents](#contents)
+
+### 4.5 Replaceable execution environments
 
 An agent runtime or coordination system is additive, not the durable owner of a repository's knowledge or operating model. Preserve purpose, procedures, authority, accepted decisions, work state, verification evidence, and residual learning in their repository-owned homes. Runtime memory, task conversations, and scheduler history may aid execution but must not be the only record needed to understand or continue the work.
 
 The continuity test is practical: with the repository, its referenced durable sources, and verified declared skills and tooling, can a person or another execution environment determine what matters, what happened, what remains, what authority is required, and how to proceed? This is not a promise of dependency-free or offline operation. Keep secrets outside Git, declare external dependencies and access prerequisites, and retain non-secret evidence locators. Changing the executor neither changes repository authority nor permits replaying uncertain work; reconcile in-flight claims, holds, and returned evidence before handover.
 
-## Boundaries
+[Back to contents](#contents)
+
+### 4.6 Boundaries
 
 - `AGENTS.md` holds portable repository guidance; runtime files hold only genuinely runtime-specific detail.
 - A reference holds the detailed rule or evidence; a skill owns reusable execution. Neither should restate the other wholesale.
 - Existing guides are destinations when appropriate; this process does not automatically invent documentation structures.
 - User confirmation governs durable learning writes. This standard decides where an approved learning goes; it does not grant permission to write it.
 - Agent-local auto-memory is off by default. Route candidate learning through existing repository intake and approval rules into reviewed guidance or an appropriate KB note; a runtime's auto-memory is never the canonical store. A KB's tracked `Admin/MEMORY.md` remains its repository index, not agent-local auto-memory.
+
+[Back to contents](#contents)

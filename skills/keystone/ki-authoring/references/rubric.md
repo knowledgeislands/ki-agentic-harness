@@ -26,70 +26,70 @@ The tracked readable rubric is the exact publication of the structured catalogue
 
 ## MD — Markdown authoring
 
-→ [standard](standards-markdown.md)
+→ [standard](standard-markdown.md)
 
 The mechanical Markdown gate and reviewer-applied Markdown conventions.
 
-- **MD-mech [M] — Markdown mechanical gate passes** — `ki repo audit --skill ki-authoring` passes: prose is unwrapped; bullet and quote characters, heading hierarchy, a single H1, spacing, resolved references, no bare URLs, and descriptive link text satisfy rumdl, which runs directly inside the audit. Table alignment is not mechanically enforced — no rumdl style reproduces the former conditional padding, so the width conventions in the Markdown standard carry it. (standards-authoring.md#markdown-gate, standards-markdown.md#what-to-leave-to-the-linter)
+- **MD-mech [M] — Markdown mechanical gate passes** — `ki repo audit --skill ki-authoring` passes: prose is unwrapped; bullet and quote characters, heading hierarchy, a single H1, spacing, resolved references, no bare URLs, and descriptive link text satisfy rumdl, which runs directly inside the audit. Table alignment is not mechanically enforced — no rumdl style reproduces the former conditional padding, so the width conventions in the Markdown standard carry it. (standard-authoring.md#43-markdown-gate, standard-markdown.md#41-what-to-leave-to-the-linter)
   - _Remediation:_ automatic
-- **MD-frontmatter [M] — frontmatter uses canonical bare-safe scalars** — Markdown frontmatter leaves identifier-like scalar tokens unquoted when their YAML meaning is unchanged; quoted YAML-significant values, dates, numeric-looking values, punctuation, whitespace, and escaped strings remain quoted. (standards-markdown.md#frontmatter)
+- **MD-frontmatter [M] — frontmatter uses canonical bare-safe scalars** — Markdown frontmatter leaves identifier-like scalar tokens unquoted when their YAML meaning is unchanged; quoted YAML-significant values, dates, numeric-looking values, punctuation, whitespace, and escaped strings remain quoted. (standard-markdown.md#45-frontmatter)
   - _Remediation:_ automatic
-- **MD-table [J] — wide tables are reshaped** — A table with rows that would exceed `printWidth` (120 chars) is reshaped into subheadings or a bulleted definition list; genuinely tabular data with one long column keeps the table and moves that column to footnotes below it. (standards-markdown.md#tables-and-footnotes)
+- **MD-table [J] — wide tables are reshaped** — A table with rows that would exceed `printWidth` (120 chars) is reshaped into subheadings or a bulleted definition list; genuinely tabular data with one long column keeps the table and moves that column to footnotes below it. (standard-markdown.md#44-tables-and-footnotes)
   - _Evidence scope:_ Every authored Markdown table that is wide or contains descriptive prose.
   - _Review prompt:_ Assess whether wide or prose-heavy tables are reshaped according to the Markdown convention.
   - _Outcomes:_ conforming; reshape required; exclusion
   - _Conforming guidance:_ Reshape the table into subheadings or a definition list, move a long column to footnotes, or record why genuinely tabular content is excluded.
-- **MD-footnote [J] — table footnotes use the house marker series** — Footnotes use the marker series `† ‡ § ¶ ‖` (then doubled), reset per table, with a distinct second series `※ ❡ ¤ ¥` where needed; each footnote is a separate paragraph. (standards-markdown.md#footnote-marker-series)
+- **MD-footnote [J] — table footnotes use the house marker series** — Footnotes use the marker series `† ‡ § ¶ ‖` (then doubled), reset per table, with a distinct second series `※ ❡ ¤ ¥` where needed; each footnote is a separate paragraph. (standard-markdown.md#443-footnote-marker-series)
   - _Evidence scope:_ Every table footnote in authored Markdown.
   - _Review prompt:_ Assess whether table footnotes use the documented marker series and paragraph layout.
   - _Outcomes:_ conforming; correction required; exclusion
   - _Conforming guidance:_ Use the documented marker series and one paragraph per footnote, or record why the table is excluded.
-- **MD-link [J] — house-file links are descriptive and portable** — GFM is preferred across house documents and KB notes, with descriptive note-relative Markdown links in angle brackets and Obsidian %20 spaces normalised structurally. Other flavours remain supported; unsupported constructs need decisions and conversion exceptions are recorded. (standards-markdown.md#markdown-flavour, standards-markdown.md#links)
+- **MD-link [J] — house-file links are descriptive and portable** — GFM is preferred across house documents and KB notes, with descriptive note-relative Markdown links in angle brackets and Obsidian %20 spaces normalised structurally. Other flavours remain supported; unsupported constructs need decisions and conversion exceptions are recorded. (standard-markdown.md#42-markdown-flavour, standard-markdown.md#46-links)
   - _Evidence scope:_ Authored Markdown, including KB note content, and any conversion or recorded exception.
   - _Review prompt:_ Assess house link form, supported-flavour readability, and whether whole-file or batch conversion preserves meaning and records refused files or exceptions.
   - _Outcomes:_ conforming; correction required; scoped exception
   - _Conforming guidance:_ Use descriptive note-relative Markdown links in angle brackets, normalise only encoded spaces in destinations, and record conversion exceptions without failing supported flavours.
-- **MD-cell-prose [J] — tables avoid descriptive prose in cells** — Tables avoid long descriptive prose in cells — that is the footnote’s job. (standards-markdown.md#keeping-tables-skimmable)
+- **MD-cell-prose [J] — tables avoid descriptive prose in cells** — Tables avoid long descriptive prose in cells — that is the footnote’s job. (standard-markdown.md#442-keeping-tables-skimmable)
   - _Evidence scope:_ Every authored Markdown table containing descriptive text.
   - _Review prompt:_ Assess whether table cells avoid long descriptive prose.
   - _Outcomes:_ conforming; move prose required; exclusion
   - _Conforming guidance:_ Move descriptive prose to footnotes or surrounding text, reshape the table, or record why the table is excluded.
-- **MD-callout [J] — callouts use a supported GitHub alert deliberately** — A callout uses the concise GitHub alert form with one supported label (`NOTE`, `TIP`, `IMPORTANT`, `WARNING`, or `CAUTION`) and only for a contextual aside, not ordinary prose or a required instruction. (standards-markdown.md#callouts)
+- **MD-callout [J] — callouts use a supported GitHub alert deliberately** — A callout uses the concise GitHub alert form with one supported label (`NOTE`, `TIP`, `IMPORTANT`, `WARNING`, or `CAUTION`) and only for a contextual aside, not ordinary prose or a required instruction. (standard-markdown.md#47-callouts)
   - _Evidence scope:_ Every authored Markdown callout.
   - _Review prompt:_ Assess whether callouts use supported GitHub alerts, remain concise, and are reserved for genuine contextual asides.
   - _Outcomes:_ conforming; rewrite required; remove required
   - _Conforming guidance:_ Use a supported concise alert for a genuine aside, rewrite the content as ordinary prose, or remove the callout.
-- **MD-hook [M] — package-less commit gate checks staged Markdown** — Where a repository commits `.githooks/pre-commit` and has no `package.json`, the hook runs `rumdl check` over the staged Markdown, listed by `git diff --cached`, check-only and without `--fix`. A package-backed hook reaches rumdl through lint-staged under `ki-engineering` `SCR-11`, so this criterion is not applicable there or without a hook. (standards-authoring.md#commit-gate)
+- **MD-hook [M] — package-less commit gate checks staged Markdown** — Where a repository commits `.githooks/pre-commit` and has no `package.json`, the hook runs `rumdl check` over the staged Markdown, listed by `git diff --cached`, check-only and without `--fix`. A package-backed hook reaches rumdl through lint-staged under `ki-engineering` `SCR-11`, so this criterion is not applicable there or without a hook. (standard-authoring.md#44-commit-gate)
   - _Remediation:_ diagnostic — Copy the canonical pre-commit for the repository shape from its `assets/githooks/no-package/`.
 
 ## OWN — Owned authoring configuration
 
-→ [standard](standards-authoring.md#owned-configuration)
+→ [standard](standard-authoring.md#41-owned-configuration)
 
 Configuration files wholly owned by the authoring convention.
 
-- **OWN-1 [M] — owned authoring configuration matches the house templates** — The skill owns `.editorconfig` and `.rumdl.toml` wholly (SHAPE-16 `owns:`): AUDIT warns on unexplained drift from the house templates, while CONFORM transactionally scaffolds missing files and overwrites drifted regular files. A reasoned `owned_file_exceptions` declaration reports INFO and suppresses only the named regular drifted-file write; missing, unsafe, malformed, and stale exceptions remain WARN. An exception is never a local template. Each template is stored already formatted to the house width so CONFORM output is a fixed point of the governing formatter; a template the repository would reformat leaves every governed repository permanently drifted. (standards-authoring.md#owned-configuration)
+- **OWN-1 [M] — owned authoring configuration matches the house templates** — The skill owns `.editorconfig` and `.rumdl.toml` wholly (SHAPE-16 `owns:`): AUDIT warns on unexplained drift from the house templates, while CONFORM transactionally scaffolds missing files and overwrites drifted regular files. A reasoned `owned_file_exceptions` declaration reports INFO and suppresses only the named regular drifted-file write; missing, unsafe, malformed, and stale exceptions remain WARN. An exception is never a local template. Each template is stored already formatted to the house width so CONFORM output is a fixed point of the governing formatter; a template the repository would reformat leaves every governed repository permanently drifted. (standard-authoring.md#41-owned-configuration)
   - _Remediation:_ automatic
-- **OWN-2 [M] — retired Markdown configuration is absent** — rumdl owns Markdown formatting and linting together, so `.prettierrc.json`, `.prettierignore`, and `.markdownlint-cli2.jsonc` are retired: AUDIT warns while any of them survives and CONFORM removes them. A leftover file is not inert — an editor extension reads it and reformats Markdown against a standard the repository no longer holds, producing drift that the gate then reports without explaining. (standards-authoring.md#owned-configuration)
+- **OWN-2 [M] — retired Markdown configuration is absent** — rumdl owns Markdown formatting and linting together, so `.prettierrc.json`, `.prettierignore`, and `.markdownlint-cli2.jsonc` are retired: AUDIT warns while any of them survives and CONFORM removes them. A leftover file is not inert — an editor extension reads it and reformats Markdown against a standard the repository no longer holds, producing drift that the gate then reports without explaining. (standard-authoring.md#41-owned-configuration)
   - _Remediation:_ automatic
 
 ## TOML — TOML formatting
 
-→ [standard](standards-toml.md)
+→ [standard](standard-toml.md)
 
 Reviewer-applied TOML formatting conventions.
 
-- **TOML-values [J] — TOML values use the house formatting** — Strings are double-quoted, arrays are multiline with one element per line and a trailing comma, there are no inline tables, and comments sit on the line above. (standards-toml.md#keys-and-values)
+- **TOML-values [J] — TOML values use the house formatting** — Strings are double-quoted, arrays are multiline with one element per line and a trailing comma, there are no inline tables, and comments sit on the line above. (standard-toml.md#41-keys-and-values)
   - _Evidence scope:_ Every authored TOML string, array, map and comment in the convention scope.
   - _Review prompt:_ Assess whether TOML strings, arrays, maps and comments follow the house formatting.
   - _Outcomes:_ conforming; reformat required; exception required
   - _Conforming guidance:_ Use double-quoted strings, multiline arrays, dotted keys or nested tables instead of inline tables, and comments above, or record the external-contract exception.
-- **TOML-structure [J] — TOML configuration remains compact and navigable** — Mechanically valid `.ki.toml` structure uses the neighbourhood banners in their fixed order with each declaration under its most meaningful banner, `[skills.ki-trades]` last in Relationships, while readable short subordinate maps use dotted keys under their explicit owner root. (standards-toml.md#configuration-structure)
+- **TOML-structure [J] — TOML configuration remains compact and navigable** — Mechanically valid `.ki.toml` structure uses the neighbourhood banners in their fixed order with each declaration under its most meaningful banner, `[skills.ki-trades]` last in Relationships, while readable short subordinate maps use dotted keys under their explicit owner root. (standard-toml.md#42-configuration-structure)
   - _Evidence scope:_ Every substantial `.ki.toml` and each short subordinate map in convention scope.
   - _Review prompt:_ Assess whether each declaration sits under a meaningful neighbourhood banner and whether dotted child keys keep the complete entry readable.
   - _Outcomes:_ conforming; restructure recommended; nested form justified
   - _Conforming guidance:_ Use only needed neighbourhood banners and compact dotted child keys; retain a nested table when comments, length, or further structure make it clearer.
-- **TOML-comments [J] — non-obvious TOML keys explain their rationale** — Non-obvious keys carry a preceding `#` comment explaining why they exist. (standards-toml.md#keys-and-values)
+- **TOML-comments [J] — non-obvious TOML keys explain their rationale** — Non-obvious keys carry a preceding `#` comment explaining why they exist. (standard-toml.md#41-keys-and-values)
   - _Evidence scope:_ Every non-obvious authored TOML key in the convention scope.
   - _Review prompt:_ Assess whether non-obvious TOML keys carry a preceding rationale comment.
   - _Outcomes:_ conforming; comment required; self-evident
@@ -97,21 +97,21 @@ Reviewer-applied TOML formatting conventions.
 
 ## WP — Industry white papers
 
-→ [standard](standards-whitepapers.md)
+→ [standard](standard-whitepapers.md)
 
 Judgment for industry white-paper tasks only, not general Markdown authoring.
 
-- **WP-argument [J] — white papers serve an outside reader and decision** — Industry white papers build a reader-led argument from problem and scope through approach, findings and meaning to deployment choices and justified action; structure follows purpose. (standards-whitepapers.md#purpose-and-argument)
+- **WP-argument [J] — white papers serve an outside reader and decision** — Industry white papers build a reader-led argument from problem and scope through approach, findings and meaning to deployment choices and justified action; structure follows purpose. (standard-whitepapers.md#41-purpose-and-argument)
   - _Evidence scope:_ Industry white-paper authoring and review only; other authored documents are excluded.
   - _Review prompt:_ Can the intended reader follow the argument and its practical implications, with context before results, proportionate limits and an appropriate institutional voice?
   - _Outcomes:_ conforming; argument revision required; not applicable
   - _Conforming guidance:_ Revise around the audience and decision; use only the history and architecture needed to explain the contribution, without requiring fixed chapters.
-- **WP-evidence [J] — white-paper claims and presentation preserve evidence meaning** — Claims distinguish observation, intention, modelling and future work; material conditions, coherent terms, explanatory figures and publicly usable citations preserve traceability. (standards-whitepapers.md#evidence-and-presentation)
+- **WP-evidence [J] — white-paper claims and presentation preserve evidence meaning** — Claims distinguish observation, intention, modelling and future work; material conditions, coherent terms, explanatory figures and publicly usable citations preserve traceability. (standard-whitepapers.md#42-evidence-and-presentation)
   - _Evidence scope:_ Claims, figures, terminology and public references in industry white papers only.
   - _Review prompt:_ Do claims retain their source scope and material conditions, and do figures, terms and citations support the practical argument without exaggeration?
   - _Outcomes:_ conforming; evidence correction required; not applicable
   - _Conforming guidance:_ Calibrate claims and implications to reviewed sources; align figures and terms, verify public citation suitability, and retain restricted provenance in supporting records.
-- **WP-review [J] — white-paper drafting and review validate the resulting argument** — The body supports conclusions and summaries; substantive and line review assess coverage and meaning, including AI restructuring, while editorial instructions stay outside the paper. (standards-whitepapers.md#lean-authoring-and-review)
+- **WP-review [J] — white-paper drafting and review validate the resulting argument** — The body supports conclusions and summaries; substantive and line review assess coverage and meaning, including AI restructuring, while editorial instructions stay outside the paper. (standard-whitepapers.md#43-lean-authoring-and-review)
   - _Evidence scope:_ The drafting and review evidence for an industry white paper, when available.
   - _Review prompt:_ Are conclusions and summaries grounded in the body, restructuring checked for coverage and meaning, and expert review and citation checks evidenced without editorial bookkeeping in deliverable prose?
   - _Outcomes:_ conforming; review required; evidence unavailable; not applicable
@@ -119,11 +119,11 @@ Judgment for industry white-paper tasks only, not general Markdown authoring.
 
 ## SYNC — Convention synchronisation
 
-→ [standard](standards-authoring.md#synchronisation)
+→ [standard](standard-authoring.md#46-synchronisation)
 
 The generated publication and its convention sources remain coherent.
 
-- **SYNC-1 [J] — conventions, rubric, and source record agree** — The convention references, this rubric, and `sources.md` agree; when a convention moves, all three move together. (standards-authoring.md#synchronisation, sources.md)
+- **SYNC-1 [J] — conventions, rubric, and source record agree** — The convention references, this rubric, and `sources.md` agree; when a convention moves, all three move together. (standard-authoring.md#46-synchronisation, sources.md)
   - _Evidence scope:_ The authoring convention references, generated rubric publication, and source record changed by the same concern.
   - _Review prompt:_ Assess whether the convention references, rubric publication, and source record agree.
   - _Outcomes:_ conforming; synchronisation required; review required

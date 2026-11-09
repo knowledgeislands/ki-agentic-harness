@@ -28,7 +28,7 @@ const MD_MECH: RubricItem<MarkdownRubricContext> = {
   title: 'Markdown mechanical gate passes',
   description:
     '`ki repo audit --skill ki-authoring` passes: prose is unwrapped; bullet and quote characters, heading hierarchy, a single H1, spacing, resolved references, no bare URLs, and descriptive link text satisfy rumdl, which runs directly inside the audit. Table alignment is not mechanically enforced — no rumdl style reproduces the former conditional padding, so the width conventions in the Markdown standard carry it.',
-  sources: ['standards-authoring.md#markdown-gate', 'standards-markdown.md#what-to-leave-to-the-linter'],
+  sources: ['standard-authoring.md#43-markdown-gate', 'standard-markdown.md#41-what-to-leave-to-the-linter'],
   mechanical: {
     level: 'FAIL',
     cost: 2,
@@ -48,7 +48,7 @@ const MD_FRONTMATTER: RubricItem<MarkdownRubricContext> = {
   title: 'frontmatter uses canonical bare-safe scalars',
   description:
     'Markdown frontmatter leaves identifier-like scalar tokens unquoted when their YAML meaning is unchanged; quoted YAML-significant values, dates, numeric-looking values, punctuation, whitespace, and escaped strings remain quoted.',
-  sources: ['standards-markdown.md#frontmatter'],
+  sources: ['standard-markdown.md#45-frontmatter'],
   mechanical: {
     level: 'FAIL',
     remediation: { class: 'automatic' },
@@ -77,7 +77,7 @@ const MD_TABLE: RubricItem<MarkdownRubricContext> = {
   title: 'wide tables are reshaped',
   description:
     'A table with rows that would exceed `printWidth` (120 chars) is reshaped into subheadings or a bulleted definition list; genuinely tabular data with one long column keeps the table and moves that column to footnotes below it.',
-  sources: ['standards-markdown.md#tables-and-footnotes'],
+  sources: ['standard-markdown.md#44-tables-and-footnotes'],
   judgment: {
     scope: 'Every authored Markdown table that is wide or contains descriptive prose.',
     prompt: 'Assess whether wide or prose-heavy tables are reshaped according to the Markdown convention.',
@@ -92,7 +92,7 @@ const MD_FOOTNOTE: RubricItem<MarkdownRubricContext> = {
   title: 'table footnotes use the house marker series',
   description:
     'Footnotes use the marker series `† ‡ § ¶ ‖` (then doubled), reset per table, with a distinct second series `※ ❡ ¤ ¥` where needed; each footnote is a separate paragraph.',
-  sources: ['standards-markdown.md#footnote-marker-series'],
+  sources: ['standard-markdown.md#443-footnote-marker-series'],
   judgment: {
     scope: 'Every table footnote in authored Markdown.',
     prompt: 'Assess whether table footnotes use the documented marker series and paragraph layout.',
@@ -106,7 +106,7 @@ const MD_LINK: RubricItem<MarkdownRubricContext> = {
   title: 'house-file links are descriptive and portable',
   description:
     'GFM is preferred across house documents and KB notes, with descriptive note-relative Markdown links in angle brackets and Obsidian %20 spaces normalised structurally. Other flavours remain supported; unsupported constructs need decisions and conversion exceptions are recorded.',
-  sources: ['standards-markdown.md#markdown-flavour', 'standards-markdown.md#links'],
+  sources: ['standard-markdown.md#42-markdown-flavour', 'standard-markdown.md#46-links'],
   judgment: {
     scope: 'Authored Markdown, including KB note content, and any conversion or recorded exception.',
     prompt:
@@ -121,7 +121,7 @@ const MD_CELL_PROSE: RubricItem<MarkdownRubricContext> = {
   code: 'MD-cell-prose',
   title: 'tables avoid descriptive prose in cells',
   description: 'Tables avoid long descriptive prose in cells — that is the footnote’s job.',
-  sources: ['standards-markdown.md#keeping-tables-skimmable'],
+  sources: ['standard-markdown.md#442-keeping-tables-skimmable'],
   judgment: {
     scope: 'Every authored Markdown table containing descriptive text.',
     prompt: 'Assess whether table cells avoid long descriptive prose.',
@@ -136,7 +136,7 @@ const MD_CALLOUT: RubricItem<MarkdownRubricContext> = {
   title: 'callouts use a supported GitHub alert deliberately',
   description:
     'A callout uses the concise GitHub alert form with one supported label (`NOTE`, `TIP`, `IMPORTANT`, `WARNING`, or `CAUTION`) and only for a contextual aside, not ordinary prose or a required instruction.',
-  sources: ['standards-markdown.md#callouts'],
+  sources: ['standard-markdown.md#47-callouts'],
   judgment: {
     scope: 'Every authored Markdown callout.',
     prompt:
@@ -152,7 +152,7 @@ const MD_HOOK: RubricItem<MarkdownRubricContext> = {
   title: 'package-less commit gate checks staged Markdown',
   description:
     'Where a repository commits `.githooks/pre-commit` and has no `package.json`, the hook runs `rumdl check` over the staged Markdown, listed by `git diff --cached`, check-only and without `--fix`. A package-backed hook reaches rumdl through lint-staged under `ki-engineering` `SCR-11`, so this criterion is not applicable there or without a hook.',
-  sources: ['standards-authoring.md#commit-gate'],
+  sources: ['standard-authoring.md#44-commit-gate'],
   mechanical: {
     level: 'WARN',
     remediation: {
@@ -167,7 +167,7 @@ export const MARKDOWN: RubricFamily<AuthoringRubricContext, MarkdownRubricContex
   code: 'MD',
   title: 'Markdown authoring',
   description: 'The mechanical Markdown gate and reviewer-applied Markdown conventions.',
-  standard: 'standards-markdown.md',
+  standard: 'standard-markdown.md',
   selectContext: (context: AuthoringRubricContext) => context.markdown,
   items: [MD_MECH, MD_FRONTMATTER, MD_TABLE, MD_FOOTNOTE, MD_LINK, MD_CELL_PROSE, MD_CALLOUT, MD_HOOK]
 }

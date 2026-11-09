@@ -1,19 +1,73 @@
-# Markdown authoring conventions
+---
+type: standard@2026-11-09T21:36:32Z
+revised: 2026-11-09T22:09:53Z
+status: in force
+---
 
-The **judgment-layer** rules for the Markdown written across Knowledge Islands repositories and bases — the choices a formatter cannot make. Markdown is a distinct standard because its mechanical formatter/linter boundary and its human table, link, callout, and code-block decisions do not apply to the TOML configuration format. Everything mechanical (prose wrapping, bullet and quote characters, heading hierarchy, single H1, list spacing) is owned by **rumdl**; run `ki repo conform --skill ki-authoring` at the repository root and let that hosted rubric settle those. This file only covers what remains for a person or model.
+# Markdown authoring conventions
 
 ## Contents
 
-- [What to leave to the linter](#what-to-leave-to-the-linter)
-- [Markdown flavour](#markdown-flavour)
-- [Migration safety](#migration-safety)
-  - [Tables and footnotes](#tables-and-footnotes)
-  - [Frontmatter](#frontmatter)
-  - [Links](#links)
-- [Callouts](#callouts)
-- [Code blocks](#code-blocks)
+- [1. Introduction](#1-introduction)
+- [2. Scope](#2-scope)
+  - [2.1 In scope](#21-in-scope)
+  - [2.2 Out of scope](#22-out-of-scope)
+- [3. Terms and definitions](#3-terms-and-definitions)
+- [4. Rules](#4-rules)
+  - [4.1 What to leave to the linter](#41-what-to-leave-to-the-linter)
+  - [4.2 Markdown flavour](#42-markdown-flavour)
+  - [4.3 Migration safety](#43-migration-safety)
+  - [4.4 Tables and footnotes](#44-tables-and-footnotes)
+    - [4.4.1 Table or list?](#441-table-or-list)
+    - [4.4.2 Keeping tables skimmable](#442-keeping-tables-skimmable)
+    - [4.4.3 Footnote marker series](#443-footnote-marker-series)
+    - [4.4.4 Example](#444-example)
+    - [4.4.5 Gotchas](#445-gotchas)
+  - [4.5 Frontmatter](#45-frontmatter)
+  - [4.6 Links](#46-links)
+  - [4.7 Callouts](#47-callouts)
+  - [4.8 Code blocks](#48-code-blocks)
 
-## What to leave to the linter
+## 1. Introduction
+
+The **judgment-layer** rules for the Markdown written across Knowledge Islands repositories and bases — the choices a formatter cannot make. Markdown is a distinct standard because its mechanical formatter/linter boundary and its human table, link, callout, and code-block decisions do not apply to the TOML configuration format. Everything mechanical (prose wrapping, bullet and quote characters, heading hierarchy, single H1, list spacing) is owned by **rumdl**; run `ki repo conform --skill ki-authoring` at the repository root and let that hosted rubric settle those. This file only covers what remains for a person or model. The decisions behind these rules are in [the sources file](sources.md#3-decisions).
+
+[Back to contents](#contents)
+
+## 2. Scope
+
+The judgment choices left in Markdown after the mechanical gate.
+
+### 2.1 In scope
+
+- Markdown flavour and conversion to GFM.
+- Migration safety when acting on linter findings.
+- Tables and footnotes, frontmatter presentation, links, callouts and code blocks.
+
+[Back to contents](#contents)
+
+### 2.2 Out of scope
+
+- Everything mechanical, owned by rumdl: what to leave to it is listed in [4.1](#41-what-to-leave-to-the-linter).
+- The mechanical gate itself: the [authoring enforcement standard](standard-authoring.md).
+- A document's required frontmatter fields and value semantics: the domain skills that own them.
+
+[Back to contents](#contents)
+
+## 3. Terms and definitions
+
+| Term | Definition |
+| --- | --- |
+| **Judgment layer** | The choices a formatter cannot make, left for a person or model. **Standard:** this one, [1](#1-introduction) |
+| **GFM** | GitHub-flavoured Markdown, the flavour Knowledge Islands prefers. **Standard:** this one, [4.2](#42-markdown-flavour) |
+
+[Back to contents](#contents)
+
+## 4. Rules
+
+The rules, part by part.
+
+### 4.1 What to leave to the linter
 
 Don't hand-apply or document any of these — the toolchain owns them, and restating them here only invites drift when a config changes:
 
@@ -23,7 +77,9 @@ Don't hand-apply or document any of these — the toolchain owns them, and resta
 
 The one place column width _is_ your job is **tables**, and it is now wholly your job. The former formatter padded table columns only when the padded result fit within its print width, leaving wider tables compact; rumdl's `MD060` styles are unconditional, so the house configuration leaves the opt-in `MD060` off and enforces neither shape. Nothing mechanical will align a table for you — that makes the width conventions below load-bearing rather than advisory.
 
-## Markdown flavour
+[Back to contents](#contents)
+
+### 4.2 Markdown flavour
 
 Markdown stays the Knowledge Islands authoring format. Typst is noted as a possible authoring alternative, not adopted: Kris said on 29 October 2026, under DIAGRAM-TOOLS, "Typst is definitely more about authoring and is possibly an alternative to Markdown. But right now, Markdown is what we use." Nothing here authors in Typst until a later decision says so; its diagramming package, fletcher, is ranked in the `ki-diagrams` [tool preference order](../../../governance/ki-diagrams/references/standards-diagrams.md#tool-preference-by-diagram-kind).
 
@@ -33,15 +89,21 @@ A file you edit is converted as a whole to GFM in the same change, through the c
 
 A repository may rewrite a batch of files, or the whole repository, to GFM in a dedicated change with no unrelated edits, after the converter's dry run, verification and decisions on exceptions. Where a construct has no GFM equivalent, such as a block reference, a transclusion or a plugin query, the author decides its replacement or records an approved exception; it is never dropped silently.
 
-## Migration safety
+[Back to contents](#contents)
+
+### 4.3 Migration safety
 
 Treat Markdown-linter findings as evidence, not permission for a bulk rewrite when the syntax has more than one valid meaning.
 
 In particular, a setext-style heading uses an underline of `---`, but the same line can be a horizontal rule after an image or other block. Before converting a setext-heading finding to an ATX heading, classify its local structure and intended meaning; where that remains uncertain, preserve the source and obtain the author's confirmation. Do not apply a global `---` → `##` transform.
 
-## Tables and footnotes
+[Back to contents](#contents)
 
-### Table or list?
+### 4.4 Tables and footnotes
+
+When to use a table, how to keep one skimmable, and how to footnote what does not fit.
+
+#### 4.4.1 Table or list?
 
 Decide this **before** reaching for `|` pipes. A table earns its cost only when the content is a genuine grid: **three or more columns** of parallel attributes a reader scans _across_ as well as _down_, where aligning the columns is what makes it readable — a comparison matrix, a Sources table of source / tag / governs / reviewed.
 
@@ -53,7 +115,9 @@ A **two-column table is almost always a list in disguise** — a term and its ex
 
 Rule of thumb: **table for parallel data across several dimensions; list for term → description pairs**, and for anything whose cells would be full sentences. If a table has exactly two columns, or any cell runs to a sentence or more, it wants to be a list.
 
-### Keeping tables skimmable
+[Back to contents](#contents)
+
+#### 4.4.2 Keeping tables skimmable
 
 Keep every table **skimmable at a glance**. Nothing breaks a cell across lines, so a cell with too much content forces a very wide row that's unreadable in a terminal or in print. Aim to keep each row within 120 characters.
 
@@ -61,7 +125,9 @@ When a column's content would force the table to wrap awkwardly or demand crypti
 
 **Prefer footnotes over** shrinking headers to cryptic abbreviations, wrapping mid-cell, or dropping a useful column. The table stays scannable; the detail sits just below it.
 
-### Footnote marker series
+[Back to contents](#contents)
+
+#### 4.4.3 Footnote marker series
 
 Use these markers in order (Chicago-style, omitting `*` since it collides with markdown emphasis):
 
@@ -74,7 +140,9 @@ Use these markers in order (Chicago-style, omitting `*` since it collides with m
 
 If a visually distinct **second series** is needed — e.g. to separate "caveats" from "sources" in the same table — use: `※` `❡` `¤` `¥`.
 
-### Example
+[Back to contents](#contents)
+
+#### 4.4.4 Example
 
 ```markdown
 | Repo  | Status | Notes |
@@ -87,7 +155,9 @@ If a visually distinct **second series** is needed — e.g. to separate "caveats
 ‡ Failing on the new schema validator — tracked in LIN-1423, owner @kris.
 ```
 
-### Gotchas
+[Back to contents](#contents)
+
+#### 4.4.5 Gotchas
 
 Learned applying this; bake them in:
 
@@ -97,7 +167,9 @@ Learned applying this; bake them in:
 4. **Watch for a pre-existing footnote series.** If a table already uses `†` for something (e.g. a date caveat), give the dominant content series the primary daggers and move the lone caveat to the `※` series so markers don't collide.
 5. **Author loosely, then run `ki repo conform --skill ki-authoring`.** rumdl flags `MD052` (undefined reference) until the `[ref]:` definitions land — transient; the pass should end at 0 errors. It will not re-align table padding, so check that yourself.
 
-## Frontmatter
+[Back to contents](#contents)
+
+### 4.5 Frontmatter
 
 Frontmatter is authored Markdown content. Use an unquoted scalar when it is a plain, unambiguous token; quote a value only when quoting preserves its intended string meaning or makes punctuation and whitespace clear.
 
@@ -107,7 +179,9 @@ For example, write `id: PERSONAL-DOTFILES-UE-001`, not `id: 'PERSONAL-DOTFILES-U
 
 This is an authoring presentation rule. Domain skills own a document's required frontmatter fields and value semantics; `ki` accepts valid quoted scalar input so existing authored files remain readable.
 
-## Links
+[Back to contents](#contents)
+
+### 4.6 Links
 
 - **Use descriptive, note-relative Markdown links in angle brackets as the house form**, including KB note content: `[ref](<references/My Detail.md>)`. Normalise Obsidian's `%20` space encoding to literal spaces inside the angle-bracket destination, structurally within links; preserve other necessary URI escapes and literal percent signs. `ki-repo-kb` owns internal-link resolution.
 - **Keep supported wikilinks readable inside table cells.** Escape an existing wikilink alias separator as `\|`; an unescaped `|` is parsed as a column separator. GFM conversion uses a descriptive Markdown link instead.
@@ -117,7 +191,9 @@ This is an authoring presentation rule. Domain skills own a document's required 
 
 Link presentation does not establish territorial authority or canonical knowledge ownership. `ki-repo-kb` owns KB identity, provenance, and adoption; `ki-repo-kb-principal` owns the territorial Charter and Known Lands declaration contract. Keep those declarations in their governed homes and link to them rather than restating them as general authoring conventions.
 
-## Callouts
+[Back to contents](#contents)
+
+### 4.7 Callouts
 
 Use a GitHub alert only when a short, contextual aside needs to remain visually distinct from the surrounding prose.
 
@@ -131,7 +207,9 @@ Do not use a callout for ordinary explanatory prose, a required procedural step,
 
 GitHub alerts are an intentional GitHub-flavoured Markdown extension. Use ordinary prose when the rendered target does not support them.
 
-## Code blocks
+[Back to contents](#contents)
+
+### 4.8 Code blocks
 
 Every fenced code block must carry a **language specifier** — never bare triple backticks.
 
@@ -143,3 +221,5 @@ echo "hello"
 Use the closest accurate tag. Common choices: `bash` or `sh` for shell commands; `ts`, `js`, `python`, `go`, etc. for source; `toml`, `yaml`, `json` for config; `text` for literal output that isn't a recognised language. When in doubt, `text` is correct and satisfies the rule — any specifier beats none.
 
 **Why:** language tags enable syntax highlighting in GitHub, rendered docs, and IDE previews; downstream renderers (including the Artifact tool) key off the tag. Bare blocks are the second-most-common authoring friction point after wide tables.
+
+[Back to contents](#contents)
