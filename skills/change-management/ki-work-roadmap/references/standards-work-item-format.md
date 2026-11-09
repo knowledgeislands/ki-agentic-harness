@@ -118,7 +118,7 @@ Selection orders work in one sequence, which [`ki-next`](../../ki-next/reference
 
 ### Assignee
 
-`assignee` names who holds the record: whose it is to take forward. It takes one of the work model's holder values, under the `ki-work-package` [state fields](../../../governance/ki-work-package/references/standards-work-package.md#state-file):
+`assignee` names who holds the record: whose it is to take forward. It takes one of the work model's holder values, under the `ki-work-package` [state fields](../../../governance/ki-work-package/references/standard-work-package.md#45-the-state):
 
 - `owner` - Kris, the supervisor;
 - `work/<id>` - a piece of work, by its work id, such as `work/personal.reg.household-terra`;

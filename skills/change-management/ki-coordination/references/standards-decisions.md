@@ -12,7 +12,7 @@ Sources: DECISION-NO-NUMBER in [the decision register](sources.md#decision-regis
 
 ### Decisions log
 
-Each owner decision about the work is one timestamped entry in `+/_WORK/<id>/decisions.md`, in the owner's own words where possible. Where the work declares focus areas, the entry's first line under its heading opens `focus: <id> · `, under the `ki-work-package` [focus areas](../../../governance/ki-work-package/references/standards-work-package.md#focus-areas). Entries carry no numbers, and a prompt, brief, record, report, package file or banner describes the decision it acts under in the owner's words and with its date.
+Each owner decision about the work is one timestamped entry in `+/_WORK/<id>/decisions.md`, in the owner's own words where possible. Where the work declares focus areas, the entry's first line under its heading opens `focus: <id> · `, under the `ki-work-package` [focus areas](../../../governance/ki-work-package/references/standard-work-package.md#47-sub-packages). Entries carry no numbers, and a prompt, brief, record, report, package file or banner describes the decision it acts under in the owner's words and with its date.
 
 The owner's words are whole only on the turn they arrive: a context-compressing proxy, a compaction or a shell read of a transcript can silently rewrite earlier turns. Two rules keep the log faithful on any machine and proxy setting:
 
@@ -63,10 +63,10 @@ The work's `decisions.md` is its one decisions list for its whole life: successi
 
 ### Change documents
 
-<a id="design-notes"></a>A design is written as a change document, under the `ki-authoring` [change format](../../../keystone/ki-authoring/references/standard-formats-change.md); there is no separate design note. Change documents and the working material beside them, options papers, mocks, loop reports and their stage decisions, live in the package of the work whose concern they design: in the folder of the focus area they serve, `+/_WORK/<id>/<focus-id>/`, or in `+/_WORK/<id>/design/` where the package declares no focus areas, under the `ki-work-design` standard and the `ki-work-package` [closed list](../../../governance/ki-work-package/references/standards-work-package.md#closed-list). No `design/` folder sits under `Streams/`, which holds only definitions and records. Design work with no coordinating work of its own takes an ad hoc package.
+<a id="design-notes"></a>A design is written as a change document, under the `ki-authoring` [change format](../../../keystone/ki-authoring/references/standard-formats-change.md); there is no separate design note. Change documents and the working material beside them, options papers, mocks, loop reports and their stage decisions, live in the package of the work whose concern they design: in the folder of the focus area they serve, `+/_WORK/<id>/<focus-id>/`, or in `+/_WORK/<id>/design/` where the package declares no focus areas, under the `ki-work-design` standard and the `ki-work-package` [closed list](../../../governance/ki-work-package/references/standard-work-package.md#43-the-shape). No `design/` folder sits under `Streams/`, which holds only definitions and records. Design work with no coordinating work of its own takes an ad hoc package.
 
 - The `ki-work-design` [artefact home](../../ki-work-design/references/standards-work-design.md#artefact-home) owns a change document's life cycle, draft, under review, graduated or deleted, its graduation, and the rule that nothing cites a deleted document.
-- The `ki-work-package` [closed list](../../../governance/ki-work-package/references/standards-work-package.md#closed-list) sets which file kinds a focus folder or `design/` may hold.
+- The `ki-work-package` [closed list](../../../governance/ki-work-package/references/standard-work-package.md#43-the-shape) sets which file kinds a focus folder or `design/` may hold.
 - This standard reviews the change documents at each mark, under [Pruning the work folder](standards-mark.md#pruning-the-work-folder), and resolves them before Project work finishes.
 
 Sources: DESIGN-RETENTION, DOC-TYPES and STD-BASE in [the decision register](sources.md#decision-register).

@@ -25,7 +25,7 @@ This is the core of the coordinating-work standard: the rules every coordinating
 Coordinating work, a State of play or Project work, is how the owner's worker holds Knowledge Islands work that has runs of its own: the coordinator dispatches, decides with the owner and reports. This standard owns how a session behaves while coordinating, how it reports and how it keeps itself current.
 
 - **With `ki-delegation`:** this is the coordinator half of the practice whose run half the `ki-delegation` [background-run standard](../../../governance/ki-delegation/references/standards-background-runs.md) governs: detachment, the run packet, prompt shape, authority tiers, the launcher's part in `decisions.md`, coordination, the run queue and monitoring. This standard owns the [owner report](standards-reporting.md#owner-report) with its [tags](standards-reporting.md#needs-tags), which every report a background agent or a coordinator gives takes, and the [generated surfaces](#generated-surfaces) that carry it.
-- **With `ki-work-package`:** the work's definition is `+/_WORK/<id>/_index.md` and its state `state.md`, beside `discussions.md`, `messages.md` and `decisions.md`. The package itself, its closed list, entry points, tidy rules, review area and line shape, is the `ki-work-package` [work-package standard](../../../governance/ki-work-package/references/standards-work-package.md)'s. This standard says when the package is tidied, whether an outcome has a durable home, and how a decision is logged and what becomes of it.
+- **With `ki-work-package`:** the work's definition is `+/_WORK/<id>/_index.md` and its state `state.md`, beside `discussions.md`, `messages.md` and `decisions.md`. The package itself, its closed list, entry points, tidy rules, review area and line shape, is the `ki-work-package` [work-package standard](../../../governance/ki-work-package/references/standard-work-package.md)'s. This standard says when the package is tidied, whether an outcome has a durable home, and how a decision is logged and what becomes of it.
 
 A repository that runs coordinating work declares `[skills.ki-coordination]` in `.ki.toml`. The declaration enables the hook and output-style binding as checkout capabilities; it does not make an interactive session a coordinator.
 
@@ -89,13 +89,13 @@ The Work Process note's Words table owns the model's words: work, work item, the
 | banner | F2 to F9: the state, counts, items, modes and thread line | `ki-coordination` |
 | holder | Who an item is with: 👤 the owner, 🤖 a worker or run, 🧵 another session, 🌐 the outside world | `ki-coordination` |
 | time | The owner's local time, as a friendly time naming the day where it is not today, or an ISO 8601 timestamp with its offset where a friendly time does not fit | `ki-coordination` |
-| thread line | The closing line of every banner, `<role glyph> 🔑 <work-id>`, or `🧵 <work-id>` for a session with no role yet, under [Banner](#banner); its grammar and the role glyphs are the [role standard](../../../governance/ki-work-package/references/standards-roles.md#thread-line)'s | `ki-work-package` |
+| thread line | The closing line of every banner, `<role glyph> 🔑 <work-id>`, or `🧵 <work-id>` for a session with no role yet, under [Banner](#banner); its grammar and the role glyphs are the [role standard](../../../governance/ki-work-package/references/standard-roles.md#46-thread-line)'s | `ki-work-package` |
 | query, tag | An open decision and its stable mnemonic | `ki-coordination` |
 | decision | One entry in `decisions.md` | `ki-coordination` |
 | record | A roadmap work record | `ki-work-roadmap` |
 | sync | Fetch, fast-forward pull into a clean checkout, then push fast-forward only | `ki-git` |
 | opener | The steering brief that opens a coordinator | `ki-coordination` |
-| binding | The machine-local runtime file tying native client sessions to one piece of work, keyed `<repository name>/<work id>`, never committed and never moved between hosts, under the work-package standard's [Work identity and native sessions](../../../governance/ki-work-package/references/standards-work-package.md#work-identity-and-native-sessions) | `ki-work-package` |
+| binding | The machine-local runtime file tying native client sessions to one piece of work, keyed `<repository name>/<work id>`, never committed and never moved between hosts, under the work-package standard's [Work identity and native sessions](../../../governance/ki-work-package/references/standard-work-package.md#411-work-identity-and-native-sessions) | `ki-work-package` |
 
 ## Reference files
 
@@ -115,7 +115,7 @@ The Work Process note's Words table owns the model's words: work, work item, the
 | [Mark, tidy and finishing](standards-mark.md) | the mark, parking tangents, pruning the work folder, closing out Orca workers and finishing Project work |
 | [Sync](standards-sync.md) | pushing beneath other sessions, the repository level check and keeping primary checkouts current |
 | [Coordinating-work migration](standards-coordination-migration.md) | temporary adjustments to [the coordinating-work standard](standards-coordination.md), which describes only the final state, under MIGRATION-OVERLAY. Read the standard first; it wins wherever the two differ. Delete each adjustment once its condition is met, and the file whole once it is empty, with no edit to the standard |
-| Roles (reserved for Stage C) | The role catalogue and the `role` field, which `ki-work-package` owns in its [roles standard](../../../governance/ki-work-package/references/standards-roles.md) |
+| Roles (reserved for Stage C) | The role catalogue and the `role` field, which `ki-work-package` owns in its [roles standard](../../../governance/ki-work-package/references/standard-roles.md) |
 
 ## Coordinator responsiveness
 
@@ -131,7 +131,7 @@ The coordinator stays responsive, so the owner never has to remind it to delegat
 - **Small fixes:** the coordinator may make a one-line mechanical fix in its own package, such as a stale status line or a link repointed to a pinned revision, committed by explicit path. A fix needing judgement, touching more than a line, or touching another work's files goes to a run, even when it is one line.
 - **Never in-session:** analysis, design, drafting prose or prompts longer than a short brief, code or document edits, multi-repository investigation, and waiting in the foreground for an agent.
 - **Waiting:** always through a detached waiter or monitor under the `ki-delegation` [run queue](../../../governance/ki-delegation/references/standards-background-runs.md#run-queue) and [monitoring](../../../governance/ki-delegation/references/standards-background-runs.md#monitoring) rules, never a foreground wait or sleep.
-- **Brief-writing:** only a short brief citing the owner's decisions, written into the folder of the focus area the run serves, `<focus-id>/<run>.brief.md`, or `briefs/<run>.md` where the package declares no focus areas, under the `ki-work-package` [focus areas](../../../governance/ki-work-package/references/standards-work-package.md#focus-areas). A brief that needs research is researched and written by a background agent.
+- **Brief-writing:** only a short brief citing the owner's decisions, written into the folder of the focus area the run serves, `<focus-id>/<run>.brief.md`, or `briefs/<run>.md` where the package declares no focus areas, under the `ki-work-package` [focus areas](../../../governance/ki-work-package/references/standard-work-package.md#47-sub-packages). A brief that needs research is researched and written by a background agent.
 - **Self-check:** before each tool call, ask whether it is a quick check or bookkeeping; if not, delegate. On noticing a drift into doing work, stop, delegate the rest, tell the owner in one line and note the drift in `state.md`.
 - **Tool calls:** every tool call is short.
   - Never paste a prompt, brief or other long text inline in a command: write prompt files out of sight, with `ki agent new` or a one-line copy of a prepared file.
@@ -266,7 +266,7 @@ The report heading, rendered glyphs, roadmap and package lines, mode lines, rest
   - `[parked]` for parked queries or tangents;
   - `[release]` on hold;
   - in a State of play, the `[stranded]`, `[branch]` and `[stash]` findings of its [worktree sweep](standards-territory.md#worktree-sweep), naming no holder.
-- **Lines awaiting their ACK:** a line this work has sent and still holds in its `messages.md` Outbound is counted in the package line's `awaiting ACK`, never listed as an item, and pruned under the [Messages lines](../../../governance/ki-work-package/references/standards-work-package.md#messages-lines) ACK rule.
+- **Lines awaiting their ACK:** a line this work has sent and still holds in its `messages.md` Outbound is counted in the package line's `awaiting ACK`, never listed as an item, and pruned under the [Messages lines](../../../governance/ki-work-package/references/standard-work-package.md#48-messages) ACK rule.
 - The counts and the list say "with you", because they are views by holder; the heading gives the state in role words.
 - Nothing in the banner cites a decision number.
 
@@ -278,7 +278,7 @@ The report heading, rendered glyphs, roadmap and package lines, mode lines, rest
 - Items: only `[parked]` and `[release]`, Snoozing's `[release]` reading ``a message arrives, or `resume` ``.
 - Per-repository outcomes stay in the Stop's `## Done`.
 
-**Thread line.** Every banner closes with one plain Markdown line, after a blank line following its listening line, or its list in a run report: the session's [thread line](../../../governance/ki-work-package/references/standards-roles.md#thread-line).
+**Thread line.** Every banner closes with one plain Markdown line, after a blank line following its listening line, or its list in a run report: the session's [thread line](../../../governance/ki-work-package/references/standard-roles.md#46-thread-line).
 
 - `<role glyph> 🔑 <work-id>` for every explicitly coordinating package whose seat has a role, main or secondary State of play, Project, regular or ad hoc work; `🧵 <work-id>` for a session with no role yet. Use the authoritative work id from `_index.md` and the glyph of the seat's one catalogue role.
 - A run report closes with `🧵 <work-id>` of the work it reports to, without its run name, because a run takes no seat.

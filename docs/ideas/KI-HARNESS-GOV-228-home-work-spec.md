@@ -31,7 +31,7 @@ This is step 6a of the [Portable specifications plan](/Users/krisbrown/workspace
 The [home plan](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_WORK/ki.portable-specifications/design/home-plan.md#6a-home-work-ki-work-package) sets the change:
 
 - Add `references/standards-work-spec.md` from the approved `work` text and `references/standards-work-spec-profile.md` from the approved house profile, each through the plan's homing transform: an attribution line, unlinked names for the sibling specifications, and a `## Contents` list.
-- Add one `## Shared model` bullet to [`SKILL.md`](../../skills/governance/ki-work-package/SKILL.md) pointing to the specification and the profile, leaving `description` and the [work-package standard](../../skills/governance/ki-work-package/references/standards-work-package.md) unchanged.
+- Add one `## Shared model` bullet to [`SKILL.md`](../../skills/governance/ki-work-package/SKILL.md) pointing to the specification and the profile, leaving `description` and the [work-package standard](../../skills/governance/ki-work-package/references/standard-work-package.md) unchanged.
 - Add two provenance rows and a Last review entry to `references/sources.md`.
 - Add the `SPEC` rubric family with the judgment-only criterion SPEC-1, whose description text the home plan fixes so that the three owning skills agree, and regenerate `references/rubric.md`.
 

@@ -163,7 +163,7 @@ A hold committed before SNOOZE may read `hold, more expected` in its commit subj
 
 These tolerances keep work that has not yet moved to the five-file work package readable. Each is deleted once no work remains in the single-file shape.
 
-- **Pruning reports:** In the single-file tolerance shape, retain the report until its queries are answered and read back in the log, under `ki-work-package` [Tidying the work folder](../../../governance/ki-work-package/references/standards-work-package.md#tidying-the-work-folder). Adjusts the Judgement item of [Pruning the work folder](standards-mark.md#pruning-the-work-folder).
+- **Pruning reports:** In the single-file tolerance shape, retain the report until its queries are answered and read back in the log, under `ki-work-package` [Tidying the work folder](../../../governance/ki-work-package/references/standard-work-package.md#410-the-tidy). Adjusts the Judgement item of [Pruning the work folder](standards-mark.md#pruning-the-work-folder).
 - **Message queue:** Work still in the single-file shape keeps its `## Messages` section, and an old-shape checkpoint its bold-line messages block, until it moves. Adjusts Place and shape in [Messages between work](standards-messages.md#messages-between-work).
 - **Work status:** `ki work status` reads every single-file work file, as well as every work package, for the tolerance window. Adjusts the Work status row in [Surfaces](standards-messages.md#surfaces).
 
@@ -185,7 +185,7 @@ An existing `.design.md` design note stays readable as a change document during 
 
 ## Observatory feedback packages
 
-The owner's consolidated Observatory feedback package, `feedback/<date>-<slug>.md`, written into the folder of the work that produced the document with one `messages.md` line linking it, committed together under the `ki-work-package` [entry points](../../../governance/ki-work-package/references/standards-work-package.md#entry-points), is accepted for the tolerance window. Adjusts the Sender item of [Messages between work](standards-messages.md#messages-between-work).
+The owner's consolidated Observatory feedback package, `feedback/<date>-<slug>.md`, written into the folder of the work that produced the document with one `messages.md` line linking it, committed together under the `ki-work-package` [entry points](../../../governance/ki-work-package/references/standard-work-package.md#49-writers), is accepted for the tolerance window. Adjusts the Sender item of [Messages between work](standards-messages.md#messages-between-work).
 
 ## Openers that name the re-bootstrap report
 

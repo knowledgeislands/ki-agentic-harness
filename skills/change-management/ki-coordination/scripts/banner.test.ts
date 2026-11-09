@@ -740,7 +740,7 @@ test('an interactive pass ends a timed first reply with the read-back and contex
 // small, silent tidy of its own package at a wake and only points out problems in another's.
 test('a listening thread tends its own work package at its wakes', () => {
   expect(standard).toContain('LISTEN-TENDS-PACKAGE')
-  expect(standard).toContain('#tidying-the-work-folder')
+  expect(standard).toContain('#410-the-tidy')
   for (const text of [standard, outputStyle]) {
     expect(text).toContain('at most one small tidy')
     expect(text).toMatch(/another work's package/)

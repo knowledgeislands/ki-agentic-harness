@@ -48,7 +48,7 @@ Primary main is clean at ede90d68bc1facc5d1dcc6185f0e39e317170de7 and equals fet
 - `skills/change-management/ki-coordination/scripts/rubric/items/threads.ts`
 - `skills/change-management/ki-coordination/scripts/banner.test.ts`
 - `skills/change-management/ki-coordination/references/rubric.md`
-- `skills/governance/ki-work-package/references/standards-work-package.md`
+- `skills/governance/ki-work-package/references/standard-work-package.md`
 - `skills/governance/ki-work-package/scripts/rubric/contexts/work-package.ts`
 - `skills/governance/ki-work-package/scripts/rubric/contexts/work-package.test.ts`
 - `skills/governance/ki-work-package/scripts/rubric/items/records.ts`

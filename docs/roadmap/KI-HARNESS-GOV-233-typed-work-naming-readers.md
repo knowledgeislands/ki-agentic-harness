@@ -54,7 +54,7 @@ The canonical COORD rubric item descriptions and their generated `references/rub
 - `skills/governance/ki-work-package/scripts/rubric/contexts/work-package.ts`
 - `skills/governance/ki-work-package/scripts/rubric/contexts/work-package.test.ts`
 - `skills/change-management/ki-coordination/references/standards-coordination.md`
-- `skills/governance/ki-work-package/references/standards-work-package.md`
+- `skills/governance/ki-work-package/references/standard-work-package.md`
 
 Generated coordination surfaces may change only through their canonical generator if naming wording affects them. This record is also owned.
 

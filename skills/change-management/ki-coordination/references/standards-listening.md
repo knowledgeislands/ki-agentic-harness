@@ -29,7 +29,7 @@ Sources: INBOX-WATCH, LISTEN-STATUS, LISTEN-OPT-IN, QUIET-LISTEN and WAKE-SESSIO
 
 ## Session capabilities
 
-A coordinator may hold two capabilities. Each is switched on only by the owner's express word, logged in `decisions.md`, or by an agreed role, such as a Rig host sync thread's. `state.md` records them in four fields under the `ki-work-package` [state file](../../../governance/ki-work-package/references/standards-work-package.md#state-file):
+A coordinator may hold two capabilities. Each is switched on only by the owner's express word, logged in `decisions.md`, or by an agreed role, such as a Rig host sync thread's. `state.md` records them in four fields under the `ki-work-package` [state file](../../../governance/ki-work-package/references/standard-work-package.md#45-the-state):
 
 | Field | Values | Set |
 | --- | --- | --- |
@@ -43,7 +43,7 @@ A coordinator may hold two capabilities. Each is switched on only by the owner's
 **Listening.** The coordinator keeps the [watcher](#inbox-watch) armed. At each wake it also makes at most one small tidy of its own package, within the turn budget:
 
 - keep `state.md`'s front matter and next steps true;
-- prune received reports and spent briefs under the `ki-work-package` [tidy rules](../../../governance/ki-work-package/references/standards-work-package.md#tidying-the-work-folder);
+- prune received reports and spent briefs under the `ki-work-package` [tidy rules](../../../governance/ki-work-package/references/standard-work-package.md#410-the-tidy);
 - strike a decision, or cut it to a one-line pointer, once a durable home carries it, under the [decisions life cycle](standards-decisions.md#decisions-life-cycle);
 - clear answered entries from `discussions.md`;
 - raise what it cannot settle as a query.

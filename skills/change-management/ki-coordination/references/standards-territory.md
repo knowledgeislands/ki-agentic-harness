@@ -52,7 +52,7 @@ Its duties:
 - **Acceptance first:** at bootstrap and resume, its first call on the owner, before any other query, is the territory's records awaiting acceptance, as one bundle per work under [Acceptance bundles](standards-queries.md#acceptance-bundles).
 - **Seeding:** before Project work opens, the State of play creates or reconciles its package and gives the owner its [opener](standards-opening.md#opening-work), so the session opens with one message. The sender or the State of play may create an absent, registered Project's package solely to queue its first line, within the receiving repository's authority: all five files, with a minimal definition, empty queries and decisions, `state: on-hold`, `hold.reason: paused` and `hold.release: when Kris opens this Project work`. A queued line neither opens nor releases the work.
 - **Flags:** at its own mark, it names by a line in each owning work's `messages.md` every package the `ki-work-package` rubric's [FOLDER](../../../governance/ki-work-package/references/rubric.md) items flag, under [Pruning the work folder](standards-mark.md#pruning-the-work-folder).
-  - It never names a finished work's package in a line: it closes that package itself under the `ki-work-package` [close-out](../../../governance/ki-work-package/references/standards-work-package.md#tidying-the-work-folder), putting the query in its own `discussions.md` if a close-out check fails.
+  - It never names a finished work's package in a line: it closes that package itself under the `ki-work-package` [close-out](../../../governance/ki-work-package/references/standard-work-package.md#410-the-tidy), putting the query in its own `discussions.md` if a close-out check fails.
   - It never prunes another package otherwise.
   - At the same mark it runs the [worktree sweep](#worktree-sweep) and reports only what it finds.
 - **Other territories:** it coordinates with another territory's State of play only through the owner, and never acts with authority in another territory's repositories. Each Capital keeps its own ownership; cross-repository work moves under `ki-trades` or the receiving repository's own process.
@@ -81,7 +81,7 @@ Sources: SOP-ACTS-FOR-IDLE, WORK-ROUTING and STEWARD-HOME in [the decision regis
 - The Capital's prose home reference is discovery, never a second package, state or inbox.
 - Reader compatibility is a prerequisite to automated member-home discovery; the local advisory hook neither scans the estate nor guarantees runtime injection.
 
-**Stewardship.** A State of play may steward an assigned package of any level only by the explicit committed assignment and acknowledged handover of the `ki-work-package` [stewardship rule](../../../governance/ki-work-package/references/standards-work-package.md#assigned-package-stewardship).
+**Stewardship.** A State of play may steward an assigned package of any level only by the explicit committed assignment and acknowledged handover of the `ki-work-package` [stewardship rule](../../../governance/ki-work-package/references/standard-work-package.md#49-writers).
 
 - Its field stays the marked STEWARD-FIELD placeholder; add no field and do not reinterpret `worker`.
 - The old steward stops launches and reconciles runs in flight, queued launches and pending writes; the new steward acknowledges and takes their supervision before acting.
@@ -102,7 +102,7 @@ Sources: SOP-ACTS-FOR-IDLE, WORK-ROUTING and STEWARD-HOME in [the decision regis
 - Every run brief separates its reporting package from the product repository. The launcher homes the report in that package, whoever launched it; for an Orca worker, its coordinator copies the report there at receive, the one exception the `ki-delegation` [run packet](../../../governance/ki-delegation/references/standards-background-runs.md#run-packet) names.
 - Bootstrap and re-anchoring establish the local machine through the territory's machine inventory.
 - Host requirements restrict only device-dependent execution: any coordinator may acknowledge, plan, ask about or dispatch a targeted line, in `IMPORTANT` and queue order. Keep unfulfilled requirements queued and counted, flagging their age when no eligible host has taken them; never infer a takeover.
-- Resolve concrete hosts, categories and unknown or renamed names under the `ki-work-package` [message rule](../../../governance/ki-work-package/references/standards-work-package.md#messages-lines).
+- Resolve concrete hosts, categories and unknown or renamed names under the `ki-work-package` [message rule](../../../governance/ki-work-package/references/standard-work-package.md#48-messages).
 - The session's host seat stays out of packages, holds and reports.
 
 ### Secondary States of play
@@ -112,7 +112,7 @@ A territory always has its main State of play and may add secondaries where it h
 - **Declaration:** a secondary is a State of play in the Capital, `+/_WORK/<territory>.sop.<name>/`, a five-file package at `level: territory`, titled `<Territory> > SoP (<name>)`, with `parent: <territory>` and `covers` naming its assigned same-territory Project and ad hoc work.
   - Every package below the main names its coordinating State of play as `parent`.
   - The main's `covers` is the register of record, including coverage through secondaries and registered work whose package is absent or pruned; a secondary's list is an assigned subset.
-  - Check parents against the register, same-territory membership, unique secondary coverage and cycles, under the `ki-work-package` [definition fields](../../../governance/ki-work-package/references/standards-work-package.md#work-file).
+  - Check parents against the register, same-territory membership, unique secondary coverage and cycles, under the `ki-work-package` [definition fields](../../../governance/ki-work-package/references/standard-work-package.md#44-the-entry-file).
   - Work with no secondary stays with the main.
 - **Creating:** the owner decides each secondary and its coverage at the main, which logs the decision and prepares the package On hold until the owner opens it. Changing coverage is a main decision, made in both `_index.md` files in one commit.
 - **Front door:** the main stays the owner's only front door and the single dispatch coordinator. Owner dumps, units with no clear owner, method improvements, and anything touching more than one secondary, or a secondary and uncovered work, come to the main.
