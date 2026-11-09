@@ -49,9 +49,11 @@ export const createRefreshContext = (sources: string | null, now = Date.now()): 
       ageDays: null
     }
 
-  const marker = sources.match(
-    /^\*\*Refresh:\*\*\s*(external-spec|canonical)\s*·\s*(weekly|monthly|quarterly|on-change|\d+d)\s*$/m
-  )
+  // The sources format carries `refresh` in the front matter; older files carry a `**Refresh:**` line.
+  const frontMatter = sources.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? ''
+  const marker =
+    frontMatter.match(/^refresh:\s*(external-spec|canonical)\s*·\s*(weekly|monthly|quarterly|on-change|\d+d)\s*$/m) ??
+    sources.match(/^\*\*Refresh:\*\*\s*(external-spec|canonical)\s*·\s*(weekly|monthly|quarterly|on-change|\d+d)\s*$/m)
   const parsedClass = (marker?.[1] as RefreshClass | undefined) ?? null
   const parsedCadence = marker?.[2] ?? null
   const parsedWindowDays =

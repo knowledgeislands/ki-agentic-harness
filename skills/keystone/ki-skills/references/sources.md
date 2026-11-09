@@ -25,8 +25,6 @@ refresh: external-spec · monthly
 
 ## 1. Introduction
 
-**Refresh:** external-spec · monthly
-
 The authoritative and community sources behind the [Agent Skills](standard-agent-skills.md), [Knowledge Islands](standard-knowledge-islands.md), and [rubric-authoring](standard-rubric-authoring.md) standards and their [rubric](rubric.md). Mode REFRESH reads this file, re-fetches each source, diffs it against those standards and the rubric, then **bumps the `last reviewed` dates** and refreshes the [Last review](#4-last-review) block below (what changed is recorded in the commit, not a changelog). This is the skill's memory of where best practice comes from — keep it current.
 
 Abbreviations match the `(SOURCE)` tags in the standards and [rubric](rubric.md).

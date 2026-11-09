@@ -26,3 +26,18 @@ describe('createRefreshContext', () => {
     expect(createRefreshContext(sources(), now).lastReviewed).toBeNull()
   })
 })
+
+describe('the refresh marker', () => {
+  test('is read from the sources format front matter', () => {
+    const context = createRefreshContext(
+      ['---', 'type: sources@x', 'refresh: external-spec · monthly', '---', ''].join('\n'),
+      now
+    )
+    expect(context.refreshClass).toBe('external-spec')
+    expect(context.cadence).toBe('monthly')
+  })
+
+  test('is still read from an older Refresh line', () => {
+    expect(createRefreshContext(sources(), now).cadence).toBe('monthly')
+  })
+})

@@ -19,8 +19,6 @@ refresh: canonical · on-change
 
 The sources and decisions behind [the bootstrap standard](standard-bootstrap.md).
 
-**Refresh:** canonical · on-change
-
 Provenance only: the record of what changed lives in git, not a changelog here. This guidance tracks the delivered Knowledge Islands activation model and refreshes when one of its owners changes.
 
 [Back to contents](#contents)

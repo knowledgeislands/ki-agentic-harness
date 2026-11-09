@@ -61,7 +61,7 @@ const LONG_4: RubricItem<LongevityRubricContext> = {
   code: 'LONG-4',
   title: 'the refresh marker is present and coherent',
   description:
-    '_The refresh marker is present and coherent._ Each `sources.md` carries a parseable `**Refresh:** <class> · <cadence>` line (§4 of the enforcement framework) — a missing or malformed marker WARNs (**4a**). An `external-spec` skill must declare a clock cadence, not `on-change` (**4b**, soft WARN). Class is **not** mechanically tied to `## Last review`-block presence — a `canonical` skill may keep a block as a hand-curated practice note (`ki-repo-kb-streams` does), so block-presence stays a `[J]` read, not a checker rule.',
+    '_The refresh marker is present and coherent._ Each `sources.md` carries a parseable `refresh: <class> · <cadence>` in its front matter, under the `ki-authoring` sources format, or the older `**Refresh:** <class> · <cadence>` line (§4 of the enforcement framework) — a missing or malformed marker WARNs (**4a**). An `external-spec` skill must declare a clock cadence, not `on-change` (**4b**, soft WARN). Class is **not** mechanically tied to `## Last review`-block presence — a `canonical` skill may keep a block as a hand-curated practice note (`ki-repo-kb-streams` does), so block-presence stays a `[J]` read, not a checker rule.',
   sources: ['COMMUNITY'],
   mechanical: {
     level: 'WARN',
@@ -79,7 +79,7 @@ const LONG_4: RubricItem<LongevityRubricContext> = {
             {
               status: 'VIOLATION',
               message:
-                'references/sources.md has no parseable `**Refresh:** <class> · <cadence>` marker near the top (LONG-4a)'
+                'references/sources.md has no parseable `refresh: <class> · <cadence>` front matter or `**Refresh:**` marker (LONG-4a)'
             }
           ]
         return [
