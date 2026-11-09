@@ -46,31 +46,31 @@ The tracked readable rubric is the exact publication of the structured catalogue
 
 ## FILES — Repository files
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 Required repository files and document quality, using a local checkout when available or GitHub default-branch evidence for remote-only runs.
 
-- **FILES-1 [M] — Required repository files** — README, license, gitignore, editor configuration, Claude orientation, and the exact ki-repo config marker are present in the selected evidence source. (standards-repository.md)
+- **FILES-1 [M] — Required repository files** — README, license, gitignore, editor configuration, Claude orientation, and the exact ki-repo config marker are present in the selected evidence source. (standard-repository.md)
   - _Remediation:_ automatic
-- **FILES-2 [M] — Declared repository identity** — The ki-repo table declares its canonical GitHub repository, title, and description; its title matches the README H1, and a roadmap repository declares repo_code there. (standards-repository.md)
+- **FILES-2 [M] — Declared repository identity** — The ki-repo table declares its canonical GitHub repository, title, and description; its title matches the README H1, and a roadmap repository declares repo_code there. (standard-repository.md)
   - _Remediation:_ diagnostic — Correct the declared repository identity, README H1, or roadmap code, then rerun the audit.
-- **FILES-3 [M] — Authoring baseline** — A governed repository declares ki-authoring explicitly. (standards-repository.md)
+- **FILES-3 [M] — Authoring baseline** — A governed repository declares ki-authoring explicitly. (standard-repository.md)
   - _Remediation:_ automatic
-- **FILES-4 [M] — Runtime skill ignore contract** — Generated skill links are ignored for each declared runtime, while a repository-local .agents/skills/ki-self source remains committed. (standards-repository.md)
+- **FILES-4 [M] — Runtime skill ignore contract** — Generated skill links are ignored for each declared runtime, while a repository-local .agents/skills/ki-self source remains committed. (standard-repository.md)
   - _Remediation:_ automatic
-- **FILES-5 [M] — Configuration conformance header** — The root .ki.toml opens with the exact lightweight declaration that identifies it as Knowledge Islands repository configuration and explains that its presence declares conformance. (standards-configuration.md)
+- **FILES-5 [M] — Configuration conformance header** — The root .ki.toml opens with the exact lightweight declaration that identifies it as Knowledge Islands repository configuration and explains that its presence declares conformance. (standard-configuration.md)
   - _Remediation:_ automatic
-- **FILES-6 [M] — Compositional ignore contract** — Root .gitignore contains dependency-stable, marker-bounded blocks owned by declared skills and a terminal unmanaged section. (standards-repository.md)
+- **FILES-6 [M] — Compositional ignore contract** — Root .gitignore contains dependency-stable, marker-bounded blocks owned by declared skills and a terminal unmanaged section. (standard-repository.md)
   - _Remediation:_ automatic
-- **FILES-7 [M] — Unmanaged ignore inventory** — Repository-specific ignore rules remain visible below the terminal unmanaged header for later fleet reconciliation. (standards-repository.md)
+- **FILES-7 [M] — Unmanaged ignore inventory** — Repository-specific ignore rules remain visible below the terminal unmanaged header for later fleet reconciliation. (standard-repository.md)
   - _Remediation:_ diagnostic — Review recurring unmanaged rules across the fleet and assign only genuinely portable rules to a skill.
-- **FILES-8 [M] — Legacy .ki output absent** — The retired .ki output tree is absent; audit exposes any return and conform removes only proven untracked audits/conform output. (standards-repository.md)
+- **FILES-8 [M] — Legacy .ki output absent** — The retired .ki output tree is absent; audit exposes any return and conform removes only proven untracked audits/conform output. (standard-repository.md)
   - _Remediation:_ automatic
-- **FILES-9 [M] — Configuration presentation structure** — Substantial .ki.toml files use exact ordered neighbourhood banners, open with the foundation block, and keep each explicit skill owner with its child tables. (standards-configuration.md)
+- **FILES-9 [M] — Configuration presentation structure** — Substantial .ki.toml files use exact ordered neighbourhood banners, open with the foundation block, and keep each explicit skill owner with its child tables. (standard-configuration.md)
   - _Remediation:_ diagnostic — Reorder source without changing parsed TOML: retain the exact header first, add only needed recognised banners, and keep each owner block contiguous.
-- **FILES-10 [M] — Configuration layout** — Every .ki.toml places exactly one blank line before each table heading and banner, writes arrays one element per line with a trailing comma, ends with [skills.ki-trades], and reserves ordinary skill subtables for data maps, allowing arrays of tables for schema-defined record arrays. Fails in Knowledge Islands territory repositories and warns elsewhere. (standards-configuration.md)
+- **FILES-10 [M] — Configuration layout** — Every .ki.toml places exactly one blank line before each table heading and banner, writes arrays one element per line with a trailing comma, ends with [skills.ki-trades], and reserves ordinary skill subtables for data maps, allowing arrays of tables for schema-defined record arrays. Fails in Knowledge Islands territory repositories and warns elsewhere. (standard-configuration.md)
   - _Remediation:_ diagnostic — Reformat the source without changing parsed TOML: one blank line before each heading and banner, multiline arrays, and ki-trades last. Moving fixed fields out of a non-map subtable changes parsed TOML, so the reader in the owning skill must accept the new shape first.
-- **FILES-J1 [J] — Repository document content** — README and license content is accurate and current. (standards-repository.md)
+- **FILES-J1 [J] — Repository document content** — README and license content is accurate and current. (standard-repository.md)
   - _Evidence scope:_ The repository README and license.
   - _Review prompt:_ Read the README and license and assess whether they accurately describe and license this repository.
   - _Outcomes:_ conforming; gap; exclusion
@@ -78,62 +78,62 @@ Required repository files and document quality, using a local checkout when avai
 
 ## GH — Core GitHub settings
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 Default branch, licensing, and repository description.
 
-- **GH-1 [M] — Default branch** — The default branch is main. (standards-repository.md)
+- **GH-1 [M] — Default branch** — The default branch is main. (standard-repository.md)
   - _Remediation:_ diagnostic — Correct the GitHub setting or aligned local declaration, then rerun the audit.
-- **GH-2 [M] — Declared license alignment** — The declared license agrees with GitHub and package.json. (standards-repository.md)
+- **GH-2 [M] — Declared license alignment** — The declared license agrees with GitHub and package.json. (standard-repository.md)
   - _Remediation:_ diagnostic — Correct the GitHub setting or aligned local declaration, then rerun the audit.
-- **GH-3 [M] — Description presence and synchronisation** — The declared ki-repo description is non-empty and matches GitHub and package.json when those surfaces exist. (standards-repository.md)
+- **GH-3 [M] — Description presence and synchronisation** — The declared ki-repo description is non-empty and matches GitHub and package.json when those surfaces exist. (standard-repository.md)
   - _Remediation:_ diagnostic — Correct the GitHub setting or aligned local declaration, then rerun the audit.
 
 ## PKG — Package metadata
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 Package identity and repository metadata.
 
-- **PKG-1 [M] — Package identity metadata** — package.json carries coherent identity and repository metadata when present. (standards-repository.md)
+- **PKG-1 [M] — Package identity metadata** — package.json carries coherent identity and repository metadata when present. (standard-repository.md)
   - _Remediation:_ diagnostic — Correct package identity metadata or record an explicit override, then rerun the audit.
 
 ## MERGE — Merge policy
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 GitHub merge and branch-cleanup behaviour.
 
-- **MERGE-1 [M] — Merge policy** — The repository permits squash merges only and deletes merged head branches. (standards-repository.md)
+- **MERGE-1 [M] — Merge policy** — The repository permits squash merges only and deletes merged head branches. (standard-repository.md)
   - _Remediation:_ diagnostic — Configure squash-only merging and merged-branch deletion, then rerun the audit.
 
 ## TOGGLE — Repository features
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 Issues, Wiki, and Projects settings.
 
-- **TOGGLE-1 [M] — Repository feature toggles** — Issues are enabled exactly when ki-work-github-issues is declared; Wiki and Projects are disabled unless explicitly overridden. (standards-repository.md)
+- **TOGGLE-1 [M] — Repository feature toggles** — Issues are enabled exactly when ki-work-github-issues is declared; Wiki and Projects are disabled unless explicitly overridden. (standard-repository.md)
   - _Remediation:_ diagnostic — Align Issues with the selected work adapter and the other repository feature settings with their overrides, then rerun the audit.
 
 ## VIS — Visibility
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 Declared and live repository visibility.
 
-- **VIS-1 [M] — Declared visibility** — Live GitHub visibility matches the valid visibility declared in .ki.toml. (standards-repository.md)
+- **VIS-1 [M] — Declared visibility** — Live GitHub visibility matches the valid visibility declared in .ki.toml. (standard-repository.md)
   - _Remediation:_ diagnostic — Align the declared and live repository visibility, then rerun the audit.
 
 ## TOPICS — Topics
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 Public repository discovery-topic conventions.
 
-- **TOPICS-1 [M] — Public repository topics** — A public repository carries a non-empty topic set, and where `package.json` declares "keywords" the topics agree with them modulo GitHub normalisation, unless explicitly overridden. (standards-repository.md)
+- **TOPICS-1 [M] — Public repository topics** — A public repository carries a non-empty topic set, and where `package.json` declares "keywords" the topics agree with them modulo GitHub normalisation, unless explicitly overridden. (standard-repository.md)
   - _Remediation:_ diagnostic — Set the repository's discovery topics — syncing `package.json` "keywords" where present — or record an explicit override, then rerun the audit.
-- **TOPICS-2 [J] — Topic fit** — The topic set accurately describes the repository, and each common estate topic that applies is present. (standards-repository.md)
+- **TOPICS-2 [J] — Topic fit** — The topic set accurately describes the repository, and each common estate topic that applies is present. (standard-repository.md)
   - _Evidence scope:_ The public topic set (and any `package.json` "keywords") against the repository purpose and the common estate topics.
   - _Review prompt:_ Judge whether the topics describe what this repository actually is, and whether any common estate topic applies but is missing.
   - _Outcomes:_ conforming; gap; exclusion
@@ -141,132 +141,132 @@ Public repository discovery-topic conventions.
 
 ## BP — Branch protection
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 Optional main-branch protection.
 
-- **BP-1 [M] — Branch protection** — Main has the configured branch-protection posture, including required PR, build check, and linear history when enabled. (standards-repository.md)
+- **BP-1 [M] — Branch protection** — Main has the configured branch-protection posture, including required PR, build check, and linear history when enabled. (standard-repository.md)
   - _Remediation:_ diagnostic — Configure the required branch-protection posture or record an explicit override, then rerun the audit.
 
 ## DEP — Dependency security
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 Dependabot security updates without auto-merge, and branch freshness.
 
-- **DEP-1 [M] — Dependabot and branch freshness** — Dependabot alerts and security updates are enabled, no workflow auto-merges dependency pull requests, and pull-request branches may be updated. (standards-repository.md)
+- **DEP-1 [M] — Dependabot and branch freshness** — Dependabot alerts and security updates are enabled, no workflow auto-merges dependency pull requests, and pull-request branches may be updated. (standard-repository.md)
   - _Remediation:_ diagnostic — Enable the required Dependabot and branch-update settings, remove any Dependabot auto-merge workflow and version-update configuration, then rerun the audit.
 
 ## SEC — Secret protection
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 Secret scanning and push protection.
 
-- **SEC-1 [M] — Secret scanning protection** — Public repositories enable secret scanning and push protection unless explicitly overridden. (standards-repository.md)
+- **SEC-1 [M] — Secret scanning protection** — Public repositories enable secret scanning and push protection unless explicitly overridden. (standard-repository.md)
   - _Remediation:_ diagnostic — Enable secret scanning and push protection or record an explicit override, then rerun the audit.
 
 ## ACT — Actions policy
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 GitHub Actions permissions.
 
-- **ACT-1 [M] — Actions policy** — GitHub Actions allowed_actions is all; tighter deliberate policies are reported as warnings. (standards-repository.md)
+- **ACT-1 [M] — Actions policy** — GitHub Actions allowed_actions is all; tighter deliberate policies are reported as warnings. (standard-repository.md)
   - _Remediation:_ diagnostic — Set the intended GitHub Actions policy or record an explicit override, then rerun the audit.
 
 ## CHECKS — Check overrides
 
-→ [standard](standards-configuration.md)
+→ [standard](standard-configuration.md)
 
 Per-repository override schema.
 
-- **CHECKS-1 [M] — Override keys** — Every ki-repo checks override names a supported overridable concern. (standards-configuration.md)
+- **CHECKS-1 [M] — Override keys** — Every ki-repo checks override names a supported overridable concern. (standard-configuration.md)
   - _Remediation:_ diagnostic — Remove the unsupported override or select a supported concern, then rerun the audit.
 
 ## COV — Governance coverage
 
-→ [standard](standards-configuration.md)
+→ [standard](standard-configuration.md)
 
 Detected and declared governance coverage.
 
-- **COV-1 [M] — Governance coverage cascade** — Detected governance applicability and declared opt-in tables agree, subject to explicit coverage overrides; an island named in its Capital trade policy declares ki-trades. (standards-configuration.md)
+- **COV-1 [M] — Governance coverage cascade** — Detected governance applicability and declared opt-in tables agree, subject to explicit coverage overrides; an island named in its Capital trade policy declares ki-trades. (standard-configuration.md)
   - _Remediation:_ diagnostic — Align the declared coverage table with detected applicability or record an explicit override, then rerun the audit.
 
 ## TERR — Territory
 
-→ [standard](standards-configuration.md)
+→ [standard](standard-configuration.md)
 
 Capital declaration, Capital-owned territory membership, and registry-backed agreement.
 
-- **TERR-1 [M] — Capital declared** — [skills.ki-repo].capital names the territory Capital as a full canonical HTTPS GitHub URL; a Capital names itself. (standards-configuration.md)
+- **TERR-1 [M] — Capital declared** — [skills.ki-repo].capital names the territory Capital as a full canonical HTTPS GitHub URL; a Capital names itself. (standard-configuration.md)
   - _Remediation:_ automatic
-- **TERR-2 [M] — Territory declaration shape** — Only a Capital declares territory_name, territory_members and optional territory_prefix in [skills.ki-repo]: a non-empty name, sorted unique canonical members including itself, and a lower-case slug prefix when present. The retired [skills.ki-repo.territory] table fails. (standards-configuration.md)
+- **TERR-2 [M] — Territory declaration shape** — Only a Capital declares territory_name, territory_members and optional territory_prefix in [skills.ki-repo]: a non-empty name, sorted unique canonical members including itself, and a lower-case slug prefix when present. The retired [skills.ki-repo.territory] table fails. (standard-configuration.md)
   - _Remediation:_ diagnostic — In a Capital, declare territory_name and sorted, unique canonical territory_members including itself in [skills.ki-repo], with an optional lower-case slug territory_prefix; elsewhere remove these keys. Move a retired [skills.ki-repo.territory] table to those keys, then remove it.
-- **TERR-3 [M] — Capital and membership agree** — Through the local registry, the declared Capital is a unique registered Capital listing this repository, and a Capital is named back by each registered member. (standards-configuration.md)
+- **TERR-3 [M] — Capital and membership agree** — Through the local registry, the declared Capital is a unique registered Capital listing this repository, and a Capital is named back by each registered member. (standard-configuration.md)
   - _Remediation:_ diagnostic — Correct capital or the Capital territory members so both sides agree; register the Capital checkout locally to verify a WARN.
 
 ## STRUCT — Repository structure
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 Primary repository structure, with composable specialisations.
 
-- **STRUCT-1 [M] — Single primary repository structure** — A repository declares at most one mutually exclusive Project or Knowledge Base primary. (standards-repository.md)
+- **STRUCT-1 [M] — Single primary repository structure** — A repository declares at most one mutually exclusive Project or Knowledge Base primary. (standard-repository.md)
   - _Remediation:_ diagnostic — Align the repository structure declaration with the applicable standard or record an explicit exemption, then rerun the audit.
-- **STRUCT-2 [M] — Primary repository structure presence** — A repository declares a Project or Knowledge Base primary structure. (standards-repository.md)
+- **STRUCT-2 [M] — Primary repository structure presence** — A repository declares a Project or Knowledge Base primary structure. (standard-repository.md)
   - _Remediation:_ diagnostic — Align the repository structure declaration with the applicable standard or record an explicit exemption, then rerun the audit.
-- **STRUCT-3 [M] — Single website implementation** — A website declares at most one mutually exclusive content or app implementation. (standards-repository.md)
+- **STRUCT-3 [M] — Single website implementation** — A website declares at most one mutually exclusive content or app implementation. (standard-repository.md)
   - _Remediation:_ diagnostic — Align the repository structure declaration with the applicable standard or record an explicit exemption, then rerun the audit.
-- **STRUCT-4 [M] — Website implementation presence** — A declared website core selects a content or app implementation. (standards-repository.md)
+- **STRUCT-4 [M] — Website implementation presence** — A declared website core selects a content or app implementation. (standard-repository.md)
   - _Remediation:_ diagnostic — Align the repository structure declaration with the applicable standard or record an explicit exemption, then rerun the audit.
 
 ## ACCESS — Repository access
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 GitHub reachability and archive state.
 
-- **ACCESS-1 [M] — GitHub access and archive state** — GitHub reachability is reported without manufacturing drift when offline, and archived repositories are skipped. (standards-repository.md)
+- **ACCESS-1 [M] — GitHub access and archive state** — GitHub reachability is reported without manufacturing drift when offline, and archived repositories are skipped. (standard-repository.md)
   - _Remediation:_ diagnostic — Restore GitHub access or record the repository archive state, then rerun the audit.
 
 ## KIND — Repository kind
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 The repository kind, primary Project shape, and named Knowledge Base store roles.
 
-- **KIND-1 [M] — Repository kind, primary shape, and store roles** — ki-repo requires explicit Project or Knowledge Base kind and a compatible declared primary shape, and validates named KB stores. (standards-repository.md)
+- **KIND-1 [M] — Repository kind, primary shape, and store roles** — ki-repo requires explicit Project or Knowledge Base kind and a compatible declared primary shape, and validates named KB stores. (standard-repository.md)
   - _Remediation:_ diagnostic — Resolve Project or Knowledge Base, compatible store roles, and an unambiguous declared primary shape, then rerun the audit.
-- **KIND-2 [M] — Kind and structure compatibility** — A KB kind declares KB structure; shared ki-work-roadmap configuration requires its Streams container. A non-KB does not declare KB structure. (standards-repository.md)
+- **KIND-2 [M] — Kind and structure compatibility** — A KB kind declares KB structure; shared ki-work-roadmap configuration requires its Streams container. A non-KB does not declare KB structure. (standard-repository.md)
   - _Remediation:_ diagnostic — Align the repository kind with its declared structure and planning model, then rerun the audit.
 
 ## MATURITY — Island maturity
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 The island's declared maturity on the fixed scale.
 
-- **MATURITY-1 [M] — Declared island maturity** — .ki.toml declares the island's `maturity` in [skills.ki-repo] as one level of the scale, `founding`, `growing`, `settled` or `thriving`; an absent key warns and a value outside the scale fails. (standards-repository.md#island-maturity)
+- **MATURITY-1 [M] — Declared island maturity** — .ki.toml declares the island's `maturity` in [skills.ki-repo] as one level of the scale, `founding`, `growing`, `settled` or `thriving`; an absent key warns and a value outside the scale fails. (standard-repository.md#410-island-maturity)
   - _Remediation:_ diagnostic — Declare `maturity` in [skills.ki-repo] as the one level of the scale that describes the island now; the owner chooses it, so no default is proposed. Then rerun the audit.
 
 ## RUNTIMES — Runtime support
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 Declared agent-runtime support and orientation.
 
-- **RUNTIMES-1 [M] — Supported runtime declaration** — ki-repo declares a non-empty, duplicate-free list containing only supported runtimes. (standards-repository.md)
+- **RUNTIMES-1 [M] — Supported runtime declaration** — ki-repo declares a non-empty, duplicate-free list containing only supported runtimes. (standard-repository.md)
   - _Remediation:_ diagnostic — Declare the supported runtimes as a non-empty duplicate-free supported set, then rerun the audit.
-- **RUNTIMES-2 [M] — Runtime environment coverage** — Every repository declares portable tokenomics and the real housekeeping and tokenomics capabilities required by its supported runtimes. (standards-repository.md)
+- **RUNTIMES-2 [M] — Runtime environment coverage** — Every repository declares portable tokenomics and the real housekeeping and tokenomics capabilities required by its supported runtimes. (standard-repository.md)
   - _Remediation:_ automatic
-- **RUNTIMES-3 [M] — Repository-local ki-self projection** — An optional repository-local ki-self has one canonical .agents source and a relative Claude projection exactly when Claude Code is supported. (standards-repository.md)
+- **RUNTIMES-3 [M] — Repository-local ki-self projection** — An optional repository-local ki-self has one canonical .agents source and a relative Claude projection exactly when Claude Code is supported. (standard-repository.md)
   - _Remediation:_ diagnostic — Restore the canonical ki-self source and applicable runtime projection, then rerun the audit.
-- **RUNTIMES-4 [M] — Root runtime orientation** — A multi-runtime repository exposes shared root orientation through a physical AGENTS.md and a thin Claude import. (standards-repository.md)
+- **RUNTIMES-4 [M] — Root runtime orientation** — A multi-runtime repository exposes shared root orientation through a physical AGENTS.md and a thin Claude import. (standard-repository.md)
   - _Remediation:_ diagnostic — Move shared root orientation into AGENTS.md, import it from CLAUDE.md with a bare @AGENTS.md line, and rerun the audit.
-- **RUNTIMES-5 [M] — Claude orientation location** — Repository-local Claude orientation is not stored at .claude/CLAUDE.md at any depth. (standards-repository.md)
+- **RUNTIMES-5 [M] — Claude orientation location** — Repository-local Claude orientation is not stored at .claude/CLAUDE.md at any depth. (standard-repository.md)
   - _Remediation:_ diagnostic — Move shared guidance into root AGENTS.md and Claude-specific guidance into root CLAUDE.md.
-- **RUNTIMES-J1 [J] — Runtime orientation split** — Multi-runtime repositories use a shared AGENTS.md orientation with a thin Claude import unless a justified exception applies. (standards-repository.md)
+- **RUNTIMES-J1 [J] — Runtime orientation split** — Multi-runtime repositories use a shared AGENTS.md orientation with a thin Claude import unless a justified exception applies. (standard-repository.md)
   - _Evidence scope:_ The shared AGENTS.md and runtime-specific orientation files for every declared runtime.
   - _Review prompt:_ Review whether orientation is shared cleanly across the declared runtimes without duplicated or Claude-only instructions.
   - _Outcomes:_ conforming; gap; exclusion
@@ -274,11 +274,11 @@ Declared agent-runtime support and orientation.
 
 ## DESCFIT — Description fitness
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 Human assessment of repository purpose.
 
-- **DESCFIT-1 [J] — Description fit** — The repository description accurately and concisely describes its purpose. (standards-repository.md)
+- **DESCFIT-1 [J] — Description fit** — The repository description accurately and concisely describes its purpose. (standard-repository.md)
   - _Evidence scope:_ The repository description and its current public purpose.
   - _Review prompt:_ Read the repository and judge whether its one-sentence description fits its actual purpose.
   - _Outcomes:_ conforming; gap; exclusion
@@ -286,11 +286,11 @@ Human assessment of repository purpose.
 
 ## DOC — Documentation topology
 
-→ [standard](standards-documentation-topology.md)
+→ [standard](standard-documentation-topology.md)
 
 Repository-level ownership of durable documentation concerns.
 
-- **DOC-1 [J] — Documentation concern ownership** — In a non-Knowledge-Base repository, durable documentation is routed to Decision Records, Specifications, Guides, or the Roadmap; specialist skills retain the content contract for their concern. (standards-documentation-topology.md)
+- **DOC-1 [J] — Documentation concern ownership** — In a non-Knowledge-Base repository, durable documentation is routed to Decision Records, Specifications, Guides, or the Roadmap; specialist skills retain the content contract for their concern. (standard-documentation-topology.md)
   - _Evidence scope:_ Repository documentation topology and the durable material routed to each concern.
   - _Review prompt:_ Does each durable documentation concern have the right owner, with decisions explaining choices, Specifications defining behaviour, Guides helping people operate or contribute, and roadmap records tracking planned change?
   - _Outcomes:_ conforming; gap; exclusion
@@ -298,11 +298,11 @@ Repository-level ownership of durable documentation concerns.
 
 ## OVR — Override rationale
 
-→ [standard](standards-configuration.md)
+→ [standard](standard-configuration.md)
 
 Human assessment of exceptions.
 
-- **OVR-J1 [J] — Override rationale** — Every checks override represents a warranted repository-specific decision. (standards-configuration.md)
+- **OVR-J1 [J] — Override rationale** — Every checks override represents a warranted repository-specific decision. (standard-configuration.md)
   - _Evidence scope:_ Every configured ki-repo checks override and its repository context.
   - _Review prompt:_ Review each configured override and confirm that it records a real exception rather than hiding drift.
   - _Outcomes:_ conforming; gap; exclusion
@@ -310,11 +310,11 @@ Human assessment of exceptions.
 
 ## SYNC — Standard synchronisation
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 Alignment across the knowledge chain.
 
-- **SYNC-1 [J] — Standard synchronisation** — The standard, structured rubric, and executable behaviour remain aligned. (standards-repository.md)
+- **SYNC-1 [J] — Standard synchronisation** — The standard, structured rubric, and executable behaviour remain aligned. (standard-repository.md)
   - _Evidence scope:_ The repository standard, structured rubric, generated publication, and checker behaviour.
   - _Review prompt:_ Compare the standard, generated rubric, and checker behaviour for semantic drift.
   - _Outcomes:_ conforming; gap; exclusion
@@ -322,13 +322,13 @@ Alignment across the knowledge chain.
 
 ## WORK — Working areas
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 Required generic inbound and outbound working-area scaffold and direction.
 
-- **WORK-1 [M] — Working-area scaffold** — Every KI repository has the canonical generic inbound and outbound working areas and README orientation. (standards-repository.md)
+- **WORK-1 [M] — Working-area scaffold** — Every KI repository has the canonical generic inbound and outbound working areas and README orientation. (standard-repository.md)
   - _Remediation:_ automatic
-- **WORK-J1 [J] — working-area direction and lifecycle** — The required +/ and -/ working areas distinguish temporary inbound from outbound material without becoming a shadow canonical store. (standards-repository.md)
+- **WORK-J1 [J] — working-area direction and lifecycle** — The required +/ and -/ working areas distinguish temporary inbound from outbound material without becoming a shadow canonical store. (standard-repository.md)
   - _Evidence scope:_ The repository +/ and -/ working areas and their README orientation.
   - _Review prompt:_ Review that +/ and -/ remain temporary directional material rather than a shadow canonical store or archive.
   - _Outcomes:_ conforming; gap; exclusion
@@ -336,21 +336,21 @@ Required generic inbound and outbound working-area scaffold and direction.
 
 ## HOOK — Commit gate
 
-→ [standard](standards-repository.md)
+→ [standard](standard-repository.md)
 
 Existence, binding and canonical text of the committed hooks, composed from the shape skills’ blocks.
 
-- **HOOK-1 [M] — Committed commit gate** — A tracked, executable `.githooks/pre-commit` exists, unless the repository's primary shape declares no hook. (standards-repository.md)
+- **HOOK-1 [M] — Committed commit gate** — A tracked, executable `.githooks/pre-commit` exists, unless the repository's primary shape declares no hook. (standard-repository.md)
   - _Remediation:_ diagnostic — Copy the shape's canonical `pre-commit` from its `assets/githooks/`, mark it executable, commit it, then bind it with `git config core.hooksPath .githooks`.
-- **HOOK-2 [M] — Commit gate bound** — The effective `core.hooksPath` of the audited working tree resolves to `.githooks`, so the committed gate runs on every commit; Husky’s `.husky/_` is named as the common wrong value. (standards-repository.md)
+- **HOOK-2 [M] — Commit gate bound** — The effective `core.hooksPath` of the audited working tree resolves to `.githooks`, so the committed gate runs on every commit; Husky’s `.husky/_` is named as the common wrong value. (standard-repository.md)
   - _Remediation:_ diagnostic — Run `git config core.hooksPath .githooks` in the clone, then rerun the audit.
-- **HOOK-3 [M] — Committed commit-message gate** — A tracked, executable `.githooks/commit-msg` exists wherever a commit gate is: Commitlint where a package exists, `ki git check-message` where none does. (standards-repository.md)
+- **HOOK-3 [M] — Committed commit-message gate** — A tracked, executable `.githooks/commit-msg` exists wherever a commit gate is: Commitlint where a package exists, `ki git check-message` where none does. (standard-repository.md)
   - _Remediation:_ diagnostic — Copy the shape's canonical `commit-msg` from its `assets/githooks/`, mark it executable and commit it, then rerun the audit.
-- **HOOK-4 [M] — Hook is the canonical text** — Each committed hook is, byte for byte, the canonical hook `ki-repo` composes for the primary shape and package presence: the frame, with its empty-index exit and missing-tool refusal, then the shape skills’ blocks in a fixed order, with no extension point. Without a resolvable shape only the frame is judged. (standards-repository.md)
+- **HOOK-4 [M] — Hook is the canonical text** — Each committed hook is, byte for byte, the canonical hook `ki-repo` composes for the primary shape and package presence: the frame, with its empty-index exit and missing-tool refusal, then the shape skills’ blocks in a fixed order, with no extension point. Without a resolvable shape only the frame is judged. (standard-repository.md)
   - _Remediation:_ diagnostic — Copy the hook named in the finding from the shape skill’s `assets/githooks/<package|no-package>/` byte-exact; a fast check-only repository-specific check becomes a line of the shape’s block in the composer, anything else belongs to CI.
-- **HOOK-5 [M] — Husky retired** — No tracked `.husky/` path, `husky` dependency, Husky call in `prepare` or hook delegating to `.husky/` remains; locally, no untracked `.husky/_` install is left behind. (standards-repository.md)
+- **HOOK-5 [M] — Husky retired** — No tracked `.husky/` path, `husky` dependency, Husky call in `prepare` or hook delegating to `.husky/` remains; locally, no untracked `.husky/_` install is left behind. (standard-repository.md)
   - _Remediation:_ diagnostic — Move the hook content into `.githooks/`, set `prepare` to `git config core.hooksPath .githooks`, remove `husky` and `.husky/`, rebind the clone and remove `.husky/_`.
-- **HOOK-J1 [J] — Stated gate matches the hook** — The gate root orientation tells a writer to run matches what the committed pre-commit hook runs. (standards-repository.md)
+- **HOOK-J1 [J] — Stated gate matches the hook** — The gate root orientation tells a writer to run matches what the committed pre-commit hook runs. (standard-repository.md)
   - _Evidence scope:_ Root orientation (`AGENTS.md`, `README.md`) and `.githooks/pre-commit`.
   - _Review prompt:_ Compare the checks root orientation says run before a commit with the commands the committed hook runs, including any hook it delegates to.
   - _Outcomes:_ conforming; gap; exclusion

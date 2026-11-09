@@ -1,8 +1,8 @@
 import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
 import { auditEvidence, type FilesRubricContext, type RepoRubricContext } from '../contexts/repository.ts'
 
-const SOURCE = 'standards-repository.md'
-const CONFIGURATION_SOURCE = 'standards-configuration.md'
+const SOURCE = 'standard-repository.md'
+const CONFIGURATION_SOURCE = 'standard-configuration.md'
 
 const FILES_1: RubricItem<FilesRubricContext> = {
   code: 'FILES-1',

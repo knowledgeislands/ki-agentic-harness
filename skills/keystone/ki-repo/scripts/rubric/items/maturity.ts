@@ -1,7 +1,7 @@
 import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
 import { auditEvidence, type EvidenceRubricContext, type RepoRubricContext } from '../contexts/repository.ts'
 
-const SOURCE = 'standards-repository.md#island-maturity'
+const SOURCE = 'standard-repository.md#410-island-maturity'
 
 const MATURITY_1: RubricItem<EvidenceRubricContext> = {
   code: 'MATURITY-1',
@@ -25,7 +25,7 @@ export const MATURITY: RubricFamily<RepoRubricContext, EvidenceRubricContext> = 
   code: 'MATURITY',
   title: 'Island maturity',
   description: "The island's declared maturity on the fixed scale.",
-  standard: 'standards-repository.md',
+  standard: 'standard-repository.md',
   selectContext: (context) => context.maturity,
   items: [MATURITY_1]
 }

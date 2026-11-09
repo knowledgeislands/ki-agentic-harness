@@ -6,7 +6,7 @@ const TOPICS_1: RubricItem<EvidenceRubricContext> = {
   title: 'Public repository topics',
   description:
     'A public repository carries a non-empty topic set, and where `package.json` declares "keywords" the topics agree with them modulo GitHub normalisation, unless explicitly overridden.',
-  sources: ['standards-repository.md'],
+  sources: ['standard-repository.md'],
   mechanical: {
     level: 'FAIL',
     remediation: {
@@ -23,7 +23,7 @@ const TOPICS_2: RubricItem<EvidenceRubricContext> = {
   title: 'Topic fit',
   description:
     'The topic set accurately describes the repository, and each common estate topic that applies is present.',
-  sources: ['standards-repository.md'],
+  sources: ['standard-repository.md'],
   judgment: {
     scope:
       'The public topic set (and any `package.json` "keywords") against the repository purpose and the common estate topics.',
@@ -38,7 +38,7 @@ export const TOPICS: RubricFamily<RepoRubricContext, EvidenceRubricContext> = {
   code: 'TOPICS',
   title: 'Topics',
   description: 'Public repository discovery-topic conventions.',
-  standard: 'standards-repository.md',
+  standard: 'standard-repository.md',
   selectContext: (context) => context.topics,
   items: [TOPICS_1, TOPICS_2]
 }

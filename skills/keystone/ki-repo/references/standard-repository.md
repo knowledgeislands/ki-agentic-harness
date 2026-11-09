@@ -1,28 +1,97 @@
+---
+type: standard@2026-11-09T21:36:32Z
+revised: 2026-11-09T22:38:25Z
+status: in force
+---
+
 # Knowledge Islands repo standard
-
-> **Temporary v0.4.0 bridge:** AUDIT accepts the exact predecessor `tools-ki` `.gitignore` bytes alongside the current composition. CONFORM still emits only the current composition; any predecessor-byte drift remains a failure. Remove this repository-specific exception after released v0.4.0 governs `tools-ki` CI and the current `.gitignore` is restored.
-
-The canonical configuration a Knowledge Islands repo should carry, so repos present and behave consistently and that consistency is _checkable_ rather than folklore. A Knowledge Islands repo is a git repo that carries a `.ki.toml` (its presence is the compliance marker); the standard applies to any such repo — the [`knowledgeislands`](https://github.com/knowledgeislands) org is the reference set it was derived from, not its boundary. Three layers — local files, core GitHub settings, deeper GitHub (security & Actions). Derived and applied 2026-05-31 from an audit of all 10 `knowledgeislands` repos. The structured catalogue under `../scripts/rubric/` is the executable source hosted by native `ki repo` operations.
 
 ## Contents
 
-- [Layer 1 — repo files](#layer-1--repo-files)
-- [Layer 2 — core GitHub settings](#layer-2--core-github-settings)
-- [Layer 3 — deeper GitHub](#layer-3--deeper-github)
-- [Repository naming](#repository-naming)
-- [Working areas](#working-areas)
-- [Commit gate](#commit-gate)
-- [Repository kind and Knowledge Base stores](#repository-kind-and-knowledge-base-stores)
-- [Repository write authority](#repository-write-authority)
-- [Visibility](#visibility)
-- [Island maturity](#island-maturity)
-- [Per-repo overrides](#per-repo-overrides)
-- [Coverage cascade](#coverage-cascade)
-- [Applying it](#applying-it)
-- [Verifying it](#verifying-it)
-- [Conformance](#conformance)
+- [1. Introduction](#1-introduction)
+- [2. Scope](#2-scope)
+  - [2.1 In scope](#21-in-scope)
+  - [2.2 Out of scope](#22-out-of-scope)
+- [3. Terms and definitions](#3-terms-and-definitions)
+- [4. Rules](#4-rules)
+  - [4.1 Layer 1 — repo files](#41-layer-1--repo-files)
+    - [4.1.1 Root files](#411-root-files)
+    - [4.1.2 `.ki/` — legacy migration state, not an executor](#412-ki--legacy-migration-state-not-an-executor)
+  - [4.2 Repository kind and Knowledge Base stores](#42-repository-kind-and-knowledge-base-stores)
+    - [4.2.1 Kind and stores](#421-kind-and-stores)
+    - [4.2.2 Project shapes](#422-project-shapes)
+  - [4.3 Repository write authority](#43-repository-write-authority)
+  - [4.4 Working areas](#44-working-areas)
+  - [4.5 Commit gate](#45-commit-gate)
+  - [4.6 Layer 2 — core GitHub settings](#46-layer-2--core-github-settings)
+    - [4.6.1 Repository settings](#461-repository-settings)
+    - [4.6.2 Package.json identity & metadata](#462-packagejson-identity--metadata)
+  - [4.7 Layer 3 — deeper GitHub](#47-layer-3--deeper-github)
+  - [4.8 Repository naming](#48-repository-naming)
+  - [4.9 Visibility](#49-visibility)
+  - [4.10 Island maturity](#410-island-maturity)
+  - [4.11 Per-repo overrides](#411-per-repo-overrides)
+  - [4.12 Coverage cascade](#412-coverage-cascade)
+  - [4.13 Applying it](#413-applying-it)
+  - [4.14 Verifying it](#414-verifying-it)
+    - [4.14.1 Running the audit](#4141-running-the-audit)
+    - [4.14.2 What is read locally and what is read from GitHub](#4142-what-is-read-locally-and-what-is-read-from-github)
+  - [4.15 Conformance](#415-conformance)
 
-## Layer 1 — repo files
+## 1. Introduction
+
+> **Temporary v0.4.0 bridge:** AUDIT accepts the exact predecessor `tools-ki` `.gitignore` bytes alongside the current composition. CONFORM still emits only the current composition; any predecessor-byte drift remains a failure. Remove this repository-specific exception after released v0.4.0 governs `tools-ki` CI and the current `.gitignore` is restored.
+
+The canonical configuration a Knowledge Islands repo should carry, so repos present and behave consistently and that consistency is _checkable_ rather than folklore. A Knowledge Islands repo is a git repo that carries a `.ki.toml` (its presence is the compliance marker); the standard applies to any such repo — the [`knowledgeislands`](https://github.com/knowledgeislands) org is the reference set it was derived from, not its boundary. Three layers — local files, core GitHub settings, deeper GitHub (security & Actions). Derived and applied 2026-05-31 from an audit of all 10 `knowledgeislands` repos. The structured catalogue under `../scripts/rubric/` is the executable source hosted by native `ki repo` operations. The decisions behind these rules are in [the sources file](sources.md#3-decisions).
+
+[Back to contents](#contents)
+
+## 2. Scope
+
+The configuration every Knowledge Islands repo carries, locally and on GitHub, and how it is applied and verified.
+
+### 2.1 In scope
+
+- Layer 1, the repository files, including orientation, the ignore contract and the legacy `.ki/` state.
+- The repository kind, Knowledge Base stores and Project shapes.
+- Repository write authority, working areas and the commit gate.
+- Layer 2, the core GitHub settings and `package.json` identity, and Layer 3, the deeper GitHub settings.
+- Repository naming, visibility, island maturity, per-repo overrides and the coverage cascade.
+- Applying, verifying and conforming to the standard.
+
+[Back to contents](#contents)
+
+### 2.2 Out of scope
+
+- The full `.ki.toml` contract: [the `.ki.toml` standard](standard-configuration.md).
+- The routing of durable documentation: [documentation topology](standard-documentation-topology.md).
+- The record shape and retention of specialist working-area subareas: their owning skills.
+- How an authorised commit is prepared: `ki-git`.
+
+[Back to contents](#contents)
+
+## 3. Terms and definitions
+
+| Term | Definition |
+| --- | --- |
+| **Knowledge Islands repo** | A git repo that carries a `.ki.toml`, whose presence is the compliance marker. **Standard:** this one, [1](#1-introduction) |
+| **Working areas** | The fixed `+/` and `-/` scaffold, holding temporary inputs to further work and temporary produced outputs. **Standard:** this one, [4.4](#44-working-areas) |
+| **Primary shape** | The declared `primary_shape`: one core shape skill, `ki-repo-project` for a general Project, or `ki-repo-kb` for a Knowledge Base. **Standard:** this one, [4.2.2](#422-project-shapes) |
+| **Org default** | The rubric's default for a check, which a repo may flip only for an overridable check in `[skills.ki-repo.checks]`. **Standard:** this one, [4.11](#411-per-repo-overrides) |
+| **Island maturity** | The level an island declares in `maturity`, on the fixed ordinal scale `founding`, `growing`, `settled`, `thriving`. **Standard:** this one, [4.10](#410-island-maturity) |
+| **Coverage cascade** | The audit that, once `.ki.toml` confirms a ki-repo, checks it declares every governance skill whose applicability is detectable in it. **Standard:** this one, [4.12](#412-coverage-cascade) |
+
+[Back to contents](#contents)
+
+## 4. Rules
+
+The rules, part by part.
+
+### 4.1 Layer 1 — repo files
+
+The files every repo carries at its root, and the legacy `.ki/` state.
+
+#### 4.1.1 Root files
 
 Every repo carries these at the root. A local audit reads the selected checkout's repository tree, configuration, and package metadata first. A remote-only or scheduled audit with no filesystem reads the GitHub default branch through its API instead. Neither mode silently substitutes the other source; findings identify the source used.
 
@@ -45,7 +114,7 @@ Every repo carries these at the root. A local audit reads the selected checkout'
 
 `ROADMAP.md` is **expected but not required** — a warn, not a fail: most repos carry one, but a base that keeps its forward view elsewhere (a KB base's `Streams/Future`) may omit it.
 
-**Root orientation for a multi-runtime repo.** When a repo's declared [`supported_runtimes`](standards-configuration.md#harnesses-and-the-skills-namespace) includes a runtime other than `claude-code` (e.g. `chatgpt-codex`), the repo's orientation should live in a literal physical root `AGENTS.md` — not an `@`-import index or a redirect to `CLAUDE.md`, since a non-Claude-Code runtime can't resolve that syntax — with any root `CLAUDE.md` containing a bare `@AGENTS.md` import line and staying a thin, Claude-only appendix. `RUNTIMES-4` reports violations as WARN while the existing estate is conformed; promotion to FAIL requires a separately reviewed conformance boundary. The check is root-only and does not infer a violation from nested orientation files. A repo whose `supported_runtimes` is `["claude-code"]` only has no reason to split: `CLAUDE.md` alone, with its own topic-file imports, is sufficient.
+**Root orientation for a multi-runtime repo.** When a repo's declared [`supported_runtimes`](standard-configuration.md#43-harnesses-and-the-skills-namespace) includes a runtime other than `claude-code` (e.g. `chatgpt-codex`), the repo's orientation should live in a literal physical root `AGENTS.md` — not an `@`-import index or a redirect to `CLAUDE.md`, since a non-Claude-Code runtime can't resolve that syntax — with any root `CLAUDE.md` containing a bare `@AGENTS.md` import line and staying a thin, Claude-only appendix. `RUNTIMES-4` reports violations as WARN while the existing estate is conformed; promotion to FAIL requires a separately reviewed conformance boundary. The check is root-only and does not infer a violation from nested orientation files. A repo whose `supported_runtimes` is `["claude-code"]` only has no reason to split: `CLAUDE.md` alone, with its own topic-file imports, is sufficient.
 
 **Claude orientation location.** `.claude/CLAUDE.md` is not an orientation location, at repository root or within a nested package. `RUNTIMES-5` fails on each such repository file independently of the declared runtimes. Move shared guidance into root `AGENTS.md` and Claude-only details into root `CLAUDE.md` after reviewing their scope; the audit does not move or delete either file.
 
@@ -70,13 +139,21 @@ Existing non-managed rules are retained below that header and reported as inform
 
 A repository that authors this source explicitly declares `[skills.ki-self]`. The native `ki` host may then resolve only the exact physical, contained `.agents/skills/ki-self/` source and its `scripts/rubric/items/index.ts` catalogue as `repository-local:ki-self`; every other repository skill remains an installed-Harness capability. The local provider is not activated, repaired, or upgraded as a managed runtime projection.
 
-### `.ki/` — legacy migration state, not an executor
+[Back to contents](#contents)
+
+#### 4.1.2 `.ki/` — legacy migration state, not an executor
 
 Under ADR-KI-HARNESS-012, `.ki/` is not a governance working-artifacts area or an execution surface. The former vendored checker tree, aggregate runner, wrapper, and manifest are retired without a compatibility path; `ki repo` must never invoke `.ki/bin`, a manifest payload, or a nearby checkout. `.ki` is deliberately not ignored, and any physical return is a failure even when a stale ignore rule would otherwise hide it. CONFORM may remove only an untracked physical `.ki` tree whose complete contents are regular files and directories below `.ki/audits/` or `.ki/conform/`; tracked paths, links, special files, or any other child fail closed without removing recognised content.
 
 No document may represent a legacy `.ki/bin` runner as the current self-check contract or as a fallback. Repository activation belongs to the native `ki` host. A rubric may request an exact capability set, but only the host may resolve verified sources, preflight every declaration and managed discovery link, publish a bounded dry-run or apply plan, and re-audit the result. The rubric receives no direct filesystem or subprocess activation capability.
 
-## Repository kind and Knowledge Base stores
+[Back to contents](#contents)
+
+### 4.2 Repository kind and Knowledge Base stores
+
+The repository kind and its stores, and the shapes a Project composes.
+
+#### 4.2.1 Kind and stores
 
 `ki-repo` owns the repository kind: **Project** or **Knowledge Base**. Every repository declares both `repo_type` and `primary_shape` under `[skills.ki-repo]`. A Project writes `repo_type = "project"`; a Knowledge Base writes `repo_type = "kb"` and `primary_shape = "ki-repo-kb"`. No omitted kind, inferred default, alias, or declaration under another skill table is accepted. The matching `ki-repo-project` or `ki-repo-kb` declaration selects the structure standard for that kind.
 
@@ -91,7 +168,9 @@ store_roles = ["notes", "sources", "legacy"]
 
 A KB must declare `ki-repo-kb`. It may also declare `ki-work-roadmap` for the shared record model and its issuing-area and component configuration, but only alongside `ki-repo-kb-streams`, which owns the `Streams/Roadmap/` container. That declaration does not select the project `roadmap` adapter or authorise a parallel `ROADMAP.md` or `docs/roadmap/` tree: `ki-work` owns adapter compatibility and the roadmap skill owns the artefact prohibition. Conversely, the `ki-repo-kb` structure declaration requires `repo_type = "kb"`. This validates operating model separately from the structural skill that implements its layout.
 
-### Project shapes
+[Back to contents](#contents)
+
+#### 4.2.2 Project shapes
 
 A Project composes the shape skills it actually needs. The core shapes are `ki-repo-dotfiles-chezmoi`, `ki-repo-harness`, `ki-repo-homebrew-tap`, `ki-repo-mcp`, `ki-repo-specifications`, `ki-repo-tools`, and `ki-repo-website`. Website content, app, and Cloudflare declarations refine the website shape; they are not additional primary-shape candidates. Knowledge Base substructure skills refine the KB kind. `ki-engineering` is a governance capability, not a repository kind or shape.
 
@@ -99,13 +178,17 @@ Every Project explicitly selects `primary_shape`, naming one of its declared cor
 
 Skill prerequisites are the required edges declared in `ki-depends-on`, evaluated before the skill's own rules. For example, `ki-repo-mcp` requires `ki-engineering`; a shell-only tools repository does not. Optional dependencies and independently detected coverage remain distinct. The `ki-skills` composition contract governs the dependency graph.
 
-## Repository write authority
+[Back to contents](#contents)
+
+### 4.3 Repository write authority
 
 The selected repository is the sole default write target for a task. Its task-scoped files may be edited and committed under the repository’s normal workflow. A sibling repository is read-only by default, including when a trade, route, workspace, or local checkout makes it visible.
 
 A caller must explicitly authorise a bounded sibling write before it is made. That approval names the target repository and intended change; after the target and staged scope are known, every sibling commit needs its own explicit approval. A trade records a handoff and observation, never write authority. `ki-git` governs how an already authorised commit is prepared; `ki-repo` owns whether that repository may be changed.
 
-## Working areas
+[Back to contents](#contents)
+
+### 4.4 Working areas
 
 Every KI repository carries this fixed working-area scaffold:
 
@@ -132,7 +215,9 @@ A declared capability with a stable specialist working-area subarea owns an exac
 
 For the work model's tolerance window, which phase 5 of the migration closes, the thread-model areas stay accepted until each territory's migration moves them, each with a COV-1 warning naming its new home: `ki-work-package`'s `+/_CHECKPOINTS/README.md` and its old checkpoints, and `ki-delegation`'s `+/_THREADS/<run>/` thread folders, a coordinating thread's decisions log and its background agents' reports.
 
-## Commit gate
+[Back to contents](#contents)
+
+### 4.5 Commit gate
 
 Every KI repository whose primary shape declares a hook commits two hooks in `.githooks/`, `pre-commit` and `commit-msg`, and binds them with the relative `git config core.hooksPath .githooks`, so the gate travels with the source, is reviewed with it and reaches every linked worktree ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)). Each hook is the whole hook, a tracked regular file with mode `100755`, since Git ignores a hook that is not executable. Husky is retired: its untracked `.husky/_` runtime leaves an uninstalled clone or worktree committing unchecked, and a committed hook bound by one `prepare` line needs nothing else from it. A package-backed repository binds through `prepare`; elsewhere the binding is set in each clone. A shape may declare no hook: `ki-repo-dotfiles-chezmoi` does, and its manual gate stands in its place. A repository without `.ki.toml` is outside these standards.
 
@@ -163,7 +248,13 @@ No hook calls `ki`: the shape's audit, the general Project's `ki-repo` audit inc
 
 Each shape skill also keeps one content criterion over the hook, not applicable without one, so a shape audit names a check-only breach or its own missing line in its own terms: `ki-engineering` `SCR-11`, `ki-authoring` `MD-hook`, `ki-repo-project`, `ki-repo-kb`, `ki-repo-harness`, `ki-repo-specifications` and `ki-repo-homebrew-tap` `GATE-1`, and `ki-repo-tools` `SHELL-HOOK`; each fails a hook that runs `ki repo audit`, `ki repo conform`, `ki repo repair`, `--fix` or `--write`.
 
-## Layer 2 — core GitHub settings
+[Back to contents](#contents)
+
+### 4.6 Layer 2 — core GitHub settings
+
+The core settings for every repo on GitHub, and the `package.json` identity this skill checks.
+
+#### 4.6.1 Repository settings
 
 For every repo on github.com:
 
@@ -182,9 +273,11 @@ For every repo on github.com:
 
 Public repos additionally carry **topics** — per-repo discovery metadata, not a fixed org set. Topics are effectively the repository's keywords: the same terms belong in `package.json` `"keywords"`, where they also reach any published npm package. Mechanically (`TOPICS-1`), a public repo's topic set must be non-empty, and where `package.json` declares `"keywords"` the two lists must agree modulo GitHub's normalisation (lowercase, spaces to hyphens) — keywords are the in-repo source of truth. Which topics to choose is judgment (`TOPICS-2`): pick terms that describe what the repository actually is, and consider whether each **common estate topic** applies — currently `typescript`, `bun`, `claude`, and, for MCP servers, `mcp` and `model-context-protocol`. A common topic that doesn't apply is simply omitted, never a failure; REFRESH's estate scan harvests newly common topics and keywords into this consider list.
 
-**`main` is open by default** — no branch protection, so direct pushes are allowed and no PR, status check, or linear-history rule gates it. Squash-only merge (above) keeps history tidy for PRs that do happen, but nothing forces work through a PR. A repo that _wants_ a protected `main` overrides the `branch-protection` check on (see [Per-repo overrides](#per-repo-overrides)) — protection is then `main`: require a PR (0 approvals), the `build` status check, linear history, no force-push, no deletion, admins **not** enforced.
+**`main` is open by default** — no branch protection, so direct pushes are allowed and no PR, status check, or linear-history rule gates it. Squash-only merge (above) keeps history tidy for PRs that do happen, but nothing forces work through a PR. A repo that _wants_ a protected `main` overrides the `branch-protection` check on (see [Per-repo overrides](#411-per-repo-overrides)) — protection is then `main`: require a PR (0 approvals), the `build` status check, linear history, no force-push, no deletion, admins **not** enforced.
 
-### Package.json identity & metadata
+[Back to contents](#contents)
+
+#### 4.6.2 Package.json identity & metadata
 
 `bugs` is adapter-selected metadata, not a generic GitHub default. It is absent unless the root `[skills.ki-work-github-issues]` table is declared; when declared, `bugs.url` is exactly `https://github.com/<owner>/<repository>/issues`.
 
@@ -205,7 +298,9 @@ The engineering coverage manifest assigns the `package.json` **identity & metada
 
 **Homepage.** `.ki.toml` is the master for the repository's homepage, as it is for its description: an optional `homepage` in `[skills.ki-repo]` names the repository's one live landing page, and the root `package.json` `homepage` and the GitHub homepage mirror it, never the other way round, as Kris settled under HOMEPAGE-SOURCE on 24 October 2026. Where `.ki.toml` declares no `homepage`, the repository has no homepage: a value left in the root `package.json` or on GitHub is stale, the audit reports it as drift, and conform proposes clearing it but clears nothing without explicit approval, as Kris settled under INTERIM-HOMEPAGE-OMISSION on 26 October 2026, taking the recommended option. Workspace packages' own `homepage` fields are outside this rule. The `present` warning above stands until the metadata checker that implements this rule lands; the checker then replaces it.
 
-## Layer 3 — deeper GitHub
+[Back to contents](#contents)
+
+### 4.7 Layer 3 — deeper GitHub
 
 | Setting                             | Value | Scope                                                          |
 | ----------------------------------- | ----- | -------------------------------------------------------------- |
@@ -218,7 +313,9 @@ The engineering coverage manifest assigns the `package.json` **identity & metada
 
 Dependabot is a security signal, not an update channel. Every repository, knowledge bases included, keeps alerts and security updates on. Routine version updates come from the repository's `bun run ki:deps:update` run, which a human reviews like any other change, so a repository carries no Dependabot version-update configuration (`.github/dependabot.yml`). No repository carries a workflow that auto-merges dependency pull requests: an unreviewed merge would carry a compromised upstream release straight to `main`. DEP-1 fails a workflow named for Dependabot auto-merge and warns on a Dependabot configuration file, which may legitimately tune security updates only.
 
-## Repository naming
+[Back to contents](#contents)
+
+### 4.8 Repository naming
 
 A site repository is named `apps-` followed by its hostname's labels in reverse order, from the top-level domain inwards, so that a domain's repositories sort together under their top-level domain: `kris.me.uk` is `apps-uk.me.kris`, `rig.midnight.ninja` is `apps-ninja.midnight.rig` and `home.humansnotrobots.be` is `apps-be.humansnotrobots.home`. The rule reverses every label after `apps-`, multi-part public suffixes and nested subdomains included. It names the repository alone: the hostname, DNS, Cloudflare configuration, Worker names and work identifiers are untouched by it. Kris adopted it for new site repositories across the estate under NAMING-TO-KI on 27 October 2026, taking the recommended option, after Humans Not Robots had renamed its site repositories this way on 26 October 2026.
 
@@ -234,11 +331,13 @@ The rule applies uniformly to existing site repositories too. Kris widened NAMIN
 
 A rename names the repository alone, so the hostname, DNS, Worker names and Cloudflare configuration do not change. Where the owner's site-safety limit cannot be met, the rename waits and the current name is retained until it can.
 
-## Visibility
+[Back to contents](#contents)
+
+### 4.9 Visibility
 
 Each repo **declares** its expected visibility in `.ki.toml` (`visibility = "public"` or `"private"`); the auditor checks that declaration against the live GitHub visibility. It is a deliberate per-repo choice, **not inferred from the name**. (In practice private repos are Knowledge Bases or internal skills and the `mcp-*` repos are public servers — a pattern, not the rule.)
 
-`.ki.toml` is a shared per-repo file; each skill reads and may conform the schema of its own `[table]`, while `ki-repo` owns the file-level contract and required foundation markers. The full cross-skill contract — its presence as the compliance marker, the table-per-skill model, and the validate-your-own-table protocol — is in [the `.ki.toml` standard](standards-configuration.md). The native configuration operation establishes the canonical foundations only; native self-check resolves the verified installed collection rather than writing a repository-local executor. Then edit the values:
+`.ki.toml` is a shared per-repo file; each skill reads and may conform the schema of its own `[table]`, while `ki-repo` owns the file-level contract and required foundation markers. The full cross-skill contract — its presence as the compliance marker, the table-per-skill model, and the validate-your-own-table protocol — is in [the `.ki.toml` standard](standard-configuration.md). The native configuration operation establishes the canonical foundations only; native self-check resolves the verified installed collection rather than writing a repository-local executor. Then edit the values:
 
 ```toml
 # .ki.toml — one [table] per skill that needs per-repo options
@@ -260,7 +359,9 @@ branch-protection = true   # default off — protect `main` on this repo
 
 `title` and `description` are mandatory repository identity. The title is exactly the README H1. The description is exactly the GitHub description and, where present, package.json `description`. A repository that declares `ki-work-roadmap` also declares its stable uppercase `repo_code` in this same table; `ki-work-roadmap` consumes that code and owns only its issuing-area and component vocabulary.
 
-## Island maturity
+[Back to contents](#contents)
+
+### 4.10 Island maturity
 
 Each island, each repository, declares its own maturity, so a reader such as the Observatory takes it from the island's declaration rather than inferring it from commit age. Kris set this on 19 October 2026: "I agree condition home should be stated in its ki.toml. Of course, that makes it subjective, but hey, that's fine", and chose the scale the same day: "I agree with the maturity scale." The key is `maturity` in `[skills.ki-repo]`, and its value is one level of this fixed, ordinal scale, lowest first:
 
@@ -287,7 +388,9 @@ Decline and ruin are read from audit health, never declared, under the rule Kris
 
 A reader distinguishes four cases: a clean audit reads as neither, a warning-only audit as decline, an audit with a failure and a warning as ruin, and an audit that cannot complete as ruin.
 
-## Per-repo overrides
+[Back to contents](#contents)
+
+### 4.11 Per-repo overrides
 
 GitHub Issues is not an override. The root `[skills.ki-work-github-issues]` declaration is the authority: absent means Issues disabled and no `package.json` `bugs`; present means Issues enabled and the canonical GitHub Issues URL.
 
@@ -316,19 +419,23 @@ The rubric carries the **org default** for every check. Most are bedrock — fil
 - A **redundant** override — one whose value just restates the org default (e.g. `wiki = true`) — does nothing, so the auditor flags it with a `note` advising it be dropped. The aim is that a `.ki.toml` carries only genuine divergences, and a conforming repo's `[…checks]` is empty or absent.
 - `coverage-<skill>` (for example `coverage-website-content = false` for a vendored Eleventy config) is also accepted here — it opts the repo out of **one** coverage signal of the cascade below. It does not disable `coverage-website-app` or `coverage-website-cloudflare`. A key naming no coverage skill WARNs, like any unknown check.
 
-## Coverage cascade
+[Back to contents](#contents)
+
+### 4.12 Coverage cascade
 
 `ki-repo` is the sole owner of repository applicability detection. Its `SKILL.md` declares the complete, duplicate-free detector registry as `ki-detects: [<skill-name>...]`. Every registry target must exist and declare `ki-applicability: detected`; every detected skill must appear in the registry; and the registry must exactly match the target skills represented by executable coverage evidence below. Baseline, declaration-only, and invocation-only skills never appear in `ki-detects`. The registry describes applicability only: it neither activates a skill nor creates a dependency edge.
 
 `.ki.toml`'s presence is the **gate** (Layer 1): once it confirms the repo is a ki-repo, the auditor checks that the repo **declares an opt-in `[skills.ki-<skill>]` table for every governance skill whose applicability it can detect**. Website signals are deliberately separate: Eleventy requires the neutral website core plus the content implementation; React/Vite requires the core plus the app implementation; Wrangler independently requires the Cloudflare hosting adapter. React/Vite discovery resolves the Vite configuration and dependencies from the core-owned `site-root`, including the default `apps/site/package.json`. A `Streams/` zone, MCP SDK dependency, plugin manifest, tool layout, Homebrew formula, or skill source similarly selects only its own standard. Documentation roots select their named owners: `docs/decisions/` (and the Knowledge Base decision path) selects `ki-decision-records`, `docs/specs/` selects `ki-specs`, and `docs/guides/` selects `ki-guides`. Detected-but-undeclared FAILs; a declared table with no matching artifact WARNs as possibly stale.
 
-A repo that is **not** a ki-repo (no `.ki.toml`) is never coverage-checked — it just takes the `ki-config` FAIL, so a lookalike repo (an `eleventy.config` but no marker) is not falsely told to opt in. This is `ki-repo`'s single cross-table read. It normally reads only table **presence**; the one value it consumes is the core website `site-root`, solely to locate the app evidence whose coverage it detects. The owning website skill validates that value. The full signal list and the marker-vs-config model live in [the `.ki.toml` standard](standards-configuration.md#coverage-enforcement). Silence one signal with `coverage-<skill> = false` under `[skills.ki-repo.checks]`; the resulting informational note makes the intentional omission visible.
+A repo that is **not** a ki-repo (no `.ki.toml`) is never coverage-checked — it just takes the `ki-config` FAIL, so a lookalike repo (an `eleventy.config` but no marker) is not falsely told to opt in. This is `ki-repo`'s single cross-table read. It normally reads only table **presence**; the one value it consumes is the core website `site-root`, solely to locate the app evidence whose coverage it detects. The owning website skill validates that value. The full signal list and the marker-vs-config model live in [the `.ki.toml` standard](standard-configuration.md#410-coverage-enforcement). Silence one signal with `coverage-<skill> = false` under `[skills.ki-repo.checks]`; the resulting informational note makes the intentional omission visible.
 
 The cascade's companion is a **primary-structure** rule: a repo declares at most one of `[skills.ki-repo-project]` and `[skills.ki-repo-kb]`. Project and Knowledge Base are mutually exclusive structures matching the explicitly declared repository kind. Declaring both FAILs (`repo-structure`, bedrock — not overridable). The remaining `ki-repo-*` standards are composable specialisations and do not count. Declaring neither WARNs (`structure`) so every governed repository makes its primary model visible.
 
 Website composition has its own narrower cardinality. A repository declaring `[skills.ki-repo-website]` selects exactly one purpose-specific implementation: `[skills.ki-repo-website-content]` or `[skills.ki-repo-website-app]`. Declaring both FAILs; declaring the core without either WARNs. Hosting adapters such as `[skills.ki-repo-website-cloudflare]` are orthogonal and do not participate in this count.
 
-## Applying it
+[Back to contents](#contents)
+
+### 4.13 Applying it
 
 `gh` CLI, authenticated with the GitHub **Administration** permission required for each target repository. The commands below are a reference plan, not an unattended conformer: inspect the live state and exact target set, show the proposed diff, and obtain explicit confirmation before each mutation batch. (zsh: use an array, not a bare string — unquoted `$var` does not word-split.)
 
@@ -382,7 +489,13 @@ Syncing a description is a cascade rather than a single edit. `.ki.toml`, the ro
 
 Layer 1 files are added with a normal commit, pushed straight to `main` (it is unprotected) or via a PR if you prefer.
 
-## Verifying it
+[Back to contents](#contents)
+
+### 4.14 Verifying it
+
+How to run the audit, and where its evidence comes from.
+
+#### 4.14.1 Running the audit
 
 ```zsh
 # Requires the verified active installed collection.
@@ -391,7 +504,9 @@ ki repo audit --repo ~/kis/knowledgeislands/example
 
 The native command resolves declared operations and checks every applicable layer.
 
-### What is read locally and what is read from GitHub
+[Back to contents](#contents)
+
+#### 4.14.2 What is read locally and what is read from GitHub
 
 Evidence comes from two distinct sources, and every finding identifies which one supplied it. A local checkout is primary for Layer 1 file presence, `.ki.toml`, tree-based coverage, and `package.json`; it includes tracked, staged, and unignored working-tree content, plus an explicit physical check for the forbidden `.ki` tree. A local unpushed change therefore appears in a local audit. If a caller explicitly selects a local target and it cannot be read, the audit fails that local evidence collection rather than falling back to GitHub.
 
@@ -399,6 +514,10 @@ An organisation or other filesystem-free remote run reads that same file and con
 
 Live GitHub settings — visibility, default branch, merge and toggle configuration, topics, branch protection, required checks, security, and Actions policy — exist only on the remote and are always read through GitHub. A finding that compares a local manifest or declaration with a live setting identifies both sources.
 
-## Conformance
+[Back to contents](#contents)
+
+### 4.15 Conformance
 
 Conformance means the native command resolves every declared operation, the local proposal is bounded and reviewable, and every live GitHub change is shown and explicitly confirmed before execution. Legacy vendored-runner status is not conformance to ADR-KI-HARNESS-012.
+
+[Back to contents](#contents)

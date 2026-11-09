@@ -1,7 +1,7 @@
 import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
 import { auditEvidence, type GhRubricContext, type RepoRubricContext } from '../contexts/repository.ts'
 
-const SOURCE = 'standards-repository.md'
+const SOURCE = 'standard-repository.md'
 
 const item = (
   code: string,

@@ -8,7 +8,7 @@
  * local-only evidence before authentication. The tree path / `--org` decide which mode
  * applies; a local target never silently falls back to remote file evidence.
  *
- * The standard has three layers (see references/standards-repository.md):
+ * The standard has three layers (see references/standard-repository.md):
  *   1. FILES   — README, LICENSE, .gitignore, and .ki.toml
  *                (the repo's declared config), from the selected evidence source.
  *                .ki.toml is also the GATE of the coverage cascade: once a
@@ -91,7 +91,7 @@ yarn-error.log*
 .claude/agents/
 `
 
-// ── the standard (keep in sync with references/standards-repository.md) ──────
+// ── the standard (keep in sync with references/standard-repository.md) ──────
 const DEFAULT_BRANCH = 'main'
 // The declared license defaults to MIT when `[skills.ki-repo] license` is unset. Decoupled
 // from visibility (a private repo may be MIT; a public repo may be proprietary).
@@ -99,7 +99,7 @@ const DEFAULT_LICENSE = 'MIT'
 const REQUIRED_CHECK = 'build'
 const ALLOWED_ACTIONS = 'all'
 // Reference-doc pointer carried on every mechanical finding.
-const STD = 'references/standards-repository.md'
+const STD = 'references/standard-repository.md'
 // Overridable checks and the org default for each — `true` = enforced by default.
 // A repo overrides any of these per-repo in [skills.ki-repo.checks];
 // a check it omits takes the default here, so a fully-conforming repo writes none.

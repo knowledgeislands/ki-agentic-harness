@@ -1,23 +1,88 @@
-# The `.ki.toml` contract
+---
+type: standard@2026-11-09T21:36:32Z
+revised: 2026-11-09T22:38:25Z
+status: in force
+---
 
-The cross-cutting contract for the shared **`.ki.toml`** file every Knowledge Islands repo carries. It is owned by `ki-repo` because **a Knowledge Islands repo is defined by carrying this file** — its presence is the compliance marker, and `ki-repo` governs the repo's compliance. Every other standard-holding skill reads its own table within it. (The TOML _formatting_ style — key case, quoting, comments — is the `ki-authoring` skill's; see its `standard-toml.md` reference. This document governs the _contract_: the file's meaning and the cross-skill protocol.)
+# The `.ki.toml` contract
 
 ## Contents
 
-- [The shared file & the compliance marker](#the-shared-file--the-compliance-marker)
-- [Presentation neighbourhoods](#presentation-neighbourhoods)
-- [Harnesses and the skills namespace](#harnesses-and-the-skills-namespace)
-- [Marker vs config tables](#marker-vs-config-tables)
-- [Validate your own table](#validate-your-own-table)
-- [Declared divergences](#declared-divergences)
-- [Overridable vs fixed](#overridable-vs-fixed)
-- [Territory and Capital](#territory-and-capital)
-- [Territory selection](#territory-selection)
-- [Coverage enforcement](#coverage-enforcement)
-- [Scaffolding & ownership](#scaffolding--ownership)
-- [Local registry](#local-registry)
+- [1. Introduction](#1-introduction)
+- [2. Scope](#2-scope)
+  - [2.1 In scope](#21-in-scope)
+  - [2.2 Out of scope](#22-out-of-scope)
+- [3. Terms and definitions](#3-terms-and-definitions)
+- [4. Rules](#4-rules)
+  - [4.1 The shared file & the compliance marker](#41-the-shared-file--the-compliance-marker)
+  - [4.2 Presentation neighbourhoods](#42-presentation-neighbourhoods)
+    - [4.2.1 Neighbourhood banners](#421-neighbourhood-banners)
+    - [4.2.2 Layout rules](#422-layout-rules)
+  - [4.3 Harnesses and the skills namespace](#43-harnesses-and-the-skills-namespace)
+    - [4.3.1 Declaring harnesses and skills](#431-declaring-harnesses-and-skills)
+    - [4.3.2 Resolution](#432-resolution)
+    - [4.3.3 The out-of-list exception](#433-the-out-of-list-exception)
+  - [4.4 Marker vs config tables](#44-marker-vs-config-tables)
+  - [4.5 Validate your own table](#45-validate-your-own-table)
+  - [4.6 Declared divergences](#46-declared-divergences)
+  - [4.7 Overridable vs fixed](#47-overridable-vs-fixed)
+  - [4.8 Territory and Capital](#48-territory-and-capital)
+  - [4.9 Territory selection](#49-territory-selection)
+  - [4.10 Coverage enforcement](#410-coverage-enforcement)
+  - [4.11 Repository kind](#411-repository-kind)
+  - [4.12 Scaffolding & ownership](#412-scaffolding--ownership)
+  - [4.13 Local registry](#413-local-registry)
 
-## The shared file & the compliance marker
+## 1. Introduction
+
+The cross-cutting contract for the shared **`.ki.toml`** file every Knowledge Islands repo carries. It is owned by `ki-repo` because **a Knowledge Islands repo is defined by carrying this file** — its presence is the compliance marker, and `ki-repo` governs the repo's compliance. Every other standard-holding skill reads its own table within it. (The TOML _formatting_ style — key case, quoting, comments — is the `ki-authoring` skill's; see its `standard-toml.md` reference. This document governs the _contract_: the file's meaning and the cross-skill protocol.) The decisions behind these rules are in [the sources file](sources.md#3-decisions).
+
+[Back to contents](#contents)
+
+## 2. Scope
+
+The meaning of `.ki.toml` and the protocol between the skills that read it.
+
+### 2.1 In scope
+
+- The shared file, its conformance header and its role as the compliance marker.
+- Presentation neighbourhoods and the layout rules `ki-repo` checks.
+- The `[repo]` harness list, the `[skills]` namespace, and how a bare skill name resolves.
+- Marker and config tables, validating a skill's own table, declared divergences, and what is overridable.
+- Territory and Capital, territory selection, and coverage enforcement.
+- The repository kind fields, scaffolding and ownership of tables, and the local registry.
+
+[Back to contents](#contents)
+
+### 2.2 Out of scope
+
+- The TOML formatting style: `ki-authoring`'s [TOML formatting standard](../../ki-authoring/references/standard-toml.md).
+- The schema of any other skill's table: the skill that owns it.
+- The territory's trade policy and the routes it grants: `ki-trades`.
+- The rest of the repository standard: [the repository standard](standard-repository.md).
+
+[Back to contents](#contents)
+
+## 3. Terms and definitions
+
+| Term | Definition |
+| --- | --- |
+| **Compliance marker** | The presence of `.ki.toml` at a repository's root, which declares it a Knowledge Islands–compliant repo and gates the coverage cascade. **Standard:** this one, [4.1](#41-the-shared-file--the-compliance-marker) |
+| **Neighbourhood banner** | The exact three-line comment introducing one of the stable `.ki.toml` neighbourhoods: Foundation, Repository shape, Governance and runtime, Change management, Relationships. **Standard:** this one, [4.2.1](#421-neighbourhood-banners) |
+| **Bare name** | A skill's declaration key under `[skills]`, bound to exactly one provider among the declared `harnesses`. **Standard:** this one, [4.3.2](#432-resolution) |
+| **Marker table** | A `[skills.<name>]` table whose presence declares that the skill governs the repo. **Standard:** this one, [4.4](#44-marker-vs-config-tables) |
+| **Config table** | A `[skills.<name>]` table carrying per-repo declarations the skill reads. **Standard:** this one, [4.4](#44-marker-vs-config-tables) |
+| **Declared divergence** | A recorded departure from a skill's default, kept in that skill's own table so it reads as a choice, not drift. **Standard:** this one, [4.6](#46-declared-divergences) |
+| **Capital** | The repository governing a territory: the one whose `capital` equals its own `repository`. **Standard:** this one, [4.8](#48-territory-and-capital) |
+| **Territory handle** | A Capital's explicit `territory_prefix`, or its local registry key when the prefix is absent. **Standard:** this one, [4.9](#49-territory-selection) |
+
+[Back to contents](#contents)
+
+## 4. Rules
+
+The rules, part by part.
+
+### 4.1 The shared file & the compliance marker
 
 A repo declares its configuration in **one** `.ki.toml` at its root — not one file per concern. It is shared: several skills may read it, each from its own section. This keeps a repo's declared config in a single reviewable place and lets a skill discover what it needs without a bespoke file.
 
@@ -32,7 +97,13 @@ Every file opens with this exact lightweight declaration:
 
 The header makes the marker legible without requiring a reader to know the filename contract. A future specification may replace the second line with a stable reference, but repositories use this exact wording until that reference exists.
 
-## Presentation neighbourhoods
+[Back to contents](#contents)
+
+### 4.2 Presentation neighbourhoods
+
+The neighbourhood banners, and the layout rules `ki-repo` checks.
+
+#### 4.2.1 Neighbourhood banners
 
 A compact `.ki.toml` with at most two declared skill roots beyond the required `ki-repo` and `ki-authoring` foundation MAY omit neighbourhood banners, although `ki-authoring` asks every file to use them. A substantial file with three or more additional skill roots MUST use the exact three-line `Foundation` banner and at least one other needed banner from this stable sequence:
 
@@ -48,7 +119,9 @@ Neighbourhood comments are navigational and carry no consumer-visible semantics.
 
 Each used banner MUST use the exact three-line comment form, appear at most once, introduce a non-empty declaration group, and follow the sequence above. An owner block MUST NOT cross a neighbourhood banner. `ki-repo` mechanically diagnoses these source-level rules without reserialising TOML or assigning every skill to a hard-coded neighbourhood. `ki-authoring` retains the judgment of whether a non-foundation declaration is placed under the most meaningful banner.
 
-### Layout rules
+[Back to contents](#contents)
+
+#### 4.2.2 Layout rules
 
 Every `.ki.toml` follows the six `ki-authoring` TOML layout rules. `ki-repo` checks four of them mechanically as `FILES-10`, on the source text rather than the parsed data:
 
@@ -57,9 +130,15 @@ Every `.ki.toml` follows the six `ki-authoring` TOML layout rules. `ki-repo` che
 - `[skills.ki-trades]` and its child tables are the last tables in the file.
 - An ordinary skill subtable such as `[skills.<skill>.<key>]` is a data map whose keys are data: roadmap `areas`, client names, check names, zones, sites, templates, client names, model tiers, budget surfaces and lifecycle states. A subtable that groups fixed fields fails; those keys belong in the skill table. An array-of-tables heading such as `[[skills.ki-repo-tools.assembled]]` declares an element of a schema-defined record array and is permitted; the owning skill validates that array and its records. `[skills.ki-trades.territory]` is exempt while its trade-policy model is under separate review; the retired `[skills.ki-repo.territory]` is not.
 
-`FILES-10` fails in the Knowledge Islands territory and warns elsewhere, as the roadmap's bare-area-list check does. Its enforcing Capital is the canonical identity `https://github.com/knowledgeislands/ki-principal`, resolved through the local registry as [Territory and Capital](#territory-and-capital) describes. Only repositories listed in that Capital's `territory_members`, including the Capital itself, receive strict enforcement. Short territory or Harness prefixes do not determine this policy. An unavailable or ambiguous Capital reads as outside the enforcing territory, so the check warns rather than fails.
+`FILES-10` fails in the Knowledge Islands territory and warns elsewhere, as the roadmap's bare-area-list check does. Its enforcing Capital is the canonical identity `https://github.com/knowledgeislands/ki-principal`, resolved through the local registry as [Territory and Capital](#48-territory-and-capital) describes. Only repositories listed in that Capital's `territory_members`, including the Capital itself, receive strict enforcement. Short territory or Harness prefixes do not determine this policy. An unavailable or ambiguous Capital reads as outside the enforcing territory, so the check warns rather than fails.
 
-## Harnesses and the skills namespace
+[Back to contents](#contents)
+
+### 4.3 Harnesses and the skills namespace
+
+How a repository names its harnesses and declares its skills, how a bare name resolves, and the one exception.
+
+#### 4.3.1 Declaring harnesses and skills
 
 A repository names the harnesses that provide its skills once, in `[repo]`, and declares each governing skill by its **bare name** under the `[skills]` namespace. A skill that needs declared config owns **exactly one** table there, named for the skill, and may nest sub-tables under it (e.g. `[skills.<name>.checks]`):
 
@@ -96,7 +175,7 @@ checks.branch-protection = true
 
 `[skills]` is a namespace, not a skill: it makes "this key is a declaration" structural rather than a guess about how the key is spelled. A repository-level setting that belongs to no skill lives in `[repo]` and is never mistaken for one.
 
-`[skills.ki-repo]` carries repository identity and declared facts the auditor checks. `repository` is mandatory and is the canonical HTTPS GitHub home (`https://github.com/<owner>/<repository>`), checked against GitHub's repository identity. `title` and `description` are mandatory: title exactly matches the README H1, while description exactly matches GitHub and package.json where those surfaces exist. `visibility` (`"public"` | `"private"`, matched against GitHub) and `license` (an [SPDX License List](https://spdx.org/licenses/) identifier — default MIT when unset — matched against the live GitHub license, the `LICENSE` file, and `package.json` `"license"`) are independent: a private repo may be MIT, a public repo proprietary. Use [Choose a License](https://choosealicense.com/) as selection guidance; use `"UNLICENSED"` for all-rights-reserved proprietary. `capital` is mandatory and names the repository's territory Capital as a full canonical HTTPS GitHub URL with the same grammar as `repository`; a Capital names itself. [Territory and Capital](#territory-and-capital) defines how it is checked.
+`[skills.ki-repo]` carries repository identity and declared facts the auditor checks. `repository` is mandatory and is the canonical HTTPS GitHub home (`https://github.com/<owner>/<repository>`), checked against GitHub's repository identity. `title` and `description` are mandatory: title exactly matches the README H1, while description exactly matches GitHub and package.json where those surfaces exist. `visibility` (`"public"` | `"private"`, matched against GitHub) and `license` (an [SPDX License List](https://spdx.org/licenses/) identifier — default MIT when unset — matched against the live GitHub license, the `LICENSE` file, and `package.json` `"license"`) are independent: a private repo may be MIT, a public repo proprietary. Use [Choose a License](https://choosealicense.com/) as selection guidance; use `"UNLICENSED"` for all-rights-reserved proprietary. `capital` is mandatory and names the repository's territory Capital as a full canonical HTTPS GitHub URL with the same grammar as `repository`; a Capital names itself. [Territory and Capital](#48-territory-and-capital) defines how it is checked.
 
 The third, `supported_runtimes`, is a **repo-wide** fact — the agent runtimes this repo supports. It lives on `[skills.ki-repo]` rather than `[skills.ki-repo-harness]` because it drives orientation and runtime-bound capabilities across the whole repo, not just the four-part harness; a non-harness KI repo can support runtimes too. Native activation resolves it to each runtime's discovery path (Claude Code → `.claude/`, ChatGPT Codex → `.agents/`; see the runtime feature-coverage matrix in `SDR-KI-HARNESS-002`). The key is required: support is a stable repository capability, never inferred from the directories present at a moment in time. Values must name a recognised runtime (`claude-code`, `claude-desktop`, or `chatgpt-codex`), must be non-empty, and must not repeat — the auditor's `RUNTIMES-1` FAILs otherwise. The retired `codex` identifier is rejected with recovery guidance; it is not a compatibility alias.
 
@@ -105,7 +184,9 @@ Runtime environment coverage follows that declaration rather than being opt-in. 
 - The table name **matches the skill's `name`** exactly, so the owner is unambiguous and the file reads as a map of skill → its settings.
 - A skill reads **only its own table** and never reaches into another skill's — the table boundary is the schema ownership boundary. If two skills need the same fact, it still lives under whichever skill owns it, and the other resolves it from there. `ki-repo` owns the shared file-level contract and required foundation scaffold; each skill may conform its own table while preserving every other table.
 
-### Resolution
+[Back to contents](#contents)
+
+#### 4.3.2 Resolution
 
 A bare name binds to exactly one provider, resolved against the declared `harnesses` list rather than against whichever harnesses happen to be installed — so a version-controlled file means the same thing on every machine.
 
@@ -115,7 +196,9 @@ A bare name binds to exactly one provider, resolved against the declared `harnes
 
 Declaring a skill is separate from configuring it. `[skills.ki-trades]` with no keys is a marker; a skill is never declared as a side effect of one of its sub-tables. State the root table explicitly even where TOML would create it implicitly, so a declaration never depends on whether the skill happens to carry configuration.
 
-### The out-of-list exception
+[Back to contents](#contents)
+
+#### 4.3.3 The out-of-list exception
 
 A skill drawn from a harness outside the declared list keeps a quoted, fully-qualified key, so the exception stays visibly exceptional:
 
@@ -125,7 +208,9 @@ A skill drawn from a harness outside the declared list keeps a quoted, fully-qua
 
 This is the only place a qualified key appears in the file.
 
-## Marker vs config tables
+[Back to contents](#contents)
+
+### 4.4 Marker vs config tables
 
 A `[skills.<name>]` table plays one or both of two roles:
 
@@ -144,11 +229,15 @@ So **what an absent table means is per-skill**, and that is exactly what _Covera
 
 Every declared governance root also commits the repository to a complete **resolvable native capability**: `ki repo audit` and `ki repo conform` must resolve its compatible registered operations only from the verified active installed collection before any operation runs. A declaration is not a request to vendor a manifest or payload into the repository. Process skills (`ki-next`, `ki-plan`, `ki-implement`, `ki-accept`, and `ki-recap`) remain global process tooling, not target-local governance contracts, and must not be declared in `.ki.toml`. Human-led repository review is a mode of the declared `ki-repo` capability, not a separate configuration table.
 
-## Validate your own table
+[Back to contents](#contents)
+
+### 4.5 Validate your own table
 
 A skill **validates its own table and only its own**: it warns on a key (or sub-table entry) under its table that it doesn't recognise — a typo or a stale option should surface, not silently do nothing — and advises dropping one that merely restates a default. It leaves every other skill's table untouched, even keys it can't interpret. **Validate down, ignore across.** (`ki-repo` is the reference: it warns on an unknown `[…checks]` entry, notes a redundant one, and never inspects another skill's table.) The same boundary governs conformers: a skill may change its own table, never another's.
 
-## Declared divergences
+[Back to contents](#contents)
+
+### 4.6 Declared divergences
 
 Where a skill's standard allows a repo to diverge from a default, record that **in the skill's own table** so it reads as a declared choice, not drift. The _shape_ is the owning skill's business — `ki-repo`, for instance, carries a `[…checks]` sub-table of booleans where any check set against its org default is the divergence:
 
@@ -161,13 +250,17 @@ The owning skill's auditor then reports the divergence as an acknowledged note r
 
 For a wholly owned file that needs a safety exception, the owning skill may use a nested map of exact filenames to non-empty reasons. The declaration protects only the named destructive conform write; it remains a warning and never supplies a second local template or arbitrary configuration delta.
 
-## Overridable vs fixed
+[Back to contents](#contents)
+
+### 4.7 Overridable vs fixed
 
 A skill's standard fixes its model; a base or repo may declare **only** the keys that skill documents as overridable, and nothing else is a config knob. Two kinds of declaration are overridable: **data** the standard reads to fit a target (e.g. `ki-repo-kb`'s zone aliases, `required_frontmatter`, and `preflight`), and **divergences** from a default (the `[…checks]` booleans above). Everything not so documented is **fixed** by the standard — a target does not redefine it in config. This split is what keeps target-specificity declared-and-auditable rather than forked into a coupled skill: where a target differs, it differs through a documented key, not a bespoke `<target>-*` extension skill.
 
 So the option set is **authored, not implicit**: each skill with declarable keys defines and can emit or conform its commented schema/default fragment, so an author sees exactly what may be set and an undocumented key warns (validate-down). `ki-repo` separately owns the file-level contract and required foundation markers. A target-specific need that no documented key can express is a signal to **generalise it into the standard** (a REFRESH candidate), not to invent an ad-hoc key or fork a skill.
 
-## Territory and Capital
+[Back to contents](#contents)
+
+### 4.8 Territory and Capital
 
 Every repository belongs to exactly one territory, governed by its Capital. `[skills.ki-repo].capital` is required in every `.ki.toml`: a full canonical HTTPS GitHub URL (`https://github.com/<owner>/<repository>`, lower-case owner and name drawn from `[a-z0-9._-]`), compared as an exact string with the Capital's own `[skills.ki-repo].repository`. A Capital is the repository whose `capital` equals its own `repository`. There is no default, alias, or inference at read time; a missing or malformed declaration FAILs.
 
@@ -195,7 +288,9 @@ The `TERR` rubric family carries these rules: `TERR-1` (capital declared), `TERR
 
 The Capital also owns the territory's trade policy under `[skills.ki-trades.territory]`; `ki-trades` governs its schema and the routes it grants.
 
-## Territory selection
+[Back to contents](#contents)
+
+### 4.9 Territory selection
 
 The accepted [territory-selection decision](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/ADR-KI-PRINCIPAL-002-territory-derived-repository-selection.md) derives working-set selection from the Capital's authoritative `territory_members`. This selection grants no jurisdiction, cross-repository write permission, trade route or acceptance authority.
 
@@ -212,7 +307,9 @@ KI and mgit share these selection rules:
 
 The read-only machine endpoint is `ki territory roots --null --territory <handle> [--filter <prefix>...]`, or `ki territory roots --null --estate [--filter <prefix>...]`; the short flag `-t` has the same meaning, and `--filter` has no short letter. It returns deterministic, deduplicated registered primary checkout roots as NUL-delimited absolute paths. Resolve and validate the complete request before writing any stdout bytes. Failure emits diagnostics on stderr and a non-zero exit status, with no partial roots. Other tooling may consume this endpoint as a buffered selection interface without importing KI runtime or authority rules.
 
-## Coverage enforcement
+[Back to contents](#contents)
+
+### 4.10 Coverage enforcement
 
 The file's presence is the **gate of an audit cascade**. Once a repo is confirmed a ki-repo (it carries `.ki.toml`), `ki-repo`'s auditor checks that the repo **declares an opt-in table for every governance skill whose applicability is detectable in it**. A detected-but-undeclared signal FAILs ("looks governed by `ki-<skill>` but declares no `[skills.ki-<skill>]`"); a declared-but-undetected table WARNs as a possibly stale opt-in, unless the `ki-depends-on` closure of another declared skill requires it, as `ki-repo-harness` requires `ki-subagents`, because the host will not run that skill without it. Documentation is mechanically owned: content under `docs/decisions/` (or a Knowledge Base's `Admin/Governance/Decisions/`) requires `ki-decision-records`, content under `docs/specs/` requires `ki-specs`, and content under `docs/guides/` requires `ki-guides`.
 
@@ -250,13 +347,17 @@ Trade coverage is the one signal read from outside the repository. When the repo
 
 No marker table is decorative — each is read by code. Most are read by their **owning** skill's auditor too (`-engineering`/`-kb`/`-streams`/`-website`/`-website-cloudflare`/`-mcp` each read their own table when run). `ki-skills`, `ki-subagents`, and its runtime adapters are the documented exception: their checkers lint artifact sets (`SKILL.md` files or native agent projections), not a repo's config, so their opt-in tables are read only by `ki-repo`'s coverage check.
 
-## Repository kind
+[Back to contents](#contents)
+
+### 4.11 Repository kind
 
 `[skills.ki-repo]` owns the mandatory `repo_type` and `primary_shape` fields. `repo_type` is exactly `project` or `kb`. A Project names a declared core shape in `primary_shape`, using `ki-repo-project` for a general Project. A Knowledge Base writes `primary_shape = "ki-repo-kb"` and a duplicate-free `store_roles` array containing `notes`, optionally `sources` and `legacy`. These are role names, not paths or local-machine bindings. Projects do not declare `store_roles`.
 
-Both fields must be present even when the repository has only one possible shape. The [Project shape rules](standards-repository.md#project-shapes) define supported core shapes and adapters. A missing, unsupported, undeclared, or kind-incompatible shape is invalid. Neither kind nor primary shape is accepted in another skill's table.
+Both fields must be present even when the repository has only one possible shape. The [Project shape rules](standard-repository.md#422-project-shapes) define supported core shapes and adapters. A missing, unsupported, undeclared, or kind-incompatible shape is invalid. Neither kind nor primary shape is accepted in another skill's table.
 
-## Scaffolding & ownership
+[Back to contents](#contents)
+
+### 4.12 Scaffolding & ownership
 
 The **schema and conformer** inside a table belong to the skill that owns it: that skill documents the allowed keys and may emit or update its canonical fragment while preserving unrelated content. `ki-repo` owns the shared file-level contract and the two required foundation markers. No operation embeds another skill's TOML template or edits that skill's table directly. This retains one shared `.ki.toml`, one table per skill, read-only access across table boundaries, and validate-down/conform-down ownership.
 
@@ -266,6 +367,10 @@ The native configuration and activation flow runs this owner leg without embeddi
 
 The native resolver validates declaration names. Exact and dotted `[skills.ki-*]` headers both resolve to their root owner; bare and simply quoted TOML keys are equivalent, header-looking text inside multiline strings is ignored, and noncanonical ki-like roots remain visible so they fail rather than disappear. Repeated roots collapse. If any declared root is unresolvable, native audit, activation, dry-run, and the repository-mutating portion of CONFORM fail and report each name once in sorted order. Rename reconciliation stays human because no mechanical mapping can establish intent.
 
-## Local registry
+[Back to contents](#contents)
+
+### 4.13 Local registry
 
 The local user configuration separately records physical roots that have been addressed as KI repositories. It is an inventory for audit, repair, and future bulk operations — not a record of successful conformance. `ki repo register` adds explicitly selected physical roots without resolving declarations or applying repository repairs. `ki repo init`, direct-CWD `ki repair`, and a local non-dry-run `ki repo conform` each attempt the same registration before their later work, so a malformed or failing `.ki.toml` remains discoverable. Registration preserves existing entries, never removes an entry, and does not search the filesystem beyond the caller's explicit target selection. Without a bootstrapped local user configuration, CONFORM remains portable and does not create one; the standalone registration command requires it. Cloud-account registry and reconciliation are outside this local contract.
+
+[Back to contents](#contents)

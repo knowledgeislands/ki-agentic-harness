@@ -6,7 +6,7 @@ const ACCESS_1: RubricItem<EvidenceRubricContext> = {
   title: 'GitHub access and archive state',
   description:
     'GitHub reachability is reported without manufacturing drift when offline, and archived repositories are skipped.',
-  sources: ['standards-repository.md'],
+  sources: ['standard-repository.md'],
   mechanical: {
     level: 'WARN',
     overrideLevels: ['FAIL'],
@@ -22,7 +22,7 @@ export const ACCESS: RubricFamily<RepoRubricContext, EvidenceRubricContext> = {
   code: 'ACCESS',
   title: 'Repository access',
   description: 'GitHub reachability and archive state.',
-  standard: 'standards-repository.md',
+  standard: 'standard-repository.md',
   selectContext: (context) => context.access,
   items: [ACCESS_1]
 }

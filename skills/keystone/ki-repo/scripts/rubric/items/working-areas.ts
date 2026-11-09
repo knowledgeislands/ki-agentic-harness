@@ -1,7 +1,7 @@
 import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
 import type { RepoRubricContext, WorkingAreasRubricContext } from '../contexts/repository.ts'
 
-const SOURCE = 'standards-repository.md'
+const SOURCE = 'standard-repository.md'
 
 const WORK_1: RubricItem<WorkingAreasRubricContext> = {
   code: 'WORK-1',

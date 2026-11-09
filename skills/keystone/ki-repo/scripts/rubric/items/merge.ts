@@ -5,7 +5,7 @@ const MERGE_1: RubricItem<EvidenceRubricContext> = {
   code: 'MERGE-1',
   title: 'Merge policy',
   description: 'The repository permits squash merges only and deletes merged head branches.',
-  sources: ['standards-repository.md'],
+  sources: ['standard-repository.md'],
   mechanical: {
     level: 'FAIL',
     remediation: {
@@ -20,7 +20,7 @@ export const MERGE: RubricFamily<RepoRubricContext, EvidenceRubricContext> = {
   code: 'MERGE',
   title: 'Merge policy',
   description: 'GitHub merge and branch-cleanup behaviour.',
-  standard: 'standards-repository.md',
+  standard: 'standard-repository.md',
   selectContext: (context) => context.merge,
   items: [MERGE_1]
 }

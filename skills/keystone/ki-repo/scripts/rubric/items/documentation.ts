@@ -8,7 +8,7 @@ const DOC_1: RubricItem<DocumentationRubricContext> = {
   title: 'Documentation concern ownership',
   description:
     'In a non-Knowledge-Base repository, durable documentation is routed to Decision Records, Specifications, Guides, or the Roadmap; specialist skills retain the content contract for their concern.',
-  sources: ['standards-documentation-topology.md'],
+  sources: ['standard-documentation-topology.md'],
   judgment: {
     scope: 'Repository documentation topology and the durable material routed to each concern.',
     prompt:
@@ -23,7 +23,7 @@ export const DOC: RubricFamily<RepoRubricContext, DocumentationRubricContext> = 
   code: 'DOC',
   title: 'Documentation topology',
   description: 'Repository-level ownership of durable documentation concerns.',
-  standard: 'standards-documentation-topology.md',
+  standard: 'standard-documentation-topology.md',
   selectContext: () => ({}),
   items: [DOC_1]
 }

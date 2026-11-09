@@ -6,7 +6,7 @@ const BP_1: RubricItem<EvidenceRubricContext> = {
   title: 'Branch protection',
   description:
     'Main has the configured branch-protection posture, including required PR, build check, and linear history when enabled.',
-  sources: ['standards-repository.md'],
+  sources: ['standard-repository.md'],
   mechanical: {
     level: 'FAIL',
     cost: 4,
@@ -22,7 +22,7 @@ export const BP: RubricFamily<RepoRubricContext, EvidenceRubricContext> = {
   code: 'BP',
   title: 'Branch protection',
   description: 'Optional main-branch protection.',
-  standard: 'standards-repository.md',
+  standard: 'standard-repository.md',
   selectContext: (context) => context.branchProtection,
   items: [BP_1]
 }

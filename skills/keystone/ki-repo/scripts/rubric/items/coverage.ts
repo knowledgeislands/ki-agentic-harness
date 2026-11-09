@@ -6,7 +6,7 @@ const COV_1: RubricItem<EvidenceRubricContext> = {
   title: 'Governance coverage cascade',
   description:
     'Detected governance applicability and declared opt-in tables agree, subject to explicit coverage overrides; an island named in its Capital trade policy declares ki-trades.',
-  sources: ['standards-configuration.md'],
+  sources: ['standard-configuration.md'],
   mechanical: {
     level: 'FAIL',
     overrideLevels: ['WARN'],
@@ -23,7 +23,7 @@ export const COV: RubricFamily<RepoRubricContext, EvidenceRubricContext> = {
   code: 'COV',
   title: 'Governance coverage',
   description: 'Detected and declared governance coverage.',
-  standard: 'standards-configuration.md',
+  standard: 'standard-configuration.md',
   selectContext: (context) => context.coverage,
   items: [COV_1]
 }

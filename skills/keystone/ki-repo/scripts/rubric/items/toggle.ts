@@ -6,7 +6,7 @@ const TOGGLE_1: RubricItem<EvidenceRubricContext> = {
   title: 'Repository feature toggles',
   description:
     'Issues are enabled exactly when ki-work-github-issues is declared; Wiki and Projects are disabled unless explicitly overridden.',
-  sources: ['standards-repository.md'],
+  sources: ['standard-repository.md'],
   mechanical: {
     level: 'FAIL',
     remediation: {
@@ -22,7 +22,7 @@ export const TOGGLE: RubricFamily<RepoRubricContext, EvidenceRubricContext> = {
   code: 'TOGGLE',
   title: 'Repository features',
   description: 'Issues, Wiki, and Projects settings.',
-  standard: 'standards-repository.md',
+  standard: 'standard-repository.md',
   selectContext: (context) => context.toggle,
   items: [TOGGLE_1]
 }

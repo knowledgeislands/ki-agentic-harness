@@ -2,7 +2,7 @@ import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
 import { COMMIT_MSG_HOOK, HOOK_BINDING, type HooksRubricContext, PRE_COMMIT_HOOK } from '../contexts/hooks.ts'
 import type { RepoRubricContext } from '../contexts/repository.ts'
 
-const SOURCE = 'standards-repository.md'
+const SOURCE = 'standard-repository.md'
 
 const HOOK_1: RubricItem<HooksRubricContext> = {
   code: 'HOOK-1',

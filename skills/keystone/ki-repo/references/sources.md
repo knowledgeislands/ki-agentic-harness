@@ -1,10 +1,33 @@
+---
+type: sources@2026-11-09T21:36:32Z
+revised: 2026-11-09T22:38:25Z
+refresh: external-spec · monthly
+---
+
 # Sources — where the repo standard comes from
+
+## Contents
+
+- [1. Introduction](#1-introduction)
+- [2. Outside sources](#2-outside-sources)
+  - [2.1 Authoritative](#21-authoritative)
+  - [2.2 Advisory](#22-advisory)
+- [3. Decisions](#3-decisions)
+- [4. Last review](#4-last-review)
+
+## 1. Introduction
 
 **Refresh:** external-spec · monthly
 
-The authoritative sources behind [the repository standard](standards-repository.md), [the configuration standard](standards-configuration.md), and the generated [rubric](rubric.md). Mode REFRESH reads this file, re-fetches each source, diffs it against the standards and structured catalogue, then **bumps the `last reviewed` dates** and refreshes the `## Last review` block below (what changed is recorded in the commit, not a changelog). GitHub's settings surface moves (rulesets, security toggles, Actions policy), so this is the skill's memory of where the standard comes from — keep it current.
+The authoritative sources behind [the repository standard](standard-repository.md), [the configuration standard](standard-configuration.md), and the generated [rubric](rubric.md). Mode REFRESH reads this file, re-fetches each source, diffs it against the standards and structured catalogue, then **bumps the `last reviewed` dates** and refreshes [Last review](#4-last-review) (what changed is recorded in the commit, not a changelog). GitHub's settings surface moves (rulesets, security toggles, Actions policy), so this is the skill's memory of where the standard comes from — keep it current.
 
-## Authoritative (GitHub)
+[Back to contents](#contents)
+
+## 2. Outside sources
+
+The GitHub and licensing specifications the standards follow.
+
+### 2.1 Authoritative
 
 | Source | Governs | Last reviewed |
 | --- | --- | --- |
@@ -18,7 +41,31 @@ The authoritative sources behind [the repository standard](standards-repository.
 | [SPDX License List][spdx] | authoritative license identifiers, including MIT and UNLICENSED | 2026-09-26 |
 | [Choose a License][choosealicense] | supporting license-selection guidance | 2026-09-26 |
 
-## Last review
+[repo-settings]: https://docs.github.com/en/rest/repos/repos#update-a-repository
+[branch-protection]: https://docs.github.com/en/rest/branches/branch-protection
+[rulesets]: https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets
+[dependabot]: https://docs.github.com/en/rest/repos/repos#enable-vulnerability-alerts
+[secret-scanning]: https://docs.github.com/en/code-security/reference/secret-security/secret-scanning-scope
+[actions]: https://docs.github.com/en/rest/actions/permissions
+[gh-cli]: https://cli.github.com/manual/
+[spdx]: https://spdx.org/licenses/
+[choosealicense]: https://choosealicense.com/
+
+[Back to contents](#contents)
+
+### 2.2 Advisory
+
+None.
+
+[Back to contents](#contents)
+
+## 3. Decisions
+
+None.
+
+[Back to contents](#contents)
+
+## 4. Last review
 
 REFRESH last run **2026-09-26** against all nine tracked sources. Repository settings, classic protection and rulesets, Dependabot endpoints, secret-scanning scope, Actions permissions, CLI routes, and licence guidance remain available. GitHub's current REST examples use API version `2026-03-10`, but no governed field or criterion changed in this refresh.
 
@@ -29,12 +76,4 @@ REFRESH last run **2026-09-26** against all nine tracked sources. Repository set
 - **SPDX / Choose a License**: SPDX is the authority for declared identifiers; Choose a License remains a selection aid. `UNLICENSED` remains the proprietary declaration.
 - **Open watch-items:** re-confirm that the branch-protection GET response continues to support the compatibility evidence the auditor consumes, and that classic protection remains available beside rulesets.
 
-[repo-settings]: https://docs.github.com/en/rest/repos/repos#update-a-repository
-[branch-protection]: https://docs.github.com/en/rest/branches/branch-protection
-[rulesets]: https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets
-[dependabot]: https://docs.github.com/en/rest/repos/repos#enable-vulnerability-alerts
-[secret-scanning]: https://docs.github.com/en/code-security/reference/secret-security/secret-scanning-scope
-[actions]: https://docs.github.com/en/rest/actions/permissions
-[gh-cli]: https://cli.github.com/manual/
-[spdx]: https://spdx.org/licenses/
-[choosealicense]: https://choosealicense.com/
+[Back to contents](#contents)

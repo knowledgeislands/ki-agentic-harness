@@ -1,7 +1,7 @@
 import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
 import { auditEvidence, type RepoRubricContext, type RuntimesRubricContext } from '../contexts/repository.ts'
 
-const SOURCE = 'standards-repository.md'
+const SOURCE = 'standard-repository.md'
 
 const RUNTIMES_1: RubricItem<RuntimesRubricContext> = {
   code: 'RUNTIMES-1',

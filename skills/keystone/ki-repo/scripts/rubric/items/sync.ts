@@ -7,7 +7,7 @@ const SYNC_1: RubricItem<SynchronisationRubricContext> = {
   code: 'SYNC-1',
   title: 'Standard synchronisation',
   description: 'The standard, structured rubric, and executable behaviour remain aligned.',
-  sources: ['standards-repository.md'],
+  sources: ['standard-repository.md'],
   judgment: {
     scope: 'The repository standard, structured rubric, generated publication, and checker behaviour.',
     prompt: 'Compare the standard, generated rubric, and checker behaviour for semantic drift.',
@@ -20,7 +20,7 @@ export const SYNC: RubricFamily<RepoRubricContext, SynchronisationRubricContext>
   code: 'SYNC',
   title: 'Standard synchronisation',
   description: 'Alignment across the knowledge chain.',
-  standard: 'standards-repository.md',
+  standard: 'standard-repository.md',
   selectContext: (context) => context.synchronisation,
   items: [SYNC_1]
 }

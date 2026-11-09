@@ -5,7 +5,7 @@ const CHECKS_1: RubricItem<EvidenceRubricContext> = {
   code: 'CHECKS-1',
   title: 'Override keys',
   description: 'Every ki-repo checks override names a supported overridable concern.',
-  sources: ['standards-configuration.md'],
+  sources: ['standard-configuration.md'],
   mechanical: {
     level: 'WARN',
     remediation: {
@@ -20,7 +20,7 @@ export const CHECKS: RubricFamily<RepoRubricContext, EvidenceRubricContext> = {
   code: 'CHECKS',
   title: 'Check overrides',
   description: 'Per-repository override schema.',
-  standard: 'standards-configuration.md',
+  standard: 'standard-configuration.md',
   selectContext: (context) => context.checks,
   items: [CHECKS_1]
 }

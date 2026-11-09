@@ -32,7 +32,7 @@ Kris Brown decided STORAGE-OWNER a) on 20 October 2026 in the Observatory work, 
 
 The alternatives considered were [`ki-repo-tools`](../../skills/repo-structure/ki-repo-tools/references/standards-tool-repositories.md), which already requires a tool to follow XDG but covers only tool repositories and would leave MCP servers and apps undeclared; Rig's catalogue, which describes declared intent and profile selection on one machine rather than a repository-owned standard; and [`ki-engineering`](../../skills/governance/ki-engineering/references/standards-engineering.md), which owns how code resolves XDG paths, not what a tool declares.
 
-The review made one point this record carries: choosing `.ki.toml` does not itself choose a schema owner, because the [configuration contract](../../skills/keystone/ki-repo/references/standards-configuration.md#scaffolding--ownership) assigns each table's schema and conformer to the skill that owns it. This decision therefore extends `ki-repo`'s responsibilities to a new table; it does not apply an existing storage-declaration rule. The schema is still to be designed.
+The review made one point this record carries: choosing `.ki.toml` does not itself choose a schema owner, because the [configuration contract](../../skills/keystone/ki-repo/references/standard-configuration.md#412-scaffolding--ownership) assigns each table's schema and conformer to the skill that owns it. This decision therefore extends `ki-repo`'s responsibilities to a new table; it does not apply an existing storage-declaration rule. The schema is still to be designed.
 
 ## Boundary
 
@@ -53,7 +53,7 @@ Checked on 20 October 2026 at `071567a1`. No `.ki.toml` table declares storage. 
 
 ## Files touched
 
-- `skills/keystone/ki-repo/references/standards-repository.md`, `standards-configuration.md`, `rubric.md`, and its rubric context, items and tests
+- `skills/keystone/ki-repo/references/standard-repository.md`, `standard-configuration.md`, `rubric.md`, and its rubric context, items and tests
 - `skills/governance/ki-engineering/references/standards-engineering.md`
 
 ## Verify

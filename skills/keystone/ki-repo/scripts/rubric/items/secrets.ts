@@ -5,7 +5,7 @@ const SEC_1: RubricItem<EvidenceRubricContext> = {
   code: 'SEC-1',
   title: 'Secret scanning protection',
   description: 'Public repositories enable secret scanning and push protection unless explicitly overridden.',
-  sources: ['standards-repository.md'],
+  sources: ['standard-repository.md'],
   mechanical: {
     level: 'FAIL',
     cost: 4,
@@ -22,7 +22,7 @@ export const SEC: RubricFamily<RepoRubricContext, EvidenceRubricContext> = {
   code: 'SEC',
   title: 'Secret protection',
   description: 'Secret scanning and push protection.',
-  standard: 'standards-repository.md',
+  standard: 'standard-repository.md',
   selectContext: (context) => context.secrets,
   items: [SEC_1]
 }

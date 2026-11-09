@@ -6,7 +6,7 @@ const DEP_1: RubricItem<EvidenceRubricContext> = {
   title: 'Dependabot and branch freshness',
   description:
     'Dependabot alerts and security updates are enabled, no workflow auto-merges dependency pull requests, and pull-request branches may be updated.',
-  sources: ['standards-repository.md'],
+  sources: ['standard-repository.md'],
   mechanical: {
     // Three GitHub round trips where its siblings each make one.
     level: 'FAIL',
@@ -25,7 +25,7 @@ export const DEP: RubricFamily<RepoRubricContext, EvidenceRubricContext> = {
   code: 'DEP',
   title: 'Dependency security',
   description: 'Dependabot security updates without auto-merge, and branch freshness.',
-  standard: 'standards-repository.md',
+  standard: 'standard-repository.md',
   selectContext: (context) => context.dependencies,
   items: [DEP_1]
 }

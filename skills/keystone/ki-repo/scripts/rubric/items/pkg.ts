@@ -5,7 +5,7 @@ const PKG_1: RubricItem<EvidenceRubricContext> = {
   code: 'PKG-1',
   title: 'Package identity metadata',
   description: 'package.json carries coherent identity and repository metadata when present.',
-  sources: ['standards-repository.md'],
+  sources: ['standard-repository.md'],
   mechanical: {
     level: 'FAIL',
     overrideLevels: ['WARN'],
@@ -21,7 +21,7 @@ export const PKG: RubricFamily<RepoRubricContext, EvidenceRubricContext> = {
   code: 'PKG',
   title: 'Package metadata',
   description: 'Package identity and repository metadata.',
-  standard: 'standards-repository.md',
+  standard: 'standard-repository.md',
   selectContext: (context) => context.pkg,
   items: [PKG_1]
 }

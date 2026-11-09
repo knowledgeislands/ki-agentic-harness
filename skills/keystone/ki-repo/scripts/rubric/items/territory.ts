@@ -1,7 +1,7 @@
 import type { RubricFamily, RubricItem } from '../../shared/rubric.ts'
 import type { RepoRubricContext, TerritoryRubricContext } from '../contexts/repository.ts'
 
-const SOURCE = 'standards-configuration.md'
+const SOURCE = 'standard-configuration.md'
 
 const TERR_1: RubricItem<TerritoryRubricContext> = {
   code: 'TERR-1',
