@@ -1,6 +1,6 @@
 ---
 type: sources@2026-11-09T21:36:32Z
-revised: 2026-11-09T22:38:25Z
+revised: 2026-11-10T02:29:48Z
 refresh: canonical · on-change
 ---
 
@@ -54,6 +54,8 @@ None.
 
 ## 4. Last review
 
+A 2026-11-10 in-house review under `agora.sop.main` follows the removal of `ki agent` in `tools-ki` v0.15.0: the checklist's opener step takes the opener from `ki-coordination`'s Opening work templates rather than `ki agent prompts`, the hook check no longer unsets `KI_AGENT_RUN`, and the openers watch-item names `ki-coordination`'s openers. No external source refreshed.
+
 A 2026-10-26 in-house review under `wow-harness-a` applied BOOT-HOME, which Kris decided that day: this skill owns the one machine-readiness checklist from a fresh machine to a working coordinator, ending in "Ready to coordinate" with observable hook and output-style checks, and `ki-coordination`'s Bootstrap cites it as its "Before the opener" step. A `ki doctor` readiness check was requested from `tools-ki` by message; readiness never depends on it before it exists. Command surfaces were confirmed against the installed `ki --help` (`ki agent prompts`, `ki registry`, `ki doctor`), not re-reviewed in full.
 
 REFRESH last ran **2026-08-12**.
@@ -67,6 +69,6 @@ REFRESH last ran **2026-08-12**.
   - Re-check bare-name ambiguity and qualified capability input when multi-harness activation evolves.
   - Re-check supported agent discovery and managed link locations when a runtime binding changes.
   - Re-check acquisition, replacement, and uninstall wording when harness version selection is introduced.
-  - Re-check the machine-readiness checklist when the chezmoi hook registration, the output-style link, the Capital's declared skill set or `ki agent prompts` changes, and fold in `ki doctor` once it carries the readiness checks.
+  - Re-check the machine-readiness checklist when the chezmoi hook registration, the output-style link, the Capital's declared skill set or `ki-coordination`'s openers change, and fold in `ki doctor` once it carries the readiness checks.
 
 [Back to contents](#contents)
