@@ -6,7 +6,7 @@
  * copies the HTML to `docs/diagrams/<slug>.html`, with its `<slug>.receipt.json`, only for a diagram with
  * `commit_html = true`; with `--svg` it re-exports each `docs/diagrams/<slug>.svg` in its manifest `svg_form`. With `--check` it renders
  * nothing and only verifies each committed viewer's receipt. After each finalize it writes the working folder's
- * `mark.toml`, reading the run packet under the KI state home in a background run. It never edits a source or the
+ * `mark.toml`, naming the session that built it. It never edits a source or the
  * manifest.
  *
  * Usage: bun scripts/build-html.ts [--repo <dir>] [--work <id>] [--svg | --check] [slug...]
@@ -18,9 +18,9 @@
  */
 
 import { spawnSync } from 'node:child_process'
-import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
-import { basename, dirname, join, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
   type DiagramEntry,
@@ -106,63 +106,19 @@ export const archifyRenderer = (archify: string): DiagramReceipt['renderer'] => 
   return { name: parsed.name, version: parsed.version }
 }
 
-/** A run's state folder in the run packet: `<KI state home>/agents/<run>/`, as the `ki agent` launcher places it. */
-export const runStateFolder = (run: string, env: NodeJS.ProcessEnv = process.env, home = homedir()): string =>
-  join(env.KI_STATE_HOME || join(env.XDG_STATE_HOME || join(home, '.local/state'), 'ki'), 'agents', run)
-
-/** This process and its ancestors, nearest first, as far as `ps` can name them. */
-const processChain = (pid = process.pid): number[] => {
-  const chain: number[] = []
-  for (let current = pid; current > 1 && chain.length < 32 && !chain.includes(current); ) {
-    chain.push(current)
-    const parent = spawnSync('ps', ['-o', 'ppid=', '-p', String(current)], { encoding: 'utf8', shell: false })
-    current = Number.parseInt(parent.stdout?.trim() ?? '', 10)
-    if (!Number.isInteger(current)) break
-  }
-  return chain
-}
-
 /**
- * What the run packet says of the writing agent: the work, the last segment of the work folder `thread.json` records,
- * and the agent, the one whose `<name>.pid` names this process or an ancestor. Either is absent where the packet
- * does not say.
- */
-export const readRunPacket = (folder: string, chain: readonly number[]): { work?: string; agent?: string } => {
-  const packet: { work?: string; agent?: string } = {}
-  try {
-    const thread = JSON.parse(readFileSync(join(folder, 'thread.json'), 'utf8')) as { folder?: unknown }
-    if (typeof thread.folder === 'string' && thread.folder) packet.work = basename(thread.folder)
-  } catch {}
-  if (!existsSync(folder)) return packet
-  for (const file of readdirSync(folder).filter((name) => name.endsWith('.pid'))) {
-    const pid = Number.parseInt(readFileSync(join(folder, file), 'utf8').trim(), 10)
-    if (chain.includes(pid)) {
-      packet.agent = file.slice(0, -'.pid'.length)
-      break
-    }
-  }
-  return packet
-}
-
-/**
- * The working-area mark for this build: the work, then the run and agent from `KI_AGENT_RUN` and its run packet in
- * a background run, or the native session, or `interactive`, otherwise, then the time. A named work wins over the
- * packet's.
+ * The working-area mark for this build: the work where one is named, the native session, or `interactive`, then the
+ * time.
  */
 export const workingMark = (
   work: string | undefined,
   env: NodeJS.ProcessEnv = process.env,
-  now = new Date(),
-  packet: (run: string) => { work?: string; agent?: string } = (run) =>
-    readRunPacket(runStateFolder(run, env), processChain())
-): WorkingMark => {
-  const written_at = now.toISOString()
-  const run = env.KI_AGENT_RUN
-  if (!run) return { ...(work ? { work } : {}), session: env.CLAUDE_CODE_SESSION_ID || 'interactive', written_at }
-  const found = packet(run)
-  const named = work ?? found.work
-  return { ...(named ? { work: named } : {}), run, ...(found.agent ? { agent: found.agent } : {}), written_at }
-}
+  now = new Date()
+): WorkingMark => ({
+  ...(work ? { work } : {}),
+  session: env.CLAUDE_CODE_SESSION_ID || 'interactive',
+  written_at: now.toISOString()
+})
 
 /** The diagrams to build: every listed one, or the named ones in the order given. */
 export const selectDiagrams = (entries: readonly DiagramEntry[], slugs: readonly string[]): DiagramEntry[] => {
@@ -274,8 +230,7 @@ const HELP = `${USAGE}
 Finalize every diagram listed in ${MANIFEST} at showcase quality into +/diagrams/<slug>/<slug>.html, each with a
 fresh --out-dir, and copy it to docs/diagrams/<slug>.html, with its <slug>.receipt.json of source and HTML
 hashes, where the manifest sets commit_html = true. Each working folder gets a mark.toml naming the work, the
-run and agent from KI_AGENT_RUN and its run packet or the session, and the time; --work names the work where no
-run packet does. Name slugs to build only those. --svg also re-exports each
+session and the time; --work names the work. Name slugs to build only those. --svg also re-exports each
 docs/diagrams/<slug>.svg through the viewer, in the form its svg_form names, dual where it names none. --check renders nothing and needs no Archify: it fails when a
 committed viewer's receipt is missing or does not match its source and HTML. Archify is found at ARCHIFY_HOME,
 otherwise under ~/.claude/skills/archify or ~/.agents/skills/archify.`

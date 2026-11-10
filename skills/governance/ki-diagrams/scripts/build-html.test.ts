@@ -10,8 +10,6 @@ import {
   locateArchify,
   parseArguments,
   Refusal,
-  readRunPacket,
-  runStateFolder,
   selectDiagrams,
   workingMark
 } from './build-html.ts'
@@ -148,29 +146,6 @@ test('--check needs no Archify and fails when a committed viewer changed after i
   const failed = check()
   expect(failed.status).toBe(1)
   expect(failed.stderr).toContain('map: the viewer map.html changed since the viewer was rendered')
-})
-
-test('a background run marks its build with the work, run and agent its run packet names', () => {
-  const state = mkdtempSync(join(tmpdir(), 'mark-'))
-  const folder = join(state, 'ki/agents/night')
-  mkdirSync(folder, { recursive: true })
-  writeFileSync(join(folder, 'thread.json'), JSON.stringify({ repository: '/r', folder: '+/_WORK/ki.ways-of-working' }))
-  writeFileSync(join(folder, 'other.pid'), '111\n')
-  writeFileSync(join(folder, 'builder.pid'), '222\n')
-  const env = { KI_AGENT_RUN: 'night', XDG_STATE_HOME: state }
-  expect(runStateFolder('night', env, '/home')).toBe(folder)
-  expect(runStateFolder('night', {}, '/home')).toBe('/home/.local/state/ki/agents/night')
-  expect(readRunPacket(folder, [333, 222, 1])).toEqual({ work: 'ki.ways-of-working', agent: 'builder' })
-  const now = new Date('2026-10-20T06:00:00Z')
-  const mark = workingMark(undefined, env, now, (run) => readRunPacket(runStateFolder(run, env), [222]))
-  expect(mark).toEqual({
-    work: 'ki.ways-of-working',
-    run: 'night',
-    agent: 'builder',
-    written_at: '2026-10-20T06:00:00.000Z'
-  })
-  expect(markIssues(formatMark(mark))).toEqual([])
-  expect(workingMark('ki.other', env, now, () => ({})).work).toBe('ki.other')
 })
 
 test('an interactive build marks the session, and the named work where one is given', () => {
