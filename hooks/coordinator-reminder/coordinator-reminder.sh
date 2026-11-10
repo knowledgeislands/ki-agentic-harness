@@ -3,17 +3,11 @@
 # ki-coordination. Checkout capability does not prove selected work or session role.
 # Full rules, re-anchoring and the coordinator method self-check live in the
 # authoritative standard/output style. Full session-sensitive detection is deferred.
-# Fail open silently on unusable input; launched agents remain silent.
+# Fail open silently on unusable input.
 set -u
 
 line='Only if the owner explicitly opened or resumed coordination, follow ki-coordination (skills/change-management/ki-coordination/references/standards-coordination.md). Otherwise use its conversational Reply forms.'
 pointer='Context was compacted. Only if explicitly coordinating, follow Re-anchoring after compaction in ki-coordination (skills/change-management/ki-coordination/references/standards-bootstrap.md). Otherwise use its conversational Reply forms.'
-
-# `ki agent` marks each child with its run name; its Claude adapter has set the
-# print-mode ceiling since before the marker existed, so it serves as a second
-# signal for agents an older launcher started.
-[ -z "${KI_AGENT_RUN:-}" ] || exit 0
-[ -z "${CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS:-}" ] || exit 0
 
 command -v jq >/dev/null 2>&1 || exit 0
 input=$(cat 2>/dev/null) || exit 0

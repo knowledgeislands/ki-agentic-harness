@@ -8,12 +8,9 @@
 # listening line before Finished, ⭐, 🔧 or 🧵 in the role glyph's place, and in a
 # Summary or Status missing art, roadmap or package line pass with a warning, so the owner can confirm the form was intended. The
 # hook holds no copy of the role catalogue, which ki-work-package owns.
-# Quiet for conversational replies and launched agents; never blocks twice in a
+# Quiet for conversational replies; never blocks twice in a
 # row, only warning then; fails open on unusable input.
 set -u
-
-[ -z "${KI_AGENT_RUN:-}" ] || exit 0
-[ -z "${CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS:-}" ] || exit 0
 
 command -v jq >/dev/null 2>&1 || exit 0
 input=$(cat 2>/dev/null) || exit 0

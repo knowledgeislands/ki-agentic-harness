@@ -41,8 +41,6 @@ interface Outcome {
 
 const run = (input: string, extraEnv: Record<string, string> = {}, hook = script): Outcome => {
   const env: Record<string, string> = { ...(process.env as Record<string, string>), ...extraEnv }
-  delete env.KI_AGENT_RUN
-  delete env.CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS
   // The suite may itself run inside Claude Code; the runtime split is driven per test.
   delete env.CLAUDECODE
   Object.assign(env, extraEnv)
@@ -115,20 +113,6 @@ test('an ordinary interactive session gets nothing', () => {
   expect(outcome.stdout).toBe('')
 })
 
-test('a background child carrying the run marker gets nothing under either runtime', () => {
-  const outcome = run(claudePrompt(coordinating), { KI_AGENT_RUN: 'ways-of-working', CLAUDECODE: '1' })
-  expect(outcome.status).toBe(0)
-  expect(outcome.stdout).toBe('')
-  expect(run(codexPrompt(coordinating), { KI_AGENT_RUN: 'ways-of-working' })).toEqual({ status: 0, stdout: '' })
-  expect(run(sessionStart(coordinating, 'compact'), { KI_AGENT_RUN: 'ways-of-working', CLAUDECODE: '1' })).toEqual({ status: 0, stdout: '' })
-})
-
-test('a Claude child from an older launcher is recognised by its print-mode ceiling', () => {
-  const outcome = run(claudePrompt(coordinating), { CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS: '0' })
-  expect(outcome.status).toBe(0)
-  expect(outcome.stdout).toBe('')
-})
-
 test('the post-compaction session start injects the re-anchoring pointer', () => {
   const outcome = run(sessionStart(coordinating, 'compact'), { CLAUDECODE: '1' })
   expect(outcome.status).toBe(0)
@@ -175,7 +159,6 @@ test.each([0, 1, 6])('unknown selection ignores %s stale packages and reads no p
   expect(readFileSync(trace, 'utf8')).not.toMatch(/_WORK|method_read|git .*log|rev-parse --verify|awk/)
   expect(line.length).toBeLessThan(300)
   expect(pointer.length).toBeLessThan(350)
-  expect(run(claudePrompt(checkout), { KI_AGENT_RUN: 'run' }).stdout).toBe('')
 })
 
 test.each(['null', '[]', '42', '"text"', '{"hook_event_name":{}}', '{"hook_event_name":"UserPromptSubmit","cwd":{}}'])('unusable payload %s stays silent', (input) => {

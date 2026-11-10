@@ -106,8 +106,6 @@ interface Outcome {
 
 const run = (input: string, extraEnv: Record<string, string> = {}, shell = 'bash'): Outcome => {
   const env: Record<string, string> = { ...(process.env as Record<string, string>) }
-  delete env.KI_AGENT_RUN
-  delete env.CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS
   Object.assign(env, extraEnv)
   const result = spawnSync(shell, [script], { input, encoding: 'utf8', env, cwd: ordinary })
   const stdout = result.stdout ?? ''
@@ -302,10 +300,9 @@ test("an owner's mark or state word in a coordinating session needs the banner",
   expect(run(stop('Mark noted.', coordinated('mark'), join(coordinating, '+', '_WORK'))).reason).toContain('the banner')
 })
 
-test('the same words are quiet in a conversational session, an ordinary checkout or a launched agent', () => {
+test('the same words are quiet in a conversational session or an ordinary checkout', () => {
   expect(run(stop('Mark noted.', transcript([{ owner: 'mark' }])))).toEqual(silent)
   expect(run(stop('Mark noted.', coordinated('mark'), ordinary))).toEqual(silent)
-  expect(run(stop('Mark noted.', coordinated('mark')), { KI_AGENT_RUN: 'footer-hook' })).toEqual(silent)
 })
 
 test('a plain answer, a wake and a meta line in a coordinating session stay quiet', () => {
@@ -318,12 +315,6 @@ test('a plain answer, a wake and a meta line in a coordinating session stay quie
 test('a banner quoted in a code fence is not a footer', () => {
   const quoted = ['The banner looks like this:', '```markdown', '## Summary', heading, thread, '```', 'Shall I adopt it?'].join('\n\n')
   expect(run(stop(quoted, plain))).toEqual(silent)
-})
-
-test('a launched agent never checks, under either signal', () => {
-  const bare = stop(summaryBody, plain)
-  expect(run(bare, { KI_AGENT_RUN: 'footer-hook' })).toEqual(silent)
-  expect(run(bare, { CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS: '0' })).toEqual(silent)
 })
 
 test('a session already continuing from a Stop hook is never held back again, only warned', () => {
