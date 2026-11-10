@@ -22,7 +22,7 @@ On hold is the Work Process note's state, with its two reasons: paused, and more
   - move every open query from `## Open` to `## Parked` in `discussions.md`, with its tag, one line of context and its recommended option;
   - carry every held item, parked item and waiting-on item into its home in the package, with its release condition where it has one, so nothing outstanding is left only in the session;
   - write `state.md`'s next steps for when the work is back in use;
-  - copy into the package anything under `~/.local/state/ki/agents/<run>/` needed to resume, and remove re-copied retired reports by explicit path;
+  - copy into the package anything its agent host keeps that is needed to resume, and remove re-copied retired reports by explicit path;
   - set `state.md`'s front matter to `state: on-hold`, with `hold.reason` (`paused`, or `more-expected` for Snoozing), `hold.release` in words, and `since`;
   - commit with the subject `docs(work): <id> hold, paused` or `docs(work): <id> hold, snoozing`, and push. Make no baseline or empty commit.
 - **Report:** the Stop, trigger T3 in the [coordinator reply format](standards-report-forms.md#triggers), is the send that announces the hold, and nothing else is said.
