@@ -2,6 +2,18 @@
 
 This file holds messages between work and the surfaces a coordinator reads. It extends [the core](standards-coordination.md).
 
+## Sessions work alone
+
+A session is independent and autonomous over its work package and the repositories its `repositories:` names. It does its work there with its agent host's own subagents, under the `ki-delegation` [background-run standard](../../../governance/ki-delegation/references/standards-background-runs.md), and those subagents act across those repositories. It never asks another session to act for it. It contacts another session only when that is essential, and then as a one-way hand-off that nobody waits on: a lesson learned, for example, goes to the guildmaster, who takes it up as scheduled work. A message under the rest of this file is such a hand-off, a signal that confers no execution authority.
+
+Sources: SESSIONS-ALONE and AGENT-HOST in [the decision register](sources.md#decision-register).
+
+## The Agora Beacon
+
+Agora sessions coordinate through the Agora Beacon, under this standard. Messages read and written in the Agora store carry it, and stay the low-level baseline and the fallback wherever the Beacon cannot carry a signal. The Beacon finds new messages by polling. The [Agent Host Protocol](https://microsoft.github.io/agent-host-protocol/specification/overview.html), AHP, may later replace that polling, and only the polling, for an agent host the `ki-agentic-radar` radar shows supports it, so that sessions hear each other as things happen; for every other agent host polling stays the baseline. The rules for how sessions coordinate stay whatever carries the signal. Other ways agent hosts coordinate, such as Orca's orchestration ask and reply, are watched in the radar and never adopted as a channel between sessions. For now the Beacon is documented, not used, and the owner carries things between sessions by hand.
+
+Sources: AHP-RADAR in [the decision register](sources.md#decision-register); AHP in [the outside sources](sources.md#outside-sources).
+
 ## Messages between work
 
 Any coordinator may message other work; the State of play also spreads common instructions and routes new units. Rules go to their durable owner, a skill or a Decision Record. Messages between work go through the Agora store, through its MCP, which every rig shares, so a message reaches work wherever and whenever it is next picked up; a package keeps no message queue of its own, under the `ki-work-package` [Messages](../../../governance/ki-work-package/references/standard-work-package.md#48-messages). Sending a message is a send to that work.
@@ -47,9 +59,9 @@ Sources: MESSAGES-ASYNC, WORK-QUEUE-PRIORITY, FEEDBACK-AS-MESSAGE, ROUTE-RECEIPT
 
 ## Surfaces
 
-A coordinator receives lines from other work through its package's `messages.md`, which travels through Git, and from a run through the run's inbox, `~/.local/state/ki/agents/<run>/inbox.md`. `ki agent send <run> <line>` writes the inbox, dating the line and naming the sending run, and the run's next `ki agent status` shows it. Where the runtime can message another live session on the same machine, as Claude Code can and Codex cannot, the sender may also nudge a live session with one runtime message naming the entry.
+A coordinator receives lines from other work through its package's `messages.md`, which travels through Git, and from a run through its report and its agent host's notice. Where the agent host can message another live session on the same machine, as Claude Code can and Codex cannot, the sender may also nudge a live session with one runtime message naming the entry.
 
-**A backend reply is not visible progress.** A reply to a nudge, or an inbox acknowledgement, counts only once it is on a surface the owner looks at. The receiving coordinator writes what it did into its next owner-facing turn and its `state.md`; the sender keeps the item under its tag, as "acked by backend, not yet visible", until then.
+**A backend reply is not visible progress.** A reply to a nudge counts only once it is on a surface the owner looks at. The receiving coordinator writes what it did into its next owner-facing turn and its `state.md`; the sender keeps the item under its tag, as "acked by backend, not yet visible", until then.
 
 | Surface | Carries | Who writes it | When |
 | --- | --- | --- | --- |
@@ -58,6 +70,6 @@ A coordinator receives lines from other work through its package's `messages.md`
 | Work status | `ki work status --format json`, schema `ki/work-status/v1`, and the five views | `ki`, reading every package | On demand; the Observatory reads only this |
 | Notification | Line received, acknowledgement sent, session recovered, session errored | Not this standard | The notification record in Knowledge Islands Principal owns the channel |
 
-A sender that only nudged, without writing the `messages.md` line or inbox entry, has not sent. The inbox is machine-local: a line that must reach work on another host, or on hold, goes into its `messages.md`.
+A sender that only nudged, without writing the `messages.md` line, has not sent.
 
 Sources: SURFACES-RULE in [the decision register](sources.md#decision-register).

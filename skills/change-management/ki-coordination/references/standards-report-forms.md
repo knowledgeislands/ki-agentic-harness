@@ -60,7 +60,7 @@ Each **trigger** sets exactly one reply structure, which enables the parts in th
 Each trigger is matched on a **signal**, or for T6 on any of three:
 
 - **Phrase:** a line of the owner's message that is exactly the phrase, ignoring case, spaces and a trailing full stop; `<time>` matches any time. T4's phrases are a finite list, grown as wordings that miss are noticed.
-- **State:** the work's runs, from `ki agent status` and the package.
+- **State:** the work's runs, from the agent host's view of its agents and the package.
 - **Time:** the times of the owner's messages and of the last Full reply.
 - **Move:** something the coordinator commits, or a wake.
 
@@ -397,7 +397,7 @@ The **Summary** is the coordinator's one summary form, a Full reply. It runs fro
 
 **The footer** is the Knowledge Islands art, then the banner. The art shows on every Summary and Status unless the owner added `no art`, and on no other reply. What the art and the footer lines carry is for Knowledge Islands Agora, `ki.prj.agora`, to decide, liaising with `ki.sop.main` as the keeper of this standard. Until Agora publishes its own, the art is the 88-column Knowledge Islands drawing in the [summary-model design note](https://github.com/krisb/dotfiles/blob/29dc51c/+/_WORK/personal.reg.household-terra/_emerging/summary-model.design.md), its scroll saying only KNOWLEDGE ISLANDS, with no host, state, counts, date or time. The art stays as a visible marker and can go later without touching anything else.
 
-**Sources of a Summary:** `decisions.md`; every report in the package, and, for reports a [prune](standards-mark.md#pruning-the-work-folder) deleted, their last revision in Git; the parked tags in `discussions.md`; `ki agent status`; record transitions in the work's scope from the Git history of the roadmap paths; and `git log -- +/_WORK/<id>/`, the logbook. The mark bounds them all. Where a report is missing from the package and from Git, the Summary says what it could not read rather than reconstructing it from memory.
+**Sources of a Summary:** `decisions.md`; every report in the package, and, for reports a [prune](standards-mark.md#pruning-the-work-folder) deleted, their last revision in Git; the parked tags in `discussions.md`; the agent host's view of its agents; record transitions in the work's scope from the Git history of the roadmap paths; and `git log -- +/_WORK/<id>/`, the logbook. The mark bounds them all. Where a report is missing from the package and from Git, the Summary says what it could not read rather than reconstructing it from memory.
 
 Sources: SUMMARY-MODEL, TABLE-ALIGN, FOOTER-AGORA, FOOTER-COUNTS and REPLY-FORMAT in [the decision register](sources.md#decision-register).
 
@@ -535,7 +535,7 @@ With worker, a Position while draining towards a hold after `pause`, with one ru
 - **Repeated compaction:** the session has been compacted twice or more. Each [re-anchoring](standards-bootstrap.md#re-anchoring-after-compaction) rebuilds from a summary of a summary, and a fresh bootstrap from the package is more faithful.
 - **Method moved on:** since the session opened, the method changed its opener, the hook line or the output style, checked under [Refreshing this guidance](standards-coordination.md#refreshing-this-guidance). A session keeps the style and opener it loaded at start; only a fresh session loads the current ones.
 
-The suggestion is a single closing item placed directly before F2, the banner's `###` heading, after `## Queries` and its reply block, or after the Answer in a Position, so the banner and thread line stay last. It is one bold line naming the trigger and saying plainly that the session would be better restarted, then the work's opener exactly as `ki agent prompts <territory>` prints it for this work, in one fenced block:
+The suggestion is a single closing item placed directly before F2, the banner's `###` heading, after `## Queries` and its reply block, or after the Answer in a Position, so the banner and thread line stay last. It is one bold line naming the trigger and saying plainly that the session would be better restarted, then the work's opener, filled from its `_index.md` under [Opening work](standards-opening.md#opening-work), in one fenced block:
 
 ````text
 **Restart suggested:** the work moved from hnr.prj.email-routing to hnr.reg.email-routing in this session, so its label, run name and opener changed; this work would be better restarted in a fresh session with this opener.

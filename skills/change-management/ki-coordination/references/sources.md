@@ -13,6 +13,7 @@
 ## Contents
 
 - [Decision register](#decision-register)
+- [Outside sources](#outside-sources)
 - [Last review](#last-review)
 - [Deferred host-move evidence](#deferred-host-move-evidence)
 
@@ -22,6 +23,8 @@ Each owner decision the standard rests on, by its tag: the date, the owner's wor
 
 - **ACCEPT-BUNDLE**, 2026-10-20: "from Knowledge Islands perspective, I think we need to accept them ... happier for us to go through that ... definitely something that should happen as the first point of call in the state of play" Lives in [standards-queries § acceptance-bundles](standards-queries.md#acceptance-bundles).
 - **ACCEPT-BY-CRITERIA**, 2026-10-31: Decision: REVIEW-LIFT a) was taken under it, capping at `medium` an option a) whose only stated reason is an earlier decision. · Decision: ORCA-CLOSE-OUT a) was taken under ACCEPT-BY-CRITERIA. · Decision: REVIEW-CHALLENGE a) and REVIEW-LIFT a) were taken under ACCEPT-BY-CRITERIA. Lives in [standards-reporting § owner-report](standards-reporting.md#owner-report), [standards-mark § closing-out-orca-workers](standards-mark.md#closing-out-orca-workers), [standards-queries § query-review](standards-queries.md#query-review).
+- **AGENT-HOST**, 2026-11-10: Decision: an agent host is the application a session runs in and that runs its subagents, Orca, Claude Desktop, ChatGPT Desktop and ChatGPT Mobile; it is the canonical term, launcher and session launcher were aliases, and a rig is the machine that hosts them, taken by Kris in `agora.sop.main`'s coordination change. Lives in [standards-coordination § glossary](standards-coordination.md#glossary) and [standards-messages § sessions-work-alone](standards-messages.md#sessions-work-alone).
+- **AHP-RADAR**, 2026-11-10: Decision: the Agent Host Protocol is an advisory outside source here; its adoption in Orca, Claude Desktop, ChatGPT Desktop and ChatGPT Mobile is tracked in `ki-agentic-radar`, with other ways agent hosts coordinate, such as Orca's ask and reply, watched there; an agent host drops polling only where the radar shows it supports AHP, and polling stays the baseline for any that does not, taken by Kris in `agora.sop.main`'s coordination change. Lives in [standards-messages § the-agora-beacon](standards-messages.md#the-agora-beacon).
 - **BANNER-GLYPH**, 2026-10-18: Decision: Kris set the banner's rich-text state shape under the note's Banner section: the glyphs come first and the last glyph is whose move it is. Lives in [standards-coordination § banner](standards-coordination.md#banner).
 - **BANNER-GLYPHS**, 2026-10-20: "You can do anything on a high confidence level that you recommend (overnight authority for the Observatory work; Kris took option a): keep the emoji as the written notation and let a rendered surface draw the five line glyphs with the state's words beside them)" Lives in [standards-report-forms § banner-detail](standards-report-forms.md#banner-detail).
 - **BANNER-ON-STATE**, 2026-10-19: Decision: any coordinator reply that moves the mark, changes the work's state or answers where the work stands closes with the banner, after a reply to "whats waiting on me? / mark" on held work gave none. Lives in [standards-coordination § banner](standards-coordination.md#banner).
@@ -151,6 +154,7 @@ Each owner decision the standard rests on, by its tag: the date, the owner's wor
 - **ROUTE-RECEIPT**, 2026-10-19: "once it's given it, it has to do something with it, it can't reject it", but "we have to be careful about things just [bouncing] in between things" Lives in [standards-messages § messages-between-work](standards-messages.md#messages-between-work).
 - **ROUTE-UP**, 2026-11-03: "Urgent work goes straight to the live leader on the escalation path, "Jimmy is not in, so Bobby", without waiting on an ACK, and "not everything" is an escalation." Lives in [standards-messages § messages-between-work](standards-messages.md#messages-between-work).
 - **SECONDARY-SOP**†, 2026-10-24: Decision: A territory has a main State of play plus optional secondaries, such as `HNR > SoP (main)`, `HNR > SoP (5ge)` and `HNR > SoP (sites)`. Lives in [standards-territory § secondary-states-of-play](standards-territory.md#secondary-states-of-play).
+- **SESSIONS-ALONE**, 2026-11-10: Decision: a session is independent and autonomous over its package and the repositories its `repositories:` names, works there with its agent host's own subagents, does not ask another session to act for it, and contacts another only when essential, as a one-way hand-off nobody waits on, such as a lesson to the guildmaster as scheduled work, taken by Kris in `agora.sop.main`'s coordination change. Lives in [standards-messages § sessions-work-alone](standards-messages.md#sessions-work-alone).
 - **SMALL-FIXES**, 2026-10-20: "Please weigh this against the standard's rule that the coordinator never does substantive work itself. If it holds up, change the ki-coordination standard through REFRESH" · Decision: Kris adopted SMALL-FIXES, raised by the Acquire intake work, after weighing it against the first hard rule, so the coordinator may make a one-line mechanical fix in its own work package itself. Lives in [standards-coordination § the-responsive-coordinator](standards-coordination.md#the-responsive-coordinator), [standards-coordination § coordinator-responsiveness](standards-coordination.md#coordinator-responsiveness).
 - **SNOOZE**, 2026-11-06: "I think that's snoozing now. That's a better term than more expected" (relayed by `personal.reg.household-terra`) Lives in [standards-holds § putting-work-on-hold](standards-holds.md#putting-work-on-hold).
 - **SNOOZE-HEADING**, 2026-11-06: "it's not since, I'd say at. The word since isn't useful." · "I'd have the glyph, which is the z's, snoozing in brackets on hold" (relayed by `personal.reg.household-terra`) Lives in [standards-report-forms § banner-detail](standards-report-forms.md#banner-detail), [standards-holds § putting-work-on-hold](standards-holds.md#putting-work-on-hold).
@@ -202,7 +206,19 @@ Each owner decision the standard rests on, by its tag: the date, the owner's wor
 - **WORKTREE-START**, 2026-10-20: "option a), "do whatever that needs to be", whose option read: "Start now in code repositories under F1 and F4", F4 being this sweep" Lives in [standards-territory § worktree-sweep](standards-territory.md#worktree-sweep).
 - **WOW-REFRESH**, date not recorded: Decision: While Ways of working is defining the method it sends targeted `REFRESH` lines itself; afterwards territory work sends them. Lives in [standards-bootstrap § targeted-refresh-and-landed-notices](standards-bootstrap.md#targeted-refresh-and-landed-notices).
 
+## Outside sources
+
+### Advisory
+
+Supporting evidence, not normative rules: an advisory source informs a rule here and is never adopted by being listed.
+
+| Source | Last reviewed | Governs |
+| --- | --- | --- |
+| [Agent Host Protocol](https://microsoft.github.io/agent-host-protocol/specification/overview.html), Microsoft, v1.0.0 of 2 October 2026 | 2026-11-10 | What may later replace the Agora Beacon's polling for an agent host that supports it; adoption per agent host is tracked in `ki-agentic-radar` (AHP-RADAR) |
+
 ## Last review
+
+A 2026-11-10 in-house review under `agora.sop.main` applies the coordination decisions Kris agreed that day and the removal of `ki agent` in `tools-ki` v0.15.0. [Sessions work alone](standards-messages.md#sessions-work-alone) states SESSIONS-ALONE; [The Agora Beacon](standards-messages.md#the-agora-beacon) and the watcher's polling line state that the Beacon's polling is the baseline, the Agora store's messages the fallback, and AHP a possible replacement for the polling only where the radar shows an agent host supports it; the glossary gains agent host under AGENT-HOST; and AHP joins the new advisory [outside sources](#outside-sources). Every `ki agent` command leaves the standard: delegation is to the agent host's own subagents, hard rule 2 says so, openers come from Opening work rather than `ki agent prompts`, state comes from the agent host's view of its agents, the run inbox, `ki agent close` and its gate go, and the links to the `ki-delegation` run queue now point to its Concurrency section. The register entries and reviews below that name `ki agent` stay as history. The AHP specification was read for this review.
 
 A 2026-11-08 in-house review under `ki.reg.guilds` applies DOC-TYPES a and STD-BASE a, Kris at 22:05 CET on 8 November 2026, relayed by `personal.reg.inbox`: the design note becomes the change document, `<slug>.change.md`, with its `Base:` and `Touches:` header, under the `ki-authoring` document types. [Change documents](standards-decisions.md#change-documents), the mark's review and the generated output style now name the change document; an existing `.design.md` file stays readable under the [migration file](standards-coordination-migration.md#design-notes-named-designmd). No external source was refreshed.
 

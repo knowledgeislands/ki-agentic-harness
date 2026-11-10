@@ -189,4 +189,4 @@ The owner's consolidated Observatory feedback package, `feedback/<date>-<slug>.m
 
 ## Openers that name the re-bootstrap report
 
-An opener whose first step says to give "the full re-bootstrap report", as the openers under [Opening work](standards-opening.md#opening-work) and `ki agent prompts` still print them, asks for the Bootstrap, and a past report headed `Re-bootstrap`, `Hold report` or `Finish report`, or carrying a state in its form line, stays readable as the Bootstrap or Stop it was. Delete this adjustment once `tools-ki` prints openers naming the Bootstrap and the openers here say the same. It adjusts trigger T2 in [Triggers](standards-report-forms.md#triggers).
+An opener whose first step says to give "the full re-bootstrap report", as the openers under [Opening work](standards-opening.md#opening-work) still print them, asks for the Bootstrap, and a past report headed `Re-bootstrap`, `Hold report` or `Finish report`, or carrying a state in its form line, stays readable as the Bootstrap or Stop it was. Delete this adjustment once the openers here name the Bootstrap. It adjusts trigger T2 in [Triggers](standards-report-forms.md#triggers).

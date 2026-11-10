@@ -19,10 +19,10 @@ The owner's words are whole only on the turn they arrive: a context-compressing 
 - **Log in the turn it arrives:** write the decision in the same turn as the message carrying it, before doing anything else with the message.
 - **Verify later quotations from the file:** check any later quotation of the owner's words, in an entry, brief, record or report, against the session transcript file read with the runtime's file-read tool, which the proxy protects. Never quote from recall or from shell output such as `cat` or `grep`, which it does not protect.
 
-Write the log by hand or through `ki agent decide`, and commit and push it under [Committing the work folder](standards-coordination.md#committing-the-work-folder).
+Write the log by hand, and commit and push it under [Committing the work folder](standards-coordination.md#committing-the-work-folder).
 
 - The log is the work's working record between consolidations, not a Decision Record. Each entry is classed under [decision classes](#decision-classes) and homed under the [life cycle](#decisions-life-cycle), so nothing durable lives only in the package.
-- The launcher's part, adopting the log and the close gate's decision check, is the `ki-delegation` [decisions log](../../../governance/ki-delegation/references/standards-background-runs.md#decisions-log)'s.
+- The run side, that the session keeps the log and no background agent writes it, is the `ki-delegation` [decisions log](../../../governance/ki-delegation/references/standards-background-runs.md#decisions-log)'s.
 
 Sources: DECISION-NO-NUMBER and LOG-NO-LOSS in [the decision register](sources.md#decision-register).
 

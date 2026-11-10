@@ -13,12 +13,12 @@ This file holds bootstrap, resolving the opener, re-anchoring after compaction, 
 
 ## Bootstrap
 
-**Before the opener.** On a fresh or changed machine, the owner runs the `ki-bootstrap` [machine-readiness checklist](../../../keystone/ki-bootstrap/references/standard-bootstrap.md#47-machine-readiness-for-coordinating-work) to its "Ready to coordinate" result: tools and level checkouts; the chezmoi binding of the coordinator hook and the `ki-coordinator` output style; `ki bootstrap` and `ki skill add ki-work-design`; the Capital's declarations; the observable checks that the hook and style work; and `ki agent prompts <territory>` for the opener with its `claude --name` command. The checklist owns the machine half; this standard owns the session half, from the opener on. A session that reaches the opener without the hook's line or the style's shape says so in one line and names the checklist, rather than coordinating blind.
+**Before the opener.** On a fresh or changed machine, the owner runs the `ki-bootstrap` [machine-readiness checklist](../../../keystone/ki-bootstrap/references/standard-bootstrap.md#47-machine-readiness-for-coordinating-work) to its "Ready to coordinate" result: tools and level checkouts; the chezmoi binding of the coordinator hook and the `ki-coordinator` output style; `ki bootstrap` and `ki skill add ki-work-design`; the Capital's declarations; the observable checks that the hook and style work; and the work's opener from [Opening work](standards-opening.md#opening-work). The checklist owns the machine half; this standard owns the session half, from the opener on. A session that reaches the opener without the hook's line or the style's shape says so in one line and names the checklist, rather than coordinating blind.
 
 A one-line opener brings a new or running session onto this contract, for example `Re-bootstrap as ki.ways-of-working under ki-coordination.` A coordinator also re-bootstraps on request, after a compaction under [Re-anchoring](#re-anchoring-after-compaction), after a model switch, and when [picking work up](#picking-work-up). It then:
 
 1. reads this standard and the Work Process note;
-2. checks `ki agent status` for its runs and reconciles what is actually running;
+2. checks through its agent host which of its agents still run and reconciles what is actually running;
 3. [resolves the opener](#resolving-the-opener) to one package, `+/_WORK/<id>/`, reads its five files, `messages.md` first, reconciles it under the work-package standard and checks `method_read`;
 4. acts on each line of [`messages.md`](standards-messages.md#messages-between-work), `IMPORTANT` lines first, `FIRST-STEP` among them, then in queue order, before launching any work;
 5. as a State of play, gathers every record awaiting acceptance across its territory's repositories, or, as a secondary, across the work it covers, and brings them first, ahead of every other query, as one bundle per work under [Acceptance bundles](standards-queries.md#acceptance-bundles);
@@ -49,7 +49,7 @@ The owner may compact a long session with the runtime's compaction facility, kee
 After any compaction, owner's or runtime's, the coordinator, before answering anything else:
 
 1. re-reads this standard, the harness output style `output-styles/ki-coordinator.md` from disk and all five files of its package in full, and follows the style file wherever it differs from the loaded style;
-2. runs `ki agent status` and reads `messages.md`, `IMPORTANT` lines first, and any run inbox;
+2. checks its agents through its agent host and reads `messages.md`, `IMPORTANT` lines first;
 3. confirms in one line that it has re-anchored, then answers with the Bootstrap, heading block to banner.
 
 The style file wins because a session keeps the style it loaded at start through a compaction, so the loaded copy can lag the file on disk; the [compact pointer](standards-coordination.md#generated-surfaces) and the style's re-anchoring paragraph say the same.
@@ -66,7 +66,7 @@ The package alone says how work is picked up. `state.md`'s front matter, its sta
 
 | State | First on pick-up |
 | --- | --- |
-| With worker | Recovery, not a planned restart: reconcile each running and queued agent against `ki agent status`; one not found counts as stopped and restarts from its own open brief |
+| With worker | Recovery, not a planned restart: reconcile each running and waiting agent against what its agent host shows; one not found counts as stopped and restarts from its own open brief |
 | Handoff to supervisor, With supervisor | Re-read the package, take the owner's answers, mark, Summary with the open queries carried forward |
 | Handoff to worker | Receive: re-read the package, read back the owner's answers, restart authorised work |
 | Handoff to `<target>` | Check the target's state; stay in handoff until it receives or replies |
@@ -82,7 +82,7 @@ Run the [repository level check](standards-sync.md#repository-level-check) befor
 - After bootstrap, read only what changed since the last read, plus the entries bearing on the question, not every decision and query at each owner message.
 - A report's `## Queries` is rendered from `discussions.md`'s `## Open`.
 
-**Identity.** The closing thread line identifies the work to pick up; no session gets a copyable send or resume prompt beyond the [restart suggestion](standards-coordination.md#banner) when a trigger holds. Before acting, the coordinator verifies the id and exact label against `_index.md` and grounds itself in the primary checkout of the package's repository. It re-bootstraps, takes stock from `decisions.md`, `ki agent status`, `messages.md` and the owner's messages, follows the state's first step above and restarts authorised work.
+**Identity.** The closing thread line identifies the work to pick up; no session gets a copyable send or resume prompt beyond the [restart suggestion](standards-coordination.md#banner) when a trigger holds. Before acting, the coordinator verifies the id and exact label against `_index.md` and grounds itself in the primary checkout of the package's repository. It re-bootstraps, takes stock from `decisions.md`, its agents in its agent host, `messages.md` and the owner's messages, follows the state's first step above and restarts authorised work.
 
 - Whatever must be done first on pick-up is an important `FIRST-STEP` line in `messages.md`.
 - Work others wait on writes `READY` into the State of play's `messages.md`, and the State of play then identifies each waiting piece by its thread line, in its own order.

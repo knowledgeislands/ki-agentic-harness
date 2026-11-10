@@ -13,7 +13,7 @@ This file holds States of play, Project work under them, assigned packages, the 
 
 ## Coordinating work
 
-Project work coordinates exactly one Project for the owner. It always delegates: it runs its work as background agents through `ki agent` under the `ki-delegation` [background-run standard](../../../governance/ki-delegation/references/standards-background-runs.md), and keeps its own turns short under [Coordinator responsiveness](standards-coordination.md#coordinator-responsiveness).
+Project work coordinates exactly one Project for the owner. It always delegates: it runs its work as background agents on its agent host's own subagents under the `ki-delegation` [background-run standard](../../../governance/ki-delegation/references/standards-background-runs.md), and keeps its own turns short under [Coordinator responsiveness](standards-coordination.md#coordinator-responsiveness).
 
 - **Package:** the coordinator picks the work up from `+/_WORK/<territory>.prj.<project>/`, whose `_index.md` defines the work and whose `state.md` holds its current state only, and keeps both current under the work-package standard. `_index.md` names its Project in front matter; the Project note does not link down.
 - **Decisions:** log each owner approval in `+/_WORK/<id>/decisions.md` before launching the work it authorises.
@@ -99,7 +99,7 @@ Sources: SOP-ACTS-FOR-IDLE, WORK-ROUTING and STEWARD-HOME in [the decision regis
 
 **Runs and hosts.**
 
-- Every run brief separates its reporting package from the product repository. The launcher homes the report in that package, whoever launched it; for an Orca worker, its coordinator copies the report there at receive, the one exception the `ki-delegation` [run packet](../../../governance/ki-delegation/references/standards-background-runs.md#run-packet) names.
+- Every run brief separates its reporting package from the product repository. The session that started the run homes the report in that package under the `ki-delegation` [run packet](../../../governance/ki-delegation/references/standards-background-runs.md#run-packet).
 - Bootstrap and re-anchoring establish the local machine through the territory's machine inventory.
 - Host requirements restrict only device-dependent execution: any coordinator may acknowledge, plan, ask about or dispatch a targeted line, in `IMPORTANT` and queue order. Keep unfulfilled requirements queued and counted, flagging their age when no eligible host has taken them; never infer a takeover.
 - Resolve concrete hosts, categories and unknown or renamed names under the `ki-work-package` [message rule](../../../governance/ki-work-package/references/standard-work-package.md#48-messages).
@@ -121,7 +121,7 @@ A territory always has its main State of play and may add secondaries where it h
 - **Routing down:** the main routes a unit within one secondary's coverage as one `ROUTE` line into that secondary's `messages.md`, and the secondary routes it on. A unit for one named covered work may go straight there.
 - **Routing up and across:** covered work sends a matter across its covered Projects to its secondary, and a `METHOD` line or anything beyond the coverage to the main. A secondary sends cross-cutting matters to the main and may message another secondary directly where the matter's owner is clear. A secondary returns a part it cannot place to the main, once; the main places it or asks the owner.
 - **Acceptance:** each secondary brings its covered work's acceptance bundles first at its own bootstrap and resume; the main brings the rest and shows each secondary's count.
-- **Opening:** the owner opens a secondary with the [secondary opener](standards-opening.md#opening-work), and gets every opener for the territory from `ki agent prompts <territory>`.
+- **Opening:** the owner opens a secondary with the [secondary opener](standards-opening.md#opening-work), and takes every opener for the territory from [Opening work](standards-opening.md#opening-work).
 
 Sources: SECONDARY-SOP in [the decision register](sources.md#decision-register).
 
@@ -139,7 +139,7 @@ Sources: OWNER-QUEUE in [the decision register](sources.md#decision-register).
 
 At each mark the State of play sweeps its territory's repositories for work left between a run and `main`, and reports only what it finds.
 
-- **Reads:** each repository's linked worktrees, branches not merged into `main`, stashes, and mains ahead of their upstream, through `ki agent status --worktrees` once that exists and read-only Git until then.
+- **Reads:** each repository's linked worktrees, branches not merged into `main`, stashes, and mains ahead of their upstream, through read-only Git.
 - **Shows:** each finding in its banner as `- [stranded] <worktree or branch> · <owning work>`, `[branch]` or `[stash]`, whatever its age. A clean sweep adds nothing, and routine push state is omitted.
 - **Removes nothing:** integrating goes to the owning work; a stash drop, branch deletion or worktree removal goes to the owner by name under the `ki-git` [clean-down](../../../governance/ki-git/references/standards-git.md#clean-down-state) rule. The sweep reports Git state, not age.
 

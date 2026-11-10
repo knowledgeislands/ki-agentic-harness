@@ -475,7 +475,7 @@ test('the restart suggestion is a named exception with narrow triggers, placed b
   for (const text of [standard, outputStyle]) {
     expect(text).toContain('**Restart suggested:**')
     expect(text).toContain('compacted twice or more')
-    expect(text).toContain('`ki agent prompts <territory>`')
+    expect(text).toContain('filled from its `_index.md` under')
     expect(text).toContain('not for length, age, a change of state, a hold or a model switch alone')
   }
   expect(standard).not.toContain("hook's stale-method advisory")
