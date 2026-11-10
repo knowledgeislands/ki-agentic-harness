@@ -5,10 +5,10 @@ ki-applicability: declaration-only
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Govern agent delegation: routine detached background runs (run packet, prompt shape, authority footers,
-  decisions log, coordination, run queue, monitoring) and durable packets for approved high-risk
-  handoffs. Use when delegating to background agents or writing a delegation brief; `ki agent` launches runs and
-  `ki-coordination` governs the coordinating work that launches them.
+  Govern agent delegation: routine background runs on the agent host's own subagents (run packet, prompt
+  shape, authority footers, decisions log, coordination, concurrency, monitoring) and durable packets for
+  approved high-risk handoffs. Use when delegating to background agents or writing a delegation brief;
+  `ki-coordination` governs the coordinating work that starts them.
 argument-hint: 'audit <repo> | conform <repo> | educate <work-item> | help | refresh'
 ---
 
@@ -16,12 +16,12 @@ argument-hint: 'audit <repo> | conform <repo> | educate <work-item> | help | ref
 
 `ki-delegation` owns two runtime-neutral contracts for delegating Knowledge Islands work to agents:
 
-- **Background runs** - routine delegation to background agents: detachment, the run packet with its run events and working-area marks, prompt shape, authority tiers and their footers and grants, the decisions log, coordination, the run queue and monitoring. Every agent report is an owner report in the shape the [`ki-coordination` standard](../../change-management/ki-coordination/references/standards-reporting.md#owner-report) sets. Read [the background-run standard](references/standards-background-runs.md) before launching or briefing a background agent. The coordinating work that launches runs - territory work or Project work, its responsiveness, report forms, glyph banner, openers, bootstrap, decision classes and working rules - is governed by [`ki-coordination`](../../change-management/ki-coordination/references/standards-coordination.md), which depends on this skill.
+- **Background runs** - routine delegation to background agents: detachment, the run packet with its working-area marks, prompt shape, authority tiers and their footers and grants, the decisions log, coordination, concurrency and monitoring, on the subagents of the session's own agent host, within the repositories its package names, never another session. Every agent report is an owner report in the shape the [`ki-coordination` standard](../../change-management/ki-coordination/references/standards-reporting.md#owner-report) sets. Read [the background-run standard](references/standards-background-runs.md) before starting or briefing a background agent. The coordinating work that starts runs - territory work or Project work, its responsiveness, report forms, glyph banner, openers, bootstrap, decision classes and working rules - is governed by [`ki-coordination`](../../change-management/ki-coordination/references/standards-coordination.md), which depends on this skill.
 - **Delegation packets** - the durable, reviewable brief for an approved high-risk handoff, embedded in its work record. Read [the delegation-packet standard](references/standards-delegation-packets.md) before designing a packet.
 
 [The generated rubric](references/rubric.md) carries the mechanical and judgment criteria, and [the sources](references/sources.md) the refresh review.
 
-It does not select work, authorise execution, choose a model, accept results, or transfer work between repositories. `ki agent` in `tools-ki` is the reference launcher and holds the runtime adapters; this skill names no runtime-specific mechanics.
+It does not select work, authorise execution, choose a model, accept results, or transfer work between repositories. Each agent host keeps its own runtime mechanics; this skill names none.
 
 Use a packet only when an approved delegated change has enough mutation risk, cross-agent handoff, or later audit need that its fixed decisions and authority boundaries must be durable. Every background run, with or without a packet, follows the background-run standard.
 
@@ -51,7 +51,7 @@ It never creates a packet or run prompt, chooses a worker or model, invents a lo
 
 ### Mode EDUCATE
 
-For a background run, explain the run packet and prompt shape, and offer `ki agent new` for a prompt skeleton with the right footer.
+For a background run, explain the run packet and prompt shape, and offer [the run-prompt skeleton](assets/run-prompt.md) with the right footer.
 
 For one explicitly selected approved work record, explain or add the packet shape from [the delegation-packet standard](references/standards-delegation-packets.md).
 
@@ -67,11 +67,11 @@ Read [the sources](references/sources.md), compare delegation practice and its s
 
 ### Mode HELP
 
-Explain the two contracts and when a packet is added to a run, the `ki agent` launcher, coordinating work and its bootstrap in `ki-coordination`, the work package in `ki-work-package`, Orca delegation in `ki-delegation-orca`, subagent roles in `ki-subagents`, model-purpose policy in `ki-tokenomics`, and cross-repository transfer in `ki-trades`.
+Explain the two contracts and when a packet is added to a run, delegating to the agent host's own subagents, coordinating work and its bootstrap in `ki-coordination`, the work package in `ki-work-package`, Orca delegation in `ki-delegation-orca`, subagent roles in `ki-subagents`, model-purpose policy in `ki-tokenomics`, and cross-repository transfer in `ki-trades`.
 
 ## Notes
 
 - A packet makes a high-risk runtime handoff durable, authority-bounded, and reviewable; it is not a separate execution lifecycle.
-- An agent writes its report to the run's state folder only, and the launcher homes it in the `reports/` of the work folder, `+/_WORK/<id>/reports/`, of the reporting work named in the brief, whoever launched it, or, for an Orca worker, the coordinator copies it there at receive, the one named exception, beside the run's brief and the work's decisions log; `ki-work-package` owns that folder's closed list, entry points and tidy rules, and the state directory holds machine-local runtime files only. A run report closes with the glyph banner and carries no reply block. Neither folder is a Decision Record: in-force decisions are consolidated into their durable owner, and a prompt or record describes a decision in the owner's words and its date, never by its number.
+- An agent writes its report outside every work folder, or returns it as its final message, and the session that started it homes it in the `reports/` of the work folder, `+/_WORK/<id>/reports/`, of the reporting work named in the brief, beside the run's brief and the work's decisions log; `ki-work-package` owns that folder's closed list, entry points and tidy rules, and whatever the agent host keeps of the run is runtime only. A run report closes with the glyph banner and carries no reply block. Neither folder is a Decision Record: in-force decisions are consolidated into their durable owner, and a prompt or record describes a decision in the owner's words and its date, never by its number.
 - Coordinating work's Summary, recap since the mark and full summary are `ki-coordination`'s forms; each is an owner report in `ki-coordination`'s shape, and `ki-recap` stays the single-session summary.
 - The local rubric is the materialised domain contract; generic execution, reporting, transaction safety, and publication remain owned by `ki`.

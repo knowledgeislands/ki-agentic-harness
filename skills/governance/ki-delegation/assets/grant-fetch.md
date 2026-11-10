@@ -1,6 +1,6 @@
 # Authority grant: fetch
 
-`ki agent launch --allow fetch` appends this file from the `## Grant: fetch` heading, after the tier footer. See the [background-run standard](../references/standards-background-runs.md#authority-tiers).
+A brief appends this file from the `## Grant: fetch` heading, after the tier footer. See the [background-run standard](../references/standards-background-runs.md#authority-tiers).
 
 ## Grant: fetch
 

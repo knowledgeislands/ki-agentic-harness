@@ -1,6 +1,6 @@
 # Authority footer: prune
 
-`ki agent launch --rules prune` appends this file from `## Rules` onwards. See the [background-run standard](../references/standards-background-runs.md#authority-tiers).
+A brief appends this file from `## Rules` onwards, last. See the [background-run standard](../references/standards-background-runs.md#authority-tiers).
 
 ## Rules
 

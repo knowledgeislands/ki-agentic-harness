@@ -9,7 +9,7 @@
 
 | Source | Last reviewed | Governs |
 | --- | --- | --- |
-| Knowledge Islands delegation practice | 2026-10-18 | Durable high-risk handoff, authority, escalation, verification, and return boundaries; detached background runs, run packet and run events, authority tiers and grants, decisions log and its tracked thread-folder home, coordination, worktree placement, run-folder retention, monitoring, and the owner report with its Needs tags and reply block; coordinating threads are `ki-coordination`'s |
+| Knowledge Islands delegation practice | 2026-11-10 | Durable high-risk handoff, authority, escalation, verification, and return boundaries; background runs on the agent host's own subagents within the package's repositories, run packet and report homing, authority tiers and grants, decisions log and its tracked work-folder home, coordination, worktree placement, concurrency, monitoring, and the owner report with its Needs tags; coordinating work is `ki-coordination`'s |
 | `ki-tokenomics` | 2026-10-13 | Model-purpose and context-cost policy belong outside the packet, including the coordinating-thread model |
 | `ki-work-roadmap` | 2026-08-12 | Approved work-record lifecycle, plan ownership, and review boundary |
 | [OpenAI: Codex subagents][openai-subagents] | 2026-08-12 | Ordinary subagent task selection, permissions, and execution guidance |
@@ -17,6 +17,8 @@
 | BASELINE-ORCA, Kris's direction relayed by `personal.reg.rig-sol` | 2026-11-08 | A reach-only always-on Orca server, giving remote reach into attended sessions and launching no runs, outside the Enactment Process that any server launching or hosting runs still needs |
 
 ## Last review
+
+A 2026-11-10 in-house review under `agora.sop.main` brings the background-run standard into line with the removal of `ki agent` in `tools-ki` v0.15.0, whose changelog says delegation uses the session harness's own subagents under this skill, and with the decisions Kris agreed in that package's coordination change that day: a session delegates to its own agent host's subagents within the repositories its package names, and never to another session (SESSIONS-ALONE), and "agent host" names the app a session runs in (AGENT-HOST). The state folder, run events, run queue and dispatcher, waiter and monitor, run inbox and its worker-inbox boundary, `ki agent close` and the fresh-run recovery through `ki agent home` go; the session that started a run now homes every report, extending REPORT-HOME a) from Orca workers to every agent host; concurrency, gates and wakes stay under Concurrency; and Reference launcher becomes Agent hosts. The footers' and grants' launcher lines become plain append instructions, and the generated **Report** line drops the state folder. No external source refreshed.
 
 A 2026-11-08 review under run `orca-reach` of `ki.reg.guilds` settles ORCA-REACH-CONFLICT, which `personal.reg.rig-sol` reported that day: since 8 November 2026 sol has run an always-on Orca server, Rig's `service:orca-serve` on its studio profile, at Kris's BASELINE-ORCA direction, giving terra and the phone reach into attended sessions and launching no runs. Where each launcher runs now keeps the Enactment Process for any always-on server that launches or hosts background runs and rests a reach-only server on BASELINE-ORCA.
 

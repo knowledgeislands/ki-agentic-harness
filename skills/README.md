@@ -415,7 +415,7 @@ Create or audit typed KI Decision Records for durable rationale and authority. U
 
 #### `ki-delegation`
 
-Govern agent delegation: routine detached background runs (run packet, prompt shape, authority footers, decisions log, coordination, run queue, monitoring) and durable packets for approved high-risk handoffs. Use when delegating to background agents or writing a delegation brief; `ki agent` launches runs and `ki-coordination` governs the coordinating work that launches them.
+Govern agent delegation: routine background runs on the agent host's own subagents (run packet, prompt shape, authority footers, decisions log, coordination, concurrency, monitoring) and durable packets for approved high-risk handoffs. Use when delegating to background agents or writing a delegation brief; `ki-coordination` governs the coordinating work that starts them.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only

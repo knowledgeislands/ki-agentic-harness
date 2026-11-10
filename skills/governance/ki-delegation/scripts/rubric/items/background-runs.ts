@@ -33,7 +33,7 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
       judgment: {
         scope: 'Background-run prompts, decisions logs and run reports the delegating owner selects for review.',
         prompt:
-          'Does each prompt cite a real owner decision by its words and date, name every remote call it relies on, use the lowest sufficient authority tier, and give a detached agent with no hidden context enough to finish, verify and report? Was the complete current concrete brief written and checked for unresolved templates before launch in one checked process, using immutable prompt.md for already-launched evidence rather than a consumed draft?',
+          'Does each prompt cite a real owner decision by its words and date, name every remote call it relies on, use the lowest sufficient authority tier, and give a detached agent with no hidden context enough to finish, verify and report? Was the complete current concrete brief written and checked for unresolved templates before the agent started?',
         outcomes: ['conforming', 'revise prompt', 'escalate to owner'],
         guidance:
           'Revise a prompt only within the authority its cited decision grants; escalate to the owner when the work needs a higher tier or a decision that does not exist yet.'
@@ -43,12 +43,12 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
       code: 'RUN-3',
       title: 'run records are tracked and consolidated',
       description:
-        "A run's brief, decisions log and agent reports live in the tracked work folder `+/_WORK/<id>/` of the work that launched it, the brief as `briefs/<name>.md` until its report is received, a thread folder `+/_THREADS/<run>/` being read for the tolerance window, and are committed at each send, each owner decision is logged before the work it authorises launches, in-force decisions are consolidated into a Decision Record, skill or the work file rather than living only in the run directory, at each mark the coordinator deletes by explicit path every report whose queries are all answered and whose outcome has a durable home and every brief whose report it has, while Git history holds the rest, and a prompt or record describes a decision by the owner's words and date, never by its number.",
+        "A run's brief, decisions log and agent reports live in the tracked work folder `+/_WORK/<id>/` of the work that launched it, the brief as `briefs/<name>.md` until its report is received, a thread folder `+/_THREADS/<run>/` being read for the tolerance window, and are committed at each send, each owner decision is logged before the work it authorises launches, in-force decisions are consolidated into a Decision Record, skill or the work file rather than living only in the agent host's runtime, at each mark the coordinator deletes by explicit path every report whose queries are all answered and whose outcome has a durable home and every brief whose report it has, while Git history holds the rest, and a prompt or record describes a decision by the owner's words and date, never by its number.",
       sources: ['standards-background-runs.md'],
       judgment: {
-        scope: 'Work folders, decisions logs, run directories and run prompts the owner selects for review.',
+        scope: 'Work folders, decisions logs and run prompts the owner selects for review.',
         prompt:
-          'Is every decision logged in the tracked work folder before its work launched, does anything durable exist only in the run directory, does the work folder hold only its closed list after each mark, with the answered and homed reports and the received briefs deleted by explicit path, and does any prompt or record cite a decision by number alone?',
+          'Is every decision logged in the tracked work folder before its work launched, does anything durable exist only in the agent host runtime, does the work folder hold only its closed list after each mark, with the answered and homed reports and the received briefs deleted by explicit path, and does any prompt or record cite a decision by number alone?',
         outcomes: [
           'conforming',
           'consolidate decisions',
@@ -87,7 +87,7 @@ export const RUN: RubricFamily<DelegationRubricContext, DelegationRubricContext[
           'Does each working file or folder a run or session wrote carry a mark naming its work, its run and agent or its session, and when it was written, in the form the standard names, and has a mark leaked into anything committed?',
         outcomes: ['conforming', 'add the mark', 'remove a committed mark', 'escalate to owner'],
         guidance:
-          "Add the missing mark from the run's packet or the session that wrote the file, take a mark out of any committed receipt or report, and ask the owner before moving or deleting an unmarked file whose writer is unknown."
+          "Add the missing mark from the run's brief or the session that wrote the file, take a mark out of any committed receipt or report, and ask the owner before moving or deleting an unmarked file whose writer is unknown."
       }
     }
   ]
