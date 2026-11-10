@@ -230,6 +230,60 @@ source_role = "counter-evidence"
 reviewed_on = "2026-10-19"
 notes = "The 1.0 policy promises SemVer compatibility within one MAJOR only for Stable channels and still states that backwards-incompatible changes are inevitable. Canvas is Experimental, both Automation channels are Early development, Annotations is Active development, and Changeset and MCP are Release candidates."
 
+[evidence.ahp-host-orca]
+id = "ahp-host-orca"
+title = "Orca releases, checked for Agent Host Protocol support"
+url = "https://github.com/stablyai/orca/releases"
+evidence_class = "vendor-claim"
+source_role = "counter-evidence"
+reviewed_on = "2026-11-10"
+notes = "Agent host Orca: no AHP support found on 2026-11-10. Releases to 1.4.255 (9 November 2026) name none, the AHP implementation catalogue does not list Orca, and Orca Chat speaks the Agent Client Protocol as a client instead."
+
+[evidence.ahp-host-claude-desktop]
+id = "ahp-host-claude-desktop"
+title = "Claude release notes, checked for Agent Host Protocol support"
+url = "https://support.claude.com/en/articles/12138966-release-notes"
+evidence_class = "vendor-claim"
+source_role = "counter-evidence"
+reviewed_on = "2026-11-10"
+notes = "Agent host Claude Desktop: no AHP support found on 2026-11-10. Release notes to 6 November 2026 name none; only third-party bridges such as ahpd reach Claude, which is not Anthropic's adoption."
+
+[evidence.ahp-host-chatgpt-desktop]
+id = "ahp-host-chatgpt-desktop"
+title = "OpenAI Codex and ChatGPT changelog, checked for Agent Host Protocol support"
+url = "https://learn.chatgpt.com/docs/changelog"
+evidence_class = "vendor-claim"
+source_role = "counter-evidence"
+reviewed_on = "2026-11-10"
+notes = "Agent host ChatGPT Desktop: no AHP support found on 2026-11-10. The changelog to Codex CLI 0.167.0 (6 November 2026) names none, and the ChatGPT help-centre release notes refused automated reading. Visual Studio Code's Codex session handoff in its 1.138 and 1.141 updates is Microsoft's own AHP work, not OpenAI's adoption."
+
+[evidence.ahp-host-chatgpt-mobile]
+id = "ahp-host-chatgpt-mobile"
+title = "OpenAI ChatGPT changelog, checked for Agent Host Protocol support in the mobile apps"
+url = "https://learn.chatgpt.com/docs/changelog"
+evidence_class = "vendor-claim"
+source_role = "counter-evidence"
+reviewed_on = "2026-11-10"
+notes = "Agent host ChatGPT Mobile: no AHP support found on 2026-11-10. The ChatGPT for iOS 1.2026.300 entry and its neighbours name none; only an unaffiliated third-party iOS client exists."
+
+[evidence.orca-orchestration-implementation]
+id = "orca-orchestration-implementation"
+title = "Orca orchestration, first implementation"
+url = "https://github.com/stablyai/orca/pull/1188"
+evidence_class = "reference-implementation"
+source_role = "primary"
+reviewed_on = "2026-11-10"
+notes = "The pull request, merged on 28 April 2026 and first shipped in v1.3.24-rc.2, adds Orca's orchestration: a coordinator dispatching a task graph to Orca workers, with decision gates and worker completion; worker ask and coordinator reply came later."
+
+[evidence.orca-orchestration-docs]
+id = "orca-orchestration-docs"
+title = "Orca CLI orchestration documentation"
+url = "https://www.onorca.dev/docs/cli/orchestration"
+evidence_class = "vendor-claim"
+source_role = "corroborating"
+reviewed_on = "2026-11-10"
+notes = "The vendor documents orchestration as experimental, switched on under Settings, Experimental: workers ask, the coordinator replies, gates are created and resolved, and a worker reports done with an outcome. It names neither AHP nor ACP."
+
 [evidence.a2a-spec-1-0]
 id = "a2a-spec-1-0"
 title = "Agent2Agent Protocol specification v1.0"
@@ -477,11 +531,11 @@ interoperability_state = "untested"
 ki_stance = "assess"
 movement = "unchanged"
 owner = "ki-agentic-radar"
-uncertainty = "Specification v1.0.0 (2026-10-02) meets the 1.0 return trigger and makes Root, Session, Chat, Terminal, Telemetry, and Resource watch Stable, but six channels remain below Stable. Both independent hosts still target 0.9.0, and no independently witnessed cross-implementation interoperability result has been found."
-return_trigger = "Independent hosts adopting 1.0, a published interoperability or conformance result, the remaining channels reaching Stable, or a relevant command-centre use case."
-reviewed_on = "2026-10-19"
+uncertainty = "Specification v1.0.0 (2026-10-02) meets the 1.0 return trigger and makes Root, Session, Chat, Terminal, Telemetry, and Resource watch Stable, but six channels remain below Stable. Both independent hosts still target 0.9.0, and no independently witnessed cross-implementation interoperability result has been found. Knowledge Islands tracks AHP as a possible replacement for the Agora Beacon's polling, AHP-RADAR of 10 November 2026: on 2026-11-10 none of the agent hosts that matter, Orca, Claude Desktop, ChatGPT Desktop and ChatGPT Mobile, supports it, so polling stays the baseline for each."
+return_trigger = "Independent hosts adopting 1.0, a published interoperability or conformance result, the remaining channels reaching Stable, Orca, Claude Desktop, ChatGPT Desktop or ChatGPT Mobile shipping AHP support, or a relevant command-centre use case."
+reviewed_on = "2026-11-10"
 evidence = ["ahp-spec-0-9-0", "ahp-release-0-9-0", "ahp-release-1-0-0", "ahp-reference-implementations", "ahp-pi-host", "ahp-wyrd-server"]
-counter_evidence = ["ahp-mixed-stability"]
+counter_evidence = ["ahp-mixed-stability", "ahp-host-orca", "ahp-host-claude-desktop", "ahp-host-chatgpt-desktop", "ahp-host-chatgpt-mobile"]
 
 [subjects.a2a]
 id = "a2a"
@@ -581,4 +635,21 @@ uncertainty = "Gas City demonstrates configurable coding workflows over durable 
 return_trigger = "A bounded Knowledge Islands coordination trial, stable shared multi-operator release, independently demonstrated runtime portability, or material trust-boundary change."
 reviewed_on = "2026-10-19"
 evidence = ["gas-city-reference-implementation", "gas-city-software-factory"]
+counter_evidence = []
+
+[subjects.orca-orchestration]
+id = "orca-orchestration"
+display_name = "Orca orchestration"
+subject_kind = "vendor-term"
+stewardship = "vendor"
+specification_maturity = "not-applicable"
+implementation_state = "reference-only"
+interoperability_state = "untested"
+ki_stance = "assess"
+movement = "new"
+owner = "ki-agentic-radar"
+uncertainty = "Experimental in Orca. Watched as a way agent hosts coordinate, never adopted as a channel between Agora sessions, under AHP-RADAR of 10 November 2026; a session's use of its own Orca workers is ki-delegation-orca's, not this subject's."
+return_trigger = "Orca making orchestration stable, adopting AHP or another open protocol for it, or a Knowledge Islands need it alone meets."
+reviewed_on = "2026-11-10"
+evidence = ["orca-orchestration-implementation", "orca-orchestration-docs"]
 counter_evidence = []

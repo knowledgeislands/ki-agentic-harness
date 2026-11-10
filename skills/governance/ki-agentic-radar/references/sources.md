@@ -21,15 +21,17 @@ This ledger records the primary and corroborating sources accepted into the agen
 - **MCP:** [OpenAI Agents SDK](https://openai.github.io/openai-agents-js/guides/mcp/) and [Cloudflare Agents](https://developers.cloudflare.com/agents/model-context-protocol/) provide independent implementations. The local [ki-binding capability](https://github.com/knowledgeislands/ki-agentic-harness/tree/main/skills/environment/ki-binding) supplies bounded Knowledge Islands adoption evidence.
 - **ACP:** [Gemini CLI's ACP adapter](https://github.com/google-gemini/gemini-cli/blob/main/packages/cli/src/acp/README.md) and [CodeCompanion's ACP client](https://github.com/olimorris/codecompanion.nvim/blob/main/doc/codecompanion.txt) are independent implementations. Their [documented integration result](https://github.com/olimorris/codecompanion.nvim/discussions/2030) is bounded interoperability evidence. The ACP introduction still marks [full remote-agent support as work in progress](https://agentclientprotocol.com/get-started/introduction).
 - **AHP:** the official [implementation catalogue](https://microsoft.github.io/agent-host-protocol/guide/implementations.html) lists Microsoft-project clients and reference surfaces plus the independent [pi-ahp](https://github.com/Qusic/pi-ahp) and [ahpd](https://github.com/softov/ahpd) hosts. Wyrd Company's independent [AHP server](https://github.com/wyrd-company/ahp-server) implements a bounded server surface and publishes compatibility tests against Microsoft's TypeScript client. That establishes multiple independent implementations, not an independently witnessed interoperability result.
+- **AHP adoption by agent host:** checked on 2026-11-10 against [Orca's releases](https://github.com/stablyai/orca/releases), [Claude's release notes](https://support.claude.com/en/articles/12138966-release-notes) and [OpenAI's changelog](https://learn.chatgpt.com/docs/changelog) for ChatGPT Desktop and ChatGPT Mobile. None names AHP support; each absence is dated counter-evidence on the AHP subject, not a finding that support is ruled out.
 - **A2A:** [Google ADK](https://github.com/google/adk-docs/blob/main/docs/a2a/index.md) and [BeeAI Framework](https://github.com/i-am-bee/beeai-framework) provide independent implementations. The official [A2A technology compatibility kit](https://github.com/a2aproject/a2a-tck) covers the protocol bindings, but no reviewed public pass or certification matrix was found.
 - **AGENTS.md:** [OpenAI Codex](https://learn.chatgpt.com/docs/agent-configuration/agents-md) and [Visual Studio Code](https://code.visualstudio.com/docs/agent-customization/custom-instructions) implement the format independently. The format site reports broad operational adoption, while VS Code describes nested `AGENTS.md` support as experimental. This repository's [AGENTS.md](https://github.com/knowledgeislands/ki-agentic-harness/blob/main/AGENTS.md) is the local adoption evidence.
 - **W3C AI Agent Protocol Community Group:** no reviewed implementation, conformance result, or interoperability demonstration was found in the group's primary publications.
 
 ## Agent coordination tooling
 
+- **Orca orchestration:** the [first implementation](https://github.com/stablyai/orca/pull/1188), merged on 28 April 2026, supplies reference-implementation evidence; the [orchestration documentation](https://www.onorca.dev/docs/cli/orchestration) describes the experimental coordinator, workers, ask and reply, and gates. It is watched as a way agent hosts coordinate and never adopted as a channel between Agora sessions.
 - **Gas City:** the [open-source orchestrator](https://github.com/gastownhall/gascity) supplies reference-implementation evidence; the [software-factory guide](https://gascity.com/guide/ai-software-factory/) describes Beads-backed durable work, configured coding workflows, routing, retries, and review gates.
 
-These sources establish one implemented coordination tool and its primary abstraction. They do not establish comparative fitness, cross-tool interoperability, or a Knowledge Islands adoption decision.
+These sources establish two implemented coordination tools and their primary abstractions. They do not establish comparative fitness, cross-tool interoperability, or a Knowledge Islands adoption decision.
 
 ## Agent-owned browser runtimes
 
@@ -53,7 +55,7 @@ Every source group below was re-fetched in the latest weekly review. The review 
 | ------------ | ------------- |
 | Identity, specification, and governance | 2026-10-19 |
 | Independent implementation and local evidence | 2026-10-19 |
-| Agent coordination tooling | 2026-10-19 |
+| Agent coordination tooling | 2026-11-10 |
 | Agent-owned browser runtimes | 2026-10-19 |
 | Structural vocabulary evidence | 2026-10-19 |
 
@@ -67,6 +69,7 @@ Every source group below was re-fetched in the latest weekly review. The review 
 | Weekly review | AHP released spec v1.0.0 (2026-10-02), firing its 1.0 return trigger; specification maturity moves from versioned to stable on normative text plus governance release, while interoperability stays untested, stance stays assess, and a new trigger tracks 1.0 host adoption and the six sub-Stable channels. ACP advanced to schema v1.24.1 and v2 alpha 7 (2026-09-30) with only unstable additions. Repointed the ki-binding, Codex AGENTS.md, and AGENTS.md governance sources to reachable primary pages. MCP, A2A, AGENTS.md, W3C, Obscura, and Gas City unchanged. | 2026-10-06 |
 | Disposition | The 2026-09-26 AHP finding is closed: implementation multiplicity is recorded, interoperability remains unwitnessed, the assess stance is unchanged, and the open cross-implementation watch item carries the follow-up. | 2026-10-06 |
 | Weekly review | ACP schema v1.25.0 (2026-10-09) stabilizes session notices and session compaction on wire protocolVersion 1; v2.0.0 alpha 8 also released (pre-stable counter-evidence). MCP, AHP, A2A, AGENTS.md, W3C, Gas City, and Obscura unchanged. | 2026-10-19 |
+| AHP adoption signal | AHP-RADAR: AHP adoption is tracked per agent host. Orca, Claude Desktop, ChatGPT Desktop and ChatGPT Mobile each show no AHP support, recorded as dated counter-evidence on the AHP subject; Orca orchestration added as a new assessment subject, watched and never adopted as a channel between Agora sessions. Other subjects not refreshed. | 2026-11-10 |
 
 - Return triggers: new protocol release, governance transfer, independent implementation, published conformance result, cross-implementation demonstration, deprecation, or a Knowledge Islands use case requiring reassessment.
 - Agent Client Protocol is disambiguated from similarly named IBM and AGNTCY protocols; structural vocabulary remains outside the subject registry where the schema would misclassify it.
