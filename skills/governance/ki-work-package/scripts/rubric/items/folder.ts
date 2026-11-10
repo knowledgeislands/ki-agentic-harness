@@ -33,7 +33,7 @@ const FOLDER_4: RubricItem<FolderOutcomes> = {
     remediation: {
       class: 'diagnostic',
       guidance:
-        "The finishing coordinator deletes the package at the mark that closes it; where the package outlives the finishing thread, territory work closes it at an owner-authorised mark whose report names it: once every close-out check holds, it archives the work's runs with `ki agent close` under its strict gate and deletes the package in one commit, Git keeping it, and otherwise deletes nothing and puts one open point to the owner in a change document of its own."
+        'The finishing coordinator deletes the package at the mark that closes it; where the package outlives the finishing thread, territory work closes it at an owner-authorised mark whose report names it: once every close-out check holds, it deletes the package in one commit, Git keeping it, and otherwise deletes nothing and puts one open point to the owner in a change document of its own.'
     },
     audit: { phase: 'INSPECT', run: ({ finished }) => finished }
   }

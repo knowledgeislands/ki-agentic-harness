@@ -1,6 +1,6 @@
 ---
 type: sources@2026-11-09T21:36:32Z
-revised: 2026-11-09T23:23:32Z
+revised: 2026-11-10T02:25:04Z
 refresh: canonical · on-change
 ---
 
@@ -64,12 +64,14 @@ The phase 1 work package format change, agreed by Kris on 9 November 2026, gives
 | PACKAGE-DECISIONS | Decisions live in the change document they belong to until each goes to its durable home and the change is deleted; open points live in its Open section. | 2026-11-09 | [work package](standard-work-package.md#46-change-documents) | In force |
 | PACKAGE-REPOSITORIES | `_index.md`'s front matter carries `repositories:`, the repositories the package mainly works in, with a Scope line saying it may still change others. | 2026-11-09 | [work package](standard-work-package.md#44-the-entry-file) | In force |
 | PACKAGE-MESSAGES | Messages between work live in the Agora store, through its MCP; a package keeps no message queue of its own. | 2026-11-09 | [work package](standard-work-package.md#48-messages) | In force |
+| AGORANOMOS-ROLE | The agoranomos joins the role catalogue as a leader, glyph 🏺, keeping the state of every work package in the Agora store from `agora.sop.main`, the root of its work tree. | 2026-11-10 | [roles](standard-roles.md#43-role-catalogue) | In force |
 | PACKAGE-TIDY | The tidy's ten steps bring each package to the shape, ending with a rubric check and a short report. | 2026-11-09 | [work package](standard-work-package.md#410-the-tidy) | In force |
 
 [Back to contents](#contents)
 
 ## 4. Last review
 
+- 2026-11-10 - Under `agora.sop.main`, after Kris took AGORANOMOS-ROLE in its coordination change that day: the role catalogue gains the agoranomos, a leader with glyph 🏺 that keeps the state of every work package from `agora.sop.main`. With `ki agent` removed in `tools-ki` v0.15.0, the close-out deletes the package with no `ki agent close` step, identity reaches a session through its agent host, and the delegation row names the run packet without a state folder, launcher or close gate. No external source refreshed.
 - 2026-11-09 - Landed the [work package format change](#3-decisions), phase 1, agreed by Kris on 9 November 2026: a package lives in the Agora store at `work/<territory>/<work id>/` and is its `_index.md` and its `NN-<slug>.change.md` change documents, with sub-packages of the same shape; the state folds into `_index.md`; decisions and open points live in their change document; `repositories:` names where it works; messages go through the Agora store; and the tidy brings each package to the shape. `standards-work-package.md` and `standards-roles.md` became `standard-work-package.md` and `standard-roles.md` in the standard format, and the finished entry-file migration file was deleted. No external source refreshed.
 - 2026-11-08 - Under run `work-review-retire` of `ki.reg.guilds`, after Kris's WORK-REVIEW-RETIRE at 21:47 GMT that day, "do it now", following "delete `+/_WORK_REVIEW`" a minute earlier: the `+/_WORK_REVIEW/` holding area MIGRATION-REVIEW set on 18 October 2026 is retired. Live work is a package in `+/_WORK/`, the rest is deleted, and FOLDER-5 warns on a leftover area during the rollout, under one deletable line in `standards-roles-migration.md`. No external source refreshed.
 - 2026-11-08 - Under run `doc-types` of `ki.reg.guilds`, after Kris took DOC-TYPES a and STD-BASE a at 22:05 CET that day, relayed by `personal.reg.inbox`: the closed list's design note becomes the change document, `<slug>.change.md`, the `ki-authoring` document type carrying `Base:` and `Touches:`; an existing `.design.md` file stays readable during the rollout under the closed list's migration footnote.

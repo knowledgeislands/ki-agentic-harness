@@ -446,6 +446,7 @@ test('the role catalogue is read from the role standard', () => {
     'governor',
     'councillor',
     'quartermaster',
+    'agoranomos',
     'warden',
     'steward',
     'housekeeper',
@@ -460,5 +461,6 @@ test('the role catalogue is read from the role standard', () => {
   expect(new Set(glyphs).size).toBe(glyphs.length)
   expect(catalogue.get('housekeeper')).toEqual({ tier: 'managers', glyph: '🏠' })
   expect(catalogue.get('quartermaster')).toEqual({ tier: 'leaders', glyph: '🧰' })
+  expect(catalogue.get('agoranomos')).toEqual({ tier: 'leaders', glyph: '🏺' })
   expect(catalogue.get('architect')?.tier).toBe('makers')
 })

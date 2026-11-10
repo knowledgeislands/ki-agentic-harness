@@ -1,6 +1,6 @@
 ---
 type: standard@2026-11-09T21:36:32Z
-revised: 2026-11-09T23:23:32Z
+revised: 2026-11-10T02:25:04Z
 status: in force
 ---
 
@@ -93,7 +93,7 @@ This standard is the one specification of the work package, as Kris answered WOR
 | Concern | Owner |
 | --- | --- |
 | When a package is tidied, at send, mark, hold and finish; whether an outcome has a durable home; the report forms; acting on messages and route receipt | `ki-coordination` |
-| The run packet, the state folder, the launcher and the close gate, with run briefs and reports | `ki-delegation` |
+| The run packet, with run briefs and reports, and how a session delegates to its agent host's subagents | `ki-delegation` |
 | The format of a change document | `ki-authoring` |
 | A change document's review and graduation | `ki-work-design` |
 | Messages and presence between work | The Agora store and its MCP |
@@ -279,7 +279,7 @@ Every writer is named, and every other party only reads. This standing contract 
 
 1. **One owner sets the shape and the tidy rules:** this standard sets the closed list, what each writer may write and how a deletion is made.
 2. **Every other writer is named** with its permitted kinds, in the table below.
-3. **Only the package's own work deletes.** The launcher, runs, other work and tools never delete there.
+3. **Only the package's own work deletes.** Runs, other work and tools never delete there.
 4. **A check backs each writer mechanically,** through the [rubric](rubric.md); the judgement whether an outcome has a durable home stays with the work's own steward under `ki-coordination`.
 
 | Writer | Writes | Never |
@@ -289,7 +289,7 @@ Every writer is named, and every other party only reads. This standing contract 
 
 † The work's own steward is its keyholder, and includes its explicitly assigned State of play. Other work and State of play write nothing in a package: they send a message.
 
-The `description` in `_index.md` is written by the work's steward, at seeding with State of play; State of play proposes a change to it by a message. Readers, such as `ki work status`, the Observatory, `ki agent close` and the rubrics, change nothing; a change of shape names them as consumers.
+The `description` in `_index.md` is written by the work's steward, at seeding with State of play; State of play proposes a change to it by a message. Readers, such as `ki work status`, the Observatory and the rubrics, change nothing; a change of shape names them as consumers.
 
 A Project package has one explicitly assigned coordinating work, either its covering State of play or its own Project coordination work. The assignment is committed when the package is created or adopted and names work, never a host, session or `self`. It is distinct from the holder derived from state, worker and supervisor: assignment neither receives work nor releases a hold. Where the assignment is recorded is not yet set (STEWARD-FIELD); this rule adds no field, changes no holder field and does not select a storage encoding.
 
@@ -322,7 +322,7 @@ Each tidy ends with a check against the work-package rubric and a short report: 
 - **How:** in one commit by explicit path, `git rm` of each file named and nothing else, never a folder-wide delete, so that Git history holds every deleted file. The deletion is operational work and opens no record. A change whose outcome has no durable home yet is kept, not homed in haste. The rubric lists candidates; a listing is never permission to delete.
 - **Who:** each piece of work tidies only its own package. Territory work never tidies another package; it names each package the rubric flags in a message to that work, and the owning work tidies at its next send. The one exception is a finished work's package, which no coordinator reads once the work is Finished: territory work closes it itself under Close-out.
 - **Before a hold:** work going On hold, for either reason and whoever sets it, first tidies its package, so that it holds nothing already dealt with: each change document goes once it has landed. Kris set it under HOLD-TIDY at about 18:10 GMT on 4 November 2026: "you can't tell me that you're on hold expecting more, yet then have additional things in there that have been dealt with."
-- **Close-out:** finished work's package is deleted at the mark that closes it, in one commit, once its decisions are homed and its change documents resolved, under [4.15](#415-removal-lifecycle). Where the package outlives the finishing thread, territory work closes it at an owner-authorised mark of its own whose report names the package, so that the package is deleted rather than flagged, as Kris asked under FINISHED-TIDY-KICK on 30 October 2026, "Sort out the method so that the kick actually gets the folder deleted", and adopted on 1 November 2026. This is administrative close-out only: it reopens nothing, accepts nothing and settles nothing on the owner's behalf. It first checks that the state is `finished`, every decision is homed and other durable information has reached its owners, no change document is left open, and no run of the work is running or queued. If all hold, it archives the work's runs with `ki agent close` under its strict gate first, never supplying `--reconciled`, which stays the owner's waiver, so that a gate refusal leaves the package intact, and then deletes the package in one commit by explicit path, `docs(work): <id> close-out`. If any check fails, it deletes nothing and puts one open point to the owner in a change document of its own.
+- **Close-out:** finished work's package is deleted at the mark that closes it, in one commit, once its decisions are homed and its change documents resolved, under [4.15](#415-removal-lifecycle). Where the package outlives the finishing thread, territory work closes it at an owner-authorised mark of its own whose report names the package, so that the package is deleted rather than flagged, as Kris asked under FINISHED-TIDY-KICK on 30 October 2026, "Sort out the method so that the kick actually gets the folder deleted", and adopted on 1 November 2026. This is administrative close-out only: it reopens nothing, accepts nothing and settles nothing on the owner's behalf. It first checks that the state is `finished`, every decision is homed and other durable information has reached its owners, no change document is left open, and no run of the work is running or queued. If all hold, it deletes the package in one commit by explicit path, `docs(work): <id> close-out`. If any check fails, it deletes nothing and puts one open point to the owner in a change document of its own.
 
 [Back to contents](#contents)
 
@@ -333,7 +333,7 @@ A native client session, a Claude Code or Codex session or a Zed tab, is seated 
 - **Key:** `<repository name>/<work id>`, such as `ki-principal/ki.ways-of-working`. It is stable across hosts, clients and sessions.
 - **Authority:** the entry file's `id` identifies the work and its `level` describes its type. Coordination is an explicitly owner-opened session role on any valid package under `ki-coordination`, not a consequence of level, id, native name or binding. Its opener checks scope, opening authority and coordination capability, preserving any specific owner-approved exception. The native session name derives from the work label; it never decides work identity, level or stewardship.
 - **Binding:** the native session identifiers for a piece of work live only in a machine-local runtime file, `~/.local/state/ki/threads/<repository>/<slug>.json`, as Work naming names it. The binding is never committed, never copied into the package, which keeps no runtime identifier under [4.16](#416-prohibited-payloads-and-claims), and never moved between hosts: each host rebuilds its own.
-- **Supply:** identity reaches a session through one of three channels, in this order: the launcher's environment and session name, for a session `ki agent` or a host tool starts; the `SessionStart` hook on startup, resume and compact, where the binding exists; and the pasted opener or thread identity, which names the id and label, where no hook runs.
+- **Supply:** identity reaches a session through one of three channels, in this order: the agent host's environment and session name, for a session an agent host or a host tool starts; the `SessionStart` hook on startup, resume and compact, where the binding exists; and the pasted opener or thread identity, which names the id and label, where no hook runs.
 - **Drift:** a mismatch between the binding, the native name and the entry file is reported in one line and never repaired by the session that finds it; the owner renames by hand, or the work's next update corrects the package.
 
 Until the `ki thread` tooling and its hook registration ship, no binding is written and a session knows its work only from its opener, its thread identity or an explicit id under [4.14](#414-resume-lifecycle).
