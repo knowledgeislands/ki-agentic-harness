@@ -15,7 +15,7 @@ argument-hint: 'start <brief> | wait | status | steer <dispatch> | stop <dispatc
 
 **Kind:** process.
 
-This is the Orca adapter in the delegation family Kris chose under ORCH-NAME-DISPATCH on 1 November 2026: `ki-delegation` keeps the portable delegation contract and `ki agent` remains the floor launcher. This adapter owns only how a coordinator starts, waits on, steers, stops and closes Orca supervised workers. The brief, authority footer, report shape and owner report stay in `ki-delegation`; the turn budget, receive, mark, hold, Finished and the close-out of Orca workers stay in `ki-coordination`.
+This is the Orca adapter in the delegation family Kris chose under ORCH-NAME-DISPATCH on 1 November 2026: `ki-delegation` keeps the portable delegation contract, and outside Orca a session delegates to its own agent host's subagents under it. This adapter owns only how a coordinator starts, waits on, steers, stops and closes Orca supervised workers. The brief, authority footer, report shape and owner report stay in `ki-delegation`; the turn budget, receive, mark, hold, Finished and the close-out of Orca workers stay in `ki-coordination`.
 
 It stays a process skill, as Kris took ORCA-SKILL-KIND a) on 7 November 2026, revisited only if Orca use needs auditable criteria. Being a process skill is no way round the shared standards: a change to who writes reports, how runs detach or who holds authority is made in the governance skill that owns that rule.
 
@@ -25,7 +25,7 @@ Read [the Orca delegation standard](references/standards-orca-delegation.md) bef
 
 ## Procedure
 
-1. **Check reach.** Use Orca only on an attended Mac and only for a work package whose decisions log records its opt-in, and check that the unit has no other recorded launcher and is not already running; otherwise use `ki agent`. → [When Orca launches](references/standards-orca-delegation.md#when-orca-launches)
+1. **Check reach.** Use Orca only on an attended Mac and only for a work package whose decisions log records its opt-in, and check that the unit has no other recorded launcher and is not already running; otherwise delegate to the agent host's own subagents under `ki-delegation`. → [When Orca launches](references/standards-orca-delegation.md#when-orca-launches)
 2. **Start.** One Run per package per coordinator session, its objective starting with the work id; one worker per brief, with the brief's runtime as its agent and the checked brief as its spec. → [Start](references/standards-orca-delegation.md#start)
 3. **Wait.** One detached, bounded `check --wait`, re-armed after each wake, as the launcher's `wait`. → [Wait](references/standards-orca-delegation.md#wait)
 4. **Steer, stop and read status** without treating silence or `unverifiable` as a stall, stopping a worker only on the owner's named word. → [Status, steering and stopping](references/standards-orca-delegation.md#status-steering-and-stopping)

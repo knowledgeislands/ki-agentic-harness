@@ -27,10 +27,10 @@ Every rule below rests on one of two grounds, named beside it: **proved**, Orca 
 
 ## When Orca launches
 
-- **Reach.** Orca launches runs only on attended Macs, and only for work packages that opt in by a logged owner decision; `ki agent` is the only launcher on `vega`, and stays the maintained launcher on any host without Orca and for any package without an opt-in. Decided: ORCA-REACH a), 30 October 2026, held in the background-run standard's [Reference launcher](../../../governance/ki-delegation/references/standards-background-runs.md#reference-launcher).
+- **Reach.** Orca launches runs only on attended Macs, and only for work packages that opt in by a logged owner decision; on any host without Orca and for any package without an opt-in, a session delegates to its own agent host's subagents. Decided: ORCA-REACH a), 30 October 2026, held in the background-run standard's [Agent hosts](../../../governance/ki-delegation/references/standards-background-runs.md#agent-hosts).
 - **Opt-in.** A package opts in by a decisions-log entry, as ORCA-OPTIN b) of 30 October 2026 does for `ki.prj.orca-evaluation`: "this Project dispatches all its runs through Orca on attended Macs until Kris revokes it". Each opt-in says what it covers, such as hosts or kinds of run; there is no one-launcher-per-host rule. Decided: ORCA-OPTIN b), and ONE-LAUNCHER closed with no rule on 7 November 2026.
-- **One launcher per unit.** Each dispatched unit has exactly one launcher answerable for it, recorded with the unit at dispatch in the decisions log. Before dispatching, the coordinator checks both the decisions log and the live running work, `ki agent status` and the Orca Run's `worker-list`, because two Macs or two sessions could each pass a Git-synced log check before either pushes; a unit already recorded or running is not started again. Decided: ONE-LAUNCHER-UNIT a), 7 November 2026.
-- **Survival.** A run that must outlive its coordinator goes through a launcher whose workers are proved to survive it: the worker keeps working, a fresh session finds it with its progress and result, and it finishes. `ki agent` is proved; Orca's standing is in the migration file. Decided: OUTLIVE a), 7 November 2026.
+- **One launcher per unit.** Each dispatched unit has exactly one launcher answerable for it, recorded with the unit at dispatch in the decisions log. Before dispatching, the coordinator checks both the decisions log and the live running work, the Orca Run's `worker-list` and any other agent host's view of the session's agents, because two Macs or two sessions could each pass a Git-synced log check before either pushes; a unit already recorded or running is not started again. Decided: ONE-LAUNCHER-UNIT a), 7 November 2026.
+- **Survival.** A run that must outlive its coordinator goes through a launcher whose workers are proved to survive it: the worker keeps working, a fresh session finds it with its progress and result, and it finishes. With `ki agent` removed in `tools-ki` v0.15.0, no agent host is yet proved to carry such a run; Orca's standing is in the migration file. Decided: OUTLIVE a), 7 November 2026.
 
 ## Start
 
@@ -70,7 +70,7 @@ A new coordinator session therefore makes a new Run, finds the old one by its ob
 
 ## Queueing
 
-A queued run starts through Orca while its parent chat is live, and otherwise detached through `ki agent`'s dispatcher, the route recorded in its receipt. Decided: ORCA-QUEUE a), "Orca first".
+A queued run starts through Orca while its parent chat is live, and otherwise waits for a live session, the route recorded in its receipt. Decided: ORCA-QUEUE a), "Orca first"; its other route, `ki agent`'s dispatcher, went with `ki agent` in `tools-ki` v0.15.0.
 
 Orca never starts a worker when its dependencies finish, so within one session the coordinator paces the queue itself: at the wake that settles a worker, it reads the report, confirms the next worker's dependency succeeded and that nothing conflicts, then starts the next worker, with no more than about three running, a ceiling rather than a target. A finish message alone does not prove a dependency succeeded, and during recovery no worker is started twice. Decided: QUEUE-PACE a), 7 November 2026.
 
@@ -78,8 +78,8 @@ Orca never starts a worker when its dependencies finish, so within one session t
 
 - **Ids.** No Run, Task or Dispatch id is written in a work-package file. Routing lives in a machine-local record keyed by `<repository>/<work id>`, and `messages.md` stays the durable channel; an Orca `send` is only a wake. Decided: ORCA-ROUTING, folded into the Orca sub-agents design in `ki.prj.ways-of-working`.
 - **Brief.** The brief sits at `+/_WORK/<id>/briefs/<run>.md` while the run is open. Decided: the background-run standard's [run packet](../../../governance/ki-delegation/references/standards-background-runs.md#run-packet).
-- **Report.** The worker writes its report outside every repository, under `~/.local/state/ki/agents/<run-dir>/<name>.report.md`, and names it in `worker_done`. Proved: `ki.prj.orca-evaluation`'s four workers on 1 November 2026.
-- **Report home.** No launcher homes an Orca worker's report, so the coordinator copies it into the reporting package's work folder at receive, the one named exception to the launcher as only writer in the background-run standard's [run packet](../../../governance/ki-delegation/references/standards-background-runs.md#run-packet). It copies only the report its brief named for that worker and package, never a path just because a message names it; it keeps the content unchanged; a repeat copy of the same content changes nothing; and it stops and reports if a different file already sits at the destination. Decided: REPORT-HOME a), 7 November 2026, revisiting Kris's decision of 14 October 2026 for Orca alone.
+- **Report.** The worker writes its report outside every repository, at the path its brief names, and names it in `worker_done`. Proved, then under the KI state root: `ki.prj.orca-evaluation`'s four workers on 1 November 2026.
+- **Report home.** The coordinator copies an Orca worker's report into the reporting package's work folder at receive, as the background-run standard's [run packet](../../../governance/ki-delegation/references/standards-background-runs.md#run-packet) has the session that started a run do under every agent host. It copies only the report its brief named for that worker and package, never a path just because a message names it; it keeps the content unchanged; a repeat copy of the same content changes nothing; and it stops and reports if a different file already sits at the destination. Decided: REPORT-HOME a), 7 November 2026, revisiting Kris's decision of 14 October 2026 for Orca alone.
 
 ## Questions
 
@@ -105,7 +105,6 @@ Each is proved in the trial log.
 - **Repository moves.** A project removed and re-added at a new path gets a new identity and its chats stay with the old one; for a move, leave a link at the old path and keep the Orca project registered there.
 - **Row label.** An armed waiter makes the coordinator's row lead with "Monitoring background tasks"; this is deliberate Orca behaviour and no setting changes it.
 - **Question card.** Multi-line text in an `AskUserQuestion` card renders as one paragraph; put context in chat text above the card, as `ki-coordination`'s interactive pass does. Reported upstream as stablyai/orca#36830.
-- **Nesting.** A detached `ki agent` run cannot nest under its coordinator's row: only Orca's own orchestration records carry the parent link.
 
 ## Runtime binding
 
