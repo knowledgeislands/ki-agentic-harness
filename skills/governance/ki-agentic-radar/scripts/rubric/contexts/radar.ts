@@ -10,6 +10,7 @@ import type {
 const RADAR_PATH = fileURLToPath(new URL('../../../references/radar.toml', import.meta.url))
 const ID = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/
 const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/
+const CARD_ID = /^[a-z][a-z0-9-]*(?:\.[a-z0-9-]+)+$/
 const FRESHNESS_DAYS = 9
 
 const TOP_LEVEL = new Set(['schema', 'reviewed_on', 'evidence', 'subjects'])
@@ -29,7 +30,8 @@ const SUBJECT_FIELDS = new Set([
   'return_trigger',
   'reviewed_on',
   'evidence',
-  'counter_evidence'
+  'counter_evidence',
+  'card'
 ])
 
 const SUBJECT_KINDS = new Set([
@@ -266,6 +268,9 @@ export const inspectRadar = (source: string, today = new Date()): AgenticRadarRu
 
     for (const field of ['display_name', 'owner', 'uncertainty', 'return_trigger']) {
       checkString(schemaOutcomes, record[field], `subjects.${id}.${field}`)
+    }
+    if ('card' in record && (typeof record.card !== 'string' || !CARD_ID.test(record.card))) {
+      schemaOutcomes.push(violation(`subjects.${id}.card must be a ki-agentic-systems card id, such as spec.mcp`))
     }
     checkVocabulary(classificationOutcomes, record.subject_kind, `subjects.${id}.subject_kind`, SUBJECT_KINDS)
     checkVocabulary(classificationOutcomes, record.stewardship, `subjects.${id}.stewardship`, STEWARDSHIP)

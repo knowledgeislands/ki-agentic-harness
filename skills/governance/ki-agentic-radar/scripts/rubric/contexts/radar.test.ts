@@ -127,6 +127,23 @@ describe('agentic radar inspection', () => {
     expect(violations(inspected.lifecycle.outcomes)).toEqual([])
   })
 
+  test('accepts a card id and rejects a malformed one', () => {
+    const withCard = populatedRadar.replace(
+      'display_name = "Protocol A"',
+      'display_name = "Protocol A"\ncard = "spec.protocol-a"'
+    )
+    expect(violations(inspectRadar(withCard, TODAY).schema.outcomes)).toEqual([])
+    const malformed = populatedRadar.replace(
+      'display_name = "Protocol A"',
+      'display_name = "Protocol A"\ncard = "Protocol A"'
+    )
+    expect(
+      violations(inspectRadar(malformed, TODAY).schema.outcomes).some(({ message }) =>
+        message.includes('subjects.protocol-a.card must be a ki-agentic-systems card id')
+      )
+    ).toBeTrue()
+  })
+
   test('rejects malformed TOML and duplicate tables', () => {
     const duplicate = `${emptyRadar}\n[subjects.protocol-a]\nid = "protocol-a"\n[subjects.protocol-a]\nid = "protocol-a"\n`
     expect(violations(inspectRadar(duplicate, TODAY).schema.outcomes)[0]?.message).toContain('does not parse')
