@@ -29,8 +29,9 @@ Every skill in the KI harness's `skills/` folder is a skill in this sense. The `
 
 ## Next
 
-The machine card, still to come.
+An [environment][industry.environment] is where an agent's work runs.
 
 [industry.agent-harness]: ./industry.agent-harness.md
 [spec.agent-skills.progressive-disclosure]: ./spec.agent-skills.progressive-disclosure.md
 [spec.agent-skills]: ./spec.agent-skills.md
+[industry.environment]: ./industry.environment.md

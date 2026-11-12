@@ -10,11 +10,14 @@ origin: Cairn summit change 22, CARDS-AGENT, and change 06, KG-SUBGRAPHS (Kris, 
 links:
   industry.agent:
     predicate: skos:broadMatch
+  industry.agent-host:
+    predicate: skos:broadMatch
 ---
 
 # ChatGPT (OpenAI)
 
-ChatGPT names the chat product, the desktop app that now holds Codex, ChatGPT Work, and @ChatGPT in Slack and Teams. Of these, ChatGPT Work is an [agent][industry.agent] ([Get started with ChatGPT Work][o6]); the desktop app is an agent host, a term whose card is still to come, and gains its link when that card is written.
+ChatGPT names the chat product, the desktop app that now holds Codex, ChatGPT Work, and @ChatGPT in Slack and Teams. Of these, ChatGPT Work is an [agent][industry.agent] ([Get started with ChatGPT Work][o6]); the desktop app is an [agent host][industry.agent-host].
 
 [industry.agent]: ./industry.agent.md
+[industry.agent-host]: ./industry.agent-host.md
 [o6]: https://learn.chatgpt.com/docs/get-started-with-work.md

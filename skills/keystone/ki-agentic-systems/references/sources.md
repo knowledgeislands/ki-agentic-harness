@@ -74,6 +74,10 @@ The vendors' own documentation and the specifications the cards follow, checked 
 | **[M9]** [VS Code, Subagents](https://code.visualstudio.com/docs/agents/subagents) | Subagent: VS Code's subagents and their nesting | 2026-11-12 |
 | **[M10]** [VS Code, Use Agent Skills in VS Code](https://code.visualstudio.com/docs/copilot/customization/agent-skills) | Skill: Agent Skills across Copilot and Codex, their three levels, against custom instructions | 2026-11-12 |
 | **[S1]** [Agent Skills specification](https://agentskills.io/specification) | Skill and the specification cards: a skill's directory, front matter and optional folders; progressive disclosure in three levels; file references one level deep | 2026-11-12 |
+| **[M11]** [Agent Host Protocol, specification overview](https://microsoft.github.io/agent-host-protocol/specification/overview.html) | Agent host: the process that runs harnesses and owns their sessions, independently of clients | 2026-11-12 |
+| **[M12]** [Agent Host Protocol, implementations](https://microsoft.github.io/agent-host-protocol/guide/implementations.html) | Agent host: VS Code's Agent Host and the other implementations | 2026-11-12 |
+| **[OR1]** Orca's own command line on terra, `orca serve`, `orca open`, `orca host list` and `orca-environments.json` | Orca runtime and app: the runtime inside the app, headless `orca serve`, machines paired as environments | 2026-11-12 |
+| **[Z1]** [Agent Client Protocol, agents](https://agentclientprotocol.com/get-started/agents) | Zed as an ACP client, and the agents it drives | 2026-11-12 |
 
 [Back to contents](#contents)
 
@@ -112,6 +116,11 @@ The vendors' own documentation and the specifications the cards follow, checked 
 | LINK-VOCAB | Kris's decision, in change 06: each graph declares its link vocabulary at its root; SKOS is the default, with `ki:` only for what it lacks. | 2026-11-12 | [the root definition](_graph.md) | In force |
 | KG-FLAT, FILE-NAME | Kris's decisions, in change 06: a graph is flat by default and a card's identity is its readable id; the file is `<id>.md` and the id carries the subgraph. | 2026-11-12 | [SKILL.md](../SKILL.md#the-cards) | In force |
 | KG-GRAIN | Kris's decision, in change 06: no links into part of a card; each part linked to is a card of its own. | 2026-11-12 | [progressive disclosure](spec.agent-skills.progressive-disclosure.md) | In force |
+| ENVIRONMENT | Kris's decision: an environment is where an agent's work runs, a whole machine, physical or virtual, or a container or sandbox inside one; local, remote and cloud are its kinds as values; a machine is the computer, which networking calls a host and we do not. | 2026-11-12 | [environment](industry.environment.md), [machine](industry.machine.md) | In force |
+| CARD-AGENT-HOST | Kris's decision: an agent host is the application or process that runs agent harnesses and owns their sessions, independently of clients, in AHP's sense; a harness run by itself is its own agent host and client. | 2026-11-12 | [agent host](industry.agent-host.md) | In force |
+| CARD-CLIENT | Kris's decision: a client is a window onto a session an agent host owns; a session can have several, and one program can be both agent host and client. | 2026-11-12 | [client](industry.client.md) | In force |
+| VENDORS-MORE | Kris's decision: Orca and Zed Industries join the vendor subgraphs. | 2026-11-12 | [Orca runtime](orca.runtime.md), [Orca app](orca.app.md), [Zed](zed.zed.md) | In force |
+| DIAGRAM-RESOURCE | Kris's decision: a diagram of the terms is a resource, addressable directly by a card of its own that says what it shows and where the diagram and its regeneration prompt live. | 2026-11-12 | [the root definition](_graph.md), the `diagram.` cards | In force |
 
 [Back to contents](#contents)
 

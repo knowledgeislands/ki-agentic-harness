@@ -4,8 +4,8 @@ ki-kind: knowledge
 ki-applicability: invocation-only
 ki-depends-on: []
 description: >
-  Define the words of agentic systems as a knowledge graph: industry cards from model, agent harness, agent, session and
-  subagent to skill, with Anthropic's, OpenAI's, Google's and Microsoft's own words in vendor subgraphs linked to them.
+  Define the words of agentic systems as a knowledge graph: industry cards from model, agent harness, agent, session,
+  subagent and skill to environment, machine, agent host and client, with Anthropic's, OpenAI's, Google's and Microsoft's own words in vendor subgraphs linked to them.
   Use to learn what an agentic term means, which sense a vendor name such as Claude or Codex carries, how vendors' words
   compare, or which card to link instead of redefining a term; `ki-agentic-radar` owns maturity and stance, and
   `ki-subagents` how to run subagents.
@@ -40,14 +40,16 @@ Read them in order:
 4. [Session](references/industry.session.md): one run of an agent, a conversation with its own context, id and folder, made of turns and of threads.
 5. [Subagent](references/industry.subagent.md): an agent subordinate to another, started by it to do part of its work in a thread of its own, returning its result to it.
 6. [Skill](references/industry.skill.md): a common way to extend any agent harness with knowledge and procedures, loaded by progressive disclosure.
+7. [Environment](references/industry.environment.md): where an agent's work runs, a whole machine or a container or sandbox inside one; local, remote or cloud.
+8. [Machine](references/industry.machine.md): the computer, physical or virtual, that environments run on.
+9. [Agent host](references/industry.agent-host.md): the application or process that runs agent harnesses and owns their sessions, independently of clients.
+10. [Client](references/industry.client.md): a window onto a session an agent host owns.
 
 Pending, in this order and not yet defined here:
 
-1. Machine.
-2. Agent host.
-3. Client.
-4. Channel.
-5. The system's own terms: rig, actor, title, role, package, worker, seat, and the KI harness's new name.
+1. Channel.
+2. Agent team, tool, instruction file and plugin.
+3. The system's own terms: rig, actor, title, role, package, worker, seat, and the KI harness's new name.
 
 ### Specification cards
 
@@ -60,6 +62,11 @@ Pending, not yet written here: `spec.mcp`, the Model Context Protocol; `spec.acp
 - **Anthropic** (`anthropic.`) and **OpenAI** (`openai.`): their names [Claude](references/anthropic.claude.md), [Claude Code](references/anthropic.claude-code.md), [Codex](references/openai.codex.md) and [ChatGPT](references/openai.chatgpt.md), each used in more than one sense, and their words for each term, from Anthropic's [model](references/anthropic.model.md) to its [skill](references/anthropic.skill.md), and OpenAI's [task](references/openai.task.md), [chat](references/openai.chat.md) and [thread](references/openai.thread.md) for a session and its parts.
 - **Google** (`google.`): [Gemini](references/google.gemini.md), and its words, among them [conversation](references/google.conversation.md) and [session](references/google.session.md).
 - **Microsoft** (`microsoft.`): [Copilot](references/microsoft.copilot.md), and its and GitHub's words, among them [agent harness](references/microsoft.agent-harness.md) and [agent session](references/microsoft.agent-session.md).
+- **Orca** (`orca.`) and **Zed Industries** (`zed.`): Orca's [runtime](references/orca.runtime.md), an agent host, and its [app](references/orca.app.md), client and agent host in one; and [Zed](references/zed.zed.md), a client through ACP.
+
+### Diagrams
+
+Resource cards (`diagram.`) point to diagrams of the terms, kept with the harness's living diagrams: [agentic terms by example](references/diagram.agentic-terms-by-example.md), an instance diagram from machine to client, and [agentic standards and channels](references/diagram.agentic-standards.md), a proposal until the channel card is settled.
 
 ## Adding a card
 
