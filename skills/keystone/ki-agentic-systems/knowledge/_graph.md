@@ -69,17 +69,17 @@ A predicate reads from the card that holds it to its target. A vendor card whose
 
 ## Subgraphs
 
-| Subgraph | Id prefix | Folder | Subject | Cards |
+| Subgraph | Id prefix | Subject | Cards | Folder |
 | --- | --- | --- | --- | --- |
-| Industry | `industry.` | `industry/` | The industry's terms, in reading order | [model][industry.model], [agent harness][industry.agent-harness], [agent][industry.agent], [session][industry.session], [subagent][industry.subagent], [skill][industry.skill], [environment][industry.environment], [machine][industry.machine], [agent host][industry.agent-host], [client][industry.client] |
-| Specifications | `spec.` | `specs/`, a folder for each specification, as `specs/mcp/` | The specifications the terms rest on | [Agent Skills][spec.agent-skills], with [progressive disclosure][spec.agent-skills.progressive-disclosure] |
-| Anthropic | `anthropic.` | `vendors/anthropic/` | Anthropic's own words | [Claude][anthropic.claude], [Claude Code][anthropic.claude-code], [model][anthropic.model], [agentic harness][anthropic.agentic-harness], [agentic coding tool][anthropic.agentic-coding-tool], [session][anthropic.session], [conversation][anthropic.conversation], [subagent][anthropic.subagent], [agent team][anthropic.agent-team], [skill][anthropic.skill] |
-| OpenAI | `openai.` | `vendors/openai/` | OpenAI's own words | [Codex][openai.codex], [ChatGPT][openai.chatgpt], [model][openai.model], [harness][openai.harness], [agent][openai.agent], [task][openai.task], [chat][openai.chat], [thread][openai.thread], [subagent][openai.subagent], [skill][openai.skill], [plugin][openai.plugin] |
-| Google | `google.` | `vendors/google/` | Google's own words | [Gemini][google.gemini], [model][google.model], [agent harness][google.agent-harness], [agent][google.agent], [conversation][google.conversation], [session][google.session], [subagent][google.subagent], [remote subagent][google.remote-subagent], [skill][google.skill] |
-| Orca | `orca.` | `vendors/orca/` | Orca's own words | [Orca runtime][orca.runtime], [Orca app][orca.app] |
-| Zed Industries | `zed.` | `vendors/zed/` | Zed Industries' own words | [Zed][zed.zed] |
-| Diagrams | `diagram.` | `diagrams/` | Diagrams of the terms, as resources | [agentic terms by example][diagram.agentic-terms-by-example], [agentic standards and channels][diagram.agentic-standards] (proposal) |
-| Microsoft | `microsoft.` | `vendors/microsoft/` | Microsoft's and GitHub's own words | [Copilot][microsoft.copilot], [model][microsoft.model], [agent harness][microsoft.agent-harness], [agent][microsoft.agent], [agent session][microsoft.agent-session], [chat][microsoft.chat], [subagent][microsoft.subagent], [agent skill][microsoft.agent-skill] |
+| Industry | `industry.` | The industry's terms, in reading order | [model][industry.model], [agent harness][industry.agent-harness], [agent][industry.agent], [session][industry.session], [subagent][industry.subagent], [skill][industry.skill], [environment][industry.environment], [machine][industry.machine], [agent host][industry.agent-host], [client][industry.client] | `industry/` |
+| Specifications | `spec.` | The specifications the terms rest on | [Agent Skills][spec.agent-skills], with [progressive disclosure][spec.agent-skills.progressive-disclosure] | `specs/`, a folder for each specification, as `specs/mcp/` |
+| Anthropic | `anthropic.` | Anthropic's own words | [Claude][anthropic.claude], [Claude Code][anthropic.claude-code], [model][anthropic.model], [agentic harness][anthropic.agentic-harness], [agentic coding tool][anthropic.agentic-coding-tool], [session][anthropic.session], [conversation][anthropic.conversation], [subagent][anthropic.subagent], [agent team][anthropic.agent-team], [skill][anthropic.skill] | `vendors/anthropic/` |
+| OpenAI | `openai.` | OpenAI's own words | [Codex][openai.codex], [ChatGPT][openai.chatgpt], [model][openai.model], [harness][openai.harness], [agent][openai.agent], [task][openai.task], [chat][openai.chat], [thread][openai.thread], [subagent][openai.subagent], [skill][openai.skill], [plugin][openai.plugin] | `vendors/openai/` |
+| Google | `google.` | Google's own words | [Gemini][google.gemini], [model][google.model], [agent harness][google.agent-harness], [agent][google.agent], [conversation][google.conversation], [session][google.session], [subagent][google.subagent], [remote subagent][google.remote-subagent], [skill][google.skill] | `vendors/google/` |
+| Orca | `orca.` | Orca's own words | [Orca runtime][orca.runtime], [Orca app][orca.app] | `vendors/orca/` |
+| Zed Industries | `zed.` | Zed Industries' own words | [Zed][zed.zed] | `vendors/zed/` |
+| Diagrams | `diagram.` | Diagrams of the terms, as resources | [agentic terms by example][diagram.agentic-terms-by-example], [agentic standards and channels][diagram.agentic-standards] (proposal) | `diagrams/` |
+| Microsoft | `microsoft.` | Microsoft's and GitHub's own words | [Copilot][microsoft.copilot], [model][microsoft.model], [agent harness][microsoft.agent-harness], [agent][microsoft.agent], [agent session][microsoft.agent-session], [chat][microsoft.chat], [subagent][microsoft.subagent], [agent skill][microsoft.agent-skill] | `vendors/microsoft/` |
 
 ## Extent and limitations
 
