@@ -42,6 +42,9 @@ The vendors' own documentation and the specifications the cards follow, checked 
 | **[A4]** [Anthropic, Agent SDK overview](https://code.claude.com/docs/en/agent-sdk/overview) | Agent harness and agent: the Agent SDK, Managed Agents, "Claude Agent" branding | 2026-11-12 |
 | **[A5]** [Anthropic, Subagents](https://code.claude.com/docs/en/sub-agents) | Subagent: Claude Code's subagents | 2026-11-12 |
 | **[A6]** [Anthropic, Extend Claude with skills](https://code.claude.com/docs/en/skills) | Skill: Claude Code's skills on the Agent Skills open standard; descriptions in context, bodies on use; custom commands merged into skills | 2026-11-12 |
+| **[A7]** [Anthropic, Claude Code channels](https://code.claude.com/docs/en/channels) | Channel card (proposal): "an MCP server that pushes events into your running Claude Code session"; integrations start a new session; research preview | 2026-11-12 |
+| **[A8]** [Anthropic, Cross-session messaging](https://code.claude.com/docs/en/cross-session-messaging) | Channel and peer agent cards (proposals): one session messaging another; "Peer address" | 2026-11-12 |
+| **[A9]** [Anthropic, Agent teams](https://code.claude.com/docs/en/agent-teams) | Peer agent card (proposal): teammates, each "a full, independent Claude Code session", messaging each other; experimental | 2026-11-12 |
 | **[O1]** [OpenAI, Models](https://learn.chatgpt.com/docs/models.md) | Model: current GPT models | 2026-11-12 |
 | **[O2]** [OpenAI, Workspace model availability](https://learn.chatgpt.com/docs/enterprise/workspace-model-availability.md) | Model: models still listed | 2026-11-12 |
 | **[O3]** [OpenAI, Unlocking the Codex harness](https://openai.com/index/unlocking-the-codex-harness/) | Agent harness: "Codex harness", 4 February 2026; refused the fetcher, title and date from search results | 2026-11-12 |
@@ -63,6 +66,7 @@ The vendors' own documentation and the specifications the cards follow, checked 
 | **[G6]** [Google, Jules changelog](https://jules.google/docs/changelog/) | Agent and session: Jules wind-down notice of 29 October 2026; task and Session | 2026-11-12 |
 | **[G7]** [Google, Gemini CLI subagents](https://geminicli.com/docs/core/subagents/) | Subagent: Gemini CLI's subagents, which cannot call other subagents, and its remote subagents over A2A | 2026-11-12 |
 | **[G8]** [Google, Agent Skills in Gemini CLI](https://geminicli.com/docs/cli/skills/) | Skill: Gemini CLI's Agent Skills, activated by `activate_skill`, against GEMINI.md | 2026-11-12 |
+| **[G9]** [Google, ADK collaborative workflows](https://adk.dev/workflows/collaboration/) | Peer agent card (proposal): "peer agents" in a parallel workflow, used descriptively | 2026-11-12 |
 | **[M1]** [Microsoft, MAI models](https://microsoft.ai/models/) | Model: Microsoft's own models | 2026-11-12 |
 | **[M2]** [GitHub, Copilot supported models](https://docs.github.com/en/copilot/reference/ai-models/supported-models) | Model: the models Copilot serves | 2026-11-12 |
 | **[M3]** [VS Code, Build with agents](https://code.visualstudio.com/docs/copilot/agents/overview) | Agent harness, agent and session: VS Code's harnesses, agent mode and agent session | 2026-11-12 |
@@ -78,6 +82,41 @@ The vendors' own documentation and the specifications the cards follow, checked 
 | **[M12]** [Agent Host Protocol, implementations](https://microsoft.github.io/agent-host-protocol/guide/implementations.html) | Agent host: VS Code's Agent Host and the other implementations | 2026-11-12 |
 | **[OR1]** Orca's own command line on terra, `orca serve`, `orca open`, `orca host list` and `orca-environments.json` | Orca runtime and app: the runtime inside the app, headless `orca serve`, machines paired as environments | 2026-11-12 |
 | **[Z1]** [Agent Client Protocol, agents](https://agentclientprotocol.com/get-started/agents) | Zed as an ACP client, and the agents it drives | 2026-11-12 |
+| **[MCP1]** [Model Context Protocol, specification 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28) | MCP card (proposal): purpose, roles, extensions; revision 2026-07-28 | 2026-11-12 |
+| **[MCP2]** [MCP, architecture](https://modelcontextprotocol.io/specification/2026-07-28/architecture) | MCP host, client and server cards (proposals): one client for each server | 2026-11-12 |
+| **[MCP3]** [MCP, tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools) | MCP tools card (proposal) | 2026-11-12 |
+| **[MCP4]** [MCP, transports](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports) | MCP transports card (proposal) | 2026-11-12 |
+| **[MCP5]** [MCP, stdio transport](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio) | MCP transports card (proposal): stdio | 2026-11-12 |
+| **[MCP6]** [MCP, Streamable HTTP transport](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http) | MCP transports card (proposal): Streamable HTTP | 2026-11-12 |
+| **[MCP7]** [MCP, versioning](https://modelcontextprotocol.io/specification/versioning) | MCP card (proposal): current revision | 2026-11-12 |
+| **[MCP8]** [MCP, changelog 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28/changelog) | MCP card (proposal): stateless protocol, protocol-level session removed | 2026-11-12 |
+| **[MCP9]** [MCP, resources](https://modelcontextprotocol.io/specification/2026-07-28/server/resources) | MCP server card (proposal): resources | 2026-11-12 |
+| **[MCP10]** [MCP, prompts](https://modelcontextprotocol.io/specification/2026-07-28/server/prompts) | MCP server card (proposal): prompts | 2026-11-12 |
+| **[ACP1]** [Agent Client Protocol, introduction](https://agentclientprotocol.com/get-started/introduction) | ACP card (proposal): purpose | 2026-11-12 |
+| **[ACP2]** [ACP, protocol v1 overview](https://agentclientprotocol.com/protocol/v1/overview) | ACP client and agent cards (proposals): roles and messages | 2026-11-12 |
+| **[ACP3]** [ACP, session setup](https://agentclientprotocol.com/protocol/v1/session-setup) | ACP session card (proposal): "a conversation or thread" | 2026-11-12 |
+| **[ACP4]** [ACP, transports](https://agentclientprotocol.com/protocol/v1/transports) | ACP card (proposal): transports | 2026-11-12 |
+| **[ACP5]** [ACP, related protocols](https://agentclientprotocol.com/get-started/related-protocols) | ACP card (proposal): against MCP, and IBM's Agent Communication Protocol merged into A2A | 2026-11-12 |
+| **[ACP6]** [ACP, governance](https://agentclientprotocol.com/community/governance) | ACP card (proposal): jointly governed by Zed Industries and JetBrains | 2026-11-12 |
+| **[ACP7]** [ACP, v2 draft announcement](https://agentclientprotocol.com/announcements/acp-v2-draft) | ACP card (proposal): v2 draft, alpha.15 | 2026-11-12 |
+| **[ACP8]** [ACP, releases](https://github.com/agentclientprotocol/agent-client-protocol/releases) | ACP card (proposal): schema v1.31.0 of 10 November 2026 | 2026-11-12 |
+| **[ACP9]** [ACP, agents](https://agentclientprotocol.com/get-started/agents) | ACP agent card (proposal): the same page as [Z1] | 2026-11-12 |
+| **[ACP10]** [ACP, architecture](https://agentclientprotocol.com/get-started/architecture) | ACP client and agent cards (proposals) | 2026-11-12 |
+| **[ACP11]** [ACP, session list](https://agentclientprotocol.com/protocol/v1/session-list) | ACP session card (proposal): listing sessions | 2026-11-12 |
+| **[ACP12]** [ACP, session delete](https://agentclientprotocol.com/protocol/v1/session-delete) | ACP session card (proposal): deleting sessions | 2026-11-12 |
+| **[AHP1]** [Agent Host Protocol, AHP and ACP](https://microsoft.github.io/agent-host-protocol/guide/ahp-and-acp.html) | AHP and AHP agent host cards (proposals): coordination layer against communication layer | 2026-11-12 |
+| **[AHP2]** [AHP, doctrine](https://microsoft.github.io/agent-host-protocol/guide/doctrine.html) | AHP agent host card (proposal) | 2026-11-12 |
+| **[AHP3]** [AHP, subscriptions](https://microsoft.github.io/agent-host-protocol/specification/subscriptions.html) | AHP client and channels cards (proposals) | 2026-11-12 |
+| **[AHP4]** [AHP, session channel](https://microsoft.github.io/agent-host-protocol/specification/session-channel.html) | AHP session and channels cards (proposals) | 2026-11-12 |
+| **[AHP5]** [AHP, chat channel](https://microsoft.github.io/agent-host-protocol/specification/chat-channel.html) | AHP session card (proposal): its chat is our thread | 2026-11-12 |
+| **[AHP6]** [AHP, transport](https://microsoft.github.io/agent-host-protocol/specification/transport.html) | AHP card (proposal): transport | 2026-11-12 |
+| **[AHP7]** [AHP, specification 1.0.0 release](https://github.com/microsoft/agent-host-protocol/releases/tag/spec%2Fv1.0.0) | AHP card (proposal): spec 1.0.0 of 2 October 2026 | 2026-11-12 |
+| **[AHP8]** [AHP, MCP servers](https://microsoft.github.io/agent-host-protocol/guide/mcp.html) | AHP agent host card (proposal): it wraps a harness | 2026-11-12 |
+| **[AHP9]** [AHP, versioning](https://microsoft.github.io/agent-host-protocol/specification/versioning.html) | AHP card (proposal): versioning | 2026-11-12 |
+| **[A2A1]** [Agent2Agent, specification](https://a2a-protocol.org/latest/specification/) | A2A cards (proposals): client, remote agent, Agent Card and task | 2026-11-12 |
+| **[A2A2]** [A2A, key concepts](https://a2a-protocol.org/latest/topics/key-concepts/) | A2A remote agent and Agent Card cards (proposals): opaque agents | 2026-11-12 |
+| **[A2A3]** [A2A, life of a task](https://a2a-protocol.org/latest/topics/life-of-a-task/) | A2A task card (proposal): task and contextId | 2026-11-12 |
+| **[A2A4]** [A2A, release 1.0.1](https://github.com/a2aproject/A2A/releases/tag/v1.0.1) | A2A card (proposal): 1.0.0 of 12 March 2026, 1.0.1 of 28 May 2026 | 2026-11-12 |
 
 [Back to contents](#contents)
 
@@ -121,6 +160,7 @@ The vendors' own documentation and the specifications the cards follow, checked 
 | CARD-CLIENT | Kris's decision: a client is a window onto a session an agent host owns; a session can have several, and one program can be both agent host and client. | 2026-11-12 | [client](industry.client.md) | In force |
 | VENDORS-MORE | Kris's decision: Orca and Zed Industries join the vendor subgraphs. | 2026-11-12 | [Orca runtime](orca.runtime.md), [Orca app](orca.app.md), [Zed](zed.zed.md) | In force |
 | DIAGRAM-RESOURCE | Kris's decision: a diagram of the terms is a resource, addressable directly by a card of its own that says what it shows and where the diagram and its regeneration prompt live. | 2026-11-12 | [the root definition](_graph.md), the `diagram.` cards | In force |
+| CARD-CHANNEL | Kris's decision, given for every high-confidence recommendation: a, the industry's words only; a channel pushes events from outside into a running session, with integration and session-to-session messaging as cards of their own under the ways into a session. The card's wording is still a proposal. | 2026-11-12 | [channel](industry.channel.md) | Taken, for Kris's review |
 
 [Back to contents](#contents)
 
@@ -130,11 +170,13 @@ On 12 November 2026 the skill was written from the Cairn summit's change 22, kno
 
 - **Confirmed:** Anthropic, Google and Microsoft each name the layer an agent harness, or an agentic harness, and OpenAI the Codex harness; vendors name an agent after its harness; VS Code alone calls Copilot, Claude and Codex harnesses. Session is Anthropic's word and the majority's; OpenAI says task or chat by surface, and Google conversation in Antigravity's app; OpenAI's top-level thread is the primary thread. All four vendors say subagent, and differ only on how subagents nest. All four build their skills on the Agent Skills specification, and OpenAI distributes them in plugins.
 - **The knowledge kind:** `ki-skills` defines `ki-kind: knowledge` and how a knowledge skill holds its graph in `references/`, so the cards are checked as graph cards: `_graph.md` and files named by their ids.
+- **Specification cards, proposed:** the cards for MCP, ACP, AHP and A2A, each split into its parts, were drafted as proposals from [MCP1] to [MCP10], [ACP1] to [ACP10], [AHP1] to [AHP9] and [A2A1] to [A2A4], for Kris's decision in the Cairn summit's change 22; none is agreed, and no decision above backs them.
 - **Open watch-items:**
   - Jules closes on 31 December 2026, and Gemini CLI's replacement by the Antigravity CLI is spreading; move both to past examples when they go.
   - GitHub renamed its cloud agent Copilot in the cloud on 28 October 2026; check the older name has left the docs.
   - Gemini 4 Carbon became generally available on 10 November 2026 and GPT-5.5 is retiring; refresh the vendors' model cards.
   - Re-read [O3] when it can be fetched, and confirm its date.
   - OpenAI's session words keep moving between thread, task and chat; check which [O4], [O9] and [O10] use now.
+  - ACP's v2 draft ([ACP7]) and MCP's next revision ([MCP7]); refresh the specification cards when either lands.
 
 [Back to contents](#contents)

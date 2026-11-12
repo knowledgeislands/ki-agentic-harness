@@ -47,15 +47,21 @@ Read them in order:
 
 Pending, in this order and not yet defined here:
 
-1. Channel.
-2. Agent team, tool, instruction file and plugin.
-3. The system's own terms: rig, actor, title, role, package, worker, seat, and the KI harness's new name.
+1. Channel, drafted as a [proposal](references/industry.channel.md) under CARD-CHANNEL's option A, the industry's words; then integration and session-to-session messaging, under a card for the ways into a session.
+2. The agent kinds beside the subagent, drafted as proposals: the [peer agent](references/industry.peer-agent.md) and the [remote agent](references/industry.remote-agent.md).
+3. Agent team, tool, instruction file and plugin.
+4. The system's own terms: rig, actor, title, role, package, worker, seat, and the KI harness's new name, with a [naming proposal](references/naming-proposal.md) for Kris's review.
 
 ### Specification cards
 
 - [The Agent Skills specification](references/spec.agent-skills.md), with its part [progressive disclosure](references/spec.agent-skills.progressive-disclosure.md).
 
-Pending, not yet written here: `spec.mcp`, the Model Context Protocol; `spec.acp`, the Agent Client Protocol; `spec.ahp`, the Agent Host Protocol; and `spec.a2a`, Agent2Agent.
+Proposals, drafted for Kris's decision in the Cairn summit's change 22 and not yet agreed, so no agreed card links them yet:
+
+- [The Model Context Protocol](references/spec.mcp.md), with its parts [MCP host](references/spec.mcp.host.md), [MCP client](references/spec.mcp.client.md), [MCP server](references/spec.mcp.server.md), [tools](references/spec.mcp.tools.md) and [transports](references/spec.mcp.transports.md).
+- [The Agent Client Protocol](references/spec.acp.md), with its [client](references/spec.acp.client.md), [agent](references/spec.acp.agent.md) and [session](references/spec.acp.session.md).
+- [The Agent Host Protocol](references/spec.ahp.md), with its [agent host](references/spec.ahp.agent-host.md), [client](references/spec.ahp.client.md), [session](references/spec.ahp.session.md) and [channels](references/spec.ahp.channels.md).
+- [Agent2Agent](references/spec.a2a.md), with its [client](references/spec.a2a.client.md), [remote agent](references/spec.a2a.remote-agent.md), [Agent Card](references/spec.a2a.agent-card.md) and [task](references/spec.a2a.task.md).
 
 ### Vendor subgraphs
 
@@ -84,7 +90,7 @@ Another skill that uses an agentic term links to its industry card here rather t
 ## Boundaries
 
 - **This skill says what a thing is.**
-- **`ki-agentic-radar`** says how mature a subject is, who has adopted it and the house stance, and links to its card.
+- **`ki-agentic-radar`** says how mature a subject is, who has adopted it and the house stance, and names its card in the subject's `card` field.
 - **`ki-subagents`** and its runtime bindings say how to run subagents in a given agent host: the practice, not the vocabulary.
 - **`ki-knowledge-graph`** owns the card format, root definitions, subgraphs and link vocabularies, and how cards are curated and tended; it sits beside this skill in the Keystone guild.
 - **`ki-skills`** owns the knowledge kind and how a skill holds its graph.

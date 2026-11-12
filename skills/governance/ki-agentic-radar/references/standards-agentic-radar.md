@@ -16,7 +16,7 @@ An intentionally empty snapshot is valid while evidence is being assembled. Empt
 
 ### Subjects
 
-Every subject records `id`, `display_name`, `subject_kind`, `stewardship`, `specification_maturity`, `implementation_state`, `interoperability_state`, `ki_stance`, `movement`, `owner`, `uncertainty`, `return_trigger`, `reviewed_on`, `evidence`, and `counter_evidence`.
+Every subject records `id`, `display_name`, `subject_kind`, `stewardship`, `specification_maturity`, `implementation_state`, `interoperability_state`, `ki_stance`, `movement`, `owner`, `uncertainty`, `return_trigger`, `reviewed_on`, `evidence`, and `counter_evidence`, and may record `card`.
 
 - `subject_kind` is `protocol`, `interface-format`, `organisation`, `incubation`, `architecture-pattern`, `research-claim`, or `vendor-term`.
 - `stewardship` is `standards-body`, `foundation`, `consortium`, `vendor`, `community`, `project`, or `none`.
@@ -26,6 +26,7 @@ Every subject records `id`, `display_name`, `subject_kind`, `stewardship`, `spec
 - `ki_stance` is `adopt`, `trial`, `assess`, or `hold`.
 - `movement` is `new`, `inward`, `outward`, or `unchanged`; it describes the current review, not maturity.
 - `owner`, `uncertainty`, and `return_trigger` are explicit non-empty strings. An owner is accountable for the next review; it is not necessarily the subject steward.
+- `card` is optional: the id of the card in `ki-agentic-systems` that says what the subject is, such as `spec.mcp`. The radar says how mature a subject is, who has adopted it and the house stance, and never defines the subject again; a subject whose term has a card names it here, and one without a card yet leaves the field out.
 
 An `architecture-pattern`, `research-claim`, or `vendor-term` uses `not-applicable` specification maturity. It must not be described as a formal standard. An `organisation` can steward work but does not itself gain specification maturity.
 

@@ -516,17 +516,107 @@ test('every banner closes with its work identity and never emits a send or resum
 })
 
 // Under REPLY-FORMAT, agreed on 7 November 2026, the reply block returns whenever a reply carries a query: one fenced
-// `text` block, one line per query, its tag and the recommended letter, replacing REPLY-BLOCK of 18 October.
+// `text` block, replacing REPLY-BLOCK of 18 October. Under REPLY-GROUPS, of 12 November 2026, its queries are grouped
+// by priority under numbered headings and each line carries the recommended option's confidence in brackets.
 test('the standard and the output style carry the reply block and retire the block-letter frames', () => {
   for (const text of [standard, outputStyle]) {
     expect(text).toContain('replacing REPLY-BLOCK of 18 October')
     expect(text).toContain('one fenced `text` block')
-    expect(text).toContain('`<TAG> a`')
+    expect(text).toContain('`<n> · <what the group is>`')
+    expect(text).toContain("`, can run while you're away`")
+    expect(text).toContain('`<TAG> a (high)`, `(medium)` or `(low)`')
+    expect(text).toContain('with nothing to strip out')
+    expect(text).not.toContain('`<TAG> a`,')
     expect(withoutSources(text)).not.toMatch(/^╭─/m)
     expect(text).not.toContain('- [at rest]')
   }
   expect(standard).toContain('### Answers')
   expect(standard).toContain('Taken as: <the instruction it will act on>')
+  expect(standard).toContain(
+    'the numbered group headings are ignored, and so is a bracketed confidence after the letter'
+  )
+})
+
+/** A reply block's group heading, `<n> · <what the group is>[, can run while you're away]`. */
+const REPLY_GROUP = /^(\d+) · (\S.*)$/
+/** A reply block's answer line, `<TAG> <letter>`, its bracketed confidence optional on the way back. */
+const REPLY_LINE = /^([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*) ([a-z])(?: \((high|medium|low)\))?$/
+
+/** The groups of a reply block, refusing any line that is neither a heading, an answer line nor a blank between groups. */
+const replyGroups = (block: string): { readonly heading: string; readonly lines: readonly string[] }[] => {
+  const groups: { heading: string; lines: string[] }[] = []
+  for (const line of block.split('\n')) {
+    const heading = REPLY_GROUP.exec(line)
+    if (heading) {
+      expect(Number(heading[1])).toBe(groups.length + 1)
+      groups.push({ heading: heading[2] ?? '', lines: [] })
+    } else if (line === '') expect(groups.at(-1)?.lines.length ?? 0).toBeGreaterThan(0)
+    else {
+      expect(line).toMatch(REPLY_LINE)
+      expect(groups.length).toBeGreaterThan(0)
+      groups.at(-1)?.lines.push(line)
+    }
+  }
+  return groups
+}
+
+/** The answers a block sent back gives, read as Answers sets: headings ignored, a bracketed confidence ignored. */
+const replyAnswers = (block: string): Record<string, string> =>
+  Object.fromEntries(
+    replyGroups(block)
+      .flatMap(({ lines }) => lines)
+      .map((line) => {
+        const [, tag, letter] = REPLY_LINE.exec(line) ?? []
+        return [tag ?? '', letter ?? '']
+      })
+  )
+
+test('the reply block groups its queries by priority under numbered headings, each line carrying its confidence', () => {
+  const reporting = readReference('standards-reporting.md')
+  const example = /A reply block:\n\n {2}```text\n([\s\S]*?)\n {2}```\n/.exec(reporting)?.[1]?.replaceAll(/^ {2}/gm, '')
+  expect(example).toBeDefined()
+  const groups = replyGroups(example ?? '')
+  expect(groups.map(({ heading }) => heading)).toEqual([
+    "Baseline build, can run while you're away",
+    'Window design',
+    'Outside Cairn'
+  ])
+  for (const line of groups.flatMap(({ lines }) => lines)) expect(line).toMatch(/ a \((?:high|medium|low)\)$/)
+  expect(replyAnswers(example ?? '')).toEqual({
+    'WINDOW-BUILD': 'a',
+    'ROADMAP-ATL003': 'a',
+    'CON-PROFILE': 'a',
+    'HANDOFF-OBS': 'a'
+  })
+
+  const template = /```text +B6\n([\s\S]*?)\n```\n/.exec(readReference('standards-report-forms.md'))?.[1]
+  expect(template).toContain("1 · <what the most pressing group is>, can run while you're away")
+  expect(template).toContain('<TAG> a (<high, medium or low>)')
+  expect(template?.split('\n\n')).toHaveLength(2)
+})
+
+test('a reply block sent back as it stands, or changed, still answers every query', () => {
+  const answered = [
+    "1 · Baseline build, can run while you're away",
+    'WINDOW-BUILD a (high)',
+    'ROADMAP-ATL003 b (high)',
+    '',
+    '2 · Window design',
+    'CON-PROFILE a',
+    '',
+    '3 · Roadmap housekeeping',
+    'ROADMAP-PRUNE a (high)',
+    'ROADMAP-NET005 c (low)'
+  ].join('\n')
+  expect(replyAnswers(answered)).toEqual({
+    'WINDOW-BUILD': 'a',
+    'ROADMAP-ATL003': 'b',
+    'CON-PROFILE': 'a',
+    'ROADMAP-PRUNE': 'a',
+    'ROADMAP-NET005': 'c'
+  })
+  expect('ROADMAP-PRUNE a (certain)').not.toMatch(REPLY_LINE)
+  expect('2 Window design').not.toMatch(REPLY_GROUP)
 })
 
 test("a reply's structure, which its trigger chooses, sets whether it ends with the banner", () => {
@@ -633,6 +723,8 @@ test('the run-report and footer-report sources carry the quiet-tools rule and th
     expect(surface.content).toContain(quiet)
     expect(surface.content).toContain('**Run report at <local time> · last mark <local time>**')
     expect(surface.content).toContain('closing the queries with a reply block')
+    expect(surface.content).toContain('the queries grouped under numbered headings in priority order')
+    expect(surface.content).toContain('as `<TAG> a (high)`')
     expect(surface.content).not.toContain('no reply block')
   }
 })

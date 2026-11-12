@@ -484,6 +484,38 @@ describe('recommendation confidence', () => {
     expect(statuses(context(root).confidence.outcomes)).toEqual(['PASS'])
   })
 
+  test('a reply block grouped under numbered headings, each line carrying its confidence, is never read as a query', () => {
+    const grouped = [
+      '# Report',
+      '',
+      '## Queries',
+      '',
+      '### WINDOW-BUILD - build the baseline',
+      '',
+      '**Options:**',
+      '',
+      'a) (recommended, confidence high - the baseline is on main) build it',
+      '',
+      'b) wait',
+      '',
+      '```text',
+      "1 · Baseline build, can run while you're away",
+      'WINDOW-BUILD a (high)',
+      'ROADMAP-ATL003 a (high)',
+      '',
+      '2 · Window design',
+      'CON-PROFILE a (medium)',
+      '',
+      '### KI-HARNESS-GOV-999 a (low)',
+      'a) (recommended) b) (recommended)',
+      '```',
+      ''
+    ].join('\n')
+    expect(reportConfidenceFindings(grouped)).toEqual([])
+    expect(reportMultipleRecommendationFindings(grouped)).toEqual([])
+    expect(reportLinkFindings(grouped, CHECKOUT)).toEqual({ bare: [], missing: [], misshapen: [] })
+  })
+
   test('a query marking more than one option recommended warns, naming the query', () => {
     const packed = options(
       'a) (recommended, confidence high - on main) push it',

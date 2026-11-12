@@ -473,6 +473,7 @@ notes = "The vendor describes a customer-owned coding factory where workflows ma
 [subjects.mcp]
 id = "mcp"
 display_name = "Model Context Protocol"
+card = "spec.mcp"
 subject_kind = "protocol"
 stewardship = "foundation"
 specification_maturity = "stable"
@@ -497,6 +498,7 @@ counter_evidence = []
 [subjects.agent-client-protocol]
 id = "agent-client-protocol"
 display_name = "Agent Client Protocol"
+card = "spec.acp"
 subject_kind = "protocol"
 stewardship = "consortium"
 specification_maturity = "stable"
@@ -523,6 +525,7 @@ counter_evidence = ["acp-schema-v2-alpha-5", "acp-schema-v2-alpha-7", "acp-schem
 [subjects.ahp]
 id = "ahp"
 display_name = "Agent Host Protocol"
+card = "spec.ahp"
 subject_kind = "protocol"
 stewardship = "vendor"
 specification_maturity = "stable"
@@ -540,6 +543,7 @@ counter_evidence = ["ahp-mixed-stability", "ahp-host-orca", "ahp-host-claude-des
 [subjects.a2a]
 id = "a2a"
 display_name = "Agent2Agent Protocol"
+card = "spec.a2a"
 subject_kind = "protocol"
 stewardship = "foundation"
 specification_maturity = "stable"
