@@ -66,6 +66,8 @@ export type LayoutRubricContext = {
   noSkillsFound?: boolean
   standaloneMarkdownFile?: boolean
   supportDirectories?: readonly string[]
+  /** Whether the skill holds a knowledge graph, opened by `knowledge/_graph.md`. */
+  knowledgeGraph?: boolean
 }
 
 export type KiLinkRubricContext = {
@@ -142,8 +144,10 @@ export type KiShapeSkillContext = {
   scriptNames: readonly string[]
   rubricCatalogue: boolean
   referencePaths: readonly string[]
-  /** Front-matter ids of top-level reference files that declare one, keyed by reference path. */
-  referenceIds: Readonly<Record<string, string>>
+  /** Every file under the skill's `knowledge/` folder, relative to it: the graph's root definition and its cards. */
+  knowledgePaths: readonly string[]
+  /** Front-matter ids of the Markdown files under `knowledge/` that declare one, keyed by path relative to it. */
+  knowledgeIds: Readonly<Record<string, string>>
   operatingModesSection: string | null
   bodyModes: ReadonlySet<string>
   operatingModesIntro: string
@@ -240,7 +244,8 @@ const emptyKiShapeSkill: KiShapeSkillContext = {
   scriptNames: [],
   rubricCatalogue: false,
   referencePaths: [],
-  referenceIds: {},
+  knowledgePaths: [],
+  knowledgeIds: {},
   operatingModesSection: null,
   bodyModes: new Set(),
   operatingModesIntro: '',

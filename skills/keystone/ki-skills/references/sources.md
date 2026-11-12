@@ -1,6 +1,6 @@
 ---
 type: sources@2026-11-09T21:36:32Z
-revised: 2026-11-12T16:00:00Z
+revised: 2026-11-12T20:10:00Z
 refresh: external-spec · monthly
 ---
 
@@ -150,7 +150,9 @@ The OpenAI News page is a discovery source, not a normative standard. On each RE
 | Id | Decision | Date | Backs | Status |
 | --- | --- | --- | --- | --- |
 | KNOWLEDGE-KIND | Kris's decision, in the Cairn summit's change 22: a third kind of skill, `ki-kind: knowledge`, only equips a session with a body of knowledge held as a knowledge graph; it audits and conforms nothing, publishes no rubric, its modes are EDUCATE and REFRESH, and other skills link to its cards rather than define its terms again. | 2026-11-10 | [Skill shape](standard-knowledge-islands.md#42-skill-shape), KI-SHAPE-3, KI-SHAPE-6, KI-SHAPE-19 | In force |
-| KG-HOME | Kris's decision, in the Cairn summit's change 06: a skill may hold a knowledge graph in its `references/`, as `ki-knowledge-graph` holds its own, each card named `<id>.md` beside a `_graph.md` root definition. | 2026-11-12 | [Skill shape](standard-knowledge-islands.md#42-skill-shape), KI-SHAPE-6 | In force |
+| KG-HOME | Kris's decision, in the Cairn summit's change 06: a skill may hold a knowledge graph in its `references/`, as `ki-knowledge-graph` holds its own, each card named `<id>.md` beside a `_graph.md` root definition. | 2026-11-12 | [Skill shape](standard-knowledge-islands.md#42-skill-shape), KI-SHAPE-6 | In force; its place, `references/`, superseded by KNOWLEDGE-FOLDER |
+| KNOWLEDGE-FOLDER | Kris's word, relayed by the Cairn summit's guardian: a skill that holds a knowledge graph keeps it in `knowledge/` at the skill's top level, with the root definition `_graph.md` at its root; only the graph's cards go there, and everything else useful in the skill, its standards, sources, rubric, proposals and migration standards, stays in `references/`, so `knowledge/` is its own area outside `references/`. | 2026-11-12 | [Skill shape](standard-knowledge-islands.md#42-skill-shape), [Layout](standard-agent-skills.md#431-layout), KI-SHAPE-6, LAY-3 | In force |
+| GRAPH-FOLDERS | Kris's word, relayed by the Cairn summit's guardian, option a: inside `knowledge/` there is one folder for each subgraph, and files keep their id names, as `knowledge/industry/industry.session.md`; ids and front-matter `links:`, keyed by id, do not change, and only path-based Markdown links follow a card. | 2026-11-12 | [Skill shape](standard-knowledge-islands.md#42-skill-shape), KI-SHAPE-6 | In force |
 
 [Back to contents](#contents)
 
@@ -158,6 +160,7 @@ The OpenAI News page is a discovery source, not a normative standard. On each RE
 
 REFRESH last run **2026-09-26**. It fetched [the documentation index][agentskills-index] first; it still lists the same nine pages and the specification retains the portable format and budgets. The review found no immediate standard or rubric change; its material follow-ups were dispositioned on 2026-10-06, as recorded below.
 
+- **SPEC, extra directories (checked 2026-11-12):** the specification's directory structure lists `scripts/`, `references/` and `assets/` as optional and ends with "Any additional files or directories"; its Optional directories section says "A skill directory may contain any files and directories beyond the required `SKILL.md`", the three names being recommendations. A top-level `knowledge/` is therefore lawful, and KNOWLEDGE-FOLDER adds it beside `.ki-meta/`. The specification also asks that file references stay one level deep from `SKILL.md`, which concerns chains of references rather than folder depth.
 - **SPEC:** portable fields and constraints remain current. `allowed-tools` is the only portable tool declaration and remains experimental; `disallowed-tools` is not in the specification.
 - **Agent Skills home:** accessible; three-stage progressive disclosure (metadata ~100 tok / instructions < 5000 tok / resources on demand). Spec unchanged.
 - **Description voice:** the current Agent Skills description guide prefers direct imperative phrasing, while Anthropic and community guidance retains third person. The portable rule now accepts either activation-oriented form and continues to reject first-/second-person explanation.

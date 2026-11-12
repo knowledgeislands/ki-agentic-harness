@@ -123,26 +123,27 @@ const listScriptFiles = (scriptsDirectory: string): string[] => {
   return scriptFiles
 }
 
-const listReferenceFiles = (referencesDirectory: string): string[] => {
-  if (!existsSync(referencesDirectory)) return []
+/** Every file below a support directory, relative to it, sorted. */
+const listSupportFiles = (supportDirectory: string): string[] => {
+  if (!existsSync(supportDirectory)) return []
   const files: string[] = []
   const walk = (path: string): void => {
     for (const entry of readdirSync(path, { withFileTypes: true })) {
       const entryPath = join(path, entry.name)
       if (entry.isDirectory()) walk(entryPath)
-      else if (entry.isFile()) files.push(relative(referencesDirectory, entryPath))
+      else if (entry.isFile()) files.push(relative(supportDirectory, entryPath))
     }
   }
-  walk(referencesDirectory)
+  walk(supportDirectory)
   return files.sort()
 }
 
-/** The front-matter `id` of each top-level reference file that declares one: the cards of a graph held in `references/`. */
-const readReferenceIds = (referencesDirectory: string, referencePaths: readonly string[]): Record<string, string> => {
+/** The front-matter `id` of each Markdown file under `knowledge/` that declares one: the cards of the skill's graph. */
+const readKnowledgeIds = (knowledgeDirectory: string, knowledgePaths: readonly string[]): Record<string, string> => {
   const ids: Record<string, string> = {}
-  for (const path of referencePaths) {
-    if (path.includes('/') || !path.endsWith('.md')) continue
-    const document = readFileSync(join(referencesDirectory, path), 'utf8').match(
+  for (const path of knowledgePaths) {
+    if (!path.endsWith('.md')) continue
+    const document = readFileSync(join(knowledgeDirectory, path), 'utf8').match(
       /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/
     )?.[1]
     const id = document?.match(/^id:\s*['"]?([^'"\s]+)['"]?\s*$/m)?.[1]
@@ -280,7 +281,8 @@ const createKiShapeEvidence = (
   const skillText = `${body}\n${referenceText}`
   const scriptsDirectory = join(skillDirectory, 'scripts')
   const scriptNames = existsSync(scriptsDirectory) ? readdirSync(scriptsDirectory) : []
-  const referencePaths = listReferenceFiles(join(skillDirectory, 'references'))
+  const referencePaths = listSupportFiles(join(skillDirectory, 'references'))
+  const knowledgePaths = listSupportFiles(join(skillDirectory, 'knowledge'))
   const refreshReference = join(skillDirectory, 'references', 'mode-refresh.md')
   const refreshSection = section?.match(/^###\s+Mode\s+REFRESH\b[\s\S]*?(?=^###\s+Mode\s+|$(?![\s\S]))/im)?.[0] ?? ''
   const rubricItemSources = listScriptFiles(join(scriptsDirectory, 'rubric', 'items'))
@@ -295,7 +297,8 @@ const createKiShapeEvidence = (
     ...(localGovernanceSource ? {} : { sourceHarnessName: sourceHarnessName(skillDirectory) }),
     rubricCatalogue: existsSync(join(scriptsDirectory, 'rubric', 'items', 'index.ts')),
     referencePaths,
-    referenceIds: readReferenceIds(join(skillDirectory, 'references'), referencePaths),
+    knowledgePaths,
+    knowledgeIds: readKnowledgeIds(join(skillDirectory, 'knowledge'), knowledgePaths),
     operatingModesSection: section,
     bodyModes: extractBodyModes(section),
     operatingModesIntro: section?.split(/^###\s+|^\s*\|/m)[0] ?? '',
@@ -347,10 +350,14 @@ export const createSkillRubricContext = (
   const supportDirectories = readdirSync(directory, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name)
+  const knowledgeGraph = existsSync(join(directory, 'knowledge', '_graph.md'))
   const frontmatterContext = { hasBlock: frontmatter.raw !== null, isMapping: frontmatter.isMapping }
 
   if (!frontmatter.isMapping)
-    return { validFrontmatter, context: { layout: { supportDirectories }, frontmatter: frontmatterContext } }
+    return {
+      validFrontmatter,
+      context: { layout: { supportDirectories, knowledgeGraph }, frontmatter: frontmatterContext }
+    }
 
   const name = frontmatter.keys.get('name')
   const description = frontmatter.keys.get('description')
@@ -380,7 +387,7 @@ export const createSkillRubricContext = (
   return {
     validFrontmatter,
     context: {
-      layout: { supportDirectories },
+      layout: { supportDirectories, knowledgeGraph },
       frontmatter: frontmatterContext,
       name: {
         name,

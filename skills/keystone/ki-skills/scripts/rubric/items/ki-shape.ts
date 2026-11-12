@@ -4,13 +4,16 @@ import { type KiShapeRubricContext, type KiSkillsRubricContext, selectKiSkillsCo
 import { findDependencyCycle } from '../contexts/dependencies.ts'
 
 const KINDS: ReadonlySet<string> = new Set(['governance', 'process', 'knowledge'])
-const CLOSED_REFERENCE = /^(?:exemplars|rubric|sources|standards?-[a-z0-9]+(?:-[a-z0-9]+)*|mode-[a-z0-9]+)\.md$/
+const CLOSED_REFERENCE =
+  /^(?:exemplars|rubric|sources|standards?-[a-z0-9]+(?:-[a-z0-9]+)*|mode-[a-z0-9]+|[a-z0-9]+(?:-[a-z0-9]+)*-proposal)\.md$/
 const GRAPH_ROOT = '_graph.md'
 const CARD_FILE = /^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+(?:-[a-z0-9]+)*)*\.md$/
 
-/** A card of a graph held in `references/`: named `<id>.md` with its front-matter `id` equal to that name. */
-const isGraphCard = (path: string, ids: Readonly<Record<string, string>>): boolean =>
-  CARD_FILE.test(path) && ids[path] === path.slice(0, -'.md'.length)
+/** A card of a graph held in `knowledge/`, at any depth: named `<id>.md` with its front-matter `id` equal to that name. */
+const isGraphCard = (path: string, ids: Readonly<Record<string, string>>): boolean => {
+  const name = path.slice(path.lastIndexOf('/') + 1)
+  return CARD_FILE.test(name) && ids[path] === name.slice(0, -'.md'.length)
+}
 
 const UNIVERSAL_MODES = ['AUDIT', 'CONFORM', 'EDUCATE', 'REFRESH'] as const
 const REQUIRED_GOVERNANCE_VERBS = [...UNIVERSAL_MODES, 'HELP'] as const
@@ -62,7 +65,7 @@ const KI_SHAPE_3: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-3',
   title: 'the skill declares its kind',
   description:
-    'Every KI skill declares its **kind** in exact frontmatter as `ki-kind: governance`, `ki-kind: process` or `ki-kind: knowledge`; a directory and prose never establish kind (ADR-KI-HARNESS-SKILLS-006). A **governance skill** holds a house standard and exposes the four universal acting modes plus the required HELP entry point (KI-SHAPE-5, KI-SHAPE-11). A **process skill** drives an action or lifecycle rather than holding a standard: it is lightweight, may bundle a helper `scripts/` and a `references/` procedure, and is exempt from universal governance modes — its mode count follows its own lifecycle and it exposes HELP only optionally. A **knowledge skill** only equips a session with a body of knowledge, held as a knowledge graph in its `references/`: it audits and conforms nothing, publishes no rubric, and its modes are EDUCATE and REFRESH with HELP (KNOWLEDGE-KIND). Every kind uses the closed Knowledge Islands reference vocabulary (KI-SHAPE-6) and is dual-invocable (`/<name>` and model-triggered).',
+    'Every KI skill declares its **kind** in exact frontmatter as `ki-kind: governance`, `ki-kind: process` or `ki-kind: knowledge`; a directory and prose never establish kind (ADR-KI-HARNESS-SKILLS-006). A **governance skill** holds a house standard and exposes the four universal acting modes plus the required HELP entry point (KI-SHAPE-5, KI-SHAPE-11). A **process skill** drives an action or lifecycle rather than holding a standard: it is lightweight, may bundle a helper `scripts/` and a `references/` procedure, and is exempt from universal governance modes — its mode count follows its own lifecycle and it exposes HELP only optionally. A **knowledge skill** only equips a session with a body of knowledge, held as a knowledge graph in its `knowledge/`: it audits and conforms nothing, publishes no rubric, and its modes are EDUCATE and REFRESH with HELP (KNOWLEDGE-KIND). Every kind uses the closed Knowledge Islands reference vocabulary (KI-SHAPE-6) and is dual-invocable (`/<name>` and model-triggered).',
   sources: ['ki-agentic-harness README', 'ADR-KI-HARNESS-SKILLS-006'],
   mechanical: {
     level: 'FAIL',
@@ -114,39 +117,48 @@ const KI_SHAPE_6: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-6',
   title: 'Knowledge Islands skills use the closed reference vocabulary',
   description:
-    "_Closed reference vocabulary — Knowledge Islands skills only._ Every top-level Markdown reference is `standard-<topic>.md` (or the older `standards-<topic>.md` until renamed), generated `rubric.md`, `sources.md`, optional `exemplars.md`, or one-mode-only `mode-<verb>.md`; a skill includes only the classes it needs. Normative formats, process doctrine, and shared mode contracts are standards, following the `ki-authoring` standard format; `sources.md` follows its sources format. A skill that holds a knowledge graph keeps it flat in `references/`: the graph's root definition `_graph.md` and its cards, each named `<id>.md` with its front-matter `id` equal to that name, under the `ki-knowledge-graph` standard; a knowledge skill always holds one. Combined mode names, bare `standards.md`, `<topic>-standards.md`, nested references, and ad hoc guide, format, or contract filenames are retired. Templates and reusable output material live in `assets/`. A skill tracking a moving external spec keeps a current-state `## Last review` block in `sources.md`. Skills outside the Knowledge Islands set are exempt.",
-  sources: ['ki-agentic-harness README', 'KNOWLEDGE-KIND'],
+    "_Closed reference vocabulary — Knowledge Islands skills only._ Every top-level Markdown reference is `standard-<topic>.md` (or the older `standards-<topic>.md` until renamed), generated `rubric.md`, `sources.md`, optional `exemplars.md`, one-mode-only `mode-<verb>.md`, or a `<topic>-proposal.md` awaiting decision; a skill includes only the classes it needs. Normative formats, process doctrine, and shared mode contracts are standards, following the `ki-authoring` standard format; `sources.md` follows its sources format. A skill that holds a knowledge graph keeps it in `knowledge/` at the skill's top level, never in `references/`: the graph's root definition `knowledge/_graph.md` and its cards, each named `<id>.md` with its front-matter `id` equal to that name, in a folder for each subgraph or flat where the graph has none, under the `ki-knowledge-graph` standard; `knowledge/` holds nothing else, and a knowledge skill always holds a graph. Combined mode names, bare `standards.md`, `<topic>-standards.md`, nested references, and ad hoc guide, format, or contract filenames are retired. Templates and reusable output material live in `assets/`. A skill tracking a moving external spec keeps a current-state `## Last review` block in `sources.md`. Skills outside the Knowledge Islands set are exempt.",
+  sources: ['ki-agentic-harness README', 'KNOWLEDGE-KIND', 'KNOWLEDGE-FOLDER', 'GRAPH-FOLDERS'],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Classify each nonstandard reference by reader need, rename or relocate it into the closed vocabulary or assets/, name each graph card from its front-matter id, and repair every affected link.'
+        'Classify each nonstandard reference by reader need, rename or relocate it into the closed vocabulary or assets/, move each graph card into knowledge/ named from its front-matter id, and repair every affected link.'
     },
     audit: {
       phase: 'INSPECT',
       run: ({ skill }) => {
         if (!skill?.knowledgeIslandsSkill)
           return [{ status: 'NOT_APPLICABLE', message: 'the target is not a Knowledge Islands skill' }]
-        const graph = skill.referencePaths.includes(GRAPH_ROOT)
+        const graph = skill.knowledgePaths.includes(GRAPH_ROOT)
         const violations: AuditOutcome[] = skill.referencePaths
-          .filter(
-            (path) =>
-              path.endsWith('.md') &&
-              !CLOSED_REFERENCE.test(path) &&
-              !(graph && (path === GRAPH_ROOT || isGraphCard(path, skill.referenceIds)))
-          )
+          .filter((path) => path.endsWith('.md') && !CLOSED_REFERENCE.test(path))
           .map((path) => ({
             status: 'VIOLATION' as const,
-            message: graph
-              ? 'reference is outside the closed Knowledge Islands filename vocabulary and is not a graph card named by its id'
-              : 'reference is outside the closed Knowledge Islands filename vocabulary',
+            message:
+              path === GRAPH_ROOT || CARD_FILE.test(path)
+                ? 'reference is outside the closed Knowledge Islands filename vocabulary; a graph card or `_graph.md` belongs in `knowledge/`'
+                : 'reference is outside the closed Knowledge Islands filename vocabulary',
             subject: `references/${path}`
           }))
-        if (skill.kiKind === 'knowledge' && !graph)
+        for (const path of skill.knowledgePaths) {
+          if (path === GRAPH_ROOT || !path.endsWith('.md') || isGraphCard(path, skill.knowledgeIds)) continue
           violations.push({
             status: 'VIOLATION',
-            message: 'a knowledge skill holds its knowledge graph in `references/`, opened by `references/_graph.md`'
+            message: '`knowledge/` holds only the graph: `_graph.md` at its root and cards named by their ids',
+            subject: `knowledge/${path}`
+          })
+        }
+        if (skill.knowledgePaths.length > 0 && !graph)
+          violations.push({
+            status: 'VIOLATION',
+            message: '`knowledge/` holds a knowledge graph, opened by `knowledge/_graph.md`'
+          })
+        else if (skill.kiKind === 'knowledge' && !graph)
+          violations.push({
+            status: 'VIOLATION',
+            message: 'a knowledge skill holds its knowledge graph in `knowledge/`, opened by `knowledge/_graph.md`'
           })
         const [first, ...rest] = violations
         return first
@@ -156,7 +168,7 @@ const KI_SHAPE_6: RubricItem<KiShapeRubricContext> = {
     }
   },
   judgment: judgment(
-    'Does each retained reference class serve a distinct reader need, with templates and executable helpers elsewhere, and does each standard and sources file follow its `ki-authoring` format standard?'
+    'Does each retained reference class serve a distinct reader need, with templates and executable helpers elsewhere, does each standard and sources file follow its `ki-authoring` format standard, and does a graph in `knowledge/` have a folder for each subgraph its root definition declares, or sit flat where it declares none?'
   )
 }
 

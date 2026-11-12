@@ -38,25 +38,48 @@ describe('KI-SHAPE-6', () => {
     expect(findings[0]).toMatchObject({ status: 'PASS' })
   })
 
-  test('admits a graph root and cards named by their ids beside the closed vocabulary', () => {
+  test('admits a graph root and cards named by their ids in knowledge/, in subgraph folders', () => {
     const findings = referenceVocabulary.mechanical?.audit.run(
       createKiShapeContext({
         skill: {
           knowledgeIslandsSkill: true,
           kiKind: 'knowledge',
-          referencePaths: ['_graph.md', 'industry.session.md', 'spec.mcp.md', 'sources.md', 'stray.md'],
-          referenceIds: {
+          referencePaths: ['sources.md', 'naming-proposal.md', 'notes.md'],
+          knowledgePaths: ['_graph.md', 'industry/industry.session.md', 'specs/mcp/spec.mcp.md', 'stray.md'],
+          knowledgeIds: {
             '_graph.md': 'agentic-systems',
-            'industry.session.md': 'industry.session',
-            'spec.mcp.md': 'spec.mcp',
+            'industry/industry.session.md': 'industry.session',
+            'specs/mcp/spec.mcp.md': 'spec.mcp',
             'stray.md': 'other'
           }
         }
       })
     )
 
-    expect(findings).toHaveLength(1)
-    expect(findings[0]).toMatchObject({ status: 'VIOLATION', subject: 'references/stray.md' })
+    expect(findings).toHaveLength(2)
+    expect(findings?.[0]).toMatchObject({ status: 'VIOLATION', subject: 'references/notes.md' })
+    expect(findings?.[1]).toMatchObject({ status: 'VIOLATION', subject: 'knowledge/stray.md' })
+  })
+
+  test('points a graph card left in references/ to knowledge/', () => {
+    const findings = referenceVocabulary.mechanical?.audit.run(
+      createKiShapeContext({
+        skill: {
+          knowledgeIslandsSkill: true,
+          kiKind: 'knowledge',
+          referencePaths: ['_graph.md', 'industry.session.md', 'sources.md'],
+          knowledgePaths: ['_graph.md'],
+          knowledgeIds: { '_graph.md': 'agentic-systems' }
+        }
+      })
+    )
+
+    expect(findings).toHaveLength(2)
+    for (const finding of findings ?? [])
+      expect(finding).toMatchObject({
+        status: 'VIOLATION',
+        message: expect.stringContaining('belongs in `knowledge/`')
+      })
   })
 
   test('requires a knowledge skill to hold its graph', () => {
@@ -68,6 +91,26 @@ describe('KI-SHAPE-6', () => {
 
     expect(findings).toHaveLength(1)
     expect(findings[0]).toMatchObject({ status: 'VIOLATION' })
+  })
+
+  test('requires knowledge/ to be opened by its root definition', () => {
+    const findings = referenceVocabulary.mechanical?.audit.run(
+      createKiShapeContext({
+        skill: {
+          knowledgeIslandsSkill: true,
+          kiKind: 'governance',
+          referencePaths: ['sources.md'],
+          knowledgePaths: ['card.md'],
+          knowledgeIds: { 'card.md': 'card' }
+        }
+      })
+    )
+
+    expect(findings).toHaveLength(1)
+    expect(findings?.[0]).toMatchObject({
+      status: 'VIOLATION',
+      message: expect.stringContaining('knowledge/_graph.md')
+    })
   })
 })
 

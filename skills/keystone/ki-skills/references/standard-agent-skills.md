@@ -1,6 +1,6 @@
 ---
 type: standard@2026-11-09T21:36:32Z
-revised: 2026-11-09T22:38:25Z
+revised: 2026-11-12T20:10:00Z
 status: in force
 ---
 
@@ -106,7 +106,7 @@ The rubric tags each criterion `[M]`, `[J]`, or `[M + J]` accordingly. If part o
 
 #### 4.3.1 Layout
 
-`SKILL.md` is the required entrypoint and lives at the skill root — a directory named after the skill, not a bare `.md`. Optional subdirectories use the conventional names `references/` (docs), `scripts/` (executables), `assets/` (templates/data); other files are allowed but these names are the convention. File references use forward slashes (`scripts/helper.ts`), never backslashes, which break on Unix. Supporting files sit **one level deep** from `SKILL.md` — every file links directly from it, with no nested chains (`SKILL → a → b → c`) that cause partial reads to miss content — and are named by content (`form-validation-rules.md`, not `doc2.md`). (SPEC, CC, BP)
+`SKILL.md` is the required entrypoint and lives at the skill root — a directory named after the skill, not a bare `.md`. Optional subdirectories use the conventional names `references/` (docs), `scripts/` (executables), `assets/` (templates/data); the specification allows any other files and directories, but these names are the convention, and a Knowledge Islands skill adds only `.ki-meta/` and, for a knowledge graph, `knowledge/` ([4.2](standard-knowledge-islands.md#42-skill-shape)). File references use forward slashes (`scripts/helper.ts`), never backslashes, which break on Unix. Supporting files sit **one level deep** from `SKILL.md` — every file links directly from it, with no nested chains (`SKILL → a → b → c`) that cause partial reads to miss content — and are named by content (`form-validation-rules.md`, not `doc2.md`). (SPEC, CC, BP, KNOWLEDGE-FOLDER)
 
 [Back to contents](#contents)
 

@@ -62,25 +62,32 @@ const LAY_3: RubricItem<LayoutRubricContext> = {
   code: 'LAY-3',
   title: 'optional directories use standard names',
   description:
-    'Optional subdirs use the standard names `references/`, `scripts/`, `assets/`; KI-governed skills may additionally use `.ki-meta/` for their local generated state.',
-  sources: ['SPEC', 'KI'],
+    'Optional subdirs use the standard names `references/`, `scripts/`, `assets/`; KI-governed skills may additionally use `.ki-meta/` for their local generated state, and a skill that holds a knowledge graph keeps it in `knowledge/`, opened by `knowledge/_graph.md`.',
+  sources: ['SPEC', 'KI', 'KNOWLEDGE-FOLDER'],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Classify each nonstandard support directory by purpose, then rename or relocate it to references/, scripts/, assets/, or .ki-meta/ and repair affected links.'
+        'Classify each nonstandard support directory by purpose, then rename or relocate it to references/, scripts/, assets/, .ki-meta/, or, for a knowledge graph, knowledge/, and repair affected links.'
     },
     audit: {
       phase: 'INSPECT',
-      run: ({ supportDirectories }) => {
+      run: ({ supportDirectories, knowledgeGraph }) => {
         if (supportDirectories === undefined)
           return [{ status: 'NOT_APPLICABLE', message: 'support directories were not inspected for this subject' }]
         const violations = supportDirectories
-          .filter((directory) => !['references', 'scripts', 'assets', '.ki-meta'].includes(directory))
+          .filter(
+            (directory) =>
+              !['references', 'scripts', 'assets', '.ki-meta'].includes(directory) &&
+              !(directory === 'knowledge' && knowledgeGraph)
+          )
           .map((directory) => ({
             status: 'VIOLATION' as const,
-            message: `support directory "${directory}" must be named references, scripts, assets, or .ki-meta`
+            message:
+              directory === 'knowledge'
+                ? 'support directory "knowledge" holds only a knowledge graph, opened by knowledge/_graph.md'
+                : `support directory "${directory}" must be named references, scripts, assets, or .ki-meta, or knowledge for a knowledge graph`
           }))
         return violations.length > 0
           ? [violations[0] as (typeof violations)[number], ...violations.slice(1)]
