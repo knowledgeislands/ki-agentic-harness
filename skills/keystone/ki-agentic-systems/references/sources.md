@@ -160,7 +160,7 @@ The vendors' own documentation and the specifications the cards follow, checked 
 | CARD-CLIENT | Kris's decision: a client is a window onto a session an agent host owns; a session can have several, and one program can be both agent host and client. | 2026-11-12 | [client](industry.client.md) | In force |
 | VENDORS-MORE | Kris's decision: Orca and Zed Industries join the vendor subgraphs. | 2026-11-12 | [Orca runtime](orca.runtime.md), [Orca app](orca.app.md), [Zed](zed.zed.md) | In force |
 | DIAGRAM-RESOURCE | Kris's decision: a diagram of the terms is a resource, addressable directly by a card of its own that says what it shows and where the diagram and its regeneration prompt live. | 2026-11-12 | [the root definition](_graph.md), the `diagram.` cards | In force |
-| CARD-CHANNEL | Kris's decision, given for every high-confidence recommendation: a, the industry's words only; a channel pushes events from outside into a running session, with integration and session-to-session messaging as cards of their own under the ways into a session. The card's wording is still a proposal. | 2026-11-12 | [channel](industry.channel.md) | In force |
+| CARD-CHANNEL | Kris's decision, given for every high-confidence recommendation: a, the industry's words only; a channel pushes events from outside into a running session, with integration and session-to-session messaging as cards of their own under the ways into a session. The card's wording is still a proposal. | 2026-11-12 | [channel](industry.channel.md) | Taken, for Kris's review |
 
 [Back to contents](#contents)
 
