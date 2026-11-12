@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "61229e2d5afafa404de35ce70375c993d7e83528"
+      "revision": "ef8c367b46344904f9b1002e6dc5fce71d3dff4b"
     },
     "legend": {
       "mode": "auto",
@@ -101,8 +101,8 @@
       ],
       "tag": "R– · C0 · F3",
       "pos": [
-        876,
-        268
+        332,
+        580
       ],
       "size": [
         208,
@@ -143,6 +143,26 @@
       "pos": [
         300,
         392
+      ],
+      "size": [
+        208,
+        76
+      ]
+    },
+    {
+      "id": "ki-knowledge-graph",
+      "type": "database",
+      "label": "ki-knowledge-graph",
+      "sublabel": "keystone · opt-in",
+      "sources": [
+        {
+          "path": "skills/keystone/ki-knowledge-graph/SKILL.md"
+        }
+      ],
+      "tag": "R16 · CM · F4",
+      "pos": [
+        44,
+        580
       ],
       "size": [
         208,
@@ -222,7 +242,7 @@
       "tag": "R37 · CL · F9",
       "pos": [
         44,
-        596
+        784
       ],
       "size": [
         208,
@@ -242,7 +262,7 @@
       "tag": "R24 · CL · F4",
       "pos": [
         364,
-        596
+        784
       ],
       "size": [
         208,
@@ -262,7 +282,7 @@
       "tag": "R5 · CM · F3",
       "pos": [
         684,
-        596
+        784
       ],
       "size": [
         208,
@@ -333,7 +353,15 @@
     },
     {
       "kind": "region",
-      "label": "Fundamentals · 7 skills",
+      "label": "Knowledge",
+      "wraps": [
+        "ki-knowledge-graph"
+      ],
+      "pad": 28
+    },
+    {
+      "kind": "region",
+      "label": "Fundamentals · 8 skills",
       "wraps": [
         "ki-repo",
         "ki-authoring",
@@ -341,6 +369,7 @@
         "ki-git",
         "ki-skills",
         "ki-repo-harness",
+        "ki-knowledge-graph",
         "ki-bootstrap"
       ],
       "pad": 44
@@ -417,7 +446,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "7 skills, 3 outside prerequisites, 2 outside dependents, 8 composition and 1 optional edges, read from SKILL.md frontmatter.",
+        "8 skills, 3 outside prerequisites, 2 outside dependents, 8 composition and 1 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

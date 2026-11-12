@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "a24e05270da551dedb03b5724edd7b44eefe99b0"
+      "revision": "ef8c367b46344904f9b1002e6dc5fce71d3dff4b"
     },
     "legend": {
       "mode": "auto",
@@ -133,10 +133,10 @@
       "id": "ki-knowledge-graph",
       "type": "database",
       "label": "ki-knowledge-graph",
-      "sublabel": "acquire · opt-in",
+      "sublabel": "keystone · opt-in",
       "sources": [
         {
-          "path": "skills/acquire/ki-knowledge-graph/SKILL.md"
+          "path": "skills/keystone/ki-knowledge-graph/SKILL.md"
         }
       ],
       "tag": "R16 · CM · F4",
@@ -195,6 +195,7 @@
       "title": "Generated, not drawn",
       "items": [
         "6 skills, 0 outside prerequisites, 0 outside dependents, 2 composition and 0 optional edges, read from SKILL.md frontmatter.",
+        "Home in another area: ki-knowledge-graph; only edges within this area are drawn for them here, and their home area's diagram draws the rest.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }
