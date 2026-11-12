@@ -120,3 +120,23 @@ stale_when = "a step of the coordinating-thread loop, the run packet, the report
 regenerate = "Re-trace the thread loop from the ki-coordination and ki-delegation standards at HEAD, keeping the five lanes and the layout where the facts hold, cite each node's source heading by line at the pinned revision, then run `bun run self:diagrams:html --svg thread-model` to finalize it at showcase quality, commit its HTML and re-export the SVG."
 last_checked = "b3b6a8085316555dfe92712595a442194b34905e"
 commit_html = true
+
+[agentic-terms-by-example]
+type = "architecture"
+question = "How do the agentic terms nest in practice, from machine and environment through agent host, agent and session to subagent threads and clients, with real examples?"
+audience = "Anyone learning the ki-agentic-systems vocabulary, and sessions checking a term against its card"
+traced = ["skills/keystone/ki-agentic-systems/references/industry.environment.md", "skills/keystone/ki-agentic-systems/references/industry.machine.md", "skills/keystone/ki-agentic-systems/references/industry.agent-host.md", "skills/keystone/ki-agentic-systems/references/industry.agent.md", "skills/keystone/ki-agentic-systems/references/industry.session.md", "skills/keystone/ki-agentic-systems/references/industry.subagent.md", "skills/keystone/ki-agentic-systems/references/industry.client.md", "skills/keystone/ki-agentic-systems/references/orca.runtime.md", "skills/keystone/ki-agentic-systems/references/orca.app.md"]
+stale_when = "an industry card from agent to client changes its definition or examples, or Orca's runtime or app changes how it hosts or pairs"
+regenerate = "Re-read the ki-agentic-systems cards traced here and draw an instance diagram: three environments as regions (terra local, sol remote, a cloud environment with no identifiable machine), in each an agent host running a Claude Code or Codex agent that runs a session, the primary session spawning subagent threads and messaging a peer session, and clients (the Orca app, a phone) viewing the agent hosts; keep the cards' words and mark illustrative instances as such. Then run `bun run self:diagrams:html --svg agentic-terms-by-example` to finalize it at showcase quality, commit its HTML and re-export the SVG."
+last_checked = "a026fecbe018407c3c26673dd57c63786aee10bb"
+commit_html = true
+
+[agentic-standards]
+type = "architecture"
+question = "Which pair does each open agentic standard connect, MCP, ACP, AHP and A2A, and where do channels within and between agentic systems, and integrations, sit?"
+audience = "Anyone learning the ki-agentic-systems vocabulary, and the sessions settling its channel and specification cards"
+traced = ["skills/keystone/ki-agentic-systems/references/industry.agent-host.md", "skills/keystone/ki-agentic-systems/references/industry.client.md", "skills/keystone/ki-agentic-systems/references/industry.agent.md", "skills/keystone/ki-agentic-systems/references/industry.subagent.md"]
+stale_when = "a specification card for MCP, ACP, AHP or A2A is written or changed, or CARD-CHANNEL or AGENT-KINDS is settled"
+regenerate = "Re-read the ki-agentic-systems cards and the specification cards once written, and draw two agentic systems as regions: in system A, clients reaching an agent host over AHP, the agent host running an agent that calls an MCP server, Zed driving an agent over ACP, and a peer agent reached by peer messages; the agent reaching a remote agent in system B over A2A; the Cairn store as a polled shared store between them; and a Telegram integration pushing through a channel plugin. Mark the channel and agent-kind content provisional until its cards are settled. Then run `bun run self:diagrams:html --svg agentic-standards` to finalize it at showcase quality, commit its HTML and re-export the SVG."
+last_checked = "a026fecbe018407c3c26673dd57c63786aee10bb"
+commit_html = true

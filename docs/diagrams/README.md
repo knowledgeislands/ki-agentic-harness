@@ -57,3 +57,13 @@ Each functional-area diagram answers, for one area: which outside skills do its 
 What steps does a piece of owner-directed work take? Coordinating work under `ki-coordination` logs the owner's decision in their words, updates its work package's state and writes a brief under `ki-delegation`; `ki agent` launches a detached agent, which does the work under `ki-git`, moves its work record, and ends with an owner report and `DONE`. The coordinator answers with a Summary, the owner answers by tag, and at each mark the coordinator homes its decisions and prunes its work folder until the Project finishes. The diagram is traced from the two standards and cites the heading each step comes from.
 
 [![Knowledge Islands thread model](thread-model.svg)](thread-model.html)
+
+## Agentic vocabulary
+
+How do the agentic terms nest in practice? This instance diagram follows the `ki-agentic-systems` cards from machine and environment, local, remote and cloud, through agent host, agent and session to subagent threads and clients, with real examples from terra, sol and the cloud. sol's session and the cloud row are illustrative.
+
+[![Agentic terms by example](agentic-terms-by-example.svg)](agentic-terms-by-example.html)
+
+Which pair does each open standard connect? MCP joins an agent to its tools, ACP one client to one agent, AHP many clients to one agent host, and A2A an agent to an opaque remote agent in another agentic system. The channels and agent kinds it also draws are provisional until their cards are settled.
+
+[![Agentic standards and channels](agentic-standards.svg)](agentic-standards.html)

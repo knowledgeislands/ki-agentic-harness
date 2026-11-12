@@ -1,0 +1,346 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Agentic standards and channels",
+    "output": "+/diagrams/agentic-standards/agentic-standards.html",
+    "quality_profile": "showcase",
+    "locale": "en",
+    "legend": {
+      "entries": {
+        "frontend": {
+          "label": "Client"
+        },
+        "backend": {
+          "label": "Agent host"
+        },
+        "cloud": {
+          "label": "Agent"
+        },
+        "messagebus": {
+          "label": "MCP server or plugin"
+        },
+        "database": {
+          "label": "Shared store"
+        },
+        "external": {
+          "label": "Outside service"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "id": "mcp",
+      "type": "messagebus",
+      "label": "MCP server",
+      "sublabel": "tools, resources, prompts",
+      "pos": [
+        520,
+        40
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "client1",
+      "type": "frontend",
+      "label": "Client",
+      "sublabel": "Orca app, VS Code",
+      "pos": [
+        40,
+        170
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "host",
+      "type": "backend",
+      "label": "Agent host",
+      "sublabel": "Orca runtime, Agent Host",
+      "pos": [
+        280,
+        170
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "agent",
+      "type": "cloud",
+      "label": "Agent",
+      "sublabel": "its session, e.g. Claude Code",
+      "pos": [
+        520,
+        170
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "remote",
+      "type": "cloud",
+      "label": "Remote agent",
+      "sublabel": "opaque, has an Agent Card",
+      "pos": [
+        1000,
+        170
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "client2",
+      "type": "frontend",
+      "label": "Second client",
+      "sublabel": "phone, another window",
+      "pos": [
+        40,
+        300
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "peer",
+      "type": "cloud",
+      "label": "Peer agent",
+      "sublabel": "another session, same host",
+      "pos": [
+        520,
+        300
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "store",
+      "type": "database",
+      "label": "Cairn store",
+      "sublabel": "durable, Git-backed",
+      "pos": [
+        760,
+        300
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "agent-b",
+      "type": "cloud",
+      "label": "Agent",
+      "sublabel": "in system B",
+      "pos": [
+        1000,
+        300
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "zed",
+      "type": "frontend",
+      "label": "Zed editor",
+      "sublabel": "client",
+      "pos": [
+        40,
+        430
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "acp-agent",
+      "type": "cloud",
+      "label": "Agent",
+      "sublabel": "run by the editor",
+      "pos": [
+        280,
+        430
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "plugin",
+      "type": "messagebus",
+      "label": "Channel plugin",
+      "sublabel": "an MCP server",
+      "pos": [
+        760,
+        430
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "telegram",
+      "type": "external",
+      "label": "Telegram",
+      "sublabel": "one bot per session",
+      "pos": [
+        1000,
+        430
+      ],
+      "size": [
+        170,
+        64
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Agentic system A",
+      "wraps": [
+        "mcp",
+        "client1",
+        "host",
+        "agent",
+        "client2",
+        "peer",
+        "zed",
+        "acp-agent"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "Agentic system B",
+      "wraps": [
+        "remote",
+        "agent-b"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "ahp-1",
+      "from": "client1",
+      "to": "host",
+      "label": "AHP",
+      "variant": "emphasis"
+    },
+    {
+      "id": "ahp-2",
+      "from": "client2",
+      "to": "host",
+      "label": "AHP",
+      "variant": "emphasis"
+    },
+    {
+      "id": "host-runs",
+      "from": "host",
+      "to": "agent",
+      "label": "runs"
+    },
+    {
+      "id": "mcp-call",
+      "from": "agent",
+      "to": "mcp",
+      "label": "MCP",
+      "variant": "emphasis"
+    },
+    {
+      "id": "a2a",
+      "from": "agent",
+      "to": "remote",
+      "label": "A2A: task, message",
+      "variant": "emphasis"
+    },
+    {
+      "id": "peer-messages",
+      "from": "agent",
+      "to": "peer",
+      "label": "peer messages",
+      "variant": "dashed"
+    },
+    {
+      "id": "commit",
+      "from": "peer",
+      "to": "store",
+      "label": "commit",
+      "variant": "dashed"
+    },
+    {
+      "id": "poll",
+      "from": "agent-b",
+      "to": "store",
+      "label": "poll",
+      "variant": "dashed"
+    },
+    {
+      "id": "acp",
+      "from": "zed",
+      "to": "acp-agent",
+      "label": "ACP",
+      "variant": "emphasis"
+    },
+    {
+      "id": "telegram-message",
+      "from": "telegram",
+      "to": "plugin",
+      "label": "message"
+    },
+    {
+      "id": "push",
+      "from": "plugin",
+      "to": "peer",
+      "label": "push"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "The standards",
+      "items": [
+        "MCP: an agent to its tools and data",
+        "ACP: one client to one agent (Zed, JetBrains)",
+        "AHP: many clients to one agent host, sharing its sessions; it builds on ACP",
+        "A2A: an agent to an opaque remote agent in another system, found by its Agent Card"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Channels (provisional, CARD-CHANNEL)",
+      "items": [
+        "Intra-system: peer messages between sessions, Orca's worker mail",
+        "Inter-system: AHP and A2A, and our Cairn store, which is polled",
+        "An integration joins two closed systems through a shared point, as the Telegram plugin does"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Agent kinds (provisional, AGENT-KINDS)",
+      "items": [
+        "Subagent: inside a session, subordinate to its agent",
+        "Peer agent: another agent in the same system",
+        "Remote agent: an agent in another system, opaque"
+      ]
+    }
+  ]
+}

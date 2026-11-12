@@ -1,0 +1,430 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Agentic terms by example",
+    "output": "+/diagrams/agentic-terms-by-example/agentic-terms-by-example.html",
+    "quality_profile": "showcase",
+    "locale": "en",
+    "legend": {
+      "entries": {
+        "frontend": {
+          "label": "Client"
+        },
+        "backend": {
+          "label": "Agent host"
+        },
+        "cloud": {
+          "label": "Agent (model + harness)"
+        },
+        "messagebus": {
+          "label": "Session and threads"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "id": "orca-app",
+      "type": "frontend",
+      "label": "Orca app window",
+      "sublabel": "client, in Orca.app",
+      "pos": [
+        40,
+        40
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "orca-host",
+      "type": "backend",
+      "label": "Orca runtime",
+      "sublabel": "agent host, in Orca.app",
+      "pos": [
+        280,
+        40
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "cc-agent",
+      "type": "cloud",
+      "label": "Claude Code agent",
+      "sublabel": "Claude Code + Opus 5.5",
+      "pos": [
+        520,
+        40
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "sess-summit",
+      "type": "messagebus",
+      "label": "Session cairn.summit",
+      "sublabel": "primary thread",
+      "pos": [
+        760,
+        40
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "subagents",
+      "type": "messagebus",
+      "label": "Subagent threads",
+      "sublabel": "e.g. build, research",
+      "pos": [
+        1000,
+        40
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "cc-agent2",
+      "type": "cloud",
+      "label": "Claude Code agent",
+      "sublabel": "a peer agent, same host",
+      "pos": [
+        520,
+        150
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "sess-ki",
+      "type": "messagebus",
+      "label": "Session ki.cairn",
+      "sublabel": "its own primary thread",
+      "pos": [
+        760,
+        150
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "cli",
+      "type": "backend",
+      "label": "claude in a terminal",
+      "sublabel": "agent host and client",
+      "pos": [
+        280,
+        260
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "cc-agent3",
+      "type": "cloud",
+      "label": "Claude Code agent",
+      "sublabel": "Claude Code + Opus 5.5",
+      "pos": [
+        520,
+        260
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "sess-cli",
+      "type": "messagebus",
+      "label": "Session",
+      "sublabel": "one run, in the terminal",
+      "pos": [
+        760,
+        260
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "sol-host",
+      "type": "backend",
+      "label": "orca serve",
+      "sublabel": "headless agent host",
+      "pos": [
+        280,
+        420
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "codex-agent",
+      "type": "cloud",
+      "label": "Codex agent",
+      "sublabel": "Codex + a GPT model",
+      "pos": [
+        520,
+        420
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "sess-sol",
+      "type": "messagebus",
+      "label": "Session",
+      "sublabel": "illustrative",
+      "pos": [
+        760,
+        420
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "phone",
+      "type": "frontend",
+      "label": "Claude app, phone",
+      "sublabel": "client",
+      "pos": [
+        40,
+        580
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "web-host",
+      "type": "backend",
+      "label": "Claude Code on web",
+      "sublabel": "agent host, Anthropic",
+      "pos": [
+        280,
+        580
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "web-agent",
+      "type": "cloud",
+      "label": "Claude Code agent",
+      "sublabel": "in a cloud sandbox",
+      "pos": [
+        520,
+        580
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "web-sess",
+      "type": "messagebus",
+      "label": "Session",
+      "sublabel": "a cloud session",
+      "pos": [
+        760,
+        580
+      ],
+      "size": [
+        170,
+        64
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "terra: machine, local environment",
+      "wraps": [
+        "orca-app",
+        "orca-host",
+        "cc-agent",
+        "sess-summit",
+        "subagents",
+        "cc-agent2",
+        "sess-ki",
+        "cli",
+        "cc-agent3",
+        "sess-cli"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "sol: machine, remote environment",
+      "wraps": [
+        "sol-host",
+        "codex-agent",
+        "sess-sol"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "Cloud environment: no identifiable machine",
+      "wraps": [
+        "web-host",
+        "web-agent",
+        "web-sess"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "app-views-host",
+      "from": "orca-app",
+      "to": "orca-host",
+      "label": "views"
+    },
+    {
+      "id": "host-runs-agent",
+      "from": "orca-host",
+      "to": "cc-agent",
+      "label": "runs",
+      "variant": "emphasis"
+    },
+    {
+      "id": "agent-runs-session",
+      "from": "cc-agent",
+      "to": "sess-summit",
+      "label": "runs",
+      "variant": "emphasis"
+    },
+    {
+      "id": "session-spawns",
+      "from": "sess-summit",
+      "to": "subagents",
+      "label": "spawns"
+    },
+    {
+      "id": "host-runs-agent2",
+      "from": "orca-host",
+      "to": "cc-agent2",
+      "label": "runs"
+    },
+    {
+      "id": "agent2-runs-session",
+      "from": "cc-agent2",
+      "to": "sess-ki",
+      "label": "runs"
+    },
+    {
+      "id": "peer-messages",
+      "from": "sess-summit",
+      "to": "sess-ki",
+      "label": "peer messages",
+      "variant": "dashed"
+    },
+    {
+      "id": "cli-runs-agent",
+      "from": "cli",
+      "to": "cc-agent3",
+      "label": "runs"
+    },
+    {
+      "id": "agent3-runs-session",
+      "from": "cc-agent3",
+      "to": "sess-cli",
+      "label": "runs"
+    },
+    {
+      "id": "app-pairs-sol",
+      "from": "orca-app",
+      "to": "sol-host",
+      "label": "paired, websocket",
+      "fromSide": "bottom",
+      "toSide": "left"
+    },
+    {
+      "id": "sol-runs-agent",
+      "from": "sol-host",
+      "to": "codex-agent",
+      "label": "runs"
+    },
+    {
+      "id": "codex-runs-session",
+      "from": "codex-agent",
+      "to": "sess-sol",
+      "label": "runs"
+    },
+    {
+      "id": "phone-views-web",
+      "from": "phone",
+      "to": "web-host",
+      "label": "views"
+    },
+    {
+      "id": "web-runs-agent",
+      "from": "web-host",
+      "to": "web-agent",
+      "label": "runs"
+    },
+    {
+      "id": "web-agent-runs-session",
+      "from": "web-agent",
+      "to": "web-sess",
+      "label": "runs"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "How the terms nest",
+      "items": [
+        "A machine gives an environment: terra is local, sol is remote, and a cloud environment has no machine you can name",
+        "An agent host runs harnesses and owns their sessions; clients come and go",
+        "An agent is a model working through a harness; a session is one run of it",
+        "Subagent threads sit inside the session, subordinate to its agent"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Other agent hosts",
+      "items": [
+        "Claude Desktop, ChatGPT desktop, the Antigravity app, VS Code Agent Host",
+        "Codex in a terminal is host and client in one, like claude"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Reading it",
+      "items": [
+        "One client can view several hosts: the Orca app sees terra and sol",
+        "One program can be host and client: Orca.app, claude in a terminal",
+        "The phone can also reach claude in a terminal by Remote Control",
+        "Skills load into any session by progressive disclosure, so they are not drawn",
+        "sol's session and the cloud row are illustrative"
+      ]
+    }
+  ]
+}
