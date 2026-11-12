@@ -73,16 +73,6 @@ Analyse a conversation, chat, thread, meeting or negotiation for its dynamics: c
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-knowledge-graph`
-
-Govern the knowledge-graph method: Semantic Markdown cards, curating one captured item at a time, tending a staging graph whose ids can still change, layered graphs with attachment points and shadow nodes, and dispatch by Git move to the owning island. Use to curate, tend or dispatch staged knowledge; `ki-acquire` owns capture, `ki-dodecakrisis` sorting and `ki-repo-kb` knowledge-base structure.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | curate <capture> | tend <area> | dispatch <package> | help | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
-
 #### `ki-pulse`
 
 Capture a submitted link or scan bounded public sources, then triage current signals into read or learn, watch, act, or discard. Use for link intake or what changed; `ki-agentic-radar` and `ki-model-radar` own durable landscape posture, while `ki-next` owns follow-on work.
@@ -393,16 +383,6 @@ Maintain an evidence-backed radar for agentic protocols, interfaces, organisatio
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-authoring`
-
-Govern KI Markdown, TOML, README composition, industry white papers, and durable knowledge placement. Use to format or audit authored documents, shape a README, or decide where learning belongs; use `ki-skills` for SKILL.md quality, `ki-repo` for repository contracts, and `ki-engineering` for code toolchains.
-
-- **Kind:** Governance
-- **Applicability:** Baseline
-- **Arguments:** `audit <path> | conform <path> | educate <target> | help | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
-
 #### `ki-decision-records`
 
 Create or audit typed KI Decision Records for durable rationale and authority. Use `ki-specs` for accepted behaviour, `ki-guides` for procedures, and `ki-work-roadmap` for future delivery.
@@ -505,7 +485,7 @@ Govern directional work and knowledge trades between KI repositories: routes, re
 
 #### `ki-work-package`
 
-Own the work package of one piece of work, its five files in its work folder `+/_WORK/<id>/`: the definition `_index.md` with its routing description, goals and scope, `state.md`, `discussions.md`, the `messages.md` queue and `decisions.md`, plus the folder's closed list, entry points, tidy and close-out rules. Use to create, update, resume, audit, tidy or remove a package, or to pick work up without a transcript or vendor session; Git is the logbook, durable knowledge stays with its owners, and single-file work folders and old `+/_CHECKPOINTS/` records stay readable for the tolerance window.
+Own the work package of one piece of work, `work/<territory>/<id>/` in the Agora store: its `_index.md`, holding the definition with its routing description, goals, scope and repositories and the state for recovery, its `NN-<slug>.change.md` change documents, where decisions and open points live, and sub-packages of the same shape, plus the closed list, the writers and the tidy. Use to create, update, resume, audit, tidy or remove a package, or to pick work up without a transcript or vendor session; Git is the logbook, messages go through the Agora store, and durable knowledge stays with its owners.
 
 - **Kind:** Governance
 - **Applicability:** Detected
@@ -515,6 +495,16 @@ Own the work package of one piece of work, its five files in its work folder `+/
 
 ### Keystone
 
+#### `ki-authoring`
+
+Govern KI document formats, Markdown, TOML, README composition, industry white papers, and durable knowledge placement. Use to format or audit authored documents, shape a README, or decide where learning belongs; use `ki-skills` for SKILL.md quality, `ki-repo` for repository contracts, and `ki-engineering` for code toolchains.
+
+- **Kind:** Governance
+- **Applicability:** Baseline
+- **Arguments:** `audit <path> | conform <path> | educate <target> | help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
 #### `ki-bootstrap`
 
 Explain first-time KI activation through the `ki` CLI: user bootstrap, verified harness selection, skills, and repository governance. Use for setup or audit-activation problems; `ki --help` owns command mechanics and `ki-repo` repository coverage.
@@ -522,6 +512,16 @@ Explain first-time KI activation through the `ki` CLI: user bootstrap, verified 
 - **Kind:** Process
 - **Applicability:** Invocation Only
 - **Arguments:** `help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-knowledge-graph`
+
+Govern the knowledge-graph method: Semantic Markdown cards, curating one captured item at a time, tending a staging graph whose ids can still change, layered graphs with attachment points and shadow nodes, and dispatch by Git move to the owning island. Use to curate, tend or dispatch staged knowledge; `ki-acquire` owns capture, `ki-dodecakrisis` sorting and `ki-repo-kb` knowledge-base structure.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | curate <capture> | tend <area> | dispatch <package> | help | refresh`
 - **Dependencies:** None
 - **Runtime:** Portable
 
