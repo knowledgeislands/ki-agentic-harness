@@ -1,6 +1,6 @@
 <!-- GENERATED FILE: produced by `ki dev skill rubric`. Do not hand-edit; edit scripts/rubric/items/, then rerun `ki dev skill rubric <skill> --write`. -->
 
-# Generated rubric — Knowledge-graph curation, tending and dispatch
+# Generated rubric — Knowledge graphs: root definition, cards, links, curation and dispatch
 
 > **Generated publication.** The TypeScript rubric items under `scripts/rubric/items/` are canonical. Edit those definitions, then rerun `ki dev skill rubric ki-knowledge-graph --write`.
 
@@ -11,7 +11,7 @@ Line-by-line criteria for auditing ki-knowledge-graph. Classifications are deriv
 - [CONFIG — Knowledge-graph configuration](#config--knowledge-graph-configuration)
 - [CARD — Semantic Markdown cards](#card--semantic-markdown-cards)
 - [CURATE — Transactional curation](#curate--transactional-curation)
-- [GRAPH — Staging graph, layers and tending](#graph--staging-graph-layers-and-tending)
+- [GRAPH — Root definition, subgraphs, layers and tending](#graph--root-definition-subgraphs-layers-and-tending)
 - [DISPATCH — Dispatch and authority](#dispatch--dispatch-and-authority)
 - [RUBRIC — Generated rubric publication](#rubric--generated-rubric-publication)
 
@@ -30,24 +30,34 @@ The method takes its layout from the knowledge base that declares it and accepts
 
 Cards are judged on supplied card evidence; each says what one thing is, in the house card format.
 
-- **CARD-1 [J] — front matter identifies the card and its status** — Every card carries id, title, type, status, territory and island, with status one of proposal, future-concept or agreed. (standards-knowledge-graph.md#cards)
+- **CARD-1 [J] — front matter identifies the card and its status** — Every card carries id, title, type and status, with status one of proposal, future-concept or agreed, a type its root definition declares, and the further properties the root definition requires of that type. (standards-knowledge-graph.md#cards, standards-knowledge-graph.md#the-root-definition)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Does every card in the supplied evidence carry id, title, type, status, territory and island, with a status from the closed list?
+  - _Review prompt:_ Does every card in the supplied evidence carry id, title, type and status, with a status from the closed list, a declared card type and every property its root definition requires?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **CARD-2 [J] — links are typed only where an assertion is meant** — A front-matter links entry pairs a reference with a real predicate; unannotated links stay navigational, and link definitions hold only destinations at the bottom of the card. (standards-knowledge-graph.md#cards)
+- **CARD-2 [J] — links are typed only where an assertion is meant** — A front-matter links entry pairs a reference with a predicate from a vocabulary the root definition declares, SKOS by default and ki: only where no declared vocabulary has the term; unannotated links stay navigational, and link definitions hold only destinations at the bottom of the card. (standards-knowledge-graph.md#links, standards-knowledge-graph.md#the-root-definition)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Does every predicate express an intended assertion from an established vocabulary or the ki: prefix, with no invented predicate on a navigational link?
+  - _Review prompt:_ Does every predicate express an intended assertion from a declared vocabulary, using ki: only where SKOS and the other declared vocabularies lack the term, with no invented predicate on a navigational link?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **CARD-3 [J] — one authoritative definition per concept within a territory** — Other cards give short context and link to the defining card rather than repeat it, and no card is made for every noun. (standards-knowledge-graph.md#cards, standards-knowledge-graph.md#tending)
+- **CARD-3 [J] — one authoritative definition per concept within a graph** — Other cards give short context and link to the defining card rather than repeat it, and no card is made for every noun. (standards-knowledge-graph.md#cards, standards-knowledge-graph.md#tending)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Is each concept defined once within its territory, with other cards linking to that definition, and does every card earn its place?
+  - _Review prompt:_ Is each concept defined once within its graph, with other cards linking to that definition, and does every card earn its place?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 - **CARD-4 [J] — cards stand alone and keep method out** — No card links to a capture or has a body origin section; any origin is one plain front-matter line; meetings are sources, future ideas are future concepts, and method links to the skill rather than being restated. (standards-knowledge-graph.md#cards)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
   - _Review prompt:_ Does every card avoid capture links and body origin sections, treat meetings as sources and future ideas as future concepts, and leave curation, tending and dispatch method to the skill?
+  - _Outcomes:_ conforming; gap; exclusion
+  - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
+- **CARD-5 [J] — a card is named by its readable id** — A card file is `<id>.md`, its id is short and readable, never a UUID, carries its subgraph before a dot where the graph has subgraphs, and is unique in the graph; its folder is never part of its identity. (standards-knowledge-graph.md#the-graph)
+  - _Evidence scope:_ The target skill and the evidence named by this criterion.
+  - _Review prompt:_ Is every card file named from its front-matter id, is each id readable, unique and prefixed with its subgraph where the graph has subgraphs, and does no link depend on a folder?
+  - _Outcomes:_ conforming; gap; exclusion
+  - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
+- **CARD-6 [J] — no link reaches into part of a card** — A link points at a whole card, never at an anchor inside one; a card that others need in part is split so each part linked to is a card of its own. (standards-knowledge-graph.md#links)
+  - _Evidence scope:_ The target skill and the evidence named by this criterion.
+  - _Review prompt:_ Does every link between cards target a whole card file, with any card that is needed in part split into cards of their own?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 
@@ -78,11 +88,11 @@ Curation is judged on the captures and the commits that worked them; a mechanica
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 
-## GRAPH — Staging graph, layers and tending
+## GRAPH — Root definition, subgraphs, layers and tending
 
 → [standard](standards-knowledge-graph.md)
 
-The staging graph and its layers are judged on supplied evidence; folder and zone structure is the knowledge base’s own.
+A graph’s root definition, subgraphs, staging and layers are judged on supplied evidence; folder and zone structure is the knowledge base’s own.
 
 - **GRAPH-1 [J] — routing links run one way** — Routing cards may link into captures and staged cards, but nothing in a capture links into the routing cards. (standards-knowledge-graph.md#the-staging-graph)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
@@ -102,6 +112,16 @@ The staging graph and its layers are judged on supplied evidence; folder and zon
 - **GRAPH-4 [J] — pruning keeps each area’s touch point** — Shadow nodes are pruned only in untended areas after a few rounds of use, and every live area keeps its one shadow at its touch point. (standards-knowledge-graph.md#layered-graphs-and-shadow-nodes, standards-knowledge-graph.md#tending)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
   - _Review prompt:_ Were pruned shadows in untended areas only, and does every live area keep one shadow node where it touches the layer above?
+  - _Outcomes:_ conforming; gap; exclusion
+  - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
+- **GRAPH-5 [J] — the graph defines itself at its root** — The root folder holds `_graph.md`, of card type graph, whose sections declare in order the card types, link vocabulary, properties, constraints, subgraphs, and extent and limitations, none left out. (standards-knowledge-graph.md#the-root-definition)
+  - _Evidence scope:_ The target skill and the evidence named by this criterion.
+  - _Review prompt:_ Does the graph’s `_graph.md` declare every card type, vocabulary, property, constraint and subgraph its cards use, and state its extent, limitations and pending cards?
+  - _Outcomes:_ conforming; gap; exclusion
+  - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
+- **GRAPH-6 [J] — outside usage is a subgraph linked to the graph’s terms** — Where parties use their own words for a term, each party’s words are cards in its own subgraph linked to the term with mapping predicates, one link per sense, and comparisons are read from those links rather than listed in prose. (standards-knowledge-graph.md#subgraphs)
+  - _Evidence scope:_ The target skill and the evidence named by this criterion.
+  - _Review prompt:_ Are synonyms, senses and comparisons expressed as links between subgraph cards rather than as lists in a card’s prose?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 

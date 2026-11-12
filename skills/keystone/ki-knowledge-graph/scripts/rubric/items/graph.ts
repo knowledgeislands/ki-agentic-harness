@@ -3,10 +3,10 @@ import type { KnowledgeGraphContext } from '../contexts/knowledge-graph.ts'
 
 export const GRAPH = {
   code: 'GRAPH',
-  title: 'Staging graph, layers and tending',
+  title: 'Root definition, subgraphs, layers and tending',
   standard: 'standards-knowledge-graph.md',
   description:
-    'The staging graph and its layers are judged on supplied evidence; folder and zone structure is the knowledge base’s own.',
+    'A graph’s root definition, subgraphs, staging and layers are judged on supplied evidence; folder and zone structure is the knowledge base’s own.',
   selectContext: (context) => context,
   items: [
     {
@@ -45,6 +45,26 @@ export const GRAPH = {
       sources: ['standards-knowledge-graph.md#layered-graphs-and-shadow-nodes', 'standards-knowledge-graph.md#tending'],
       judgment: judgment(
         'Were pruned shadows in untended areas only, and does every live area keep one shadow node where it touches the layer above?'
+      )
+    },
+    {
+      code: 'GRAPH-5',
+      title: 'the graph defines itself at its root',
+      description:
+        'The root folder holds `_graph.md`, of card type graph, whose sections declare in order the card types, link vocabulary, properties, constraints, subgraphs, and extent and limitations, none left out.',
+      sources: ['standards-knowledge-graph.md#the-root-definition'],
+      judgment: judgment(
+        'Does the graph’s `_graph.md` declare every card type, vocabulary, property, constraint and subgraph its cards use, and state its extent, limitations and pending cards?'
+      )
+    },
+    {
+      code: 'GRAPH-6',
+      title: 'outside usage is a subgraph linked to the graph’s terms',
+      description:
+        'Where parties use their own words for a term, each party’s words are cards in its own subgraph linked to the term with mapping predicates, one link per sense, and comparisons are read from those links rather than listed in prose.',
+      sources: ['standards-knowledge-graph.md#subgraphs'],
+      judgment: judgment(
+        'Are synonyms, senses and comparisons expressed as links between subgraph cards rather than as lists in a card’s prose?'
       )
     }
   ]

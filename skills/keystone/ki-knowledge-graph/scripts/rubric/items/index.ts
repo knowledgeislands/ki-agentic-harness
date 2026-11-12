@@ -10,7 +10,7 @@ import { RUBRIC } from './publication.ts'
 export default {
   contract: 1,
   name: 'ki-knowledge-graph',
-  concern: 'Knowledge-graph curation, tending and dispatch',
+  concern: 'Knowledge graphs: root definition, cards, links, curation and dispatch',
   createSession: createKnowledgeGraphSession,
   families: [CONFIG, CARD, CURATE, GRAPH, DISPATCH, RUBRIC]
 } satisfies SkillRubricDefinition<KnowledgeGraphContext>

@@ -5,18 +5,18 @@ ki-applicability: declaration-only
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
-  Govern the knowledge-graph method: Semantic Markdown cards, curating one captured item at a time, tending a staging
-  graph whose ids can still change, layered graphs with attachment points and shadow nodes, and dispatch by Git move to
-  the owning island. Use to curate, tend or dispatch staged knowledge; `ki-acquire` owns capture, `ki-dodecakrisis`
-  sorting and `ki-repo-kb` knowledge-base structure.
+  Govern knowledge graphs: Semantic Markdown cards named by readable ids, a `_graph.md` root definition, typed links
+  with SKOS by default, subgraphs, layered graphs with shadow nodes, and curating captured material through a staging
+  graph to dispatch. Use to define a graph, curate, tend or dispatch knowledge; `ki-acquire` owns capture,
+  `ki-dodecakrisis` sorting and `ki-repo-kb` knowledge-base structure.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | curate <capture> | tend <area> | dispatch <package> | help | refresh'
 ---
 
 # Knowledge graph
 
-Read [the knowledge-graph standard](references/standards-knowledge-graph.md) first: the funnel from Deposit to dispatch, the card format, curating one item at a time, the staging graph, layered graphs and shadow nodes, tending and dispatch. While [the migration overlay](references/standards-knowledge-graph-migration.md) exists, read it last; it lists temporary adjustments, and the standard wins wherever the two differ.
+Read [the knowledge-graph standard](references/standards-knowledge-graph.md) first: what every graph shares, its root definition, cards, links and subgraphs, layered graphs and shadow nodes, and then curation, one use of a graph, from Deposit through the staging graph and tending to dispatch. While [the migration overlay](references/standards-knowledge-graph-migration.md) exists, read it last; it lists temporary adjustments, and the standard wins wherever the two differ.
 
-The skill holds the method, how knowledge is curated, tended and handed on; the graph itself keeps the things that are, its concepts and their relations, and a card never restates this method. Sorting before Deposit is the `ki-dodecakrisis` skill's, and faithful capture, coverage, originals and provider rules are the `ki-acquire` skill's and its provider skills'. The folders and zones of a knowledge base, the staging base's included, are the `ki-repo-kb` skill's. Prose style is the `ki-authoring` skill's, and a receiving island's triage of what it is sent is the `ki-next` skill's. Executable checks and importers live in the repositories that run them. The [generated rubric](references/rubric.md) holds the review criteria. This skill accepts no repository configuration properties.
+The skill holds the method, how a graph is defined and how knowledge is curated, tended and handed on; a graph itself keeps the things that are, its concepts and their relations, and a card never restates this method. Sorting before Deposit is the `ki-dodecakrisis` skill's, and faithful capture, coverage, originals and provider rules are the `ki-acquire` skill's and its provider skills'. The folders and zones of a knowledge base, the staging base's included, are the `ki-repo-kb` skill's. Prose style is the `ki-authoring` skill's, and a receiving island's triage of what it is sent is the `ki-next` skill's. Executable checks and importers live in the repositories that run them. The [generated rubric](references/rubric.md) holds the review criteria. This skill accepts no repository configuration properties.
 
 ## Operating modes
 
@@ -30,11 +30,11 @@ Run `ki repo audit --skill ki-knowledge-graph --repo <repo>`, then review the su
 
 ### Mode CONFORM
 
-Run AUDIT, then `ki repo conform --skill ki-knowledge-graph --repo <repo> --dry-run`. The host may regenerate rubric publication. Propose card front-matter, link-predicate and strike-through corrections as a list; this mode does not rename, merge, split, dispatch or delete a card or capture.
+Run AUDIT, then `ki repo conform --skill ki-knowledge-graph --repo <repo> --dry-run`. The host may regenerate rubric publication. Propose root-definition, card front-matter, link-predicate and strike-through corrections as a list; this mode does not rename, merge, split, dispatch or delete a card or capture.
 
 ### Mode EDUCATE
 
-Explain the funnel, the card format and transactional curation using the repository's own cards as examples. Do not curate or dispatch to demonstrate the method.
+Explain the root definition, the card format, links and subgraphs, and for a curating repository the funnel and transactional curation, using the repository's own cards as examples. Do not curate or dispatch to demonstrate the method.
 
 ### Mode CURATE
 
@@ -50,4 +50,4 @@ Dry-run first: list each package, its receiving island and its destination under
 
 ### Mode REFRESH
 
-REFRESH writes only in the canonical `ki-agentic-harness` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the knowledge-graph and knowledge-tending cards and actual curation practice with the standard, then make and verify the smallest correction. When a migration item is done, delete its line, and delete the overlay once it is empty.
+REFRESH writes only in the canonical `ki-agentic-harness` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the skill's own cards, the knowledge-tending cards and actual practice in the graphs that follow the standard with the standard, then make and verify the smallest correction. When a migration item is done, delete its line, and delete the overlay once it is empty.
