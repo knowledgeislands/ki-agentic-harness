@@ -97,7 +97,7 @@ Start, wait on, steer, stop and close Orca supervised workers as a KI delegation
 
 #### `ki-subagents`
 
-Define or assess runtime-neutral KI subagent roles: identity, delegation purpose, instructions, lane, grounding, hand-offs, orchestration, and evidence. Use before a native projection; use `ki-subagents-claude` or `ki-subagents-chatgpt` for runtime files.
+Define or assess runtime-neutral KI subagent roles: identity, delegation purpose, instructions, lane, grounding, hand-offs, orchestration, and evidence. Use before a native projection; use `ki-subagents-claude` or `ki-subagents-chatgpt` for runtime files, and `ki-agentic-systems` for what a subagent is.
 
 - **Kind:** Governance
 - **Applicability:** Detected
@@ -375,7 +375,7 @@ Audit non-secret Claude Code repository evidence—instructions, rules, settings
 
 #### `ki-agentic-radar`
 
-Maintain an evidence-backed radar for agentic protocols, interfaces, organisations, architectures, research, and vendor terms. Use for maturity, interoperability, or stance; `ki-model-radar` owns models, `ki-pulse` discovers signals, and `ki-next` owns follow-on work.
+Maintain an evidence-backed radar for agentic protocols, interfaces, organisations, architectures, research, and vendor terms. Use for maturity, interoperability, or stance; `ki-agentic-systems` defines the terms, `ki-model-radar` owns models, `ki-pulse` discovers signals, and `ki-next` owns follow-on work.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -497,7 +497,7 @@ Own the work package of one piece of work, `work/<territory>/<id>/` in the Agora
 
 #### `ki-agentic-systems`
 
-Define the words of agentic systems as a knowledge graph: industry cards from model, agent harness, agent, session and subagent to skill, with Anthropic's, OpenAI's, Google's and Microsoft's own words in vendor subgraphs linked to them. Use to learn what an agentic term means, which sense a vendor name such as Claude or Codex carries, how vendors' words compare, or which card to link instead of redefining a term; `ki-agentic-radar` owns maturity and stance, and `ki-subagents` how to run subagents.
+Define the words of agentic systems as a knowledge graph: industry cards from model, agent harness, agent, session, subagent and skill to environment, machine, agent host and client, with Anthropic's, OpenAI's, Google's and Microsoft's own words in vendor subgraphs linked to them. Use to learn what an agentic term means, which sense a vendor name such as Claude or Codex carries, how vendors' words compare, or which card to link instead of redefining a term; `ki-agentic-radar` owns maturity and stance, and `ki-subagents` how to run subagents.
 
 - **Kind:** Knowledge
 - **Applicability:** Invocation Only
