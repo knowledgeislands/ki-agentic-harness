@@ -160,8 +160,10 @@ export const createKiSkillsSession = ({
 
     if (basename(skillDirectory) === 'ki-skills') subjects.push(rubricSubject('rubric', skill.context, skillSubject))
 
-    const runtimeBinding =
-      parseFrontmatter(readFileSync(join(skillDirectory, 'SKILL.md'), 'utf8')).values['ki-runtime-binding'] === true
+    const skillFrontmatter = parseFrontmatter(readFileSync(join(skillDirectory, 'SKILL.md'), 'utf8')).values
+    const runtimeBinding = skillFrontmatter['ki-runtime-binding'] === true
+    // A knowledge skill's graph cards record outside usage, such as each vendor's own words, as attributed evidence.
+    const knowledgeGraphFolder = skillFrontmatter['ki-kind'] === 'knowledge' ? join(skillDirectory, 'references') : null
 
     for (const file of listMarkdownFiles(skillDirectory)) {
       const document =
@@ -181,7 +183,7 @@ export const createKiSkillsSession = ({
               markdown: document?.read() ?? readFileSync(file, 'utf8'),
               subject,
               runtimeBinding,
-              attributedSourceMaterial: basename(file) === 'sources.md'
+              attributedSourceMaterial: basename(file) === 'sources.md' || dirname(file) === knowledgeGraphFolder
             }
           },
           subject

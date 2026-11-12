@@ -364,7 +364,7 @@ Knowledge Islands link and toolchain portability.
 
 Portable contracts make runtime-specific boundaries explicit.
 
-- **PORT-1 [M] — portable contracts make runtime assumptions explicit** — Portable guidance has no unqualified vendor, runtime, or runtime-home reference. Declare a dedicated runtime-binding skill, use a `Runtime binding` section, attribute source material, or compare multiple runtimes explicitly. (KI)
+- **PORT-1 [M] — portable contracts make runtime assumptions explicit** — Portable guidance has no unqualified vendor, runtime, or runtime-home reference. Declare a dedicated runtime-binding skill, use a `Runtime binding` section, attribute source material, as `sources.md` and the graph cards of a knowledge skill do, or compare multiple runtimes explicitly. (KI)
   - _Remediation:_ diagnostic — Decide whether each runtime reference is policy, a binding, source attribution, or comparison, then qualify or relocate it without changing the portable contract.
 
 ## KI-SHAPE — Knowledge Islands skill shape

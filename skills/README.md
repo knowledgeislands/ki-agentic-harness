@@ -497,7 +497,7 @@ Own the work package of one piece of work, `work/<territory>/<id>/` in the Agora
 
 #### `ki-agentic-systems`
 
-Define the words of agentic systems, one card per term with each major vendor's usage, starting from model, agent harness, agent, session and subagent. Use to learn what an agentic term means, which sense a vendor name such as Claude or Codex carries, or which card to link instead of redefining a term; `ki-agentic-radar` owns maturity and stance, and `ki-subagents` how to run subagents.
+Define the words of agentic systems as a knowledge graph: industry cards from model, agent harness, agent, session and subagent to skill, with Anthropic's, OpenAI's, Google's and Microsoft's own words in vendor subgraphs linked to them. Use to learn what an agentic term means, which sense a vendor name such as Claude or Codex carries, how vendors' words compare, or which card to link instead of redefining a term; `ki-agentic-radar` owns maturity and stance, and `ki-subagents` how to run subagents.
 
 - **Kind:** Knowledge
 - **Applicability:** Invocation Only

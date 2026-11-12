@@ -10,7 +10,7 @@ const PORT_1: RubricItem<PortabilityRubricContext> = {
   code: 'PORT-1',
   title: 'portable contracts make runtime assumptions explicit',
   description:
-    'Portable guidance has no unqualified vendor, runtime, or runtime-home reference. Declare a dedicated runtime-binding skill, use a `Runtime binding` section, attribute source material, or compare multiple runtimes explicitly.',
+    'Portable guidance has no unqualified vendor, runtime, or runtime-home reference. Declare a dedicated runtime-binding skill, use a `Runtime binding` section, attribute source material, as `sources.md` and the graph cards of a knowledge skill do, or compare multiple runtimes explicitly.',
   sources: ['KI'],
   mechanical: {
     level: 'FAIL',

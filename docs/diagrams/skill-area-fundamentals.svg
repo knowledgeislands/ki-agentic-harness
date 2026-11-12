@@ -1056,8 +1056,8 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
         <text x="468" y="132" class="t-database" font-size="7" text-anchor="middle">R9 · CM · F3</text>
         </g>
 
-        <g id="node-ki-agentic-systems" data-node-id="ki-agentic-systems" data-node-label="ki-agentic-systems" tabindex="0" role="button" aria-label="Focus ki-agentic-systems, keystone · knowledge, Fundamentals · 9 skills › Knowledge" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="keystone · knowledge" data-node-tag="R– · C0 · F6" data-node-context="Fundamentals · 9 skills › Knowledge">
-          <title>ki-agentic-systems · keystone · knowledge · Fundamentals · 9 skills › Knowledge · R– · C0 · F6</title>
+        <g id="node-ki-agentic-systems" data-node-id="ki-agentic-systems" data-node-label="ki-agentic-systems" tabindex="0" role="button" aria-label="Focus ki-agentic-systems, keystone · knowledge, Fundamentals · 9 skills › Knowledge" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="keystone · knowledge" data-node-tag="R– · C0 · F48" data-node-context="Fundamentals · 9 skills › Knowledge">
+          <title>ki-agentic-systems · keystone · knowledge · Fundamentals · 9 skills › Knowledge · R– · C0 · F48</title>
           <rect x="588" y="392" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="588" y="392" width="208" height="76" rx="8" class="c-cloud" data-animate="node" style="--step: 2;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(594 398) scale(0.6875)">
@@ -1065,7 +1065,7 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
           </g>
           <text data-node-label="" x="692" y="428" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-agentic-systems</text>
         <text x="692" y="444" class="t-muted" font-size="9" text-anchor="middle">keystone · knowledge</text>
-        <text x="692" y="460" class="t-cloud" font-size="7" text-anchor="middle">R– · C0 · F6</text>
+        <text x="692" y="460" class="t-cloud" font-size="7" text-anchor="middle">R– · C0 · F48</text>
         </g>
 
         <g id="node-ki-authoring" data-node-id="ki-authoring" data-node-label="ki-authoring" tabindex="0" role="button" aria-label="Focus ki-authoring, keystone · always on, Fundamentals · 9 skills › Repository and writing" aria-pressed="false" data-node-kind="security" data-node-sublabel="keystone · always on" data-node-tag="R4 · CM · F13" data-node-context="Fundamentals · 9 skills › Repository and writing">
