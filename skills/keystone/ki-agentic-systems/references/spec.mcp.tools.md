@@ -12,7 +12,7 @@ links:
   spec.mcp.server:
     predicate: skos:related
   industry.agent-harness:
-    predicate: skos:related
+    predicate: skos:relatedMatch
 ---
 
 # Tools, in the Model Context Protocol
@@ -21,7 +21,7 @@ MCP's tools let a model act on systems outside itself, such as querying a databa
 
 A tool is named by a unique `name` and described by a `description`, an `inputSchema` in JSON Schema, and optionally a `title`, an `outputSchema` and `annotations`. A client discovers tools with `tools/list` and calls one with `tools/call`; the result carries text, images, audio, resource links or structured content ([MCP3]).
 
-Tools are model-controlled: the model chooses them from its context and the user's prompts, and the [agent harness][industry.agent-harness] carries the call out. The specification says there should always be a human able to deny a call, and treats a tool's annotations as untrusted unless its server is trusted ([MCP3]).
+Tools are model-controlled: the model chooses them from its context and the user's prompts, and, in this graph's terms, the [agent harness][industry.agent-harness] carries the call out. The specification says there should always be a human able to deny a call, and treats a tool's annotations as untrusted unless its server is trusted ([MCP3]).
 
 The pending `industry.tool` card will rest on this part.
 

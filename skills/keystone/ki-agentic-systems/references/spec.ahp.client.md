@@ -21,7 +21,7 @@ A client connects to an [agent host][spec.ahp.agent-host], agrees a protocol ver
 
 Any number of clients may share one session. Any of them may approve a tool call or cancel a turn, and the agent host accepts the first ([AHP and ACP][AHP1]).
 
-AHP names IDEs, web apps and CLIs as clients; VS Code, AHPX and ahpc are among them, with official client libraries in Rust, TypeScript, Kotlin, Swift and Go ([implementations][M12]).
+AHP names IDEs, web apps and CLIs as clients ([what is AHP][M8]); VS Code, AHPX and ahpc are among them, with official client libraries in Rust, TypeScript, Kotlin, Swift and Go ([implementations][M12]).
 
 [spec.ahp]: ./spec.ahp.md
 [industry.client]: ./industry.client.md

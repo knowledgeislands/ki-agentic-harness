@@ -23,7 +23,7 @@ An ACP agent is a coding agent that can serve any editor speaking ACP, without a
 
 ACP defines agents as "programs that use generative AI to autonomously modify code", which usually run as subprocesses of the [ACP client][spec.acp.client]. An agent negotiates the protocol version, creates and keeps [ACP sessions][spec.acp.session], runs each prompt and streams its progress back, and asks the client's permission before a tool call ([ACP2]). Most ACP agents are also MCP clients ([ACP5]).
 
-An ACP agent is an [agent][industry.agent] narrowed to coding. Because it keeps its own sessions for clients to open, the program is also its own [agent host][industry.agent-host], as a harness run by itself is. Examples include Claude Agent, through Zed's adapter, Codex CLI, through ACP's adapter, and Gemini CLI ([ACP9]).
+An ACP agent is an [agent][industry.agent] narrowed to coding. It is usually not an [agent host][industry.agent-host]: the client launches it as a subprocess and ends it ([ACP4]), so its sessions do not live independently of their client. Examples include Claude Agent, through Zed's adapter, Codex CLI, through ACP's adapter, and Gemini CLI ([ACP9]).
 
 [spec.acp]: ./spec.acp.md
 [spec.acp.client]: ./spec.acp.client.md
@@ -34,3 +34,4 @@ An ACP agent is an [agent][industry.agent] narrowed to coding. Because it keeps 
 [ACP2]: https://agentclientprotocol.com/protocol/v1/overview
 [ACP5]: https://agentclientprotocol.com/get-started/related-protocols
 [ACP9]: https://agentclientprotocol.com/get-started/agents
+[ACP4]: https://agentclientprotocol.com/protocol/v1/transports

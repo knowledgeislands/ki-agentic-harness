@@ -19,7 +19,7 @@ links:
 
 An MCP server packages one focused capability, such as a database or an external service, so that any application speaking MCP can use it. It is part of the [Model Context Protocol][spec.mcp] ([MCP2]).
 
-MCP defines servers as "services that provide context and capabilities", local processes or remote services. Each offers any of three features to an [MCP client][spec.mcp.client]:
+MCP defines servers as "services that provide context and capabilities" ([MCP1]), local processes or remote services. Each offers any of three features to an [MCP client][spec.mcp.client]:
 
 1. **Resources:** context and data, such as files or database schemas, each named by a URI, for the application to include as it chooses ([MCP9]).
 2. **Prompts:** templated messages the user selects, often as slash commands ([MCP10]).
@@ -33,3 +33,4 @@ A server should be easy to build and to combine with others. It never reads the 
 [MCP2]: https://modelcontextprotocol.io/specification/2026-07-28/architecture
 [MCP9]: https://modelcontextprotocol.io/specification/2026-07-28/server/resources
 [MCP10]: https://modelcontextprotocol.io/specification/2026-07-28/server/prompts
+[MCP1]: https://modelcontextprotocol.io/specification/2026-07-28

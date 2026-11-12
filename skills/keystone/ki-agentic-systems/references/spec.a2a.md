@@ -25,7 +25,7 @@ The Agent2Agent protocol lets independent agents, built by different vendors on 
 
 An [A2A client][spec.a2a.client] sends requests to an [A2A server, the remote agent][spec.a2a.remote-agent], which it finds through its [Agent Card][spec.a2a.agent-card]. The specification has three layers. Its data model holds [tasks][spec.a2a.task]; messages, each one turn from the user or the agent; artifacts, the outputs of a task; and parts, the text, file or structured data inside messages and artifacts. Its operations send messages and get, list and cancel tasks. Its bindings, JSON-RPC 2.0, gRPC and HTTP+JSON/REST, carry them with the same behaviour, and custom bindings are allowed. Updates arrive by polling, by streaming or by push notifications to a webhook. The Protocol Buffers file `a2a.proto` is normative.
 
-A2A covers agents working with agents; [MCP][spec.mcp] covers an agent using tools and data, and the two are complementary. A2A is a Linux Foundation project contributed by Google. Version 1.0 was released on 12 March 2026 and patch 1.0.1 on 28 May 2026, the latest on 12 November 2026; patches do not affect compatibility ([release][A2A4]).
+A2A covers agents working with agents; [MCP][spec.mcp] covers an agent using tools and data, and the two are complementary. Version 1.0 was released on 12 March 2026 and patch 1.0.1 on 28 May 2026, the latest on 12 November 2026 ([release][A2A4]); patches do not affect compatibility ([specification][A2A1]).
 
 [spec.a2a.client]: ./spec.a2a.client.md
 [spec.a2a.remote-agent]: ./spec.a2a.remote-agent.md

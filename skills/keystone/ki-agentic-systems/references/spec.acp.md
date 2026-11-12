@@ -27,7 +27,7 @@ ACP is a protocol of JSON-RPC 2.0 messages between an [ACP client][spec.acp.clie
 
 Its one transport is stdio: the client launches the agent as a subprocess and they exchange newline-delimited JSON-RPC. A remote transport over Streamable HTTP is still being specified ([ACP4]).
 
-The stable protocol is version 1, at schema 1.31.0 on 10 November 2026 ([ACP8]); version 2 has been in draft since 20 July 2026 ([ACP7]). Zed Industries and JetBrains govern it jointly ([ACP6]), and [Zed][zed.zed] is one of its clients.
+The stable protocol is version 1, at schema 1.31.0 on 10 November 2026 ([ACP8]); version 2 has been in draft since 20 July 2026 ([ACP7]). Zed Industries and JetBrains govern it jointly ([ACP6]), and [Zed][zed.zed] is one of its clients ([agents][ACP9]).
 
 It is not the Agent Communication Protocol, IBM's BeeAI project, also called ACP, which merged into [Agent2Agent][spec.a2a] in 2025 ([ACP5]).
 
@@ -44,3 +44,4 @@ It is not the Agent Communication Protocol, IBM's BeeAI project, also called ACP
 [ACP6]: https://agentclientprotocol.com/community/governance
 [ACP7]: https://agentclientprotocol.com/announcements/acp-v2-draft
 [ACP8]: https://github.com/agentclientprotocol/agent-client-protocol/releases
+[ACP9]: https://agentclientprotocol.com/get-started/agents

@@ -18,7 +18,7 @@ links:
   spec.mcp.transports:
     predicate: dcterms:hasPart
   industry.agent-harness:
-    predicate: skos:related
+    predicate: skos:relatedMatch
   spec.acp:
     predicate: skos:related
 ---

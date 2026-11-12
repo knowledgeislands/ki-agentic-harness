@@ -21,7 +21,7 @@ links:
 
 An MCP client keeps each server apart from the others, so that one server can never see into another. It is part of the [Model Context Protocol][spec.mcp] ([MCP2]).
 
-MCP calls its clients "connectors within the host application". The [MCP host][spec.mcp.host] creates one MCP client for each [MCP server][spec.mcp.server], and each talks to exactly that one server. It attaches the protocol version and its capabilities to every request, routes messages both ways, manages subscriptions and notifications, and keeps the security boundary between servers ([MCP2]). It may offer the server elicitation, asking the user for more information ([MCP1]).
+MCP calls its clients "connectors within the host application" ([MCP1]). The [MCP host][spec.mcp.host] creates one MCP client for each [MCP server][spec.mcp.server], and each talks to exactly that one server. It attaches the protocol version and its capabilities to every request, routes messages both ways, manages subscriptions and notifications, and keeps the security boundary between servers ([MCP2]). It may offer the server elicitation, asking the user for more information ([MCP1]).
 
 An MCP client is not a [client][industry.client] in this graph's sense: it is plumbing inside an application, not a window onto a session. Most agents that speak the Agent Client Protocol are MCP clients as well.
 
