@@ -7,7 +7,7 @@ const SCHEMA_1: RubricItem<RadarOutcomeContext> = {
   code: 'SCHEMA-1',
   title: 'snapshot schema and owners are valid',
   description:
-    'The radar parses as schema 1 TOML with only declared maps and fields, stable lower-case hyphenated identities, complete subject records, and explicit non-empty owner, uncertainty, and return-trigger values.',
+    'The radar parses as schema 1 TOML with only declared maps and fields, stable lower-case hyphenated identities, complete subject records, explicit non-empty owner, uncertainty, and return-trigger values, and any `card` naming a card that exists in `ki-agentic-systems`’ `knowledge/` graph when that skill sits beside the radar.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',

@@ -41,6 +41,8 @@ export const readSkillStats = (
     sources.map((source) => {
       const root = join(repository, dirname(source.path))
       const references = files(join(root, 'references'))
+      // A skill's knowledge graph sits in `knowledge/` (KNOWLEDGE-FOLDER); its cards count as supporting files.
+      const knowledge = files(join(root, 'knowledge'))
       const rubric = join(root, 'references/rubric.md')
       return [
         source.path,
@@ -49,7 +51,7 @@ export const readSkillStats = (
           codeBytes: files(join(root, 'scripts'))
             .filter((path) => CODE_EXTENSIONS.has(extname(path)))
             .reduce((sum, path) => sum + readFileSync(path).byteLength, 0),
-          references: references.length
+          references: references.length + knowledge.length
         }
       ]
     })

@@ -20,7 +20,7 @@ Line-by-line criteria for auditing ki-agentic-radar. Classifications are derived
 
 The TOML snapshot has one stable, attributable, mechanically valid representation.
 
-- **SCHEMA-1 [M] — snapshot schema and owners are valid** — The radar parses as schema 1 TOML with only declared maps and fields, stable lower-case hyphenated identities, complete subject records, and explicit non-empty owner, uncertainty, and return-trigger values. (standards-agentic-radar.md#snapshot-schema)
+- **SCHEMA-1 [M] — snapshot schema and owners are valid** — The radar parses as schema 1 TOML with only declared maps and fields, stable lower-case hyphenated identities, complete subject records, explicit non-empty owner, uncertainty, and return-trigger values, and any `card` naming a card that exists in `ki-agentic-systems`’ `knowledge/` graph when that skill sits beside the radar. (standards-agentic-radar.md#snapshot-schema)
   - _Remediation:_ diagnostic — Correct authored structure only after confirming intended subject identity, owner, uncertainty, and return trigger.
 
 ## EVIDENCE — Evidence quality

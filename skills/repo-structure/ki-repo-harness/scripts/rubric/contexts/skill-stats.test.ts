@@ -38,10 +38,13 @@ describe('stable skill-area stats', () => {
       writeFileSync(join(home, 'scripts/ignored.json'), 'ignored')
       writeFileSync(join(home, 'references/rubric.md'), '- **EXAMPLE-1 [J] — One**\n')
       writeFileSync(join(home, 'references/nested/guide.md'), 'guide')
+      mkdirSync(join(home, 'knowledge/subgraph'), { recursive: true })
+      writeFileSync(join(home, 'knowledge/_graph.md'), 'graph')
+      writeFileSync(join(home, 'knowledge/subgraph/subgraph.card.md'), 'card')
       symlinkSync(join(home, 'scripts/code.ts'), join(home, 'scripts/link.ts'))
       symlinkSync(join(home, 'references'), join(home, 'references/nested/link'))
       const stats = readSkillStats(root, sources)
-      expect(stats.get(path)).toEqual({ rules: 1, codeBytes: 6, references: 2 })
+      expect(stats.get(path)).toEqual({ rules: 1, codeBytes: 6, references: 4 })
       expect([...readSkillStats(root, [...sources].reverse())]).toEqual([...stats])
       const nodes = readSkillGraphNodes(sources).nodes
       const area = {
@@ -53,7 +56,7 @@ describe('stable skill-area stats', () => {
       }
       const before = buildSkillArea(area)(nodes) as { components: Record<string, unknown>[] }
       const after = buildSkillArea(area)(nodes, { stats }) as { components: Record<string, unknown>[] }
-      expect(after.components).toEqual(before.components.map((component) => ({ ...component, tag: 'R1 · CS · F2' })))
+      expect(after.components).toEqual(before.components.map((component) => ({ ...component, tag: 'R1 · CS · F4' })))
       expect(
         readSkillStats(root, [{ path: 'skills/absent/ki-missing/SKILL.md', content: '' }])
           .values()

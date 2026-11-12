@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type {
   AuditOutcome,
@@ -8,6 +9,8 @@ import type {
 } from '../../shared/rubric.ts'
 
 const RADAR_PATH = fileURLToPath(new URL('../../../references/radar.toml', import.meta.url))
+/** The sibling knowledge skill's graph, present in the canonical harness and absent from a lone installed copy. */
+const CARD_GRAPH_PATH = fileURLToPath(new URL('../../../../../keystone/ki-agentic-systems/knowledge', import.meta.url))
 const ID = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/
 const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/
 const CARD_ID = /^[a-z][a-z0-9-]*(?:\.[a-z0-9-]+)+$/
@@ -168,9 +171,28 @@ const classesFor = (ids: readonly string[], evidence: Table): readonly string[] 
     return typeof record?.evidence_class === 'string' ? [record.evidence_class] : []
   })
 
+/** The ids of the cards in a graph's `knowledge/` folder, read recursively from file names, which are the ids. */
+export const readCardIds = (graphPath: string): ReadonlySet<string> | undefined => {
+  if (!existsSync(graphPath)) return undefined
+  const ids = new Set<string>()
+  const walk = (path: string): void => {
+    for (const entry of readdirSync(path, { withFileTypes: true })) {
+      if (entry.isDirectory()) walk(join(path, entry.name))
+      else if (entry.isFile() && entry.name.endsWith('.md') && entry.name !== '_graph.md')
+        ids.add(entry.name.slice(0, -'.md'.length))
+    }
+  }
+  walk(graphPath)
+  return ids
+}
+
 const hasClass = (classes: readonly string[], value: string): boolean => classes.includes(value)
 
-export const inspectRadar = (source: string, today = new Date()): AgenticRadarRubricContext => {
+export const inspectRadar = (
+  source: string,
+  today = new Date(),
+  cardIds?: ReadonlySet<string>
+): AgenticRadarRubricContext => {
   const schemaOutcomes: AuditOutcome[] = []
   const evidenceOutcomes: AuditOutcome[] = []
   const classificationOutcomes: AuditOutcome[] = []
@@ -271,6 +293,8 @@ export const inspectRadar = (source: string, today = new Date()): AgenticRadarRu
     }
     if ('card' in record && (typeof record.card !== 'string' || !CARD_ID.test(record.card))) {
       schemaOutcomes.push(violation(`subjects.${id}.card must be a ki-agentic-systems card id, such as spec.mcp`))
+    } else if ('card' in record && cardIds && !cardIds.has(record.card as string)) {
+      schemaOutcomes.push(violation(`subjects.${id}.card names no card in ki-agentic-systems' knowledge/ graph`))
     }
     checkVocabulary(classificationOutcomes, record.subject_kind, `subjects.${id}.subject_kind`, SUBJECT_KINDS)
     checkVocabulary(classificationOutcomes, record.stewardship, `subjects.${id}.stewardship`, STEWARDSHIP)
@@ -419,7 +443,7 @@ export const inspectRadar = (source: string, today = new Date()): AgenticRadarRu
 export const createAgenticRadarSession = ({
   publication
 }: RubricContextOptions): RubricSession<AgenticRadarRubricContext> => {
-  const inspected = inspectRadar(readFileSync(RADAR_PATH, 'utf8'))
+  const inspected = inspectRadar(readFileSync(RADAR_PATH, 'utf8'), new Date(), readCardIds(CARD_GRAPH_PATH))
   const context: AgenticRadarRubricContext = { ...inspected, rubric: { publication } }
   return {
     subjects: [

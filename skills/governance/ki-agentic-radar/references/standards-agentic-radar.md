@@ -26,7 +26,7 @@ Every subject records `id`, `display_name`, `subject_kind`, `stewardship`, `spec
 - `ki_stance` is `adopt`, `trial`, `assess`, or `hold`.
 - `movement` is `new`, `inward`, `outward`, or `unchanged`; it describes the current review, not maturity.
 - `owner`, `uncertainty`, and `return_trigger` are explicit non-empty strings. An owner is accountable for the next review; it is not necessarily the subject steward.
-- `card` is optional: the id of the card in `ki-agentic-systems` that says what the subject is, such as `spec.mcp`. The radar says how mature a subject is, who has adopted it and the house stance, and never defines the subject again; a subject whose term has a card names it here, and one without a card yet leaves the field out.
+- `card` is optional: the id of the card in `ki-agentic-systems` that says what the subject is, such as `spec.mcp`. The radar says how mature a subject is, who has adopted it and the house stance, and never defines the subject again; a subject whose term has a card names it here, and one without a card yet leaves the field out. Where the harness holds `ki-agentic-systems` beside the radar, the named card must exist in its `knowledge/` graph, found in any of its subgraph folders.
 
 An `architecture-pattern`, `research-claim`, or `vendor-term` uses `not-applicable` specification maturity. It must not be described as a formal standard. An `organisation` can steward work but does not itself gain specification maturity.
 

@@ -1,5 +1,8 @@
 import { describe, expect, test } from 'bun:test'
-import { createAgenticRadarSession, inspectRadar } from './radar.ts'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { createAgenticRadarSession, inspectRadar, readCardIds } from './radar.ts'
 
 const TODAY = new Date('2026-09-14T12:00:00Z')
 
@@ -142,6 +145,28 @@ describe('agentic radar inspection', () => {
         message.includes('subjects.protocol-a.card must be a ki-agentic-systems card id')
       )
     ).toBeTrue()
+  })
+
+  test('finds card ids recursively in knowledge/ and rejects a card the graph lacks', () => {
+    const graph = mkdtempSync(join(tmpdir(), 'radar-cards-'))
+    try {
+      mkdirSync(join(graph, 'specs', 'protocol-a'), { recursive: true })
+      writeFileSync(join(graph, '_graph.md'), '---\nid: graph\n---\n')
+      writeFileSync(join(graph, 'specs', 'protocol-a', 'spec.protocol-a.md'), '---\nid: spec.protocol-a\n---\n')
+      const ids = readCardIds(graph)
+      expect([...(ids ?? [])]).toEqual(['spec.protocol-a'])
+      const withCard = (card: string) =>
+        populatedRadar.replace('display_name = "Protocol A"', `display_name = "Protocol A"\ncard = "${card}"`)
+      expect(violations(inspectRadar(withCard('spec.protocol-a'), TODAY, ids).schema.outcomes)).toEqual([])
+      expect(
+        violations(inspectRadar(withCard('spec.protocol-b'), TODAY, ids).schema.outcomes).some(({ message }) =>
+          message.includes('names no card')
+        )
+      ).toBeTrue()
+      expect(readCardIds(join(graph, 'absent'))).toBeUndefined()
+    } finally {
+      rmSync(graph, { recursive: true, force: true })
+    }
   })
 
   test('rejects malformed TOML and duplicate tables', () => {
