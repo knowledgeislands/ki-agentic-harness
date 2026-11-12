@@ -1,6 +1,6 @@
 ---
 type: standard@2026-11-09T21:36:32Z
-revised: 2026-11-09T22:09:53Z
+revised: 2026-11-12T19:48:48Z
 status: in force
 ---
 
@@ -184,6 +184,7 @@ This is an authoring presentation rule. Domain skills own a document's required 
 ### 4.6 Links
 
 - **Use descriptive, note-relative Markdown links in angle brackets as the house form**, including KB note content: `[ref](<references/My Detail.md>)`. Normalise Obsidian's `%20` space encoding to literal spaces inside the angle-bracket destination, structurally within links; preserve other necessary URI escapes and literal percent signs. `ki-repo-kb` owns internal-link resolution.
+- **A relative link never leaves its repository's root** (LINK-ROOT). Link to another repository by its web address on the default branch, such as `https://github.com/<owner>/<repo>/blob/main/<path>`, never by a path that climbs out of the repository, such as `../../other-repo/…`. Such a path resolves only where two checkouts happen to sit side by side, and breaks on GitHub and on every other machine.
 - **Keep supported wikilinks readable inside table cells.** Escape an existing wikilink alias separator as `\|`; an unescaped `|` is parsed as a column separator. GFM conversion uses a descriptive Markdown link instead.
 - **Write descriptive link text** — the words you'd skim for, not "click here" or a bare URL. `[the repo standard](…)`, not `[here](…)`.
 - **Refer to another skill by its `name`**, never by a file path — "the `ki-repo-kb` skill" — because a skill's location on disk is not stable, but its name is how it loads into the session.

@@ -70,6 +70,7 @@ Advisory sources inform local judgment conventions but are not specifications, m
 | FORMATS-STANDARD | A standard carries `type`, `revised` and `status`, and has four sections ending in Rules, with none of a change's parts; its decisions are kept in its skill's sources file. | 2026-11-09 | [standard format](standard-formats-standard.md) | In force |
 | FORMATS-CHANGE | A change document carries front matter with its status, inputs and outputs in place of `Base:` and `Touches:`, and has seven sections ending in Open, which empties before it is done. | 2026-11-09 | [change format](standard-formats-change.md) | In force |
 | FORMATS-SOURCES | A skill's sources file records its outside sources and its decisions, each decision given an id when it lands and kept when superseded. | 2026-11-09 | [sources format](standard-formats-sources.md) | In force |
+| LINK-ROOT | Kris's word, relayed by the Cairn summit's guardian: a relative link never leaves its repository's root; another repository is linked by its web address on the default branch. | 2026-11-12 | [links](standard-markdown.md#46-links) | In force |
 
 [Back to contents](#contents)
 
