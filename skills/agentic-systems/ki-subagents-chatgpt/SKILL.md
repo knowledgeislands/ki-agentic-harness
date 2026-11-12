@@ -17,7 +17,7 @@ argument-hint: 'audit | conform | educate | refresh | help'
 
 ## Runtime binding
 
-This adapter owns the Codex standalone TOML projection of a role defined by `ki-subagents`: required `name`, `description`, and `developer_instructions`; Codex-supported source configuration keys; candidate source discovery; and native mechanics. It owns no portable role judgment, and no definition: what a subagent is belongs to `ki-agentic-systems`, with OpenAI's own sense on its [subagent card](../../keystone/ki-agentic-systems/references/openai.subagent.md).
+This adapter owns the Codex standalone TOML projection of a role defined by `ki-subagents`: required `name`, `description`, and `developer_instructions`; Codex-supported source configuration keys; candidate source discovery; and native mechanics. It owns no portable role judgment, and no definition: what a subagent is belongs to `ki-agentic-systems`, with OpenAI's own sense on its [subagent card](../../keystone/ki-agentic-systems/knowledge/vendors/openai/openai.subagent.md).
 
 Codex reads custom agent files from `.codex/agents/` or `~/.codex/agents/`, but the Harness host has no Codex subagent capability/path or generic publisher. This adapter may inspect an authorised candidate source payload only; publication, installation, activation, effective model/profile/MCP state, and execution are unavailable and must be routed to a future host/runtime integration.
 

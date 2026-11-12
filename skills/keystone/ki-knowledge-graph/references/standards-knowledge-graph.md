@@ -2,7 +2,7 @@
 
 A knowledge graph is cards about things, joined by typed links, kept in a repository. It serves any use: a skill's body of knowledge, an island's settled knowledge, or material being curated from captures. Curation is one use, and the relationships geared to it are some of the graph's, not its limit (KG-GENERAL, Kris, 12 November 2026). This standard sets what every graph shares: its root definition, its cards and links, its subgraphs and how graphs layer; it then sets the curation method for the graphs that are built from captures.
 
-The standard holds the method, and a graph keeps the things that are, under SKILLS-OVER-GRAPH (Kris, 7 November 2026). The concepts the standard relies on, such as Semantic Markdown, layered graphs and progressive disclosure, are cards in the skill's own graph, which [its root definition](_graph.md) opens; the standard follows those cards rather than restating them (KG-SELF).
+The standard holds the method, and a graph keeps the things that are, under SKILLS-OVER-GRAPH (Kris, 7 November 2026). The concepts the standard relies on, such as Semantic Markdown, layered graphs and progressive disclosure, are cards in the skill's own graph, which [its root definition](../knowledge/_graph.md) opens; the standard follows those cards rather than restating them (KG-SELF).
 
 ## Contents
 
@@ -17,12 +17,13 @@ The standard holds the method, and a graph keeps the things that are, under SKIL
 
 ## The graph
 
-Each knowledge graph sits in one root folder, which holds its root definition and its cards.
+Each knowledge graph sits in one root folder, which holds its root definition and its cards. A skill that holds a graph keeps it in `knowledge/` at the skill's top level, outside `references/`, and that folder is the graph's root (KNOWLEDGE-FOLDER).
 
 - **Flat by default.** A graph needs no folders: its cards may sit as one flat list in the root folder, like rows in a table. Folders are an option for a large graph, never a requirement, and how a graph is seen is the visualisation's job, not its folders' (KG-FLAT).
-- **Identity by id.** A card's identity is its id, never its folder, so moving a graph, or a card between folders, breaks no link. An id is short and readable: lowercase letters, digits and hyphens, never a UUID. Within a graph, every id is unique.
+- **Folders follow subgraphs.** A graph with folders has one for each subgraph its root definition declares, and the root definition names it. Folders for related subgraphs may sit together under one, as a skill's vendor subgraphs do under `knowledge/vendors/`, and a large subgraph may hold a folder for each part, as `knowledge/specs/mcp/` does; a card keeps its id as its file name wherever it sits, as `knowledge/industry/industry.session.md` (GRAPH-FOLDERS).
+- **Identity by id.** A card's identity is its id, never its folder, so moving a graph, or a card between folders, breaks no link by id: front-matter links, keyed by id, never change, and only the relative paths of Markdown links are rewritten. An id is short and readable: lowercase letters, digits and hyphens, never a UUID. Within a graph, every id is unique.
 - **A card's file is its id.** The file is `<id>.md`, so file, link and id are one name; the card type stays in the front matter, not in the name (FILE-NAME). Where a graph has subgraphs, the id carries the subgraph before a dot, as `industry.session`, `anthropic.session` and `spec.mcp`.
-- **Other files.** A root folder may also hold files that are not cards, such as a skill's standards and sources beside its graph. A file is a card only when its front matter carries an `id` equal to its file name; the root definition says what else sits beside the cards.
+- **Other files.** A skill's `knowledge/` holds only its graph's root definition and cards; the skill's standards, sources, rubric, proposals and any other file that is not a card stay in `references/` (KNOWLEDGE-FOLDER). Another root folder, such as an island's, may also hold files that are not cards. A file is a card only when its front matter carries an `id` equal to its file name; the root definition says what else sits beside the cards.
 
 [Back to contents](#contents)
 
@@ -38,7 +39,7 @@ Its front matter carries `id`, `title`, `type: graph` and `status`, with any fur
 | **Link vocabulary** | The vocabularies its link predicates are drawn from, each prefix with its namespace, and the predicates in use. SKOS, the W3C standard for vocabularies, is the default; another established vocabulary, such as Dublin Core terms, may be declared where SKOS has no term; the `ki:` prefix is only for what no declared vocabulary has (LINK-VOCAB). |
 | **Properties** | Every front-matter property cards carry, what it means, its values and which card types require it. |
 | **Constraints** | The rules a card must meet beyond this standard, such as an order of reading or a word kept off every card. |
-| **Subgraphs** | Each subgraph, its id prefix and its subject; a graph with no subgraphs says so. |
+| **Subgraphs** | Each subgraph, its id prefix and its subject, and its folder where the graph has folders; a graph with no subgraphs says so. |
 | **Extent and limitations** | What the graph covers and does not, what sits in the root folder beside the cards, and the cards still pending, each named by the id it will take. |
 
 A section may say "None" but is never left out. The root definition holds declarations, not knowledge: a concept the graph is about is a card of its own, and the root definition links to the cards a reader should start from.

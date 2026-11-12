@@ -1,0 +1,149 @@
+---
+id: ki-agentic-systems
+title: The vocabulary of agentic systems
+type: graph
+status: agreed
+territory: knowledge-islands
+island: ki-agentic-harness
+origin: Cairn summit change 06, KG-ROOT, ROOT-FORM a) and KG-SUBGRAPHS, and change 22, SPEC-CARDS (Kris, 12 November 2026)
+---
+
+# The vocabulary of agentic systems
+
+This graph gives every Knowledge Islands session the same words for agentic systems, in the industry's sense, so a skill or standard links a card here rather than defining a term again. The industry's terms form one subgraph, read in order from the [model][industry.model]; each specification a term rests on has cards of its own; and each major vendor's own words form a subgraph whose cards link to the industry's terms, so how a vendor differs from the industry, or from another vendor, is read from those links.
+
+## Contents
+
+- [Card types](#card-types)
+- [Link vocabulary](#link-vocabulary)
+- [Properties](#properties)
+- [Constraints](#constraints)
+- [Subgraphs](#subgraphs)
+- [Extent and limitations](#extent-and-limitations)
+
+## Card types
+
+| Type | What a card of this type is about | Further properties required |
+| --- | --- | --- |
+| `graph` | This graph's root definition: this card | None |
+| `term` | A term in the industry's sense: what it achieves first, then what it is and how it is built, then where our conventions map onto it | None |
+| `specification` | A specification a term rests on, or a part of one that a card links to | None |
+| `vendor-term` | One vendor's own word for a term, in one sense, with its current examples and sources | `vendor` |
+| `vendor-name` | A vendor's product name used in more than one sense, linking once for each | `vendor` |
+| `resource` | A resource kept outside the cards, such as a diagram, that other cards may link to directly: what it shows and where it and its source live | None |
+
+## Link vocabulary
+
+| Prefix | Vocabulary | Namespace | Predicates in use |
+| --- | --- | --- | --- |
+| `skos:` | SKOS, the default | `http://www.w3.org/2004/02/skos/core#` | `skos:exactMatch`, `skos:closeMatch`, `skos:broadMatch`, `skos:relatedMatch`, `skos:broader`, `skos:related` |
+| `dcterms:` | Dublin Core terms, where SKOS has no term for a whole and its parts, for conformance, or for what a resource is about | `http://purl.org/dc/terms/` | `dcterms:hasPart`, `dcterms:isPartOf`, `dcterms:conformsTo`, `dcterms:subject` |
+| `ki:` | Knowledge Islands, for what neither has | Not yet published | `ki:runs`, `ki:run-of`, `ki:run-by`, `ki:extends` |
+
+A predicate reads from the card that holds it to its target. A vendor card whose word means the industry's term exactly uses `skos:exactMatch`, nearly `skos:closeMatch`; one whose word is narrower than the term, as a product is, uses `skos:broadMatch`, saying the target is broader; and one whose word is only related, as a part of the thing or something easily mistaken for it, uses `skos:relatedMatch`.
+
+## Properties
+
+| Property | Meaning | Values | Required for |
+| --- | --- | --- | --- |
+| `id` | The card's identity and file name | `<subgraph>.<name>`, or for a part of a specification `<specification id>.<part>` | Every card |
+| `title` | The thing's name; a vendor card's title names the vendor in brackets | Text | Every card |
+| `type` | The card's type | A card type above | Every card |
+| `status` | Whether the card is adopted | `proposal`, `future-concept` or `agreed` | Every card |
+| `territory` | The territory the knowledge belongs to | `knowledge-islands` | Every card |
+| `island` | The island that owns the knowledge | `ki-agentic-harness` | Every card |
+| `vendor` | The vendor whose word the card holds | `Anthropic`, `OpenAI`, `Google`, `Microsoft`, `Orca` or `Zed Industries` | `vendor-term`, `vendor-name` |
+| `origin` | The decisions the card was written from, in one line | Text | Every card |
+| `links` | Typed links, keyed by the target card's id | A predicate from the vocabulary above | Optional |
+
+## Constraints
+
+- **The industry's word wins** (INDUSTRY-FIRST): a term card takes the industry's meaning, and says where a convention of ours maps onto it.
+- **Anthropic and OpenAI lead** (LEADERS): where vendors differ, a term card follows Anthropic's and OpenAI's usage, and their subgraphs are read first.
+- **Purpose first** (PURPOSE-FIRST): a term or specification card says first what the thing achieves, then what it is and how it is built.
+- **In order** (CARD-ORDER): each term card uses only words defined on the cards before it, and ends by linking the next.
+- **Senses are links** (KG-SUBGRAPHS): a term card never lists vendors' words; each vendor card links to the term it matches, once for each sense of its word.
+- **Never a bare "host"** (HOST-SENSES): write agent host for the application or process that runs harnesses and owns their sessions, and machine for the computer.
+- **"Task" is no term here** (CARD-SESSION): it means a session, delegated work and scheduled work by vendor and surface, so it appears only as a vendor's word.
+- **Specifications are cited, not restated** (SPEC-CARDS): a term card links the specification card it rests on, or names the pending card's id until it is written; each part of a specification that a card links to is a card of its own (KG-GRAIN).
+
+## Subgraphs
+
+| Subgraph | Id prefix | Folder | Subject | Cards |
+| --- | --- | --- | --- | --- |
+| Industry | `industry.` | `industry/` | The industry's terms, in reading order | [model][industry.model], [agent harness][industry.agent-harness], [agent][industry.agent], [session][industry.session], [subagent][industry.subagent], [skill][industry.skill], [environment][industry.environment], [machine][industry.machine], [agent host][industry.agent-host], [client][industry.client] |
+| Specifications | `spec.` | `specs/`, a folder for each specification, as `specs/mcp/` | The specifications the terms rest on | [Agent Skills][spec.agent-skills], with [progressive disclosure][spec.agent-skills.progressive-disclosure] |
+| Anthropic | `anthropic.` | `vendors/anthropic/` | Anthropic's own words | [Claude][anthropic.claude], [Claude Code][anthropic.claude-code], [model][anthropic.model], [agentic harness][anthropic.agentic-harness], [agentic coding tool][anthropic.agentic-coding-tool], [session][anthropic.session], [conversation][anthropic.conversation], [subagent][anthropic.subagent], [agent team][anthropic.agent-team], [skill][anthropic.skill] |
+| OpenAI | `openai.` | `vendors/openai/` | OpenAI's own words | [Codex][openai.codex], [ChatGPT][openai.chatgpt], [model][openai.model], [harness][openai.harness], [agent][openai.agent], [task][openai.task], [chat][openai.chat], [thread][openai.thread], [subagent][openai.subagent], [skill][openai.skill], [plugin][openai.plugin] |
+| Google | `google.` | `vendors/google/` | Google's own words | [Gemini][google.gemini], [model][google.model], [agent harness][google.agent-harness], [agent][google.agent], [conversation][google.conversation], [session][google.session], [subagent][google.subagent], [remote subagent][google.remote-subagent], [skill][google.skill] |
+| Orca | `orca.` | `vendors/orca/` | Orca's own words | [Orca runtime][orca.runtime], [Orca app][orca.app] |
+| Zed Industries | `zed.` | `vendors/zed/` | Zed Industries' own words | [Zed][zed.zed] |
+| Diagrams | `diagram.` | `diagrams/` | Diagrams of the terms, as resources | [agentic terms by example][diagram.agentic-terms-by-example], [agentic standards and channels][diagram.agentic-standards] (proposal) |
+| Microsoft | `microsoft.` | `vendors/microsoft/` | Microsoft's and GitHub's own words | [Copilot][microsoft.copilot], [model][microsoft.model], [agent harness][microsoft.agent-harness], [agent][microsoft.agent], [agent session][microsoft.agent-session], [chat][microsoft.chat], [subagent][microsoft.subagent], [agent skill][microsoft.agent-skill] |
+
+## Extent and limitations
+
+- **What it covers:** ten terms, from the model to the client, the Agent Skills specification, the four leading vendors' words for those terms as their documentation used them on 12 November 2026, Orca's and Zed Industries' words, and two diagrams. Other vendors are added where they matter (VENDORS).
+- **Where the cards sit:** the root folder is the skill's `knowledge/` folder, which holds this root definition and a folder for each subgraph, as the table above names, and nothing but the graph (KNOWLEDGE-FOLDER, GRAPH-FOLDERS). A card's folder is never part of its identity, so links in front matter are keyed by id alone.
+- **Beside the graph:** the skill's `references/` folder holds [the sources](../references/sources.md), with every vendor source and the date it was last checked, and the decisions behind the cards, and the [naming proposal](../references/naming-proposal.md); neither is a card.
+- **Refreshed monthly** (TERMS-REFRESH): the vendor cards' examples date quickly, as products are renamed, merged and closed.
+- **Pending terms,** in this order: `industry.channel`, agent team, tool, instruction file and plugin, and the system's own terms: rig, actor, title, role, package, worker, seat, and the KI harness's new name. A vendor card that would link to one gains that link when the card is written.
+- **Resources outside the graph's folder:** a `resource` card points to its diagram in the harness's `docs/diagrams/`, where the living-diagram manifest keeps its question, sources, staleness trigger and regeneration prompt; the card holds what it shows, not the image (DIAGRAM-RESOURCE).
+- **Pending specifications:** `spec.mcp`, the Model Context Protocol; `spec.acp`, the Agent Client Protocol; `spec.ahp`, the Agent Host Protocol; and `spec.a2a`, Agent2Agent.
+- **Due a vocabulary review:** the `ki:` predicates, until the `ki:` namespace is published.
+
+[industry.model]: ./industry/industry.model.md
+[industry.agent-harness]: ./industry/industry.agent-harness.md
+[industry.agent]: ./industry/industry.agent.md
+[industry.session]: ./industry/industry.session.md
+[industry.subagent]: ./industry/industry.subagent.md
+[industry.skill]: ./industry/industry.skill.md
+[industry.environment]: ./industry/industry.environment.md
+[industry.machine]: ./industry/industry.machine.md
+[industry.agent-host]: ./industry/industry.agent-host.md
+[industry.client]: ./industry/industry.client.md
+[orca.runtime]: ./vendors/orca/orca.runtime.md
+[orca.app]: ./vendors/orca/orca.app.md
+[zed.zed]: ./vendors/zed/zed.zed.md
+[diagram.agentic-terms-by-example]: ./diagrams/diagram.agentic-terms-by-example.md
+[diagram.agentic-standards]: ./diagrams/diagram.agentic-standards.md
+[spec.agent-skills]: ./specs/agent-skills/spec.agent-skills.md
+[spec.agent-skills.progressive-disclosure]: ./specs/agent-skills/spec.agent-skills.progressive-disclosure.md
+[anthropic.claude]: ./vendors/anthropic/anthropic.claude.md
+[anthropic.claude-code]: ./vendors/anthropic/anthropic.claude-code.md
+[anthropic.model]: ./vendors/anthropic/anthropic.model.md
+[anthropic.agentic-harness]: ./vendors/anthropic/anthropic.agentic-harness.md
+[anthropic.agentic-coding-tool]: ./vendors/anthropic/anthropic.agentic-coding-tool.md
+[anthropic.session]: ./vendors/anthropic/anthropic.session.md
+[anthropic.conversation]: ./vendors/anthropic/anthropic.conversation.md
+[anthropic.subagent]: ./vendors/anthropic/anthropic.subagent.md
+[anthropic.agent-team]: ./vendors/anthropic/anthropic.agent-team.md
+[anthropic.skill]: ./vendors/anthropic/anthropic.skill.md
+[openai.codex]: ./vendors/openai/openai.codex.md
+[openai.chatgpt]: ./vendors/openai/openai.chatgpt.md
+[openai.model]: ./vendors/openai/openai.model.md
+[openai.harness]: ./vendors/openai/openai.harness.md
+[openai.agent]: ./vendors/openai/openai.agent.md
+[openai.task]: ./vendors/openai/openai.task.md
+[openai.chat]: ./vendors/openai/openai.chat.md
+[openai.thread]: ./vendors/openai/openai.thread.md
+[openai.subagent]: ./vendors/openai/openai.subagent.md
+[openai.skill]: ./vendors/openai/openai.skill.md
+[openai.plugin]: ./vendors/openai/openai.plugin.md
+[google.gemini]: ./vendors/google/google.gemini.md
+[google.model]: ./vendors/google/google.model.md
+[google.agent-harness]: ./vendors/google/google.agent-harness.md
+[google.agent]: ./vendors/google/google.agent.md
+[google.conversation]: ./vendors/google/google.conversation.md
+[google.session]: ./vendors/google/google.session.md
+[google.subagent]: ./vendors/google/google.subagent.md
+[google.remote-subagent]: ./vendors/google/google.remote-subagent.md
+[google.skill]: ./vendors/google/google.skill.md
+[microsoft.copilot]: ./vendors/microsoft/microsoft.copilot.md
+[microsoft.model]: ./vendors/microsoft/microsoft.model.md
+[microsoft.agent-harness]: ./vendors/microsoft/microsoft.agent-harness.md
+[microsoft.agent]: ./vendors/microsoft/microsoft.agent.md
+[microsoft.agent-session]: ./vendors/microsoft/microsoft.agent-session.md
+[microsoft.chat]: ./vendors/microsoft/microsoft.chat.md
+[microsoft.subagent]: ./vendors/microsoft/microsoft.subagent.md
+[microsoft.agent-skill]: ./vendors/microsoft/microsoft.agent-skill.md

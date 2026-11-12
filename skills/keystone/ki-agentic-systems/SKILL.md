@@ -14,7 +14,7 @@ argument-hint: 'educate <term> | help | refresh'
 
 # Knowledge Islands agentic systems
 
-This is a knowledge skill: it equips a session with the vocabulary of agentic systems and audits or conforms nothing. It is the one canonical source for agentic terms in Knowledge Islands. Its cards form a knowledge graph in the Semantic Markdown format the `ki-knowledge-graph` skill defines, opened by its root definition, [`_graph.md`](references/_graph.md), which declares the card types, link vocabulary, properties, constraints and subgraphs. The decisions behind its shape are in [the sources](references/sources.md#3-decisions).
+This is a knowledge skill: it equips a session with the vocabulary of agentic systems and audits or conforms nothing. It is the one canonical source for agentic terms in Knowledge Islands. Its cards form a knowledge graph in the Semantic Markdown format the `ki-knowledge-graph` skill defines, opened by its root definition, [`_graph.md`](knowledge/_graph.md), which declares the card types, link vocabulary, properties, constraints and subgraphs. The decisions behind its shape are in [the sources](references/sources.md#3-decisions).
 
 ## Rules
 
@@ -28,57 +28,57 @@ This is a knowledge skill: it equips a session with the vocabulary of agentic sy
 
 ## The cards
 
-The cards sit flat in `references/`, each file named by its id, `<id>.md`, and each id carries its subgraph, as `industry.session` and `openai.thread` do (FILE-NAME). [`_graph.md`](references/_graph.md) lists every card by subgraph.
+The cards sit in `knowledge/`, in a folder for each subgraph: `industry/`, `specs/` with a folder for each specification, `vendors/` with a folder for each vendor, and `diagrams/` (KNOWLEDGE-FOLDER, GRAPH-FOLDERS). Each file is named by its id, `<id>.md`, and each id carries its subgraph, as `industry.session` and `openai.thread` do (FILE-NAME). [`_graph.md`](knowledge/_graph.md) lists every card by subgraph.
 
 ### Industry cards
 
 Read them in order:
 
-1. [Model](references/industry.model.md): the LLM, which takes text and images in, gives text out, and acts on nothing by itself.
-2. [Agent harness](references/industry.agent-harness.md): the software that turns a model into an agent, its loop, tools and context handling.
-3. [Agent](references/industry.agent.md): a model working through an agent harness, what you deal with when work gets done.
-4. [Session](references/industry.session.md): one run of an agent, a conversation with its own context, id and folder, made of turns and of threads.
-5. [Subagent](references/industry.subagent.md): an agent subordinate to another, started by it to do part of its work in a thread of its own, returning its result to it.
-6. [Skill](references/industry.skill.md): a common way to extend any agent harness with knowledge and procedures, loaded by progressive disclosure.
-7. [Environment](references/industry.environment.md): where an agent's work runs, a whole machine or a container or sandbox inside one; local, remote or cloud.
-8. [Machine](references/industry.machine.md): the computer, physical or virtual, that environments run on.
-9. [Agent host](references/industry.agent-host.md): the application or process that runs agent harnesses and owns their sessions, independently of clients.
-10. [Client](references/industry.client.md): a window onto a session an agent host owns.
+1. [Model](knowledge/industry/industry.model.md): the LLM, which takes text and images in, gives text out, and acts on nothing by itself.
+2. [Agent harness](knowledge/industry/industry.agent-harness.md): the software that turns a model into an agent, its loop, tools and context handling.
+3. [Agent](knowledge/industry/industry.agent.md): a model working through an agent harness, what you deal with when work gets done.
+4. [Session](knowledge/industry/industry.session.md): one run of an agent, a conversation with its own context, id and folder, made of turns and of threads.
+5. [Subagent](knowledge/industry/industry.subagent.md): an agent subordinate to another, started by it to do part of its work in a thread of its own, returning its result to it.
+6. [Skill](knowledge/industry/industry.skill.md): a common way to extend any agent harness with knowledge and procedures, loaded by progressive disclosure.
+7. [Environment](knowledge/industry/industry.environment.md): where an agent's work runs, a whole machine or a container or sandbox inside one; local, remote or cloud.
+8. [Machine](knowledge/industry/industry.machine.md): the computer, physical or virtual, that environments run on.
+9. [Agent host](knowledge/industry/industry.agent-host.md): the application or process that runs agent harnesses and owns their sessions, independently of clients.
+10. [Client](knowledge/industry/industry.client.md): a window onto a session an agent host owns.
 
 Pending, in this order and not yet defined here:
 
-1. Channel, drafted as a [proposal](references/industry.channel.md) under CARD-CHANNEL's option A, the industry's words; then integration and session-to-session messaging, under a card for the ways into a session.
-2. The agent kinds beside the subagent, drafted as proposals: the [peer agent](references/industry.peer-agent.md) and the [remote agent](references/industry.remote-agent.md).
+1. Channel, drafted as a [proposal](knowledge/industry/industry.channel.md) under CARD-CHANNEL's option A, the industry's words; then integration and session-to-session messaging, under a card for the ways into a session.
+2. The agent kinds beside the subagent, drafted as proposals: the [peer agent](knowledge/industry/industry.peer-agent.md) and the [remote agent](knowledge/industry/industry.remote-agent.md).
 3. Agent team, tool, instruction file and plugin.
 4. The system's own terms: rig, actor, title, role, package, worker, seat, and the KI harness's new name, with a [naming proposal](references/naming-proposal.md) for Kris's review.
 
 ### Specification cards
 
-- [The Agent Skills specification](references/spec.agent-skills.md), with its part [progressive disclosure](references/spec.agent-skills.progressive-disclosure.md).
+- [The Agent Skills specification](knowledge/specs/agent-skills/spec.agent-skills.md), with its part [progressive disclosure](knowledge/specs/agent-skills/spec.agent-skills.progressive-disclosure.md).
 
 Proposals, drafted for Kris's decision in the Cairn summit's change 22 and not yet agreed, so no agreed card links them yet:
 
-- [The Model Context Protocol](references/spec.mcp.md), with its parts [MCP host](references/spec.mcp.host.md), [MCP client](references/spec.mcp.client.md), [MCP server](references/spec.mcp.server.md), [tools](references/spec.mcp.tools.md) and [transports](references/spec.mcp.transports.md).
-- [The Agent Client Protocol](references/spec.acp.md), with its [client](references/spec.acp.client.md), [agent](references/spec.acp.agent.md) and [session](references/spec.acp.session.md).
-- [The Agent Host Protocol](references/spec.ahp.md), with its [agent host](references/spec.ahp.agent-host.md), [client](references/spec.ahp.client.md), [session](references/spec.ahp.session.md) and [channels](references/spec.ahp.channels.md).
-- [Agent2Agent](references/spec.a2a.md), with its [client](references/spec.a2a.client.md), [remote agent](references/spec.a2a.remote-agent.md), [Agent Card](references/spec.a2a.agent-card.md) and [task](references/spec.a2a.task.md).
+- [The Model Context Protocol](knowledge/specs/mcp/spec.mcp.md), with its parts [MCP host](knowledge/specs/mcp/spec.mcp.host.md), [MCP client](knowledge/specs/mcp/spec.mcp.client.md), [MCP server](knowledge/specs/mcp/spec.mcp.server.md), [tools](knowledge/specs/mcp/spec.mcp.tools.md) and [transports](knowledge/specs/mcp/spec.mcp.transports.md).
+- [The Agent Client Protocol](knowledge/specs/acp/spec.acp.md), with its [client](knowledge/specs/acp/spec.acp.client.md), [agent](knowledge/specs/acp/spec.acp.agent.md) and [session](knowledge/specs/acp/spec.acp.session.md).
+- [The Agent Host Protocol](knowledge/specs/ahp/spec.ahp.md), with its [agent host](knowledge/specs/ahp/spec.ahp.agent-host.md), [client](knowledge/specs/ahp/spec.ahp.client.md), [session](knowledge/specs/ahp/spec.ahp.session.md) and [channels](knowledge/specs/ahp/spec.ahp.channels.md).
+- [Agent2Agent](knowledge/specs/a2a/spec.a2a.md), with its [client](knowledge/specs/a2a/spec.a2a.client.md), [remote agent](knowledge/specs/a2a/spec.a2a.remote-agent.md), [Agent Card](knowledge/specs/a2a/spec.a2a.agent-card.md) and [task](knowledge/specs/a2a/spec.a2a.task.md).
 
 ### Vendor subgraphs
 
-- **Anthropic** (`anthropic.`) and **OpenAI** (`openai.`): their names [Claude](references/anthropic.claude.md), [Claude Code](references/anthropic.claude-code.md), [Codex](references/openai.codex.md) and [ChatGPT](references/openai.chatgpt.md), each used in more than one sense, and their words for each term, from Anthropic's [model](references/anthropic.model.md) to its [skill](references/anthropic.skill.md), and OpenAI's [task](references/openai.task.md), [chat](references/openai.chat.md) and [thread](references/openai.thread.md) for a session and its parts.
-- **Google** (`google.`): [Gemini](references/google.gemini.md), and its words, among them [conversation](references/google.conversation.md) and [session](references/google.session.md).
-- **Microsoft** (`microsoft.`): [Copilot](references/microsoft.copilot.md), and its and GitHub's words, among them [agent harness](references/microsoft.agent-harness.md) and [agent session](references/microsoft.agent-session.md).
-- **Orca** (`orca.`) and **Zed Industries** (`zed.`): Orca's [runtime](references/orca.runtime.md), an agent host, and its [app](references/orca.app.md), client and agent host in one; and [Zed](references/zed.zed.md), a client through ACP.
+- **Anthropic** (`anthropic.`) and **OpenAI** (`openai.`): their names [Claude](knowledge/vendors/anthropic/anthropic.claude.md), [Claude Code](knowledge/vendors/anthropic/anthropic.claude-code.md), [Codex](knowledge/vendors/openai/openai.codex.md) and [ChatGPT](knowledge/vendors/openai/openai.chatgpt.md), each used in more than one sense, and their words for each term, from Anthropic's [model](knowledge/vendors/anthropic/anthropic.model.md) to its [skill](knowledge/vendors/anthropic/anthropic.skill.md), and OpenAI's [task](knowledge/vendors/openai/openai.task.md), [chat](knowledge/vendors/openai/openai.chat.md) and [thread](knowledge/vendors/openai/openai.thread.md) for a session and its parts.
+- **Google** (`google.`): [Gemini](knowledge/vendors/google/google.gemini.md), and its words, among them [conversation](knowledge/vendors/google/google.conversation.md) and [session](knowledge/vendors/google/google.session.md).
+- **Microsoft** (`microsoft.`): [Copilot](knowledge/vendors/microsoft/microsoft.copilot.md), and its and GitHub's words, among them [agent harness](knowledge/vendors/microsoft/microsoft.agent-harness.md) and [agent session](knowledge/vendors/microsoft/microsoft.agent-session.md).
+- **Orca** (`orca.`) and **Zed Industries** (`zed.`): Orca's [runtime](knowledge/vendors/orca/orca.runtime.md), an agent host, and its [app](knowledge/vendors/orca/orca.app.md), client and agent host in one; and [Zed](knowledge/vendors/zed/zed.zed.md), a client through ACP.
 
 ### Diagrams
 
-Resource cards (`diagram.`) point to diagrams of the terms, kept with the harness's living diagrams: [agentic terms by example](references/diagram.agentic-terms-by-example.md), an instance diagram from machine to client, and [agentic standards and channels](references/diagram.agentic-standards.md), a proposal until the channel card is settled.
+Resource cards (`diagram.`) point to diagrams of the terms, kept with the harness's living diagrams: [agentic terms by example](knowledge/diagrams/diagram.agentic-terms-by-example.md), an instance diagram from machine to client, and [agentic standards and channels](knowledge/diagrams/diagram.agentic-standards.md), a proposal until the channel card is settled.
 
 ## Adding a card
 
 A card's wording is settled first in the Cairn summit's knowledge-skills change, by Kris's decision. Only then is it written here, and once it is, it leaves that change.
 
-1. **Write the card** as `references/<id>.md`, beside the others, in the `ki-knowledge-graph` card format and with the properties [`_graph.md`](references/_graph.md) requires of its type. A term card gives its purpose, then what the thing is and how it is built, the specifications it rests on, our conventions, and a link to the next card. A vendor card gives the vendor's word and its sense, its current examples, and its sources, and links to the industry's term with the predicate `_graph.md` sets for its match.
+1. **Write the card** as `<id>.md` in its subgraph's folder under `knowledge/`, in the `ki-knowledge-graph` card format and with the properties [`_graph.md`](knowledge/_graph.md) requires of its type. A term card gives its purpose, then what the thing is and how it is built, the specifications it rests on, our conventions, and a link to the next card. A vendor card gives the vendor's word and its sense, its current examples, and its sources, and links to the industry's term with the predicate `_graph.md` sets for its match.
 2. **Use only words already defined** on earlier term cards, and link the cards it builds on. Where a term rests on a specification, link the specification card, or a card for the part it rests on, or name the pending card's id until it is written.
 3. **Evidence it:** add each new source to [the sources](references/sources.md) with the date it was checked, and the decision to its Decisions.
 4. **Place it:** list it under its subgraph in `_graph.md` and here, move it out of Pending, point the previous term card's link at it, and replace any pending id that waited for it.

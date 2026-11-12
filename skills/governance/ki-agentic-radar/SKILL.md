@@ -17,7 +17,7 @@ This governance skill maintains a portable, reviewable snapshot of agentic subje
 
 Read [the agentic-radar standard](references/standards-agentic-radar.md) before assessing or changing the snapshot. [The generated rubric](references/rubric.md) publishes its criteria, [the radar snapshot](references/radar.toml) holds structured state, and [the tracked sources](references/sources.md) govern refresh inputs.
 
-What each subject is belongs to `ki-agentic-systems`, whose card the subject names in its `card` field, such as the [Model Context Protocol](../../keystone/ki-agentic-systems/references/spec.mcp.md); the radar never defines it again. The radar does not choose an agent architecture, install integrations, mutate runtime configuration, or treat a protocol version, standards-body incubation, package count, or vendor claim as interoperability proof. `ki-model-radar` owns models and routes, `ki-pulse` owns public-signal discovery, capability REFRESH modes own capability-specific policy, and `ki-next` owns downstream work capture.
+What each subject is belongs to `ki-agentic-systems`, whose card the subject names in its `card` field, such as the [Model Context Protocol](../../keystone/ki-agentic-systems/knowledge/specs/mcp/spec.mcp.md); the radar never defines it again. The radar does not choose an agent architecture, install integrations, mutate runtime configuration, or treat a protocol version, standards-body incubation, package count, or vendor claim as interoperability proof. `ki-model-radar` owns models and routes, `ki-pulse` owns public-signal discovery, capability REFRESH modes own capability-specific policy, and `ki-next` owns downstream work capture.
 
 ## Operating modes
 

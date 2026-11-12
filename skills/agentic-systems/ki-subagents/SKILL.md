@@ -15,7 +15,7 @@ argument-hint: 'audit | conform | educate | refresh | help'
 
 ## Position
 
-What a subagent is, in the industry's sense, is `ki-agentic-systems`' [subagent card](../../keystone/ki-agentic-systems/references/industry.subagent.md); this skill says how to define a role one takes and run it, the practice rather than the vocabulary.
+What a subagent is, in the industry's sense, is `ki-agentic-systems`' [subagent card](../../keystone/ki-agentic-systems/knowledge/industry/industry.subagent.md); this skill says how to define a role one takes and run it, the practice rather than the vocabulary.
 
 This is the runtime-neutral parent for a subagent role. It owns the role's stable identity, selection purpose, core instructions, lane, grounding, hand-offs, orchestration intent, and evidence that selecting the role improves an outcome. It owns no runtime field, file extension, path, installation, activation, effective setting, or execution claim.
 

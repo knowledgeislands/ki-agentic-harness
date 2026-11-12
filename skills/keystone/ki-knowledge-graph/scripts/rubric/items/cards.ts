@@ -52,10 +52,10 @@ export const CARD = {
       code: 'CARD-5',
       title: 'a card is named by its readable id',
       description:
-        'A card file is `<id>.md`, its id is short and readable, never a UUID, carries its subgraph before a dot where the graph has subgraphs, and is unique in the graph; its folder is never part of its identity.',
+        'A card file is `<id>.md`, its id is short and readable, never a UUID, carries its subgraph before a dot where the graph has subgraphs, and is unique in the graph; its folder is never part of its identity, and where the graph has folders the card sits in its subgraph’s folder.',
       sources: ['standards-knowledge-graph.md#the-graph'],
       judgment: judgment(
-        'Is every card file named from its front-matter id, is each id readable, unique and prefixed with its subgraph where the graph has subgraphs, and does no link depend on a folder?'
+        'Is every card file named from its front-matter id, is each id readable, unique and prefixed with its subgraph where the graph has subgraphs, does no front-matter link depend on a folder, and where the graph has folders, does each card sit in the folder of its subgraph?'
       )
     },
     {

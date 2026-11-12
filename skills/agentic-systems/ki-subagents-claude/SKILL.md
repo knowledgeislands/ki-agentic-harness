@@ -15,7 +15,7 @@ argument-hint: 'audit <agent-or-dir> | conform <agent> | help | educate <descrip
 
 # Claude Code subagent projection
 
-`ki-subagents` owns the portable semantic contract, and `ki-agentic-systems` what a subagent is, with Anthropic's own sense on its [subagent card](../../keystone/ki-agentic-systems/references/anthropic.subagent.md). This adapter owns only its Claude Code Markdown/YAML projection: YAML parsing, native fields, and source discovery. Read the [Claude projection standard](references/standards-subagent-definitions.md) and generated [rubric](references/rubric.md) after reading the parent contract.
+`ki-subagents` owns the portable semantic contract, and `ki-agentic-systems` what a subagent is, with Anthropic's own sense on its [subagent card](../../keystone/ki-agentic-systems/knowledge/vendors/anthropic/anthropic.subagent.md). This adapter owns only its Claude Code Markdown/YAML projection: YAML parsing, native fields, and source discovery. Read the [Claude projection standard](references/standards-subagent-definitions.md) and generated [rubric](references/rubric.md) after reading the parent contract.
 
 The Harness currently preserves candidate Claude source files under `subagents/`, but the host does not publish them to `.claude/agents` or consume its advertised `subagents` path. A clean audit therefore proves only a repository-owned source payload. Installation, selection precedence, activation, effective permissions, and execution are unavailable without a host and authorised runtime evidence path.
 

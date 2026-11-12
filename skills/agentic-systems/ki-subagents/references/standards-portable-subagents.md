@@ -2,7 +2,7 @@
 
 ## Purpose
 
-A portable subagent role is a runtime-neutral delegation contract for a [subagent](../../../keystone/ki-agentic-systems/references/industry.subagent.md), in the sense `ki-agentic-systems` defines. It defines a stable identity, a selection description, core instructions, a distinct lane, grounding, hand-offs, intended orchestration, and effectiveness evidence. It deliberately defines no serialization of its own: a designated primary projection carries the record, as [Record and projections](#record-and-projections) sets out.
+A portable subagent role is a runtime-neutral delegation contract for a [subagent](../../../keystone/ki-agentic-systems/knowledge/industry/industry.subagent.md), in the sense `ki-agentic-systems` defines. It defines a stable identity, a selection description, core instructions, a distinct lane, grounding, hand-offs, intended orchestration, and effectiveness evidence. It deliberately defines no serialization of its own: a designated primary projection carries the record, as [Record and projections](#record-and-projections) sets out.
 
 ## Required semantic evidence
 

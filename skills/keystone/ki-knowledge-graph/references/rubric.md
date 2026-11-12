@@ -50,9 +50,9 @@ Cards are judged on supplied card evidence; each says what one thing is, in the 
   - _Review prompt:_ Does every card avoid capture links and body origin sections, treat meetings as sources and future ideas as future concepts, and leave curation, tending and dispatch method to the skill?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **CARD-5 [J] — a card is named by its readable id** — A card file is `<id>.md`, its id is short and readable, never a UUID, carries its subgraph before a dot where the graph has subgraphs, and is unique in the graph; its folder is never part of its identity. (standards-knowledge-graph.md#the-graph)
+- **CARD-5 [J] — a card is named by its readable id** — A card file is `<id>.md`, its id is short and readable, never a UUID, carries its subgraph before a dot where the graph has subgraphs, and is unique in the graph; its folder is never part of its identity, and where the graph has folders the card sits in its subgraph’s folder. (standards-knowledge-graph.md#the-graph)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
-  - _Review prompt:_ Is every card file named from its front-matter id, is each id readable, unique and prefixed with its subgraph where the graph has subgraphs, and does no link depend on a folder?
+  - _Review prompt:_ Is every card file named from its front-matter id, is each id readable, unique and prefixed with its subgraph where the graph has subgraphs, does no front-matter link depend on a folder, and where the graph has folders, does each card sit in the folder of its subgraph?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
 - **CARD-6 [J] — no link reaches into part of a card** — A link points at a whole card, never at an anchor inside one; a card that others need in part is split so each part linked to is a card of its own. (standards-knowledge-graph.md#links)
@@ -114,7 +114,7 @@ A graph’s root definition, subgraphs, staging and layers are judged on supplie
   - _Review prompt:_ Were pruned shadows in untended areas only, and does every live area keep one shadow node where it touches the layer above?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **GRAPH-5 [J] — the graph defines itself at its root** — The root folder holds `_graph.md`, of card type graph, whose sections declare in order the card types, link vocabulary, properties, constraints, subgraphs, and extent and limitations, none left out. (standards-knowledge-graph.md#the-root-definition)
+- **GRAPH-5 [J] — the graph defines itself at its root** — The root folder, a skill’s `knowledge/`, holds `_graph.md`, of card type graph, whose sections declare in order the card types, link vocabulary, properties, constraints, subgraphs, and extent and limitations, none left out. (standards-knowledge-graph.md#the-root-definition)
   - _Evidence scope:_ The target skill and the evidence named by this criterion.
   - _Review prompt:_ Does the graph’s `_graph.md` declare every card type, vocabulary, property, constraint and subgraph its cards use, and state its extent, limitations and pending cards?
   - _Outcomes:_ conforming; gap; exclusion

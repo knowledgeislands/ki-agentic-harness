@@ -51,7 +51,7 @@ export const GRAPH = {
       code: 'GRAPH-5',
       title: 'the graph defines itself at its root',
       description:
-        'The root folder holds `_graph.md`, of card type graph, whose sections declare in order the card types, link vocabulary, properties, constraints, subgraphs, and extent and limitations, none left out.',
+        'The root folder, a skill’s `knowledge/`, holds `_graph.md`, of card type graph, whose sections declare in order the card types, link vocabulary, properties, constraints, subgraphs, and extent and limitations, none left out.',
       sources: ['standards-knowledge-graph.md#the-root-definition'],
       judgment: judgment(
         'Does the graph’s `_graph.md` declare every card type, vocabulary, property, constraint and subgraph its cards use, and state its extent, limitations and pending cards?'

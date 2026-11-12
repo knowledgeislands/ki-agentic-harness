@@ -75,12 +75,12 @@ Alternatives:
 - **Renaming the KI harness to plugin** makes the guild folders candidates for plugin names, as in `delegation:ki-subagents`. That favours a guild name that reads well as a plugin.
 - **Option A for channels** puts peer on the cross-session messaging card, which is why the peer agent card should fold into it.
 
-[industry.machine]: ./industry.machine.md
-[industry.session]: ./industry.session.md
-[industry.channel]: ./industry.channel.md
-[industry.peer-agent]: ./industry.peer-agent.md
-[industry.remote-agent]: ./industry.remote-agent.md
-[spec.a2a.remote-agent]: ./spec.a2a.remote-agent.md
+[industry.machine]: ../knowledge/industry/industry.machine.md
+[industry.session]: ../knowledge/industry/industry.session.md
+[industry.channel]: ../knowledge/industry/industry.channel.md
+[industry.peer-agent]: ../knowledge/industry/industry.peer-agent.md
+[industry.remote-agent]: ../knowledge/industry/industry.remote-agent.md
+[spec.a2a.remote-agent]: ../knowledge/specs/a2a/spec.a2a.remote-agent.md
 [a7]: https://code.claude.com/docs/en/channels
 [a8]: https://code.claude.com/docs/en/cross-session-messaging
 [a9]: https://code.claude.com/docs/en/agent-teams
