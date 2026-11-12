@@ -17,15 +17,11 @@ links:
     predicate: skos:related
   vocabularies:
     predicate: skos:related
-  kig:
-    predicate: skos:related
   iri:
     predicate: skos:related
   addressing:
     predicate: skos:related
   foundations:
-    predicate: skos:related
-  territory:
     predicate: skos:related
   atomicity:
     predicate: skos:related
@@ -57,7 +53,7 @@ A local reference identifier is not a canonical [IRI][iri]; how IRIs map to file
 
 Two optional front-matter conventions, agreed on 3 November 2026, qualify a card. A card may carry `sensitive: true` with `sensitivity: <reason>`, and the mark is weighed whenever someone considers using the card outside its principal or its own island, such as on a project site not managed from there alone; most cards carry neither, and there is no general audience field. A card's `status:`, one of `proposal`, `future-concept` or `agreed`, tells an idea from adopted practice.
 
-[KIRI][kiri] is the proposed semantic engine, with [RDF output][foundations] as a derived serialisation rather than the Markdown authoring language. Candidate standards for comparison include Vault-LD, Enola YAML-LD and typed Markdown link approaches. The exact convention remains experimental; the `ki:` prefix is declared in the [Knowledge Islands][territory] territory card. RDFa was considered but is not native Markdown, and no Markdown-to-RDF standard has been chosen. Established standards and how widely they are used are reviewed before any custom syntax is invented.
+[KIRI][kiri] is the proposed semantic engine, with [RDF output][foundations] as a derived serialisation rather than the Markdown authoring language. Candidate standards for comparison include Vault-LD, Enola YAML-LD and typed Markdown link approaches. The exact convention remains experimental; the `ki:` prefix is declared in the Knowledge Islands territory card. RDFa was considered but is not native Markdown, and no Markdown-to-RDF standard has been chosen. Established standards and how widely they are used are reviewed before any custom syntax is invented.
 
 ## Open questions
 
@@ -72,8 +68,7 @@ Two optional front-matter conventions, agreed on 3 November 2026, qualify a card
 [vocabularies]: ./semantic-vocabularies.md
 [foundations]: ./rdf-foundations.md
 [kiri]: ./kiri.md
-[territory]: ../../../knowledge-islands.md
-[addressing]: ./knowledge-graph.md#addressing
+[addressing]: ./knowledge-graph.md
 [atomicity]: ./contextual-atomicity.md
 [reasoning]: ./semantic-reasoning.md
 [family]: ./ki-tool-family.md

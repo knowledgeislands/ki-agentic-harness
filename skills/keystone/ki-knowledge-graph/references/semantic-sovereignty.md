@@ -17,15 +17,13 @@ links:
     predicate: skos:related
   reasoning:
     predicate: skos:related
-  ethical:
-    predicate: skos:related
 ---
 
 # Semantic Sovereignty
 
 An island may define, reuse or extend its own [vocabulary, ontology][vocabularies], curation conventions and interpretations. Its meanings need not be imposed universally on other islands.
 
-Custody is distributed: no central authority approves an island's knowledge, yet [provenance, evidence][reasoning] and [ethical boundaries][ethical] still apply.
+Custody is distributed: no central authority approves an island's knowledge, yet [provenance, evidence][reasoning] and ethical boundaries still apply.
 
 How a territory governs its naming authority, may delegate it to islands and keeps that governance distinct from semantic identity is set out in [Territories and Islands][territories].
 
@@ -36,4 +34,3 @@ How a territory governs its naming authority, may delegate it to islands and kee
 [territories]: ./territories-and-islands.md
 [vocabularies]: ./semantic-vocabularies.md
 [reasoning]: ./semantic-reasoning.md
-[ethical]: ../ethical-knowledge/ethical-knowledge.md

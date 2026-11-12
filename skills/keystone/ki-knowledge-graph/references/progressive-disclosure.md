@@ -15,8 +15,6 @@ links:
     predicate: skos:related
   atomicity:
     predicate: skos:related
-  kig:
-    predicate: skos:related
   views:
     predicate: skos:related
 ---
@@ -31,7 +29,7 @@ In Knowledge Islands, a compound graph may be addressed and summarised as one [k
 
 ## Intended behaviour
 
-The [Knowledge Graph][knowledge-graph] should support summary-level access and deeper inspection through [Knowledge Islands RDF Interface (KIRI)][kiri], with [KIG][kig] and [MCP][mcp] interfaces able to request an appropriate disclosure level. Disclosure level and graph traversal depth are distinct: more graph hops do not necessarily imply more useful detail.
+The [Knowledge Graph][knowledge-graph] should support summary-level access and deeper inspection through [Knowledge Islands RDF Interface (KIRI)][kiri], with KIG and [MCP][mcp] interfaces able to request an appropriate disclosure level. Disclosure level and graph traversal depth are distinct: more graph hops do not necessarily imply more useful detail.
 
 Derived summaries should preserve traceability to the knowledge they summarise; how their freshness is checked is set out in [Knowledge Views and Projections][views].
 
@@ -41,7 +39,6 @@ This is an agreed design principle, not an implemented KIRI feature.
 [kiri]: ./kiri.md
 [views]: ./knowledge-views.md
 [atomicity]: ./contextual-atomicity.md
-[kig]: ../../../tools-kig/tools-kig.md
 [mcp]: https://modelcontextprotocol.io/
 [agent-skills]: https://agentskills.io/
 [semantic-markdown]: ./semantic-markdown.md

@@ -15,10 +15,6 @@ links:
     predicate: ki:uses-principle
   moc:
     predicate: skos:related
-  change-log:
-    predicate: ki:supports
-  capture:
-    predicate: skos:related
   territories:
     predicate: skos:related
   semantic-markdown:
@@ -35,7 +31,7 @@ links:
 
 # Knowledge Views and Projections
 
-The enduring [Knowledge Graph][graph] is distinct from its [acquisition inputs][capture] and its presentation projections. An [island][territories] may project the same knowledge into websites, documents, visualisations, or agent-facing views without replacing the semantic source with a flattened copy.
+The enduring [Knowledge Graph][graph] is distinct from its acquisition inputs and its presentation projections. An [island][territories] may project the same knowledge into websites, documents, visualisations, or agent-facing views without replacing the semantic source with a flattened copy.
 
 ## Acquisition, representation and presentation
 
@@ -43,7 +39,7 @@ The three conceptual layers are acquisition (incoming material in any form), sem
 
 ## Data, information and presentation
 
-Kris framed the same separation on 2 November 2026 as data, information and presentation: capture the data in one place, then decide separately what to show and how the data becomes information. Data is the canonical files, information is what the graph and its [maps of content][moc] make of them, and presentation is a view such as a viewer page. The proposed [change-log graph][change-log] is a first application of this framing.
+Kris framed the same separation on 2 November 2026 as data, information and presentation: capture the data in one place, then decide separately what to show and how the data becomes information. Data is the canonical files, information is what the graph and its [maps of content][moc] make of them, and presentation is a view such as a viewer page. The proposed change-log graph is a first application of this framing.
 
 ## Context and composition
 
@@ -66,14 +62,12 @@ These are architectural principles and hypotheses; no materialised-view implemen
 
 [graph]: ./knowledge-graph.md
 [rdf]: ./rdf.md
-[capture]: ../knowledge-tending/knowledge-capture.md
 [semantic-markdown]: ./semantic-markdown.md
 [cqrs]: https://martinfowler.com/bliki/CQRS.html
 [vocabularies]: ./semantic-vocabularies.md
-[named-graphs]: ./rdf-foundations.md#multiple-graphs
+[named-graphs]: ./rdf-foundations.md
 [disclosure]: ./progressive-disclosure.md
 [atomicity]: ./contextual-atomicity.md
 [reasoning]: ./semantic-reasoning.md
 [territories]: ./territories-and-islands.md
 [moc]: ./map-of-content.md
-[change-log]: ../knowledge-tending/change-log-graph.md

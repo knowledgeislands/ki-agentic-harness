@@ -17,8 +17,6 @@ links:
     predicate: skos:related
   rdf:
     predicate: skos:related
-  knowledge-islands:
-    predicate: skos:related
   iri:
     predicate: skos:related
   semantic-markdown:
@@ -29,13 +27,11 @@ links:
     predicate: skos:related
   kiri:
     predicate: skos:related
-  kig:
-    predicate: skos:related
 ---
 
 # RDF Foundations
 
-This card sets out how [Knowledge Islands][knowledge-islands] uses [RDF][rdf], the intended semantic backbone of its [Knowledge Graph][graph]. The [RDF 1.2 Primer][primer] was read up to and including chapter 4, through its RDF model, multiple graphs and vocabularies. The Primer explains the concepts; formal RDF specifications define the normative model. RDF 1.2 was still evolving during this discussion, so implementation must verify the status and library support of required features.
+This card sets out how Knowledge Islands uses [RDF][rdf], the intended semantic backbone of its [Knowledge Graph][graph]. The [RDF 1.2 Primer][primer] was read up to and including chapter 4, through its RDF model, multiple graphs and vocabularies. The Primer explains the concepts; formal RDF specifications define the normative model. RDF 1.2 was still evolving during this discussion, so implementation must verify the status and library support of required features.
 
 ## Model and identity
 
@@ -55,22 +51,20 @@ Candidate vocabularies are set out in [Semantic Vocabularies][vocabularies]. The
 
 ## Representations and querying
 
-Turtle, TriG, N-Triples, N-Quads, JSON-LD, RDF/XML and RDFa are serialisations or embedding approaches rather than the authoring model itself. [Markdown remains the human-authored source][semantic-markdown]. [KIRI][kiri] may construct an RDF graph and serialise it to supported formats; [KIG][kig] and [MCP][mcp] may expose the same underlying engine. SPARQL querying, OWL inference, SHACL validation, RDF 1.2 reifiers and round-trip tests remain future implementation/evaluation work.
+Turtle, TriG, N-Triples, N-Quads, JSON-LD, RDF/XML and RDFa are serialisations or embedding approaches rather than the authoring model itself. [Markdown remains the human-authored source][semantic-markdown]. [KIRI][kiri] may construct an RDF graph and serialise it to supported formats; KIG and [MCP][mcp] may expose the same underlying engine. SPARQL querying, OWL inference, SHACL validation, RDF 1.2 reifiers and round-trip tests remain future implementation/evaluation work.
 
 The learning approach is to use the RDF 1.2 Primer as an introduction and consult the [Concepts][rdf-concepts], [What's New][rdf-new], [Turtle][turtle] and [SPARQL][sparql] specifications as needed, rather than requiring all specifications to be read before experimentation.
 
 [graph]: ./knowledge-graph.md
 [rdf]: ./rdf.md
 [iri]: ./iri.md
-[knowledge-islands]: ../../../knowledge-islands.md
 [reasoning]: ./semantic-reasoning.md
 [vocabularies]: ./semantic-vocabularies.md
 [territories]: ./territories-and-islands.md
-[addressing]: ./knowledge-graph.md#addressing
+[addressing]: ./knowledge-graph.md
 [atomicity]: ./contextual-atomicity.md
 [semantic-markdown]: ./semantic-markdown.md
 [kiri]: ./kiri.md
-[kig]: ../../../tools-kig/tools-kig.md
 [mcp]: https://modelcontextprotocol.io/
 [primer]: https://www.w3.org/TR/rdf12-primer/
 [rdf-concepts]: https://www.w3.org/TR/rdf12-concepts/

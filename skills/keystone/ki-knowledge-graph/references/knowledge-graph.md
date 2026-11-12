@@ -10,10 +10,6 @@ attachment: proposed
 links:
   kiri:
     predicate: ki:implemented-by
-  kig:
-    predicate: ki:accessed-through
-  tending:
-    predicate: skos:related
   progressive-disclosure:
     predicate: ki:uses-principle
   sovereignty:
@@ -36,11 +32,7 @@ links:
     predicate: skos:related
   rdf:
     predicate: skos:related
-  independence:
-    predicate: skos:related
   iri:
-    predicate: skos:related
-  territory:
     predicate: skos:related
   comprehension:
     predicate: skos:related
@@ -54,11 +46,11 @@ links:
 
 The Knowledge Islands knowledge graph is a curated Markdown knowledge system with machine-readable semantic relationships. This card represents the knowledge-graph domain: each island curates its own knowledge graph, and this card describes the architecture they share.
 
-[Knowledge Islands RDF Interface (KIRI)][kiri] interprets [semantic Markdown][semantic-markdown] into [RDF][rdf], and [Knowledge Islands Graph (KIG)][kig] exposes the same engine through a command-line interface. [Knowledge Tending][tending], the cycle through which knowledge is acquired, curated and retired, is a related but distinct domain. The graph uses [Progressive Disclosure][progressive-disclosure] to expose coherent summaries before deeper knowledge.
+[Knowledge Islands RDF Interface (KIRI)][kiri] interprets [semantic Markdown][semantic-markdown] into [RDF][rdf], and Knowledge Islands Graph (KIG) exposes the same engine through a command-line interface. Knowledge Tending, the cycle through which knowledge is acquired, curated and retired, is a related but distinct domain. The graph uses [Progressive Disclosure][progressive-disclosure] to expose coherent summaries before deeper knowledge.
 
 ## Governing concepts
 
-The graph respects [Semantic Sovereignty][sovereignty] and [Semantic Permeability][permeability], supports [Contextual Atomicity][atomicity], and distinguishes asserted knowledge from [Semantic Reasoning and Evidence][reasoning]. It uses the proposed Semantic Markdown authoring convention and may reuse established [Semantic Vocabularies][vocabularies]. [Knowledge Views and Projections][views] provide selective presentations without replacing the semantic source. Curated knowledge stands on its own under [Knowledge Independence][independence].
+The graph respects [Semantic Sovereignty][sovereignty] and [Semantic Permeability][permeability], supports [Contextual Atomicity][atomicity], and distinguishes asserted knowledge from [Semantic Reasoning and Evidence][reasoning]. It uses the proposed Semantic Markdown authoring convention and may reuse established [Semantic Vocabularies][vocabularies]. [Knowledge Views and Projections][views] provide selective presentations without replacing the semantic source. Curated knowledge stands on its own under Knowledge Independence.
 
 ## Progressive enrichment
 
@@ -68,7 +60,7 @@ Knowledge Islands need not be fully RDF compliant from the start: resources are 
 
 ## Addressing
 
-The provisional filesystem convention is `curated/<territory>/<island>/<zone>/<domain>/<resource>.md`, where the zone is the receiving Capital's own, such as `Pillars/`, and an island without zones omits it. In a receiving repository the graph is proposed to live in a top-level [`knowledge/` folder][folder] in place of `Pillars/`, and graphs in different repositories join in layers through attachment points and shadow nodes, as [Layered Graphs][layered] sets out. A domain is represented by a same-named Markdown file inside its directory. [Territorial authority][territories] governs namespaces; the territory's namespace policy and canonical [IRI][iri] bases remain to be specified. An IRI names the thing itself, such as a concept, never the card about it: the card is a same-named Markdown file describing the thing, found through an implicit mapping from the IRI, and the resource's type is the thing's type, not "document". A deterministic form of that mapping from IRI to file path is still to be defined, and resource identity must survive file relocation through stable identifiers or redirects. The `ki:` predicate prefix is declared in the [Knowledge Islands][territory] territory card.
+The provisional filesystem convention is `curated/<territory>/<island>/<zone>/<domain>/<resource>.md`, where the zone is the receiving Capital's own, such as `Pillars/`, and an island without zones omits it. In a receiving repository the graph is proposed to live in a top-level [`knowledge/` folder][folder] in place of `Pillars/`, and graphs in different repositories join in layers through attachment points and shadow nodes, as [Layered Graphs][layered] sets out. A domain is represented by a same-named Markdown file inside its directory. [Territorial authority][territories] governs namespaces; the territory's namespace policy and canonical [IRI][iri] bases remain to be specified. An IRI names the thing itself, such as a concept, never the card about it: the card is a same-named Markdown file describing the thing, found through an implicit mapping from the IRI, and the resource's type is the thing's type, not "document". A deterministic form of that mapping from IRI to file path is still to be defined, and resource identity must survive file relocation through stable identifiers or redirects. The `ki:` predicate prefix is declared in the Knowledge Islands territory card.
 
 ## Interoperability
 
@@ -87,8 +79,6 @@ The first prototype is planned inside the assistant repository only, with Knowle
 [kiri]: ./kiri.md
 [rdf]: ./rdf.md
 [iri]: ./iri.md
-[kig]: ../../../tools-kig/tools-kig.md
-[tending]: ../knowledge-tending/knowledge-tending.md
 [progressive-disclosure]: ./progressive-disclosure.md
 [sovereignty]: ./semantic-sovereignty.md
 [permeability]: ./semantic-permeability.md
@@ -97,8 +87,6 @@ The first prototype is planned inside the assistant repository only, with Knowle
 [reasoning]: ./semantic-reasoning.md
 [vocabularies]: ./semantic-vocabularies.md
 [views]: ./knowledge-views.md
-[independence]: ../knowledge-tending/knowledge-independence.md
-[territory]: ../../../knowledge-islands.md
 [rdf-foundations]: ./rdf-foundations.md
 [territories]: ./territories-and-islands.md
 [comprehension]: ./measuring-graph-comprehension.md

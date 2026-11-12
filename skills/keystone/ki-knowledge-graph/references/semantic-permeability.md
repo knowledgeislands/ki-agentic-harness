@@ -37,4 +37,4 @@ The [Knowledge Graph][graph] can [compose knowledge across][atomicity] [independ
 [vocabularies]: ./semantic-vocabularies.md
 [reasoning]: ./semantic-reasoning.md
 [atomicity]: ./contextual-atomicity.md
-[datasets]: ./rdf-foundations.md#multiple-graphs
+[datasets]: ./rdf-foundations.md

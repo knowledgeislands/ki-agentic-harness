@@ -15,8 +15,6 @@ links:
     predicate: ki:respects-principle
   permeability:
     predicate: ki:uses-principle
-  context:
-    predicate: ki:cites
 ---
 
 # Layered Graphs, Attachment Points and Shadow Nodes
@@ -24,7 +22,7 @@ links:
 Each repository keeps its own [knowledge graph][graph], usually in its [`knowledge/` folder][folder], and the graphs join in layers rather than by copying. Kris agreed the picture on 4 November 2026.
 
 - **Attachment point.** A graph declares its attachment points: the nodes it is fully confident will not be relocated, which other graphs may pin to. Declaring one is a promise of a stable id and path, with a deprecation pointer rather than removal if it ever has to change.
-- **Shadow node.** Another graph brings an attachment point in as a shadow node: a read-only pointer, kept in the assistant repository under its [`context/`][context], that records what it shadows and when it was last checked. The lower graph hangs its own nodes off the shadow.
+- **Shadow node.** Another graph brings an attachment point in as a shadow node: a read-only pointer, kept in the assistant repository under its `context/`, that records what it shadows and when it was last checked. The lower graph hangs its own nodes off the shadow.
 - **Promotion.** When one of the lower graph's own nodes settles, it is promoted up into the graph above, and its place below becomes a shadow node.
 
 So the canonical graph sits above, as Knowledge Islands Principal's does, and a graph still forming sits below, as the assistant's does: it holds what is still being captured and curated, and points up for what is settled. Each island keeps authority over its own nodes, under [Semantic Sovereignty][sovereignty], while the links between layers are an instance of [Semantic Permeability][permeability].
@@ -48,6 +46,5 @@ This is a proposal, not adopted practice.
 
 [graph]: ./knowledge-graph.md
 [folder]: ./knowledge-folder.md
-[context]: ../../../../../context/README.md
 [sovereignty]: ./semantic-sovereignty.md
 [permeability]: ./semantic-permeability.md

@@ -26,4 +26,4 @@ How Knowledge Islands names curated entities is set out in [RDF Foundations][fou
 [iri-concepts]: https://www.w3.org/TR/rdf12-concepts/#section-IRIs
 [rdf]: ./rdf.md
 [foundations]: ./rdf-foundations.md
-[addressing]: ./knowledge-graph.md#addressing
+[addressing]: ./knowledge-graph.md

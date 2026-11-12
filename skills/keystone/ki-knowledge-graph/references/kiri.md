@@ -7,8 +7,6 @@ island: ki-principal
 pillar: Philosophy
 status: proposal
 links:
-  kig:
-    predicate: ki:exposed-through
   knowledge-graph:
     predicate: ki:implements
   semantic-markdown:
@@ -25,7 +23,7 @@ links:
 
 # KIRI — Knowledge Islands RDF Interface
 
-KIRI is the proposed semantic engine: the library underneath that [Knowledge Islands Graph (KIG)][kig] and an MCP server use. It resolves [Markdown resource identities and typed relationships][semantic-markdown], constructs [RDF][rdf] graphs and exports [supported serialisations][representations]. It keeps inferred statements distinguishable from asserted ones, as [Semantic Reasoning and Evidence][reasoning] sets out.
+KIRI is the proposed semantic engine: the library underneath that Knowledge Islands Graph (KIG) and an MCP server use. It resolves [Markdown resource identities and typed relationships][semantic-markdown], constructs [RDF][rdf] graphs and exports [supported serialisations][representations]. It keeps inferred statements distinguishable from asserted ones, as [Semantic Reasoning and Evidence][reasoning] sets out.
 
 KIG is the proposed CLI interface to it. KIRI implements the [Knowledge Graph][knowledge-graph] capability and is the engine of the [KI tool family][family].
 
@@ -41,10 +39,9 @@ KIRI is intended to build RDF and export supported formats such as Turtle and JS
 
 - What does the final "I" in KIRI stand for? KIRI is the library underneath KIG and MCP rather than an interface itself, so Interface, Indexer and Inference are candidates; this is still to be decided.
 
-[kig]: ../../../tools-kig/tools-kig.md
 [rdf]: ./rdf.md
 [semantic-markdown]: ./semantic-markdown.md
-[representations]: ./rdf-foundations.md#representations-and-querying
+[representations]: ./rdf-foundations.md
 [reasoning]: ./semantic-reasoning.md
 [knowledge-graph]: ./knowledge-graph.md
 [family]: ./ki-tool-family.md

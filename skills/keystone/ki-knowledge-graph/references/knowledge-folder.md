@@ -13,8 +13,6 @@ links:
     predicate: ki:uses-convention
   atomicity:
     predicate: ki:uses-principle
-  funnel:
-    predicate: skos:related
   moc:
     predicate: ki:uses-convention
   layered:
@@ -27,7 +25,7 @@ The `knowledge/` folder is the proposed home of a repository's [knowledge graph]
 
 ## Why
 
-What the assistant learnt from 1 November 2026 works: material comes in through the [knowledge capture funnel][funnel] and is curated into small cards, each with a primary home, linked by predicates such as `ki:part-of` and `ki:concerns`. Large Pillars pages hold too much in one place to link or tend well. How small a node should be is judged by [Contextual Atomicity][atomicity] rather than by word count.
+What the assistant learnt from 1 November 2026 works: material comes in through the knowledge capture funnel and is curated into small cards, each with a primary home, linked by predicates such as `ki:part-of` and `ki:concerns`. Large Pillars pages hold too much in one place to link or tend well. How small a node should be is judged by [Contextual Atomicity][atomicity] rather than by word count.
 
 ## What changes, and what does not
 
@@ -67,6 +65,5 @@ This is a proposal, not adopted practice.
 [graph]: ./knowledge-graph.md
 [semantic-markdown]: ./semantic-markdown.md
 [atomicity]: ./contextual-atomicity.md
-[funnel]: ../knowledge-tending/knowledge-capture-funnel.md
 [moc]: ./map-of-content.md
 [layered]: ./layered-graphs.md

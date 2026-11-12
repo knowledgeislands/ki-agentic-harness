@@ -13,10 +13,6 @@ links:
     predicate: ki:uses-principle
   views:
     predicate: skos:related
-  change-log:
-    predicate: ki:supports
-  context:
-    predicate: skos:related
 ---
 
 # Map of Content
@@ -32,7 +28,7 @@ A MOC organises leaves without owning them, so several MOCs can sit over the sam
 - **Time-based:** the assistant's daily `record/` is already a time-based MOC, one page a day linking to what happened.
 - **Topic-based or territorial:** the same entries also fall naturally under territory headings, such as Legal, Humans Not Robots, Knowledge Islands and Personal, and could be gathered into a MOC per territory or theme.
 
-A record kept as a semantic tree in this way would be largely the same thing as the [change-log graph][change-log].
+A record kept as a semantic tree in this way would be largely the same thing as the change-log graph.
 
 ## Root index named after its folder
 
@@ -44,12 +40,10 @@ As the graph is refined, granularity cascades down: a reader who wants more of s
 
 ## Beside territory context
 
-The assistant repository's [territory context][context] is routing guidance: it tells someone capturing or curating where material belongs. A MOC is for reading: it tells someone exploring the knowledge where to start. The two can coexist over the same cards.
+The assistant repository's territory context is routing guidance: it tells someone capturing or curating where material belongs. A MOC is for reading: it tells someone exploring the knowledge where to start. The two can coexist over the same cards.
 
 This is a proposal under discussion, not adopted practice; no MOC convention or file naming has been agreed.
 
 [zettelkasten]: ./zettelkasten.md
 [disclosure]: ./progressive-disclosure.md
 [views]: ./knowledge-views.md
-[change-log]: ../knowledge-tending/change-log-graph.md
-[context]: ../../../../../context/README.md
