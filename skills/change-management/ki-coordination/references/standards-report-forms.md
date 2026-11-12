@@ -123,7 +123,7 @@ Each part: what it carries, when it appears and how the structure, the state and
 - **B3 Status:** the full board of live items. In a Summary or Status it is `## Status`, the [status table](#the-summary). In every Medium structure it is `## In Progress`: what is running and what is waiting, each with its owner or dependency, or `Nothing is running`, then `Outstanding - no action requested now`. On hold, Left over comes here: another session's uncommitted file, or `Nothing`.
 - **B4 Findings:** `## Findings`, only while a finding the owner asked for is open, under the owner report's **Findings**.
 - **B5 Queries:** `## Queries`, each decision the owner needs to make, in full, under the [owner report](standards-reporting.md#owner-report), a proposed work transfer last, or `None.` in a Summary or Status and `No outstanding queries` in a Medium structure. On hold, the parked queries come here instead, one line each, `<TAG> - <one line>`.
-- **B6 Reply block:** the tags and letters, ready to copy: one fenced `text` block after the last query, one line per query in B5, its tag and the recommended option's letter, as `<TAG> a`, for the owner to copy, change and send. It appears whenever B5 carries at least one query in full.
+- **B6 Reply block:** the tags, letters and confidences, ready to copy: one fenced `text` block after the last query, holding exactly the text to send back, for the owner to copy, change and send. The queries in B5 are grouped by priority under numbered headings, the most pressing first, each `<n> · <what the group is>`, adding `, can run while you're away` where the group's work can go ahead while the owner is away, with a blank line between groups; under each heading, one line per query, its tag, the recommended option's letter and that option's confidence in brackets, as `<TAG> a (high)`, under the owner report's **Reply block**. It appears whenever B5 carries at least one query in full.
 
 **Footer block.**
 
@@ -137,7 +137,7 @@ Each part: what it carries, when it appears and how the structure, the state and
 - **F8 Listening line:** `👂 listening` while the [inbox watcher](standards-listening.md#inbox-watch) is armed, and `🔇 not listening` otherwise, by default, including a session the owner has not asked to listen. Left out only when the work is Finished.
 - **F9 Thread line:** `<role glyph> 🔑 <work-id>`, or `🧵 <work-id>`, always last, under **Thread line** in [the core](standards-coordination.md#banner).
 
-Sources: REPLY-FORMAT in [the decision register](sources.md#decision-register).
+Sources: REPLY-FORMAT and REPLY-GROUPS in [the decision register](sources.md#decision-register).
 
 ### Templates
 
@@ -185,7 +185,11 @@ a) (recommended, confidence <level> - <reason>) <the course>
 b) <the alternative>
 
 ```text                                                                       B6
-<TAG> a
+1 · <what the most pressing group is>, can run while you're away
+<TAG> a (<high, medium or low>)
+
+2 · <what the next group is>
+<TAG> a (<high, medium or low>)
 ```
 
 <Knowledge Islands art; scroll: KNOWLEDGE ISLANDS>                            F1
