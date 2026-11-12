@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "ef8c367b46344904f9b1002e6dc5fce71d3dff4b"
+      "revision": "0bb75ac911fd11faf0d19db2f7bf344efa393ab3"
     },
     "legend": {
       "mode": "auto",
@@ -24,6 +24,9 @@
         },
         "frontend": {
           "label": "Process · command"
+        },
+        "cloud": {
+          "label": "Knowledge · on request"
         }
       }
     }
@@ -139,7 +142,7 @@
           "path": "skills/keystone/ki-knowledge-graph/SKILL.md"
         }
       ],
-      "tag": "R16 · CM · F4",
+      "tag": "R20 · CM · F27",
       "pos": [
         544,
         188

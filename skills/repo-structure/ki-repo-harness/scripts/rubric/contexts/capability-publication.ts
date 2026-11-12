@@ -1,7 +1,9 @@
 export const CAPABILITY_CATALOGUE_START = '<!-- ki-repo-harness:capability-catalogue:start -->'
 export const CAPABILITY_CATALOGUE_END = '<!-- ki-repo-harness:capability-catalogue:end -->'
 
-export type CapabilityKind = 'governance' | 'process'
+export type CapabilityKind = 'governance' | 'process' | 'knowledge'
+
+const CAPABILITY_KINDS: ReadonlySet<unknown> = new Set(['governance', 'process', 'knowledge'])
 export type CapabilityApplicability = 'baseline' | 'detected' | 'declaration-only' | 'invocation-only'
 
 export type CapabilityEntry = {
@@ -37,6 +39,7 @@ export type CapabilityCounts = {
   total: number
   governance: number
   process: number
+  knowledge: number
 }
 
 type Frontmatter = Record<string, unknown>
@@ -85,7 +88,7 @@ export const parseCapabilitySource = ({ path, content }: CapabilitySource): Capa
   const supportedRuntimes = frontmatter['ki-supported-runtimes']
 
   if (typeof name !== 'string' || name.trim().length === 0) return { issue: `${path} has no non-empty name` }
-  if (kind !== 'governance' && kind !== 'process') return { issue: `${path} has invalid or missing ki-kind` }
+  if (!CAPABILITY_KINDS.has(kind)) return { issue: `${path} has invalid or missing ki-kind` }
   if (
     applicability !== 'baseline' &&
     applicability !== 'detected' &&
@@ -111,7 +114,7 @@ export const parseCapabilitySource = ({ path, content }: CapabilitySource): Capa
       path,
       domain: domainFromPath(path),
       name: name.trim(),
-      kind,
+      kind: kind as CapabilityKind,
       applicability,
       detects,
       description: normaliseProse(description),
@@ -143,11 +146,17 @@ export const renderCapabilityCatalogue = (entries: readonly CapabilityEntry[]): 
   )
   const governance = ordered.filter((entry) => entry.kind === 'governance').length
   const process = ordered.filter((entry) => entry.kind === 'process').length
+  const knowledge = ordered.filter((entry) => entry.kind === 'knowledge').length
+  const kinds = [
+    counted(governance, 'governance skill'),
+    counted(process, 'process skill'),
+    ...(knowledge > 0 ? [counted(knowledge, 'knowledge skill')] : [])
+  ]
   const sections: string[] = [
     CAPABILITY_CATALOGUE_START,
     '## Generated capability catalogue',
     '',
-    `This source harness publishes ${counted(ordered.length, 'skill')}: ${counted(governance, 'governance skill')} and ${counted(process, 'process skill')}. The entries below are generated from canonical \`SKILL.md\` frontmatter; edit the source skill, then run \`ki repo conform --skill ki-repo-harness\` to republish this section.`,
+    `This source harness publishes ${counted(ordered.length, 'skill')}: ${kinds.slice(0, -1).join(', ')} and ${kinds.at(-1)}. The entries below are generated from canonical \`SKILL.md\` frontmatter; edit the source skill, then run \`ki repo conform --skill ki-repo-harness\` to republish this section.`,
     ''
   ]
 
@@ -210,6 +219,8 @@ export const prepareCapabilityPublication = (
       issues.push(`${entry.path} process capability must be invocation-only`)
     if (entry.kind === 'governance' && entry.applicability === 'invocation-only')
       issues.push(`${entry.path} governance capability cannot be invocation-only`)
+    if (entry.kind === 'knowledge' && entry.applicability !== 'invocation-only')
+      issues.push(`${entry.path} knowledge capability must be invocation-only`)
     if (entry.name !== 'ki-repo' && entry.detects.length > 0)
       issues.push(`${entry.path} declares ki-detects but ki-repo is the sole detector owner`)
   }
@@ -234,7 +245,8 @@ export const prepareCapabilityPublication = (
   const counts: CapabilityCounts = {
     total: entries.length,
     governance: entries.filter((entry) => entry.kind === 'governance').length,
-    process: entries.filter((entry) => entry.kind === 'process').length
+    process: entries.filter((entry) => entry.kind === 'process').length,
+    knowledge: entries.filter((entry) => entry.kind === 'knowledge').length
   }
   const rendered = renderCapabilityCatalogue(entries)
   if (readme === undefined) return { state: 'missing', issues: [], counts, rendered, merged: rendered }

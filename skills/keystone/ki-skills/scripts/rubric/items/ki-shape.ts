@@ -3,6 +3,15 @@ import { AUTOMATIC_REMEDIATION, judgment } from '../../shared/rubric.ts'
 import { type KiShapeRubricContext, type KiSkillsRubricContext, selectKiSkillsContext } from '../contexts/contexts.ts'
 import { findDependencyCycle } from '../contexts/dependencies.ts'
 
+const KINDS: ReadonlySet<string> = new Set(['governance', 'process', 'knowledge'])
+const CLOSED_REFERENCE = /^(?:exemplars|rubric|sources|standards?-[a-z0-9]+(?:-[a-z0-9]+)*|mode-[a-z0-9]+)\.md$/
+const GRAPH_ROOT = '_graph.md'
+const CARD_FILE = /^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+(?:-[a-z0-9]+)*)*\.md$/
+
+/** A card of a graph held in `references/`: named `<id>.md` with its front-matter `id` equal to that name. */
+const isGraphCard = (path: string, ids: Readonly<Record<string, string>>): boolean =>
+  CARD_FILE.test(path) && ids[path] === path.slice(0, -'.md'.length)
+
 const UNIVERSAL_MODES = ['AUDIT', 'CONFORM', 'EDUCATE', 'REFRESH'] as const
 const REQUIRED_GOVERNANCE_VERBS = [...UNIVERSAL_MODES, 'HELP'] as const
 
@@ -53,14 +62,14 @@ const KI_SHAPE_3: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-3',
   title: 'the skill declares its kind',
   description:
-    'Every KI skill declares its **kind** in exact frontmatter as `ki-kind: governance` or `ki-kind: process`; a directory and prose never establish kind (ADR-KI-HARNESS-SKILLS-006). A **governance skill** holds a house standard and exposes the four universal acting modes plus the required HELP entry point (KI-SHAPE-5, KI-SHAPE-11). A **process skill** drives an action or lifecycle rather than holding a standard: it is lightweight, may bundle a helper `scripts/` and a `references/` procedure, and is exempt from universal governance modes — its mode count follows its own lifecycle and it exposes HELP only optionally. Both kinds use the closed Knowledge Islands reference vocabulary (KI-SHAPE-6) and are dual-invocable (`/<name>` and model-triggered).',
+    'Every KI skill declares its **kind** in exact frontmatter as `ki-kind: governance`, `ki-kind: process` or `ki-kind: knowledge`; a directory and prose never establish kind (ADR-KI-HARNESS-SKILLS-006). A **governance skill** holds a house standard and exposes the four universal acting modes plus the required HELP entry point (KI-SHAPE-5, KI-SHAPE-11). A **process skill** drives an action or lifecycle rather than holding a standard: it is lightweight, may bundle a helper `scripts/` and a `references/` procedure, and is exempt from universal governance modes — its mode count follows its own lifecycle and it exposes HELP only optionally. A **knowledge skill** only equips a session with a body of knowledge, held as a knowledge graph in its `references/`: it audits and conforms nothing, publishes no rubric, and its modes are EDUCATE and REFRESH with HELP (KNOWLEDGE-KIND). Every kind uses the closed Knowledge Islands reference vocabulary (KI-SHAPE-6) and is dual-invocable (`/<name>` and model-triggered).',
   sources: ['ki-agentic-harness README', 'ADR-KI-HARNESS-SKILLS-006'],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Decide whether the skill holds a governance standard or drives a process lifecycle, then declare exactly ki-kind: governance or ki-kind: process.'
+        'Decide whether the skill holds a governance standard, drives a process lifecycle or only holds a body of knowledge, then declare exactly ki-kind: governance, process or knowledge.'
     },
     audit: {
       phase: 'INSPECT',
@@ -69,11 +78,14 @@ const KI_SHAPE_3: RubricItem<KiShapeRubricContext> = {
           return [{ status: 'NOT_APPLICABLE', message: 'the target is not a Knowledge Islands skill' }]
         if (!skill.kiKindPresent)
           return [
-            { status: 'VIOLATION', message: 'missing required `ki-kind: governance | process` frontmatter metadata' }
+            {
+              status: 'VIOLATION',
+              message: 'missing required `ki-kind: governance | process | knowledge` frontmatter metadata'
+            }
           ]
-        if (skill.kiKind !== 'governance' && skill.kiKind !== 'process')
-          return [{ status: 'VIOLATION', message: '`ki-kind:` must be exactly `governance` or `process`' }]
-        return [{ status: 'PASS', message: 'the skill declares an explicit governance or process kind' }]
+        if (!KINDS.has(skill.kiKind))
+          return [{ status: 'VIOLATION', message: '`ki-kind:` must be exactly `governance`, `process` or `knowledge`' }]
+        return [{ status: 'PASS', message: 'the skill declares an explicit governance, process or knowledge kind' }]
       }
     }
   },
@@ -102,28 +114,40 @@ const KI_SHAPE_6: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-6',
   title: 'Knowledge Islands skills use the closed reference vocabulary',
   description:
-    '_Closed reference vocabulary — Knowledge Islands skills only._ Every top-level Markdown reference is `standard-<topic>.md` (or the older `standards-<topic>.md` until renamed), generated `rubric.md`, `sources.md`, optional `exemplars.md`, or one-mode-only `mode-<verb>.md`; a skill includes only the classes it needs. Normative formats, process doctrine, and shared mode contracts are standards, following the `ki-authoring` standard format; `sources.md` follows its sources format. Combined mode names, bare `standards.md`, `<topic>-standards.md`, nested references, and ad hoc guide, format, or contract filenames are retired. Templates and reusable output material live in `assets/`. A skill tracking a moving external spec keeps a current-state `## Last review` block in `sources.md`. Skills outside the Knowledge Islands set are exempt.',
-  sources: ['ki-agentic-harness README'],
+    "_Closed reference vocabulary — Knowledge Islands skills only._ Every top-level Markdown reference is `standard-<topic>.md` (or the older `standards-<topic>.md` until renamed), generated `rubric.md`, `sources.md`, optional `exemplars.md`, or one-mode-only `mode-<verb>.md`; a skill includes only the classes it needs. Normative formats, process doctrine, and shared mode contracts are standards, following the `ki-authoring` standard format; `sources.md` follows its sources format. A skill that holds a knowledge graph keeps it flat in `references/`: the graph's root definition `_graph.md` and its cards, each named `<id>.md` with its front-matter `id` equal to that name, under the `ki-knowledge-graph` standard; a knowledge skill always holds one. Combined mode names, bare `standards.md`, `<topic>-standards.md`, nested references, and ad hoc guide, format, or contract filenames are retired. Templates and reusable output material live in `assets/`. A skill tracking a moving external spec keeps a current-state `## Last review` block in `sources.md`. Skills outside the Knowledge Islands set are exempt.",
+  sources: ['ki-agentic-harness README', 'KNOWLEDGE-KIND'],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Classify each nonstandard reference by reader need, rename or relocate it into the closed vocabulary or assets/, and repair every affected link.'
+        'Classify each nonstandard reference by reader need, rename or relocate it into the closed vocabulary or assets/, name each graph card from its front-matter id, and repair every affected link.'
     },
     audit: {
       phase: 'INSPECT',
       run: ({ skill }) => {
         if (!skill?.knowledgeIslandsSkill)
           return [{ status: 'NOT_APPLICABLE', message: 'the target is not a Knowledge Islands skill' }]
-        const allowed = /^(?:exemplars|rubric|sources|standards?-[a-z0-9]+(?:-[a-z0-9]+)*|mode-[a-z0-9]+)\.md$/
-        const violations = skill.referencePaths
-          .filter((path) => path.endsWith('.md') && !allowed.test(path))
+        const graph = skill.referencePaths.includes(GRAPH_ROOT)
+        const violations: AuditOutcome[] = skill.referencePaths
+          .filter(
+            (path) =>
+              path.endsWith('.md') &&
+              !CLOSED_REFERENCE.test(path) &&
+              !(graph && (path === GRAPH_ROOT || isGraphCard(path, skill.referenceIds)))
+          )
           .map((path) => ({
             status: 'VIOLATION' as const,
-            message: 'reference is outside the closed Knowledge Islands filename vocabulary',
+            message: graph
+              ? 'reference is outside the closed Knowledge Islands filename vocabulary and is not a graph card named by its id'
+              : 'reference is outside the closed Knowledge Islands filename vocabulary',
             subject: `references/${path}`
           }))
+        if (skill.kiKind === 'knowledge' && !graph)
+          violations.push({
+            status: 'VIOLATION',
+            message: 'a knowledge skill holds its knowledge graph in `references/`, opened by `references/_graph.md`'
+          })
         const [first, ...rest] = violations
         return first
           ? [first, ...rest]
@@ -592,7 +616,7 @@ const KI_SHAPE_19: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-19',
   title: 'repository applicability is explicit',
   description:
-    'Every canonical Knowledge Islands skill declares one orthogonal `ki-applicability: baseline | detected | declaration-only | invocation-only`. Only `ki-repo` and `ki-authoring` are baseline; every process skill is invocation-only; governance skills are detected or declaration-only. `ki-repo` alone declares a non-empty, duplicate-free `ki-detects:` flow list.',
+    'Every canonical Knowledge Islands skill declares one orthogonal `ki-applicability: baseline | detected | declaration-only | invocation-only`. Only `ki-repo` and `ki-authoring` are baseline; every process and knowledge skill is invocation-only; governance skills are detected or declaration-only. `ki-repo` alone declares a non-empty, duplicate-free `ki-detects:` flow list.',
   sources: ['ADR-KI-HARNESS-SKILLS-014', 'standard-knowledge-islands.md §4.2'],
   mechanical: {
     level: 'FAIL',
@@ -636,6 +660,11 @@ const KI_SHAPE_19: RubricItem<KiShapeRubricContext> = {
           violations.push({
             status: 'VIOLATION',
             message: 'a governance skill cannot declare invocation-only applicability'
+          })
+        if (skill.kiKind === 'knowledge' && skill.applicability !== 'invocation-only')
+          violations.push({
+            status: 'VIOLATION',
+            message: 'every knowledge skill must declare `ki-applicability: invocation-only`'
           })
 
         if (skill.name === 'ki-repo') {

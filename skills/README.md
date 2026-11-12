@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 68 skills: 56 governance skills and 12 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 69 skills: 56 governance skills, 12 process skills and 1 knowledge skill. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -495,6 +495,16 @@ Own the work package of one piece of work, `work/<territory>/<id>/` in the Agora
 
 ### Keystone
 
+#### `ki-agentic-systems`
+
+Define the words of agentic systems, one card per term with each major vendor's usage, starting from model, agent harness, agent, session and subagent. Use to learn what an agentic term means, which sense a vendor name such as Claude or Codex carries, or which card to link instead of redefining a term; `ki-agentic-radar` owns maturity and stance, and `ki-subagents` how to run subagents.
+
+- **Kind:** Knowledge
+- **Applicability:** Invocation Only
+- **Arguments:** `educate <term> | help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
 #### `ki-authoring`
 
 Govern KI document formats, Markdown, TOML, README composition, industry white papers, and durable knowledge placement. Use to format or audit authored documents, shape a README, or decide where learning belongs; use `ki-skills` for SKILL.md quality, `ki-repo` for repository contracts, and `ki-engineering` for code toolchains.
@@ -517,7 +527,7 @@ Explain first-time KI activation through the `ki` CLI: user bootstrap, verified 
 
 #### `ki-knowledge-graph`
 
-Govern the knowledge-graph method: Semantic Markdown cards, curating one captured item at a time, tending a staging graph whose ids can still change, layered graphs with attachment points and shadow nodes, and dispatch by Git move to the owning island. Use to curate, tend or dispatch staged knowledge; `ki-acquire` owns capture, `ki-dodecakrisis` sorting and `ki-repo-kb` knowledge-base structure.
+Govern knowledge graphs: Semantic Markdown cards named by readable ids, a `_graph.md` root definition, typed links with SKOS by default, subgraphs, layered graphs with shadow nodes, and curating captured material through a staging graph to dispatch. Use to define a graph, curate, tend or dispatch knowledge; `ki-acquire` owns capture, `ki-dodecakrisis` sorting and `ki-repo-kb` knowledge-base structure.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only

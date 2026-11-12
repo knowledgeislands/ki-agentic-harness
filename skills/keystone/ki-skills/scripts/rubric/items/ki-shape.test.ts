@@ -37,6 +37,79 @@ describe('KI-SHAPE-6', () => {
     expect(findings).toHaveLength(1)
     expect(findings[0]).toMatchObject({ status: 'PASS' })
   })
+
+  test('admits a graph root and cards named by their ids beside the closed vocabulary', () => {
+    const findings = referenceVocabulary.mechanical?.audit.run(
+      createKiShapeContext({
+        skill: {
+          knowledgeIslandsSkill: true,
+          kiKind: 'knowledge',
+          referencePaths: ['_graph.md', 'industry.session.md', 'spec.mcp.md', 'sources.md', 'stray.md'],
+          referenceIds: {
+            '_graph.md': 'agentic-systems',
+            'industry.session.md': 'industry.session',
+            'spec.mcp.md': 'spec.mcp',
+            'stray.md': 'other'
+          }
+        }
+      })
+    )
+
+    expect(findings).toHaveLength(1)
+    expect(findings[0]).toMatchObject({ status: 'VIOLATION', subject: 'references/stray.md' })
+  })
+
+  test('requires a knowledge skill to hold its graph', () => {
+    const findings = referenceVocabulary.mechanical?.audit.run(
+      createKiShapeContext({
+        skill: { knowledgeIslandsSkill: true, kiKind: 'knowledge', referencePaths: ['sources.md'] }
+      })
+    )
+
+    expect(findings).toHaveLength(1)
+    expect(findings[0]).toMatchObject({ status: 'VIOLATION' })
+  })
+})
+
+const kind = KI_SHAPE.items.find(({ code }) => code === 'KI-SHAPE-3')
+const applicability = KI_SHAPE.items.find(({ code }) => code === 'KI-SHAPE-19')
+
+if (!kind?.mechanical) throw new Error('KI-SHAPE-3 mechanical check missing')
+if (!applicability?.mechanical) throw new Error('KI-SHAPE-19 mechanical check missing')
+
+describe('the knowledge kind', () => {
+  test('KI-SHAPE-3 accepts governance, process and knowledge and nothing else', () => {
+    const status = (kiKind: string) =>
+      kind.mechanical?.audit.run(
+        createKiShapeContext({ skill: { knowledgeIslandsSkill: true, kiKindPresent: true, kiKind } })
+      )[0]?.status
+    expect(['governance', 'process', 'knowledge', 'reference'].map(status)).toEqual([
+      'PASS',
+      'PASS',
+      'PASS',
+      'VIOLATION'
+    ])
+  })
+
+  test('KI-SHAPE-19 requires a knowledge skill to be invocation-only', () => {
+    const run = (value: string) =>
+      applicability.mechanical?.audit.run(
+        createKiShapeContext({
+          skill: {
+            name: 'ki-terms',
+            knowledgeIslandsSkill: true,
+            kiKind: 'knowledge',
+            applicabilityPresent: true,
+            applicability: value
+          }
+        })
+      )
+    expect(run('invocation-only')?.[0]).toMatchObject({ status: 'PASS' })
+    expect(run('declaration-only')?.[0]).toMatchObject({
+      status: 'VIOLATION',
+      message: 'every knowledge skill must declare `ki-applicability: invocation-only`'
+    })
+  })
 })
 
 const dependencyResolution = KI_SHAPE.items.find(({ code }) => code === 'KI-SHAPE-20')

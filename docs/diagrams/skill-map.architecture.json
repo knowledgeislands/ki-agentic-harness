@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "ef8c367b46344904f9b1002e6dc5fce71d3dff4b"
+      "revision": "0bb75ac911fd11faf0d19db2f7bf344efa393ab3"
     },
     "legend": {
       "mode": "auto",
@@ -24,6 +24,9 @@
         },
         "frontend": {
           "label": "Process · command"
+        },
+        "cloud": {
+          "label": "Knowledge · on request"
         }
       }
     }
@@ -98,6 +101,25 @@
       ],
       "pos": [
         32,
+        344
+      ],
+      "size": [
+        200,
+        60
+      ]
+    },
+    {
+      "id": "ki-agentic-systems",
+      "type": "cloud",
+      "label": "ki-agentic-systems",
+      "sublabel": "fundamentals · knowledge",
+      "sources": [
+        {
+          "path": "skills/keystone/ki-agentic-systems/SKILL.md"
+        }
+      ],
+      "pos": [
+        240,
         344
       ],
       "size": [
@@ -1344,7 +1366,8 @@
       "kind": "region",
       "label": "Fundamentals · Knowledge",
       "wraps": [
-        "ki-knowledge-graph"
+        "ki-knowledge-graph",
+        "ki-agentic-systems"
       ],
       "pad": 10
     },
@@ -1358,12 +1381,13 @@
     },
     {
       "kind": "region",
-      "label": "Keystone · 5 skills",
+      "label": "Keystone · 6 skills",
       "wraps": [
         "ki-authoring",
         "ki-repo",
         "ki-skills",
         "ki-knowledge-graph",
+        "ki-agentic-systems",
         "ki-bootstrap"
       ],
       "pad": 24
@@ -1687,7 +1711,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "68 skills in 8 concerns and 10 functional areas: 2 always on, 19 automatic, 35 opt-in, 12 commands.",
+        "69 skills in 8 concerns and 10 functional areas: 2 always on, 19 automatic, 35 opt-in, 13 commands.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills owns the kind and applicability fields it reads."
       ]
     }

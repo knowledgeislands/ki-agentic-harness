@@ -18,10 +18,10 @@ import {
 import {
   componentId,
   domainLabel,
-  SKILL_SHAPES,
   type SkillGraphNode,
   type SkillGraphOptions,
-  shapeLegend
+  shapeLegend,
+  skillShape
 } from './skill-graph.ts'
 import { SHAPE_ORDER } from './skill-map.ts'
 import { statsTag } from './skill-stats.ts'
@@ -290,7 +290,7 @@ export const buildSkillArea =
     const position = new Map<string, Point>()
     const place = (node: SkillGraphNode, pos: Point): void => {
       position.set(node.name, pos)
-      const shape = SKILL_SHAPES[node.applicability]
+      const shape = skillShape(node)
       const stats = options.stats?.get(node.path)
       components.push({
         id: componentId(node.name),

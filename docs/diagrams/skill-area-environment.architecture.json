@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "5be78035afa02e30b557a20f5a95cc67011c0753"
+      "revision": "0bb75ac911fd11faf0d19db2f7bf344efa393ab3"
     },
     "legend": {
       "mode": "auto",
@@ -24,6 +24,9 @@
         },
         "frontend": {
           "label": "Process · command"
+        },
+        "cloud": {
+          "label": "Knowledge · on request"
         }
       }
     }

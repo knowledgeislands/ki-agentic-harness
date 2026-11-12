@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg viewBox="0 0 964 948" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="classic" data-quality-profile="showcase" data-node-ui="" data-reader-fit="intrinsic-height" data-reader-min-text="7.5" data-reader-primary-text="14" style="--flow-cycle: 3.800s; width: 964px; height: 948px; min-width: 0px;" width="964" height="948" xmlns="http://www.w3.org/2000/svg"><style>
+<svg viewBox="0 0 964 970" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="classic" data-quality-profile="showcase" data-node-ui="" data-reader-fit="intrinsic-height" data-reader-min-text="7.5" data-reader-primary-text="14" style="--flow-cycle: 3.800s; width: 964px; height: 970px; min-width: 0px;" width="964" height="970" xmlns="http://www.w3.org/2000/svg"><style>
 /*
 JetBrains Mono variable WOFF2 subsets from Google Fonts service revision v24.
 These fixed bytes are shared by the viewer and its SVG/raster exports.
@@ -447,25 +447,25 @@ svg[data-preset="editorial"] { --flow-halo-peak: 0.07; --flow-glow-peak: 0.28; -
 }
 @keyframes archify-relay-comet-4 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  3.158% { opacity: var(--flow-peak, 0.9); }
-  39.474% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  43.684%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  2.406% { opacity: var(--flow-peak, 0.9); }
+  12.03% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  16.241%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-4 { 
   0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  39.474% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
-  63.158%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  12.03% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  35.714%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-5 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
   3.158% { opacity: var(--flow-peak, 0.9); }
-  18.606% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  22.817%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  31.952% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  36.163%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-5 { 
-  0%, 5.582% { opacity: 0; }
-  18.606% { opacity: var(--flow-peak, 0.3); }
-  42.291%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  0%, 9.586% { opacity: 0; }
+  31.952% { opacity: var(--flow-peak, 0.3); }
+  55.636%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-6 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
@@ -481,13 +481,13 @@ svg[data-preset="editorial"] { --flow-halo-peak: 0.07; --flow-glow-peak: 0.28; -
 @keyframes archify-relay-comet-7 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
   3.158% { opacity: var(--flow-peak, 0.9); }
-  29.699% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
-  33.91%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+  39.474% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  43.684%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
 }
 @keyframes archify-relay-wake-7 { 
   0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
-  29.699% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
-  53.383%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+  39.474% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  63.158%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
 @keyframes archify-relay-comet-8 { 
   0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
@@ -538,15 +538,15 @@ svg[data-preset="editorial"] { --flow-halo-peak: 0.07; --flow-glow-peak: 0.28; -
 }
 @keyframes archify-relay-node-6 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
-  39.474% { filter: var(--ambient-node-base-filter, none); }
-  42.632%, 50.526% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  71.053% { filter: var(--ambient-node-base-filter, none); }
+  12.03% { filter: var(--ambient-node-base-filter, none); }
+  15.188%, 23.083% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  43.609% { filter: var(--ambient-node-base-filter, none); }
 }
 @keyframes archify-relay-node-7 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
-  18.606% { filter: var(--ambient-node-base-filter, none); }
-  21.764%, 29.659% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  50.185% { filter: var(--ambient-node-base-filter, none); }
+  31.952% { filter: var(--ambient-node-base-filter, none); }
+  35.11%, 43.005% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  63.531% { filter: var(--ambient-node-base-filter, none); }
 }
 @keyframes archify-relay-node-8 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
@@ -556,9 +556,9 @@ svg[data-preset="editorial"] { --flow-halo-peak: 0.07; --flow-glow-peak: 0.28; -
 }
 @keyframes archify-relay-node-9 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
-  29.699% { filter: var(--ambient-node-base-filter, none); }
-  32.857%, 40.752% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
-  61.278% { filter: var(--ambient-node-base-filter, none); }
+  39.474% { filter: var(--ambient-node-base-filter, none); }
+  42.632%, 50.526% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  71.053% { filter: var(--ambient-node-base-filter, none); }
 }
 @keyframes archify-relay-node-10 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
@@ -590,7 +590,7 @@ svg[data-node-ui][data-preset="editorial"] :is([data-graph-role="structural-fram
 svg[data-theme="light"] { --bg: #f4f5f7; --grid: #e9edf2; --canvas-dot: #e2e7ec; --text: #111827; --text-muted: #5b6474; --text-dim: #9aa3b2; --text-faint: #6b7280; --panel: #ffffff; --panel-border: #e5e7eb; --lane-fill: rgba(248, 250, 252, 0.65); --lane-stroke: #cbd5e1; --arrow: #64748b; --arrow-emphasis: #059669; --mask: #ffffff; --frontend-fill: rgba(34, 211, 238, 0.15); --frontend-stroke: #0891b2; --backend-fill: rgba(52, 211, 153, 0.18); --backend-stroke: #059669; --database-fill: rgba(167, 139, 250, 0.2); --database-stroke: #7c3aed; --cloud-fill: rgba(251, 191, 36, 0.18); --cloud-stroke: #d97706; --security-fill: rgba(251, 113, 133, 0.15); --security-stroke: #e11d48; --messagebus-fill: rgba(251, 146, 60, 0.15); --messagebus-stroke: #ea580c; --external-fill: rgba(148, 163, 184, 0.18); --external-stroke: #64748b; --toolbar-bg: rgba(255, 255, 255, 0.92); --toolbar-border: #cbd5e1; --toolbar-text: #334155; --toolbar-hover: #ffffff; --toolbar-menu-bg: #ffffff; --flow-cycle: ; --flow-halo-peak: ; --flow-glow-peak: ; --flow-tail-peak: ; --flow-head-peak: ; --flow-wake-peak: ; --flow-ripple-peak: ; --flow-peak: ; }
 svg[data-theme="dark"] { --bg: #020617; --grid: #1e293b; --canvas-dot: rgba(148, 163, 184, 0.16); --text: #ffffff; --text-muted: #94a3b8; --text-dim: #475569; --text-faint: #7d8da1; --panel: rgba(15, 23, 42, 0.5); --panel-border: #1e293b; --lane-fill: rgba(15, 23, 42, 0.22); --lane-stroke: #334155; --arrow: #94a3b8; --arrow-emphasis: #34d399; --mask: #0f172a; --frontend-fill: rgba(8, 51, 68, 0.4); --frontend-stroke: #22d3ee; --backend-fill: rgba(6, 78, 59, 0.4); --backend-stroke: #34d399; --database-fill: rgba(76, 29, 149, 0.4); --database-stroke: #a78bfa; --cloud-fill: rgba(120, 53, 15, 0.3); --cloud-stroke: #fbbf24; --security-fill: rgba(136, 19, 55, 0.4); --security-stroke: #fb7185; --messagebus-fill: rgba(251, 146, 60, 0.3); --messagebus-stroke: #fb923c; --external-fill: rgba(30, 41, 59, 0.5); --external-stroke: #94a3b8; --toolbar-bg: rgba(15, 23, 42, 0.8); --toolbar-border: #334155; --toolbar-text: #e2e8f0; --toolbar-hover: rgba(15, 23, 42, 0.95); --toolbar-menu-bg: #0f172a; --flow-cycle: ; --flow-halo-peak: ; --flow-glow-peak: ; --flow-tail-peak: ; --flow-head-peak: ; --flow-wake-peak: ; --flow-ripple-peak: ; --flow-peak: ; }
 rect.c-bg-rect { fill: var(--bg); }
-</style><rect x="0" y="0" width="964" height="948" class="c-bg-rect"/><metadata id="archify-software-notices">NOTICE
+</style><rect x="0" y="0" width="964" height="970" class="c-bg-rect"/><metadata id="archify-software-notices">NOTICE
 Archify
 Copyright (c) 2026 tt-a1i (Archify)
 Copyright (c) 2025 Cocoon AI
@@ -983,11 +983,11 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
 
         <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="5" data-composition-frame-label="Repository and writing" x="16" y="240" width="520" height="248" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="6" data-composition-frame-label="Skills and harness" x="560" y="240" width="264" height="248" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="6" data-composition-frame-label="Skills and harness" x="16" y="552" width="520" height="124" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="7" data-composition-frame-label="Knowledge" x="16" y="552" width="264" height="124" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="7" data-composition-frame-label="Knowledge" x="560" y="240" width="264" height="248" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="8" data-composition-frame-label="Fundamentals · 8 skills" x="0" y="224" width="840" height="452" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="8" data-composition-frame-label="Fundamentals · 9 skills" x="0" y="224" width="840" height="452" rx="12" class="c-region" stroke-width="1"/>
 
         <!-- Connection paths (before components for correct z-order) -->
         <g data-graph-role="automatic-crossover" style="--step:0">
@@ -1007,24 +1007,24 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
           <path data-edge-from="ki-repo-dotfiles-chezmoi" data-edge-to="ki-authoring" data-edge-key="3" data-edge-id="ki-repo-dotfiles-chezmoi--ki-authoring" data-composition-points="364,102;276,102;276,306;252,306" data-composition-crossover="halo" data-composition-independent="true" d="M 364 102 L 284 102 Q 276 102 276 110 L 276 298 Q 276 306 268 306 L 252 306" class="a-default" data-animate="edge" style="--step: 3;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:4">
-          <path data-graph-role="automatic-crossover-underlay" d="M 678 468 L 678 666 Q 678 674 670 674 L 156 674 Q 148 674 148 682 L 148 784" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-repo-harness" data-edge-to="ki-decision-records" data-edge-key="4" data-edge-id="ki-repo-harness--ki-decision-records" data-composition-points="678,468;678,674;148,674;148,784" data-composition-crossover="halo" data-composition-independent="true" d="M 678 468 L 678 666 Q 678 674 670 674 L 156 674 Q 148 674 148 682 L 148 784" class="a-default" data-animate="edge" style="--step: 4;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 134 656 L 134 784" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ki-repo-harness" data-edge-to="ki-decision-records" data-edge-key="4" data-edge-id="ki-repo-harness--ki-decision-records" data-composition-points="134,656;134,784" data-composition-crossover="halo" data-composition-independent="true" d="M 134 656 L 134 784" class="a-default" data-animate="edge" style="--step: 4;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:5">
-          <path data-graph-role="automatic-crossover-underlay" d="M 588 430 L 556 430 Q 548 430 548 422 L 548 314 Q 548 306 540 306 L 508 306" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-repo-harness" data-edge-to="ki-diagrams" data-edge-key="5" data-edge-id="ki-repo-harness--ki-diagrams" data-composition-points="588,430;548,430;548,306;508,306" data-composition-crossover="halo" data-composition-independent="true" d="M 588 430 L 556 430 Q 548 430 548 422 L 548 314 Q 548 306 540 306 L 508 306" class="a-dashed" data-animate="edge" style="--step: 5;" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 252 604 L 268 604 Q 276 604 276 596 L 276 314 Q 276 306 284 306 L 300 306" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ki-repo-harness" data-edge-to="ki-diagrams" data-edge-key="5" data-edge-id="ki-repo-harness--ki-diagrams" data-composition-points="252,604;276,604;276,306;300,306" data-composition-crossover="halo" data-composition-independent="true" d="M 252 604 L 268 604 Q 276 604 276 596 L 276 314 Q 276 306 284 306 L 300 306" class="a-dashed" data-animate="edge" style="--step: 5;" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:6">
-          <path data-graph-role="automatic-crossover-underlay" d="M 692 392 L 692 344" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-repo-harness" data-edge-to="ki-skills" data-edge-key="6" data-edge-id="ki-repo-harness--ki-skills" data-composition-points="692,392;692,344" data-composition-crossover="halo" data-composition-independent="true" d="M 692 392 L 692 344" class="a-default" data-animate="edge" style="--step: 6;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 252 618 L 300 618" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ki-repo-harness" data-edge-to="ki-skills" data-edge-key="6" data-edge-id="ki-repo-harness--ki-skills" data-composition-points="252,618;300,618" data-composition-crossover="halo" data-composition-independent="true" d="M 252 618 L 300 618" class="a-default" data-animate="edge" style="--step: 6;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:7">
-          <path data-graph-role="automatic-crossover-underlay" d="M 706 468 L 706 784" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-repo-harness" data-edge-to="ki-subagents" data-edge-key="7" data-edge-id="ki-repo-harness--ki-subagents" data-composition-points="706,468;706,784" data-composition-crossover="halo" data-composition-independent="true" d="M 706 468 L 706 784" class="a-default" data-animate="edge" style="--step: 7;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 162 656 L 162 672 Q 162 680 170 680 L 780 680 Q 788 680 788 688 L 788 784" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ki-repo-harness" data-edge-to="ki-subagents" data-edge-key="7" data-edge-id="ki-repo-harness--ki-subagents" data-composition-points="162,656;162,680;788,680;788,784" data-composition-crossover="halo" data-composition-independent="true" d="M 162 656 L 162 672 Q 162 680 170 680 L 780 680 Q 788 680 788 688 L 788 784" class="a-default" data-animate="edge" style="--step: 7;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:8">
-          <path data-graph-role="automatic-crossover-underlay" d="M 692 468 L 692 752 Q 692 760 684 760 L 476 760 Q 468 760 468 768 L 468 784" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-repo-harness" data-edge-to="ki-work-roadmap" data-edge-key="8" data-edge-id="ki-repo-harness--ki-work-roadmap" data-composition-points="692,468;692,760;468,760;468,784" data-composition-crossover="halo" data-composition-independent="true" d="M 692 468 L 692 752 Q 692 760 684 760 L 476 760 Q 468 760 468 768 L 468 784" class="a-default" data-animate="edge" style="--step: 8;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 148 656 L 148 712 Q 148 720 156 720 L 460 720 Q 468 720 468 728 L 468 784" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ki-repo-harness" data-edge-to="ki-work-roadmap" data-edge-key="8" data-edge-id="ki-repo-harness--ki-work-roadmap" data-composition-points="148,656;148,720;468,720;468,784" data-composition-crossover="halo" data-composition-independent="true" d="M 148 656 L 148 712 Q 148 720 156 720 L 460 720 Q 468 720 468 728 L 468 784" class="a-default" data-animate="edge" style="--step: 8;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
 
         <!-- Components -->
@@ -1056,8 +1056,20 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
         <text x="468" y="132" class="t-database" font-size="7" text-anchor="middle">R9 · CM · F3</text>
         </g>
 
-        <g id="node-ki-authoring" data-node-id="ki-authoring" data-node-label="ki-authoring" tabindex="0" role="button" aria-label="Focus ki-authoring, keystone · always on, Fundamentals · 8 skills › Repository and writing" aria-pressed="false" data-node-kind="security" data-node-sublabel="keystone · always on" data-node-tag="R4 · CM · F13" data-node-context="Fundamentals · 8 skills › Repository and writing">
-          <title>ki-authoring · keystone · always on · Fundamentals · 8 skills › Repository and writing · R4 · CM · F13</title>
+        <g id="node-ki-agentic-systems" data-node-id="ki-agentic-systems" data-node-label="ki-agentic-systems" tabindex="0" role="button" aria-label="Focus ki-agentic-systems, keystone · knowledge, Fundamentals · 9 skills › Knowledge" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="keystone · knowledge" data-node-tag="R– · C0 · F6" data-node-context="Fundamentals · 9 skills › Knowledge">
+          <title>ki-agentic-systems · keystone · knowledge · Fundamentals · 9 skills › Knowledge · R– · C0 · F6</title>
+          <rect x="588" y="392" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="588" y="392" width="208" height="76" rx="8" class="c-cloud" data-animate="node" style="--step: 2;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(594 398) scale(0.6875)">
+            <path d="M4.3 12.5h7.3a2.4 2.4 0 0 0 .2-4.8 4 4 0 0 0-7.5-1.3A3.1 3.1 0 0 0 4.3 12.5Z"/>
+          </g>
+          <text data-node-label="" x="692" y="428" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-agentic-systems</text>
+        <text x="692" y="444" class="t-muted" font-size="9" text-anchor="middle">keystone · knowledge</text>
+        <text x="692" y="460" class="t-cloud" font-size="7" text-anchor="middle">R– · C0 · F6</text>
+        </g>
+
+        <g id="node-ki-authoring" data-node-id="ki-authoring" data-node-label="ki-authoring" tabindex="0" role="button" aria-label="Focus ki-authoring, keystone · always on, Fundamentals · 9 skills › Repository and writing" aria-pressed="false" data-node-kind="security" data-node-sublabel="keystone · always on" data-node-tag="R4 · CM · F13" data-node-context="Fundamentals · 9 skills › Repository and writing">
+          <title>ki-authoring · keystone · always on · Fundamentals · 9 skills › Repository and writing · R4 · CM · F13</title>
           <rect x="44" y="268" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="44" y="268" width="208" height="76" rx="8" class="c-security" data-animate="node" style="--step: 1; --flow-node-name: archify-relay-node-4;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(50 274) scale(0.6875)">
@@ -1069,23 +1081,23 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
         <text x="148" y="336" class="t-security" font-size="7" text-anchor="middle">R4 · CM · F13</text>
         </g>
 
-        <g id="node-ki-bootstrap" data-node-id="ki-bootstrap" data-node-label="ki-bootstrap" tabindex="0" role="button" aria-label="Focus ki-bootstrap, keystone · command, Fundamentals · 8 skills" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="keystone · command" data-node-tag="R– · C0 · F3" data-node-context="Fundamentals · 8 skills">
-          <title>ki-bootstrap · keystone · command · Fundamentals · 8 skills · R– · C0 · F3</title>
-          <rect x="332" y="580" width="208" height="76" rx="8" class="c-mask"/>
-          <rect x="332" y="580" width="208" height="76" rx="8" class="c-frontend" data-animate="node" style="--step: 3;" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(338 586) scale(0.6875)">
+        <g id="node-ki-bootstrap" data-node-id="ki-bootstrap" data-node-label="ki-bootstrap" tabindex="0" role="button" aria-label="Focus ki-bootstrap, keystone · command, Fundamentals · 9 skills" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="keystone · command" data-node-tag="R– · C0 · F3" data-node-context="Fundamentals · 9 skills">
+          <title>ki-bootstrap · keystone · command · Fundamentals · 9 skills · R– · C0 · F3</title>
+          <rect x="588" y="580" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="588" y="580" width="208" height="76" rx="8" class="c-frontend" data-animate="node" style="--step: 4;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(594 586) scale(0.6875)">
             <rect x="2" y="3" width="12" height="10" rx="2"/>
             <path d="M2 6.5h12"/>
             <circle cx="4.1" cy="4.8" r=".7" class="sigil-fill"/>
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
-          <text data-node-label="" x="436" y="616" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-bootstrap</text>
-        <text x="436" y="632" class="t-muted" font-size="9" text-anchor="middle">keystone · command</text>
-        <text x="436" y="648" class="t-frontend" font-size="7" text-anchor="middle">R– · C0 · F3</text>
+          <text data-node-label="" x="692" y="616" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-bootstrap</text>
+        <text x="692" y="632" class="t-muted" font-size="9" text-anchor="middle">keystone · command</text>
+        <text x="692" y="648" class="t-frontend" font-size="7" text-anchor="middle">R– · C0 · F3</text>
         </g>
 
-        <g id="node-ki-diagrams" data-node-id="ki-diagrams" data-node-label="ki-diagrams" tabindex="0" role="button" aria-label="Focus ki-diagrams, governance · opt-in, Fundamentals · 8 skills › Repository and writing" aria-pressed="false" data-node-kind="database" data-node-sublabel="governance · opt-in" data-node-tag="R9 · CL · F8" data-node-context="Fundamentals · 8 skills › Repository and writing">
-          <title>ki-diagrams · governance · opt-in · Fundamentals · 8 skills › Repository and writing · R9 · CL · F8</title>
+        <g id="node-ki-diagrams" data-node-id="ki-diagrams" data-node-label="ki-diagrams" tabindex="0" role="button" aria-label="Focus ki-diagrams, governance · opt-in, Fundamentals · 9 skills › Repository and writing" aria-pressed="false" data-node-kind="database" data-node-sublabel="governance · opt-in" data-node-tag="R9 · CL · F8" data-node-context="Fundamentals · 9 skills › Repository and writing">
+          <title>ki-diagrams · governance · opt-in · Fundamentals · 9 skills › Repository and writing · R9 · CL · F8</title>
           <rect x="300" y="268" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="300" y="268" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 6; --flow-node-name: archify-relay-node-7;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(306 274) scale(0.6875)">
@@ -1097,8 +1109,8 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
         <text x="404" y="336" class="t-database" font-size="7" text-anchor="middle">R9 · CL · F8</text>
         </g>
 
-        <g id="node-ki-git" data-node-id="ki-git" data-node-label="ki-git" tabindex="0" role="button" aria-label="Focus ki-git, governance · opt-in, Fundamentals · 8 skills › Repository and writing" aria-pressed="false" data-node-kind="database" data-node-sublabel="governance · opt-in" data-node-tag="R17 · CM · F3" data-node-context="Fundamentals · 8 skills › Repository and writing">
-          <title>ki-git · governance · opt-in · Fundamentals · 8 skills › Repository and writing · R17 · CM · F3</title>
+        <g id="node-ki-git" data-node-id="ki-git" data-node-label="ki-git" tabindex="0" role="button" aria-label="Focus ki-git, governance · opt-in, Fundamentals · 9 skills › Repository and writing" aria-pressed="false" data-node-kind="database" data-node-sublabel="governance · opt-in" data-node-tag="R17 · CM · F3" data-node-context="Fundamentals · 9 skills › Repository and writing">
+          <title>ki-git · governance · opt-in · Fundamentals · 9 skills › Repository and writing · R17 · CM · F3</title>
           <rect x="300" y="392" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="300" y="392" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 3; --flow-node-name: archify-relay-node-5;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(306 398) scale(0.6875)">
@@ -1110,21 +1122,21 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
         <text x="404" y="460" class="t-database" font-size="7" text-anchor="middle">R17 · CM · F3</text>
         </g>
 
-        <g id="node-ki-knowledge-graph" data-node-id="ki-knowledge-graph" data-node-label="ki-knowledge-graph" tabindex="0" role="button" aria-label="Focus ki-knowledge-graph, keystone · opt-in, Fundamentals · 8 skills › Knowledge" aria-pressed="false" data-node-kind="database" data-node-sublabel="keystone · opt-in" data-node-tag="R16 · CM · F4" data-node-context="Fundamentals · 8 skills › Knowledge">
-          <title>ki-knowledge-graph · keystone · opt-in · Fundamentals · 8 skills › Knowledge · R16 · CM · F4</title>
-          <rect x="44" y="580" width="208" height="76" rx="8" class="c-mask"/>
-          <rect x="44" y="580" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 6;" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(50 586) scale(0.6875)">
+        <g id="node-ki-knowledge-graph" data-node-id="ki-knowledge-graph" data-node-label="ki-knowledge-graph" tabindex="0" role="button" aria-label="Focus ki-knowledge-graph, keystone · opt-in, Fundamentals · 9 skills › Knowledge" aria-pressed="false" data-node-kind="database" data-node-sublabel="keystone · opt-in" data-node-tag="R20 · CM · F27" data-node-context="Fundamentals · 9 skills › Knowledge">
+          <title>ki-knowledge-graph · keystone · opt-in · Fundamentals · 9 skills › Knowledge · R20 · CM · F27</title>
+          <rect x="588" y="268" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="588" y="268" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 7;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(594 274) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="148" y="616" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-knowledge-graph</text>
-        <text x="148" y="632" class="t-muted" font-size="9" text-anchor="middle">keystone · opt-in</text>
-        <text x="148" y="648" class="t-database" font-size="7" text-anchor="middle">R16 · CM · F4</text>
+          <text data-node-label="" x="692" y="304" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-knowledge-graph</text>
+        <text x="692" y="320" class="t-muted" font-size="9" text-anchor="middle">keystone · opt-in</text>
+        <text x="692" y="336" class="t-database" font-size="7" text-anchor="middle">R20 · CM · F27</text>
         </g>
 
-        <g id="node-ki-repo" data-node-id="ki-repo" data-node-label="ki-repo" tabindex="0" role="button" aria-label="Focus ki-repo, keystone · always on, Fundamentals · 8 skills › Repository and writing" aria-pressed="false" data-node-kind="security" data-node-sublabel="keystone · always on" data-node-tag="R51 · CL · F7" data-node-context="Fundamentals · 8 skills › Repository and writing">
-          <title>ki-repo · keystone · always on · Fundamentals · 8 skills › Repository and writing · R51 · CL · F7</title>
+        <g id="node-ki-repo" data-node-id="ki-repo" data-node-label="ki-repo" tabindex="0" role="button" aria-label="Focus ki-repo, keystone · always on, Fundamentals · 9 skills › Repository and writing" aria-pressed="false" data-node-kind="security" data-node-sublabel="keystone · always on" data-node-tag="R51 · CL · F7" data-node-context="Fundamentals · 9 skills › Repository and writing">
+          <title>ki-repo · keystone · always on · Fundamentals · 9 skills › Repository and writing · R51 · CL · F7</title>
           <rect x="44" y="392" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="44" y="392" width="208" height="76" rx="8" class="c-security" data-animate="node" style="--step: 1; --flow-node-name: archify-relay-node-1;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(50 398) scale(0.6875)">
@@ -1136,29 +1148,29 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
         <text x="148" y="460" class="t-security" font-size="7" text-anchor="middle">R51 · CL · F7</text>
         </g>
 
-        <g id="node-ki-repo-harness" data-node-id="ki-repo-harness" data-node-label="ki-repo-harness" tabindex="0" role="button" aria-label="Focus ki-repo-harness, repository structure · opt-in, Fundamentals · 8 skills › Skills and harness" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository structure · opt-in" data-node-tag="R27 · CL · F4" data-node-context="Fundamentals · 8 skills › Skills and harness">
-          <title>ki-repo-harness · repository structure · opt-in · Fundamentals · 8 skills › Skills and harness · R27 · CL · F4</title>
-          <rect x="588" y="392" width="208" height="76" rx="8" class="c-mask"/>
-          <rect x="588" y="392" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 4; --flow-node-name: archify-relay-node-3;" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(594 398) scale(0.6875)">
+        <g id="node-ki-repo-harness" data-node-id="ki-repo-harness" data-node-label="ki-repo-harness" tabindex="0" role="button" aria-label="Focus ki-repo-harness, repository structure · opt-in, Fundamentals · 9 skills › Skills and harness" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository structure · opt-in" data-node-tag="R27 · CL · F4" data-node-context="Fundamentals · 9 skills › Skills and harness">
+          <title>ki-repo-harness · repository structure · opt-in · Fundamentals · 9 skills › Skills and harness · R27 · CL · F4</title>
+          <rect x="44" y="580" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="44" y="580" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 4; --flow-node-name: archify-relay-node-3;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(50 586) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="692" y="428" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo-harness</text>
-        <text x="692" y="444" class="t-muted" font-size="9" text-anchor="middle">repository structure · opt-in</text>
-        <text x="692" y="460" class="t-database" font-size="7" text-anchor="middle">R27 · CL · F4</text>
+          <text data-node-label="" x="148" y="616" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo-harness</text>
+        <text x="148" y="632" class="t-muted" font-size="9" text-anchor="middle">repository structure · opt-in</text>
+        <text x="148" y="648" class="t-database" font-size="7" text-anchor="middle">R27 · CL · F4</text>
         </g>
 
-        <g id="node-ki-skills" data-node-id="ki-skills" data-node-label="ki-skills" tabindex="0" role="button" aria-label="Focus ki-skills, keystone · automatic, Fundamentals · 8 skills › Skills and harness" aria-pressed="false" data-node-kind="backend" data-node-sublabel="keystone · automatic" data-node-tag="R96 · CL · F9" data-node-context="Fundamentals · 8 skills › Skills and harness">
-          <title>ki-skills · keystone · automatic · Fundamentals · 8 skills › Skills and harness · R96 · CL · F9</title>
-          <rect x="588" y="268" width="208" height="76" rx="8" class="c-mask"/>
-          <rect x="588" y="268" width="208" height="76" rx="8" class="c-backend" data-animate="node" style="--step: 7; --flow-node-name: archify-relay-node-8;" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(594 274) scale(0.6875)">
+        <g id="node-ki-skills" data-node-id="ki-skills" data-node-label="ki-skills" tabindex="0" role="button" aria-label="Focus ki-skills, keystone · automatic, Fundamentals · 9 skills › Skills and harness" aria-pressed="false" data-node-kind="backend" data-node-sublabel="keystone · automatic" data-node-tag="R96 · CL · F9" data-node-context="Fundamentals · 9 skills › Skills and harness">
+          <title>ki-skills · keystone · automatic · Fundamentals · 9 skills › Skills and harness · R96 · CL · F9</title>
+          <rect x="300" y="580" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="300" y="580" width="208" height="76" rx="8" class="c-backend" data-animate="node" style="--step: 7; --flow-node-name: archify-relay-node-8;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(306 586) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" x="692" y="304" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-skills</text>
-        <text x="692" y="320" class="t-muted" font-size="9" text-anchor="middle">keystone · automatic</text>
-        <text x="692" y="336" class="t-backend" font-size="7" text-anchor="middle">R96 · CL · F9</text>
+          <text data-node-label="" x="404" y="616" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-skills</text>
+        <text x="404" y="632" class="t-muted" font-size="9" text-anchor="middle">keystone · automatic</text>
+        <text x="404" y="648" class="t-backend" font-size="7" text-anchor="middle">R96 · CL · F9</text>
         </g>
 
         <g id="node-ki-decision-records" data-node-id="ki-decision-records" data-node-label="ki-decision-records" tabindex="0" role="button" aria-label="Focus ki-decision-records, governance · automatic, Records and code · Records" aria-pressed="false" data-node-kind="backend" data-node-sublabel="governance · automatic" data-node-tag="R37 · CL · F9" data-node-context="Records and code · Records">
@@ -1231,8 +1243,8 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
         </g>
 
         <g data-graph-role="structural-frame-label" data-composition-frame-id="4" data-composition-frame-kind="region" data-composition-frame-label="Agentic systems · 1 skill">
-          <rect data-graph-role="structural-frame-label-mask" x="714" y="764" width="145" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="718" y="777" class="t-cloud" font-size="9" font-weight="600">Agentic systems · 1 skill</text>
+          <rect data-graph-role="structural-frame-label-mask" x="656" y="764" width="145" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="660" y="777" class="t-cloud" font-size="9" font-weight="600">Agentic systems · 1 skill</text>
         </g>
 
         <g data-graph-role="structural-frame-label" data-composition-frame-id="5" data-composition-frame-kind="region" data-composition-frame-label="Repository and writing">
@@ -1241,18 +1253,18 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
         </g>
 
         <g data-graph-role="structural-frame-label" data-composition-frame-id="6" data-composition-frame-kind="region" data-composition-frame-label="Skills and harness">
-          <rect data-graph-role="structural-frame-label-mask" x="564" y="248" width="107.2" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="568" y="261" class="t-cloud" font-size="9" font-weight="600">Skills and harness</text>
+          <rect data-graph-role="structural-frame-label-mask" x="20" y="560" width="107.2" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="24" y="573" class="t-cloud" font-size="9" font-weight="600">Skills and harness</text>
         </g>
 
         <g data-graph-role="structural-frame-label" data-composition-frame-id="7" data-composition-frame-kind="region" data-composition-frame-label="Knowledge">
-          <rect data-graph-role="structural-frame-label-mask" x="20" y="560" width="58.6" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="24" y="573" class="t-cloud" font-size="9" font-weight="600">Knowledge</text>
+          <rect data-graph-role="structural-frame-label-mask" x="564" y="248" width="58.6" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="568" y="261" class="t-cloud" font-size="9" font-weight="600">Knowledge</text>
         </g>
 
-        <g data-graph-role="structural-frame-label" data-composition-frame-id="8" data-composition-frame-kind="region" data-composition-frame-label="Fundamentals · 8 skills">
+        <g data-graph-role="structural-frame-label" data-composition-frame-id="8" data-composition-frame-kind="region" data-composition-frame-label="Fundamentals · 9 skills">
           <rect data-graph-role="structural-frame-label-mask" x="4" y="248" width="134.2" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="8" y="261" class="t-cloud" font-size="9" font-weight="600">Fundamentals · 8 skills</text>
+          <text data-boundary-label="" x="8" y="261" class="t-cloud" font-size="9" font-weight="600">Fundamentals · 9 skills</text>
         </g>
 
         <!-- Legend -->
@@ -1270,9 +1282,13 @@ been cleared for every commercial, promotional, or redistributive use.</metadata
             <rect x="413" y="923" width="16" height="10" rx="2.5" class="c-database" stroke-width="1"/>
             <text x="435" y="932" class="t-muted" font-size="10" font-weight="500">Governance · opt-in</text>
           </g>
-          <g data-legend-semantic-kind="security" data-legend-x="596" data-legend-baseline="932" data-legend-width="180">
-            <rect x="596" y="923" width="16" height="10" rx="2.5" class="c-security" stroke-width="1"/>
-            <text x="618" y="932" class="t-muted" font-size="10" font-weight="500">Governance · always on</text>
+          <g data-legend-semantic-kind="cloud" data-legend-x="596" data-legend-baseline="932" data-legend-width="180">
+            <rect x="596" y="923" width="16" height="10" rx="2.5" class="c-cloud" stroke-width="1"/>
+            <text x="618" y="932" class="t-muted" font-size="10" font-weight="500">Knowledge · on request</text>
+          </g>
+          <g data-legend-semantic-kind="security" data-legend-x="40" data-legend-baseline="954" data-legend-width="180">
+            <rect x="40" y="945" width="16" height="10" rx="2.5" class="c-security" stroke-width="1"/>
+            <text x="62" y="954" class="t-muted" font-size="10" font-weight="500">Governance · always on</text>
           </g>
         </g>
       </svg>

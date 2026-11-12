@@ -137,6 +137,20 @@ const listReferenceFiles = (referencesDirectory: string): string[] => {
   return files.sort()
 }
 
+/** The front-matter `id` of each top-level reference file that declares one: the cards of a graph held in `references/`. */
+const readReferenceIds = (referencesDirectory: string, referencePaths: readonly string[]): Record<string, string> => {
+  const ids: Record<string, string> = {}
+  for (const path of referencePaths) {
+    if (path.includes('/') || !path.endsWith('.md')) continue
+    const document = readFileSync(join(referencesDirectory, path), 'utf8').match(
+      /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/
+    )?.[1]
+    const id = document?.match(/^id:\s*['"]?([^'"\s]+)['"]?\s*$/m)?.[1]
+    if (id) ids[path] = id
+  }
+  return ids
+}
+
 const rubricFamilyModules = (
   scriptsDirectory: string
 ): {
@@ -281,6 +295,7 @@ const createKiShapeEvidence = (
     ...(localGovernanceSource ? {} : { sourceHarnessName: sourceHarnessName(skillDirectory) }),
     rubricCatalogue: existsSync(join(scriptsDirectory, 'rubric', 'items', 'index.ts')),
     referencePaths,
+    referenceIds: readReferenceIds(join(skillDirectory, 'references'), referencePaths),
     operatingModesSection: section,
     bodyModes: extractBodyModes(section),
     operatingModesIntro: section?.split(/^###\s+|^\s*\|/m)[0] ?? '',

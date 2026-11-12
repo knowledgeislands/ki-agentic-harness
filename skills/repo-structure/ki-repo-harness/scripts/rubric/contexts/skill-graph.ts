@@ -3,7 +3,12 @@
  * concern, shape and declared relationships, with the shared shape vocabulary and node naming the skill
  * map and the area diagrams both use. Shared-module packaging and coverage detection are not drawn.
  */
-import { type CapabilityApplicability, type CapabilitySource, parseCapabilitySource } from './capability-publication.ts'
+import {
+  type CapabilityApplicability,
+  type CapabilityKind,
+  type CapabilitySource,
+  parseCapabilitySource
+} from './capability-publication.ts'
 import type { FunctionalArea } from './skill-functions.ts'
 import type { SkillStats } from './skill-stats.ts'
 
@@ -11,7 +16,7 @@ export type SkillGraphNode = {
   path: string
   domain: string
   name: string
-  kind: 'governance' | 'process'
+  kind: CapabilityKind
   applicability: CapabilityApplicability
   dependsOn: readonly string[]
   optionalDependsOn: readonly string[]
@@ -42,27 +47,32 @@ export const DOMAIN_LABELS: Readonly<Record<string, string>> = {
 export const domainLabel = (domain: string): string => DOMAIN_LABELS[domain] ?? domain.replace(/-/g, ' ')
 
 /**
- * A skill's shape is its applicability, which also fixes its kind: every process skill is
- * invocation-only and no governance skill is. Every diagram draws each shape as one Archify node
- * type, so the legend reads the same on both, and names it in a plain word so meaning never rests
- * on colour alone: governance that is always on (`baseline`), automatic where its structure is
- * detected (`detected`), or opt-in by declaration (`declaration-only`), and processes run as a
- * command (`invocation-only`).
+ * A skill's shape is its applicability, which also fixes its kind for governance and process skills: every
+ * process skill is invocation-only and no governance skill is. A knowledge skill is invocation-only too, so it
+ * takes a shape of its own. Every diagram draws each shape as one Archify node type, so the legend reads the
+ * same on both, and names it in a plain word so meaning never rests on colour alone: governance that is always
+ * on (`baseline`), automatic where its structure is detected (`detected`), or opt-in by declaration
+ * (`declaration-only`), processes run as a command (`invocation-only`), and knowledge read on request.
  */
-export const SKILL_SHAPES: Readonly<
-  Record<
-    CapabilityApplicability,
-    { type: 'security' | 'backend' | 'database' | 'frontend'; word: string; legend: string }
-  >
-> = {
+type SkillShape = { type: 'security' | 'backend' | 'database' | 'frontend' | 'cloud'; word: string; legend: string }
+
+export const SKILL_SHAPES: Readonly<Record<CapabilityApplicability, SkillShape>> = {
   baseline: { type: 'security', word: 'always on', legend: 'Governance · always on' },
   detected: { type: 'backend', word: 'automatic', legend: 'Governance · automatic' },
   'declaration-only': { type: 'database', word: 'opt-in', legend: 'Governance · opt-in' },
   'invocation-only': { type: 'frontend', word: 'command', legend: 'Process · command' }
 }
 
+export const KNOWLEDGE_SHAPE: SkillShape = { type: 'cloud', word: 'knowledge', legend: 'Knowledge · on request' }
+
+/** The shape a skill is drawn in: its kind's own for a knowledge skill, otherwise its applicability's. */
+export const skillShape = (node: Pick<SkillGraphNode, 'kind' | 'applicability'>): SkillShape =>
+  node.kind === 'knowledge' ? KNOWLEDGE_SHAPE : SKILL_SHAPES[node.applicability]
+
 export const shapeLegend = (): Record<string, { label: string }> =>
-  Object.fromEntries(Object.values(SKILL_SHAPES).map((shape) => [shape.type, { label: shape.legend }]))
+  Object.fromEntries(
+    [...Object.values(SKILL_SHAPES), KNOWLEDGE_SHAPE].map((shape) => [shape.type, { label: shape.legend }])
+  )
 
 const optionalList = (content: string): readonly string[] | null => {
   const document = content.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)?.[1]

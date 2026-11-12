@@ -55,7 +55,13 @@ describe('buildSkillMap', () => {
     expect(byId.get('ki-flow')?.sublabel).toBe('governance · command')
     expect(byId.get('ki-look')?.sublabel).toBe('design · opt-in')
     expect(byId.get('ki-look')?.tag).toBeUndefined()
-    expect(Object.keys(map.meta.legend.entries).sort()).toEqual(['backend', 'database', 'frontend', 'security'])
+    expect(Object.keys(map.meta.legend.entries).sort()).toEqual([
+      'backend',
+      'cloud',
+      'database',
+      'frontend',
+      'security'
+    ])
   })
 
   test('overlays the functional areas: nested home regions and every served area in the sublabel', () => {

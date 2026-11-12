@@ -277,7 +277,8 @@ test('one stale complete root capability summary produces one numeric-only confo
   expect(item.mechanical?.audit.run(family.selectContext(context))).toEqual([
     {
       status: 'VIOLATION',
-      message: 'README.md publishes 9/8/7 total/governance/process skills; canonical skill frontmatter requires 3/3/0.',
+      message:
+        'README.md publishes 9/8/7/0 total/governance/process/knowledge skills; canonical skill frontmatter requires 3/3/0/0.',
       subject: 'README.md'
     }
   ])

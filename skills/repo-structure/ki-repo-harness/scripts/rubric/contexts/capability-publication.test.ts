@@ -12,7 +12,7 @@ const source = (
   name: string,
   overrides: {
     path?: string
-    kind?: 'governance' | 'process'
+    kind?: 'governance' | 'process' | 'knowledge'
     applicability?: 'baseline' | 'detected' | 'declaration-only' | 'invocation-only'
     detects?: readonly string[]
     description?: string
@@ -173,7 +173,7 @@ test('a non-KI provider publishes its own capabilities without republishing the 
   const draft = prepareCapabilityPublication('# Skills\n', sources, 'hnr')
   expect(draft.state).toBe('missing')
   expect(draft.issues).toEqual([])
-  expect(draft.counts).toEqual({ total: 2, governance: 1, process: 1 })
+  expect(draft.counts).toEqual({ total: 2, governance: 1, process: 1, knowledge: 0 })
   expect(prepareCapabilityPublication(draft.merged, sources, 'hnr').state).toBe('in-sync')
 })
 
@@ -201,4 +201,25 @@ test('rejects unknown dependencies and ambiguous marker layouts', () => {
       estate([source('ki-example')])
     )
   ).toEqual(expect.objectContaining({ state: 'unsafe', issues: [expect.stringContaining('ambiguous')] }))
+})
+
+test('a knowledge skill is published, counted and must be invocation-only', () => {
+  const sources = [
+    source('hnr-backend'),
+    source('hnr-review', { kind: 'process' }),
+    source('hnr-terms', { kind: 'knowledge', applicability: 'invocation-only' })
+  ]
+  const draft = prepareCapabilityPublication('# Skills\n', sources, 'hnr')
+  expect(draft.issues).toEqual([])
+  expect(draft.counts).toEqual({ total: 3, governance: 1, process: 1, knowledge: 1 })
+  expect(draft.rendered).toContain('3 skills: 1 governance skill, 1 process skill and 1 knowledge skill.')
+  expect(draft.rendered).toContain('- **Kind:** Knowledge')
+
+  const opted = prepareCapabilityPublication(
+    '# Skills\n',
+    [source('hnr-backend'), source('hnr-terms', { kind: 'knowledge', applicability: 'declaration-only' })],
+    'hnr'
+  )
+  expect(opted.state).toBe('unsafe')
+  expect(opted.issues.some((issue) => issue.endsWith('knowledge capability must be invocation-only'))).toBe(true)
 })

@@ -74,7 +74,7 @@ const CAP_3: RubricItem<CapabilitiesContext> = {
   code: 'CAP-3',
   title: 'Authored capability counts are exact',
   description:
-    'When root `README.md` carries the recognised numeric Agent Skills summary, its total, governance, and process counts match canonical skill frontmatter; a single complete stale claim is safely repairable without changing surrounding prose.',
+    'When root `README.md` carries the recognised numeric Agent Skills summary, its total, governance and process counts, and a knowledge count once a knowledge skill is published, match canonical skill frontmatter; a single complete stale claim is safely repairable without changing surrounding prose.',
   sources: STANDARD,
   mechanical: {
     level: 'FAIL',
@@ -104,7 +104,7 @@ const CAP_3: RubricItem<CapabilitiesContext> = {
           return [
             {
               status: 'VIOLATION',
-              message: `README.md publishes ${observed?.total}/${observed?.governance}/${observed?.process} total/governance/process skills; canonical skill frontmatter requires ${expected?.total}/${expected?.governance}/${expected?.process}.`,
+              message: `README.md publishes ${observed?.total}/${observed?.governance}/${observed?.process}/${observed?.knowledge} total/governance/process/knowledge skills; canonical skill frontmatter requires ${expected?.total}/${expected?.governance}/${expected?.process}/${expected?.knowledge}.`,
               subject: 'README.md'
             }
           ]

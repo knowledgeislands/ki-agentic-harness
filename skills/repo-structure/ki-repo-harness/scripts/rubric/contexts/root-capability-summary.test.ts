@@ -2,7 +2,7 @@ import { expect, test } from 'bun:test'
 import type { CapabilityCounts } from './capability-publication.ts'
 import { prepareRootCapabilitySummary } from './root-capability-summary.ts'
 
-const expected: CapabilityCounts = { total: 60, governance: 50, process: 10 }
+const expected: CapabilityCounts = { total: 60, governance: 50, process: 10, knowledge: 0 }
 const claim = (counts = expected): string =>
   `- **Skills** ([\`skills/\`](skills)) — ${counts.total} reusable [Agent Skills](https://agentskills.io/specification): ${counts.governance} governance skills that hold standards and ${counts.process} process skills that drive workflows. Keep this prose.\n`
 
@@ -17,11 +17,15 @@ test('matching, absent, and stale summaries are classified', () => {
     issues: []
   })
 
-  const stale = prepareRootCapabilitySummary(claim({ total: 57, governance: 48, process: 9 }), expected, [])
+  const stale = prepareRootCapabilitySummary(
+    claim({ total: 57, governance: 48, process: 9, knowledge: 0 }),
+    expected,
+    []
+  )
   expect(stale).toEqual({
     state: 'stale',
     issues: [],
-    observed: { total: 57, governance: 48, process: 9 },
+    observed: { total: 57, governance: 48, process: 9, knowledge: 0 },
     merged: claim()
   })
 })
@@ -36,7 +40,7 @@ test('incomplete and ambiguous numeric summaries are diagnostic', () => {
   ).toEqual({
     state: 'incomplete',
     issues: [
-      'README.md contains a numeric Agent Skills claim without the complete total, governance, and process count shape.'
+      'README.md contains a numeric Agent Skills claim without the complete total, governance, process and any knowledge count shape.'
     ]
   })
 
@@ -56,7 +60,21 @@ test('a numeric summary cannot be checked against malformed capability evidence'
 })
 
 test('repair changes only the three numeric tokens', () => {
-  const original = claim({ total: 1, governance: 2, process: 3 })
+  const original = claim({ total: 1, governance: 2, process: 3, knowledge: 0 })
   const draft = prepareRootCapabilitySummary(original, expected, [])
   expect(draft.merged?.replaceAll(/\d+/g, '#')).toBe(original.replaceAll(/\d+/g, '#'))
+})
+
+test('a knowledge count joins the claim once the harness publishes a knowledge skill', () => {
+  const withKnowledge: CapabilityCounts = { total: 61, governance: 50, process: 10, knowledge: 1 }
+  const draft = prepareRootCapabilitySummary(claim(), withKnowledge, [])
+  expect(draft.state).toBe('stale')
+  const merged =
+    '- **Skills** ([`skills/`](skills)) — 61 reusable [Agent Skills](https://agentskills.io/specification): 50 governance skills that hold standards, 10 process skills that drive workflows and 1 knowledge skill that holds a body of knowledge. Keep this prose.\n'
+  expect(draft.merged).toBe(merged)
+  expect(prepareRootCapabilitySummary(merged, withKnowledge, [])).toEqual({
+    state: 'matching',
+    issues: [],
+    observed: withKnowledge
+  })
 })

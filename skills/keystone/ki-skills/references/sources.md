@@ -1,6 +1,6 @@
 ---
 type: sources@2026-11-09T21:36:32Z
-revised: 2026-11-09T22:38:25Z
+revised: 2026-11-12T16:00:00Z
 refresh: external-spec · monthly
 ---
 
@@ -147,7 +147,10 @@ The OpenAI News page is a discovery source, not a normative standard. On each RE
 
 ## 3. Decisions
 
-None.
+| Id | Decision | Date | Backs | Status |
+| --- | --- | --- | --- | --- |
+| KNOWLEDGE-KIND | Kris's decision, in the Cairn summit's change 22: a third kind of skill, `ki-kind: knowledge`, only equips a session with a body of knowledge held as a knowledge graph; it audits and conforms nothing, publishes no rubric, its modes are EDUCATE and REFRESH, and other skills link to its cards rather than define its terms again. | 2026-11-10 | [Skill shape](standard-knowledge-islands.md#42-skill-shape), KI-SHAPE-3, KI-SHAPE-6, KI-SHAPE-19 | In force |
+| KG-HOME | Kris's decision, in the Cairn summit's change 06: a skill may hold a knowledge graph in its `references/`, as `ki-knowledge-graph` holds its own, each card named `<id>.md` beside a `_graph.md` root definition. | 2026-11-12 | [Skill shape](standard-knowledge-islands.md#42-skill-shape), KI-SHAPE-6 | In force |
 
 [Back to contents](#contents)
 

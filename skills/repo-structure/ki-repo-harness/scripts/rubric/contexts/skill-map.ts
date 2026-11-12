@@ -13,10 +13,10 @@ import { areaGroupTitle, areasOf, FUNCTIONAL_AREAS, homeOf } from './skill-funct
 import {
   componentId,
   domainLabel,
-  SKILL_SHAPES,
   type SkillGraphNode,
   type SkillGraphOptions,
-  shapeLegend
+  shapeLegend,
+  skillShape
 } from './skill-graph.ts'
 
 export const SKILL_MAP_PATH = 'docs/diagrams/skill-map.architecture.json'
@@ -104,7 +104,7 @@ export const buildSkillMap = (nodes: readonly SkillGraphNode[], options: SkillGr
     /* Each group fills its own rows, in the concern's shape order, and the next group starts below it. */
     for (const group of groups) {
       group.members.forEach((node, index) => {
-        const shape = SKILL_SHAPES[node.applicability]
+        const shape = skillShape(node)
         components.push({
           id: componentId(node.name),
           type: shape.type,

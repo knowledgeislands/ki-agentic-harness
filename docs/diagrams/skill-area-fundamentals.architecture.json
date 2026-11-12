@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "ef8c367b46344904f9b1002e6dc5fce71d3dff4b"
+      "revision": "0bb75ac911fd11faf0d19db2f7bf344efa393ab3"
     },
     "legend": {
       "mode": "auto",
@@ -24,6 +24,9 @@
         },
         "frontend": {
           "label": "Process · command"
+        },
+        "cloud": {
+          "label": "Knowledge · on request"
         }
       }
     }
@@ -70,6 +73,26 @@
       ]
     },
     {
+      "id": "ki-agentic-systems",
+      "type": "cloud",
+      "label": "ki-agentic-systems",
+      "sublabel": "keystone · knowledge",
+      "sources": [
+        {
+          "path": "skills/keystone/ki-agentic-systems/SKILL.md"
+        }
+      ],
+      "tag": "R– · C0 · F6",
+      "pos": [
+        588,
+        392
+      ],
+      "size": [
+        208,
+        76
+      ]
+    },
+    {
       "id": "ki-authoring",
       "type": "security",
       "label": "ki-authoring",
@@ -101,7 +124,7 @@
       ],
       "tag": "R– · C0 · F3",
       "pos": [
-        332,
+        588,
         580
       ],
       "size": [
@@ -159,10 +182,10 @@
           "path": "skills/keystone/ki-knowledge-graph/SKILL.md"
         }
       ],
-      "tag": "R16 · CM · F4",
+      "tag": "R20 · CM · F27",
       "pos": [
-        44,
-        580
+        588,
+        268
       ],
       "size": [
         208,
@@ -201,8 +224,8 @@
       ],
       "tag": "R27 · CL · F4",
       "pos": [
-        588,
-        392
+        44,
+        580
       ],
       "size": [
         208,
@@ -221,8 +244,8 @@
       ],
       "tag": "R96 · CL · F9",
       "pos": [
-        588,
-        268
+        300,
+        580
       ],
       "size": [
         208,
@@ -355,13 +378,14 @@
       "kind": "region",
       "label": "Knowledge",
       "wraps": [
-        "ki-knowledge-graph"
+        "ki-knowledge-graph",
+        "ki-agentic-systems"
       ],
       "pad": 28
     },
     {
       "kind": "region",
-      "label": "Fundamentals · 8 skills",
+      "label": "Fundamentals · 9 skills",
       "wraps": [
         "ki-repo",
         "ki-authoring",
@@ -370,6 +394,7 @@
         "ki-skills",
         "ki-repo-harness",
         "ki-knowledge-graph",
+        "ki-agentic-systems",
         "ki-bootstrap"
       ],
       "pad": 44
@@ -446,7 +471,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "8 skills, 3 outside prerequisites, 2 outside dependents, 8 composition and 1 optional edges, read from SKILL.md frontmatter.",
+        "9 skills, 3 outside prerequisites, 2 outside dependents, 8 composition and 1 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

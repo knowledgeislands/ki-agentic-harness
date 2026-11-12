@@ -260,7 +260,7 @@ describe('explicit skill kind metadata', () => {
 
     expect(result.skill?.governanceSkill).toBe(false)
     expect(result.outcomes).toEqual([
-      { status: 'PASS', message: 'the skill declares an explicit governance or process kind' }
+      { status: 'PASS', message: 'the skill declares an explicit governance, process or knowledge kind' }
     ])
   })
 
@@ -273,7 +273,10 @@ describe('explicit skill kind metadata', () => {
 
     expect(result.skill?.governanceSkill).toBe(false)
     expect(result.outcomes).toEqual([
-      { status: 'VIOLATION', message: 'missing required `ki-kind: governance | process` frontmatter metadata' }
+      {
+        status: 'VIOLATION',
+        message: 'missing required `ki-kind: governance | process | knowledge` frontmatter metadata'
+      }
     ])
   })
 })

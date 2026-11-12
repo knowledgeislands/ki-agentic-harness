@@ -142,6 +142,8 @@ export type KiShapeSkillContext = {
   scriptNames: readonly string[]
   rubricCatalogue: boolean
   referencePaths: readonly string[]
+  /** Front-matter ids of top-level reference files that declare one, keyed by reference path. */
+  referenceIds: Readonly<Record<string, string>>
   operatingModesSection: string | null
   bodyModes: ReadonlySet<string>
   operatingModesIntro: string
@@ -238,6 +240,7 @@ const emptyKiShapeSkill: KiShapeSkillContext = {
   scriptNames: [],
   rubricCatalogue: false,
   referencePaths: [],
+  referenceIds: {},
   operatingModesSection: null,
   bodyModes: new Set(),
   operatingModesIntro: '',
