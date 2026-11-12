@@ -22,11 +22,15 @@ A diagram of what each open standard connects: MCP an [agent][industry.agent] to
 - **Figure:** [agentic-standards.svg][svg], with the [interactive viewer][html].
 - **Source and regeneration:** [its Archify source][src] and its table in the harness's [diagram manifest][manifest].
 
-The specification cards it points to, `spec.mcp`, `spec.acp`, `spec.ahp` and `spec.a2a`, are pending.
+The specification cards it points to, [MCP][spec.mcp], [ACP][spec.acp], [AHP][spec.ahp] and [A2A][spec.a2a], are proposals; CARD-CHANNEL took option A, the industry's words, so the diagram's channel labels are to be redrawn in them.
 
 [industry.agent]: ./industry.agent.md
 [industry.client]: ./industry.client.md
 [industry.agent-host]: ./industry.agent-host.md
+[spec.mcp]: ./spec.mcp.md
+[spec.acp]: ./spec.acp.md
+[spec.ahp]: ./spec.ahp.md
+[spec.a2a]: ./spec.a2a.md
 [svg]: https://github.com/knowledgeislands/ki-agentic-harness/blob/main/docs/diagrams/agentic-standards.svg
 [html]: https://github.com/knowledgeislands/ki-agentic-harness/blob/main/docs/diagrams/agentic-standards.html
 [src]: https://github.com/knowledgeislands/ki-agentic-harness/blob/main/docs/diagrams/agentic-standards.architecture.json

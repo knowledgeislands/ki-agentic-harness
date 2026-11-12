@@ -42,6 +42,9 @@ The vendors' own documentation and the specifications the cards follow, checked 
 | **[A4]** [Anthropic, Agent SDK overview](https://code.claude.com/docs/en/agent-sdk/overview) | Agent harness and agent: the Agent SDK, Managed Agents, "Claude Agent" branding | 2026-11-12 |
 | **[A5]** [Anthropic, Subagents](https://code.claude.com/docs/en/sub-agents) | Subagent: Claude Code's subagents | 2026-11-12 |
 | **[A6]** [Anthropic, Extend Claude with skills](https://code.claude.com/docs/en/skills) | Skill: Claude Code's skills on the Agent Skills open standard; descriptions in context, bodies on use; custom commands merged into skills | 2026-11-12 |
+| **[A7]** [Anthropic, Claude Code channels](https://code.claude.com/docs/en/channels) | Channel card (proposal): "an MCP server that pushes events into your running Claude Code session"; integrations start a new session; research preview | 2026-11-12 |
+| **[A8]** [Anthropic, Cross-session messaging](https://code.claude.com/docs/en/cross-session-messaging) | Channel and peer agent cards (proposals): one session messaging another; "Peer address" | 2026-11-12 |
+| **[A9]** [Anthropic, Agent teams](https://code.claude.com/docs/en/agent-teams) | Peer agent card (proposal): teammates, each "a full, independent Claude Code session", messaging each other; experimental | 2026-11-12 |
 | **[O1]** [OpenAI, Models](https://learn.chatgpt.com/docs/models.md) | Model: current GPT models | 2026-11-12 |
 | **[O2]** [OpenAI, Workspace model availability](https://learn.chatgpt.com/docs/enterprise/workspace-model-availability.md) | Model: models still listed | 2026-11-12 |
 | **[O3]** [OpenAI, Unlocking the Codex harness](https://openai.com/index/unlocking-the-codex-harness/) | Agent harness: "Codex harness", 4 February 2026; refused the fetcher, title and date from search results | 2026-11-12 |
@@ -63,6 +66,7 @@ The vendors' own documentation and the specifications the cards follow, checked 
 | **[G6]** [Google, Jules changelog](https://jules.google/docs/changelog/) | Agent and session: Jules wind-down notice of 29 October 2026; task and Session | 2026-11-12 |
 | **[G7]** [Google, Gemini CLI subagents](https://geminicli.com/docs/core/subagents/) | Subagent: Gemini CLI's subagents, which cannot call other subagents, and its remote subagents over A2A | 2026-11-12 |
 | **[G8]** [Google, Agent Skills in Gemini CLI](https://geminicli.com/docs/cli/skills/) | Skill: Gemini CLI's Agent Skills, activated by `activate_skill`, against GEMINI.md | 2026-11-12 |
+| **[G9]** [Google, ADK collaborative workflows](https://adk.dev/workflows/collaboration/) | Peer agent card (proposal): "peer agents" in a parallel workflow, used descriptively | 2026-11-12 |
 | **[M1]** [Microsoft, MAI models](https://microsoft.ai/models/) | Model: Microsoft's own models | 2026-11-12 |
 | **[M2]** [GitHub, Copilot supported models](https://docs.github.com/en/copilot/reference/ai-models/supported-models) | Model: the models Copilot serves | 2026-11-12 |
 | **[M3]** [VS Code, Build with agents](https://code.visualstudio.com/docs/copilot/agents/overview) | Agent harness, agent and session: VS Code's harnesses, agent mode and agent session | 2026-11-12 |
@@ -154,6 +158,7 @@ The vendors' own documentation and the specifications the cards follow, checked 
 | CARD-CLIENT | Kris's decision: a client is a window onto a session an agent host owns; a session can have several, and one program can be both agent host and client. | 2026-11-12 | [client](industry.client.md) | In force |
 | VENDORS-MORE | Kris's decision: Orca and Zed Industries join the vendor subgraphs. | 2026-11-12 | [Orca runtime](orca.runtime.md), [Orca app](orca.app.md), [Zed](zed.zed.md) | In force |
 | DIAGRAM-RESOURCE | Kris's decision: a diagram of the terms is a resource, addressable directly by a card of its own that says what it shows and where the diagram and its regeneration prompt live. | 2026-11-12 | [the root definition](_graph.md), the `diagram.` cards | In force |
+| CARD-CHANNEL | Kris's decision, given for every high-confidence recommendation: a, the industry's words only; a channel pushes events from outside into a running session, with integration and session-to-session messaging as cards of their own under the ways into a session. The card's wording is still a proposal. | 2026-11-12 | [channel](industry.channel.md) | In force |
 
 [Back to contents](#contents)
 

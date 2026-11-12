@@ -47,9 +47,10 @@ Read them in order:
 
 Pending, in this order and not yet defined here:
 
-1. Channel.
-2. Agent team, tool, instruction file and plugin.
-3. The system's own terms: rig, actor, title, role, package, worker, seat, and the KI harness's new name.
+1. Channel, drafted as a [proposal](references/industry.channel.md) under CARD-CHANNEL's option A, the industry's words; then integration and session-to-session messaging, under a card for the ways into a session.
+2. The agent kinds beside the subagent, drafted as proposals: the [peer agent](references/industry.peer-agent.md) and the [remote agent](references/industry.remote-agent.md).
+3. Agent team, tool, instruction file and plugin.
+4. The system's own terms: rig, actor, title, role, package, worker, seat, and the KI harness's new name, with a [naming proposal](references/naming-proposal.md) for Kris's review.
 
 ### Specification cards
 
