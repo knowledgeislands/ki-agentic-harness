@@ -78,7 +78,7 @@ The report heading and form line, the banner and its thread line, the mark, the 
 
 ### Weighing what to do
 
-Everything a session wants to do carries three weights, and one rule says what it does alone, what it puts to the node above and what it settles first. Kris took them on 11 November 2026 under TREE-WORKING, and narrowed the second rule on 12 November under 04-RULE2 a, in the Cairn summit's [change 04](https://github.com/krisb/ki-cairn-store/blob/main/work/cairn/cairn.summit/04-weighing-open-points.change.md).
+Everything a session wants to do carries three weights, and one rule says what it does alone, what it puts to the node above and what it settles first. Kris took them on 11 November 2026 under TREE-WORKING, and narrowed the second rule on 12 November under 04-RULE2 a, in the Cairn summit's [change 04](https://github.com/krisb/ki-cairn-store/blob/8e4746657458d41bc47aeba994cde9412e08a535/work/cairn/cairn.summit/04-weighing-open-points.change.md).
 
 - **Benefit:** how much it helps or opens up: high, medium or low.
 - **Cascade:** how far its effects spread and how hard they are to put back: contained, within the session's package and easily put back, or wide, reaching other packages, a standard, shared data, credentials or anything published.

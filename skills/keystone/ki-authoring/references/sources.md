@@ -71,7 +71,7 @@ Advisory sources inform local judgment conventions but are not specifications, m
 | FORMATS-CHANGE | A change document carries front matter with its status, inputs and outputs in place of `Base:` and `Touches:`, and has seven sections ending in Open, which empties before it is done. | 2026-11-09 | [change format](standard-formats-change.md) | In force |
 | FORMATS-SOURCES | A skill's sources file records its outside sources and its decisions, each decision given an id when it lands and kept when superseded. | 2026-11-09 | [sources format](standard-formats-sources.md) | In force |
 | LINK-ROOT | Kris's word, relayed by the Cairn summit's guardian: a relative link never leaves its repository's root; another repository is linked by its web address on the default branch. | 2026-11-12 | [links](standard-markdown.md#46-links) | In force |
-| TREE-WORKING | Kris's word, relayed by the Cairn summit's guardian: a change's questions carry three weights, benefit, cascade and confidence, and what they wait on, and each step what it waits on, from the Cairn summit's [change 04](https://github.com/krisb/ki-cairn-store/blob/main/work/cairn/cairn.summit/04-weighing-open-points.change.md) | 2026-11-11 | [change format](standard-formats-change.md#43-shape) | In force |
+| TREE-WORKING | Kris's word, relayed by the Cairn summit's guardian: a change's questions carry three weights, benefit, cascade and confidence, and what they wait on, and each step what it waits on, from the Cairn summit's [change 04](https://github.com/krisb/ki-cairn-store/blob/8e4746657458d41bc47aeba994cde9412e08a535/work/cairn/cairn.summit/04-weighing-open-points.change.md) | 2026-11-11 | [change format](standard-formats-change.md#43-shape) | In force |
 
 [Back to contents](#contents)
 
