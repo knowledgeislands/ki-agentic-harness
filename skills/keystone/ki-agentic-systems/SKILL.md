@@ -50,7 +50,7 @@ Pending, in this order and not yet defined here:
 1. Channel, drafted as a [proposal](knowledge/industry/industry.channel.md) under CARD-CHANNEL's option A, the industry's words; then integration and session-to-session messaging, under a card for the ways into a session.
 2. The agent kinds beside the subagent, drafted as proposals: the [peer agent](knowledge/industry/industry.peer-agent.md) and the [remote agent](knowledge/industry/industry.remote-agent.md).
 3. Agent team, tool, instruction file and plugin.
-4. The system's own terms: rig, actor, title, role, package, worker, seat, and the KI harness's new name, with a [naming proposal](references/naming-proposal.md) for the owner's review.
+4. The system's own terms (NAMES): rig, actor, work package and role, and backpack, the KI harness's own name, mapped onto plugin. Title, seat and worker go. What is still open is decided in the Cairn summit's change 23.
 
 ### Specification cards
 
