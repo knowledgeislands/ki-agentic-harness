@@ -105,7 +105,7 @@ sources → standard → structured rubric
 Each layer has one responsibility:
 
 - `sources.md` records the provenance behind the standard and when moving sources were last reviewed.
-- `standards-<topic>.md` files state what good looks like and why, separating portable, house, and rubric-authoring concerns.
+- `standard-<topic>.md` files state what good looks like and why, separating portable, house, and rubric-authoring concerns.
 - Structured rubric families and items make the standard assessable. They are the sole authored source for criterion identity, classification, prose, source citations, mode phasing, and executable behaviour.
 - The `ki` rubric host validates the catalogue and session, plans and executes mechanical AUDIT or audit-gated CONFORM actions, derives fixed findings, and owns safe publication. It MUST NOT define criteria of its own or pretend to evaluate judgment aspects.
 - Host reporting renders the resulting findings without changing what was checked.
@@ -130,7 +130,7 @@ scripts/
       subjects.ts              # operation-scoped RubricSession
 assets/
 references/
-  standards-<topic>.md         # one or more normative references
+  standard-<topic>.md          # one or more normative references
   rubric.md                    # generated readable publication
   sources.md                   # provenance and refresh state
   exemplars.md                 # optional worked examples
@@ -159,7 +159,7 @@ Assess these boundaries, recording whether each difference is intentional concer
 
 - **Governed entrypoint** — `scripts/rubric/items/index.ts` is the sole host-loaded entrypoint and default-exports one `SkillRubricDefinition`.
 - **Rubric structure and publication** — contexts, family catalogues, generated `references/rubric.md`, provenance, citations, and exact publication-parity evidence remain aligned with the structured catalogue.
-- **Reference set** — every top-level Markdown reference is a justified `standards-<topic>.md`, `rubric.md`, `sources.md`, `exemplars.md`, or one-mode-only `mode-<verb>.md`; templates live in `assets/`, and nested, combined-mode, or ad hoc guide, contract, and format names are absent.
+- **Reference set** — every top-level Markdown reference is a justified `standard-<topic>.md`, `rubric.md`, `sources.md`, `exemplars.md`, or one-mode-only `mode-<verb>.md`; templates live in `assets/`, and nested, combined-mode, or ad hoc guide, contract, and format names are absent.
 - **Public script surface** — every `scripts/*.ts` file is still a necessary public command with help, error handling, and focused tests; private, shared, rubric, and host-owned behaviour lives at its proper boundary.
 - **Host boundary and shared modules** — private domain code stays local; a consumer imports only the materialised rubric type contract; generic runtime behaviour remains in `tools-ki`.
 - **Safe writes and external boundaries** — mutation scope, dry-run, idempotence, symlink handling, atomicity, and subprocess boundaries have evidence proportionate to their risk.

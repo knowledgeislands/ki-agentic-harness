@@ -87,8 +87,8 @@ Out of scope by design, with their natural homes:
 
 Keep this skill a thin router so growth has one obvious shape:
 
-1. Add `references/standards-<topic>.md` holding the **judgment** rules only — state each rule with its _why_, justify why the topic deserves its own standard, and name what is left to the mechanical toolchain.
+1. Add `references/standard-<topic>.md`, in the [standard format](references/standard-formats-standard.md), holding the **judgment** rules only — state each rule with its _why_, justify why the topic deserves its own standard, and name what is left to the mechanical toolchain.
 2. Add one entry to the **Convention sets** list above with a one-line "covers" and the link.
-3. Update the `description`'s "Currently covers …" clause so the new set surfaces at selection time.
+3. Add the topic to the list of what the `description` governs, so the new set surfaces at selection time.
 
 Mutually-exclusive sets stay in separate files so an unrelated set never loads. If a set has a clear off-ramp to another skill, name it in the "Out of scope" list rather than absorbing it here.
