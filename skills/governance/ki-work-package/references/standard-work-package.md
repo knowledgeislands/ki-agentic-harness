@@ -203,13 +203,13 @@ The body has exactly this heading sequence, with an optional one-line `## Values
 ## Changes
 ```
 
-- **Goals** - the standing goals of the work, stable across its waves, as few as it needs. For Project work the first line links the Project note's `outcome` and never restates it; for regular work it links the Activity note; for territory work, the Charter. Links point upward: the package names its Project, and the Project note never links down.
-- **Scope** - `In:` and `Out:` lines naming what the work takes and what belongs to which other work, by id, and a line saying the package works mainly in the repositories `repositories:` names and may still change others. This is what State of play reads when two descriptions both match.
+- **Goals** - the node's **direction**: the standing goals of the work, stable across its waves, as few as it needs. For Project work the first line links the Project note's `outcome` and never restates it; for regular work it links the Activity note; for territory work, the Charter. Links point upward: the package names its Project, and the Project note never links down.
+- **Scope** - the node's **remit**: `In:` and `Out:` lines, In naming what the work may decide and do, and Out what goes up or belongs to which other work, by id, and a line saying the package works mainly in the repositories `repositories:` names and may still change others. This is what State of play reads when two descriptions both match.
 - **Values** - optional: one line linking the shared values in the Work Process note and adding any the work holds itself, as Kris chose VALUES-HOME a) on 7 November 2026: "Write them once in the Work Process note under an Enactment record, and give each `work.md` an optional one-line `## Values` section linking them and adding any of its own."
 - **Now** and **Held** - the state's body, under [4.5](#45-the-state).
 - **Changes** - a link to every change document and every sub-package, one list item each, saying in a line what it is and where it stands.
 
-Each section says something, if only `None`. Nothing else belongs in the entry file: no history, evidence or discussion.
+Each section says something, if only `None`. Nothing else belongs in the entry file: no history, evidence or discussion. Direction and remit need no section of their own (REMIT-IN-INDEX): a node's way of working is part of its remit, changed by the node where the change reaches only it and its children, and proposed up the tree where it reaches wider, as Kris took on 11 November 2026 in the Cairn summit's [change 00](https://github.com/krisb/ki-cairn-store/blob/main/work/cairn/cairn.summit/00-authority-tree.change.md).
 
 [Back to contents](#contents)
 
