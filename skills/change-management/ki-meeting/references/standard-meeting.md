@@ -1,6 +1,6 @@
 ---
 type: standard@2026-11-09T21:36:32Z
-revised: 2026-11-13T17:19:10Z
+revised: 2026-11-13T23:20:00Z
 status: in force
 ---
 
@@ -121,7 +121,7 @@ A meeting runs by this standard and by its type's.
 
 ### 4.4 Where a meeting is kept
 
-1. **A folder per meeting** at `meetings/<node id>/<date>-<slug>/`, with no territory folder, in the store the work tree lives in; today that is the Cairn store, whose contract says who keeps its `meetings/`. `<node id>` is the node's work id and `<date>` the day the meeting is called.
+1. **A folder per meeting** at `meetings/<node id>/<date>-<slug>/`, with no territory folder, in the store the work tree lives in; today that is the Cairn store, whose contract says who keeps its `meetings/`. `<node id>` is the node's work id and `<date>` the day the meeting is called. This is the current depth. The first trial's folder, `meetings/cairn.wayfinder.designs/`, predates it and keeps its place until it closes; a reader takes both.
 2. **The folder holds:**
    - `_index.md`, the entry file, never `README.md`;
    - `messages/`, one file per message;
@@ -135,7 +135,30 @@ A meeting runs by this standard and by its type's.
 
 ### 4.5 The entry file
 
-The caller makes the folder and writes `_index.md`. Setting a meeting up and briefing it are one thing. In order:
+The caller makes the folder and writes `_index.md`. Setting a meeting up and briefing it are one thing. It opens with a front matter block that tools read (MEETINGS-SOURCE), kept by the caller and changed at each roll call, adjournment and close:
+
+```yaml
+---
+meeting: cairn.wayfinder.designs   # the folder's name
+kind: workshop                     # workshop | review | retrospective
+sitting: C                         # the current or last sitting
+status: open                       # open | adjourned | closed, the meeting closed after its last sitting
+opened: 2026-11-13T22:29Z          # when this sitting opened, from date -u
+closed:                            # when this sitting was adjourned or the meeting closed
+participants:                      # those who answered this sitting's roll call
+  - role: warden                   # its messages' <from>, lower-case kebab-case
+    name: Wayland                  # its name, where the owner has given one
+    host: orca                     # its agent host, spelt as the roster spells hosts
+    rig: sol
+    route: host                    # host | folder | exchange, as 4.6 numbers them
+  - role: information-architect
+    host: claude-desktop
+    rig: sol
+    route: folder
+---
+```
+
+A tool reads this block and the message file names ([4.8](#48-messages)), and nothing else in the folder. The owner is not listed; the owner is at every meeting. Then, in order:
 
 1. **Summary,** kept current: where the meeting stands, the decisions it has led to, and what comes next.
 2. **Brief:** why the meeting exists, what it should produce, the change document that will hold its decisions, and what participants work from.
@@ -168,7 +191,7 @@ How participants reach each other, three levels, the first that works:
 ### 4.8 Messages
 
 1. **One file per message** in `messages/`, never edited once written.
-2. **Named** `<YYYYMMDD>T<HHMM>Z-<from>-<subject>.md` from `date -u`, so the folder lists in order and two messages in one minute stay distinct.
+2. **Named** `<YYYYMMDD>T<HHMM>Z-<from>-<subject>.md` from `date -u`, so the folder lists in order and two messages in one minute stay distinct. `<from>` is the sender's `role` in the entry file's front matter ([4.5](#45-the-entry-file)), exactly, since tools read who posted when from the name; a message the owner carries keeps the role of the participant it is from.
 3. **Each opens** with who it is from, who it is for, and the message it answers, if any; then what changed, in plain words; the files it points to, by their path in the folder; and a closing `Asks:` naming who must do what.
 4. **Open asks.** The caller keeps them in the entry file and ticks each off when it is answered, so nothing asked is lost.
 

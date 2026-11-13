@@ -67,6 +67,7 @@ Kris took each decision below as recommended, unless the Status says otherwise. 
 | MEET-SKILL | The meeting standard becomes a skill of its own, `ki-meeting`, holding the standard and one standard per type of meeting. | 2026-11-13 | [meeting](standard-meeting.md) | In force |
 | MEET-CHAIR | The caller chairs; the chair need not hold the package the meeting serves; the package's holder records outcomes from the chair's minutes. | 2026-11-13 | [meeting](standard-meeting.md#42-who-calls-keeps-and-owns-a-meeting) | Proposed, awaiting Kris's word |
 | MEET-BUSY | Briefs posted whole; no one waits on a reply; nothing left stopped on a choice only Kris can make. | 2026-11-13 | [meeting](standard-meeting.md#410-a-busy-participant) | Proposed, awaiting Kris's word |
+| MEETINGS-SOURCE | Cairn reads `meetings/` read only: the entry file's front matter block, kept by the caller, and the message file names, whose `<from>` is the sender's role there. | 2026-11-13 | [meeting](standard-meeting.md#45-the-entry-file) | In force |
 
 [Back to contents](#contents)
 
