@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "0bb75ac911fd11faf0d19db2f7bf344efa393ab3"
+      "revision": "3e3f85acaf5811f1bdc096fc09fbc90aa5f6ee37"
     },
     "legend": {
       "mode": "auto",
@@ -153,6 +153,26 @@
       ]
     },
     {
+      "id": "ki-meeting",
+      "type": "frontend",
+      "label": "ki-meeting",
+      "sublabel": "change management · command",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-meeting/SKILL.md"
+        }
+      ],
+      "tag": "R– · C0 · F5",
+      "pos": [
+        556,
+        268
+      ],
+      "size": [
+        208,
+        76
+      ]
+    },
+    {
       "id": "ki-trade",
       "type": "frontend",
       "label": "ki-trade",
@@ -164,7 +184,7 @@
       ],
       "tag": "R– · C0 · F1",
       "pos": [
-        588,
+        844,
         392
       ],
       "size": [
@@ -184,7 +204,7 @@
       ],
       "tag": "R16 · CL · F3",
       "pos": [
-        588,
+        844,
         268
       ],
       "size": [
@@ -287,7 +307,8 @@
         "ki-delegation",
         "ki-work-package",
         "ki-coordination",
-        "ki-work-design"
+        "ki-work-design",
+        "ki-meeting"
       ],
       "pad": 28
     },
@@ -302,12 +323,13 @@
     },
     {
       "kind": "region",
-      "label": "Coordination · 6 skills",
+      "label": "Coordination · 7 skills",
       "wraps": [
         "ki-delegation",
         "ki-work-package",
         "ki-coordination",
         "ki-work-design",
+        "ki-meeting",
         "ki-trades",
         "ki-trade"
       ],
@@ -391,7 +413,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "6 skills, 1 outside prerequisite, 4 outside dependents, 5 composition and 5 optional edges, read from SKILL.md frontmatter.",
+        "7 skills, 1 outside prerequisite, 4 outside dependents, 5 composition and 5 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

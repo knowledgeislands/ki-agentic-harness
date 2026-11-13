@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 69 skills: 56 governance skills, 12 process skills and 1 knowledge skill. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 70 skills: 56 governance skills, 13 process skills and 1 knowledge skill. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -164,6 +164,16 @@ Deliver one approved Ready local work record from immutable baseline through ver
 - **Kind:** Process
 - **Applicability:** Invocation Only
 - **Arguments:** `implement <work-item> | help`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-meeting`
+
+Call, hold and close a meeting: a room at one node of the work tree where named participants, each reaching it by the first route that works, make, review or look back on something together, in sittings with a roll call, one file per message, check-ins and minutes, while decisions go to a change document. Use to call a meeting, open, adjourn or join a sitting, or close one, and to choose a workshop, review or retrospective; use `ki-coordination` for coordinating work and its reports, and `ki-work-package` for the package a meeting serves.
+
+- **Kind:** Process
+- **Applicability:** Invocation Only
+- **Arguments:** `adjourn <meeting> | call <node id> <slug> | close <meeting> | help | join <meeting> | sit <meeting>`
 - **Dependencies:** None
 - **Runtime:** Portable
 

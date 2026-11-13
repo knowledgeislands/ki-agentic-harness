@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "0bb75ac911fd11faf0d19db2f7bf344efa393ab3"
+      "revision": "3e3f85acaf5811f1bdc096fc09fbc90aa5f6ee37"
     },
     "legend": {
       "mode": "auto",
@@ -394,6 +394,25 @@
       ]
     },
     {
+      "id": "ki-meeting",
+      "type": "frontend",
+      "label": "ki-meeting",
+      "sublabel": "coordination · command",
+      "sources": [
+        {
+          "path": "skills/change-management/ki-meeting/SKILL.md"
+        }
+      ],
+      "pos": [
+        240,
+        656
+      ],
+      "size": [
+        200,
+        60
+      ]
+    },
+    {
       "id": "ki-work-design",
       "type": "frontend",
       "label": "ki-work-design",
@@ -404,7 +423,7 @@
         }
       ],
       "pos": [
-        240,
+        448,
         656
       ],
       "size": [
@@ -1470,6 +1489,7 @@
       "label": "Coordination · Delegation and programme",
       "wraps": [
         "ki-coordination",
+        "ki-meeting",
         "ki-work-design"
       ],
       "pad": 10
@@ -1501,9 +1521,10 @@
     },
     {
       "kind": "region",
-      "label": "Change Management · 13 skills",
+      "label": "Change Management · 14 skills",
       "wraps": [
         "ki-coordination",
+        "ki-meeting",
         "ki-work-design",
         "ki-work",
         "ki-work-github-issues",
@@ -1711,7 +1732,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "69 skills in 8 concerns and 10 functional areas: 2 always on, 19 automatic, 35 opt-in, 13 commands.",
+        "70 skills in 8 concerns and 10 functional areas: 2 always on, 19 automatic, 35 opt-in, 14 commands.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills owns the kind and applicability fields it reads."
       ]
     }
