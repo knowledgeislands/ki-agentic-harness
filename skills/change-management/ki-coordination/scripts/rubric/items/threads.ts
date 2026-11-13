@@ -170,11 +170,12 @@ const COORD_5: RubricItem<CoordinationRubricContext> = {
   code: 'COORD-5',
   title: 'coordinators park tangents, link records and keep checkouts current',
   description:
-    "A coordinator parks passing side topics as dated one-line items under `discussions.md`'s `## Parked`, cites and links every record, work file, theme and Project by full identifier and local path, and fast-forward pulls affected clean primary checkouts after background agents push. Commit each complete unit and finished package change by explicit path before its turn ends; sync after each finished change and at least every 15 minutes. Push everything stacked on main, including other sessions' commits, fast-forward only, never forced or with --no-verify, stopping on divergence. Conflict repair belongs to a bounded isolated run that rebases only this work's unpublished commits and stops on other content, uncertain ownership or judgement.",
+    "A coordinator parks passing side topics as dated one-line items under `discussions.md`'s `## Parked`, cites and links every record, work file, theme and Project by full identifier and local path, and fast-forward pulls affected clean primary checkouts after background agents push. Commit each complete unit and finished package change by explicit path before its turn ends; sync after each finished change and at least every 15 minutes. Push everything stacked on main, including other sessions' commits, fast-forward only, never forced or with --no-verify, stopping on divergence. Conflict repair belongs to a bounded isolated run that rebases only this work's unpublished commits and stops on other content, uncertain ownership or judgement. High-confidence or reversible work lands on main without waiting for the owner, a pull request only where something major is at stake and destructive work only on the owner's word, and the session that did the work writes its record as it lands, one for each unattended run or batch that lands real work and none for a session spent deciding.",
   sources: [
     'standards-mark.md#parking-tangents',
     `${REPORTING}#linking-records`,
-    'standards-sync.md#keeping-primary-checkouts-current'
+    'standards-sync.md#keeping-primary-checkouts-current',
+    'standards-sync.md#landing-then-review'
   ],
   judgment: {
     scope: 'Coordinator transcripts, status lines, reports, summaries and work files the owner selects for review.',
