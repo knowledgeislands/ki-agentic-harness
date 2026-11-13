@@ -99,7 +99,7 @@ Every seat takes exactly one role from this table, and this table is the one pla
 | governor | leaders | 🏛️ | Heads one territory: its State of play, priorities, dispatch, the admission of its managers and the queries it brings to Kris; convenes its council | Outranks another territory's governor, decides for another territory, or does its managers' or makers' work |
 | councillor | leaders | 🗳️ | A further leader's share of one territory's decisions, by its governor's grant, and its vote in the council and in admissions | Heads the territory, acts outside it, or decides alone what the council holds |
 | quartermaster | leaders | 🧰 | The island's tools and MCP servers, kept working, released and accounted for, from its own secondary State of play | Decides how a tool must behave, which is the guild's, heads the territory, or releases without Kris |
-| agoranomos | leaders | 🏺 | The state of every work package in the Agora store, from `agora.sop.main`, the root of its work tree | Does a package's own work, which is its seat's, or acts on a change document before Kris's word |
+| guardian | leaders | 🪨 | The state of every work package in the Cairn store, from `cairn.summit`, the root of its work tree | Does a package's own work, which is its seat's, or acts on a change document before Kris's word |
 | warden | managers | ⚒️ | One Project: its package, records, runs and queue, from Ready to delivery awaiting acceptance | Sets priority across Projects, accepts its own delivery, or works outside its Project |
 | steward | managers | 📋 | One regular package's standing work, within its standing grants | Takes up Project delivery or territory dispatch, or acts past its grants instead of taking the exception up |
 | housekeeper | managers | 🏠 | One machine's health and its match with the declared setup: applies, drift, doctor findings and the installs Kris decides | Changes another machine, or changes the tooling and standards it applies |
@@ -110,7 +110,7 @@ Every seat takes exactly one role from this table, and this table is the one pla
 | illustrator | makers | 🎨 | Visual design and its artefacts for a handed-off piece | Takes work no seat handed it, or reports to Kris directly |
 | architect | makers | 📐 | Information architecture: the structure, naming and models of a handed-off piece | Takes work no seat handed it, or reports to Kris directly |
 
-Every `<territory>.sop.main` seat is its territory's governor; councillor is kept for any further leader, as Kris took SOP-MAIN-GOVERNOR a) under ROLES-WRITE on 7 November 2026. The quartermaster's seat is `ki.sop.tools`, KI > SoP (tools), a secondary State of play under `ki.sop.main`, as Kris set under QUARTERMASTER-SOP on 7 November 2026: "the actual quartermaster should be ki.sop.tools, and it should live as a leader". The agoranomos's seat is `agora.sop.main`, the root of the Agora store's work tree, as Kris took AGORANOMOS-ROLE on 10 November 2026. Each role glyph differs from every other and from the banner's state and line glyphs under `ki-coordination`'s [Banner](../../../change-management/ki-coordination/references/standards-coordination.md#banner).
+Every `<territory>.sop.main` seat is its territory's governor; councillor is kept for any further leader, as Kris took SOP-MAIN-GOVERNOR a) under ROLES-WRITE on 7 November 2026. The quartermaster's seat is `ki.sop.tools`, KI > SoP (tools), a secondary State of play under `ki.sop.main`, as Kris set under QUARTERMASTER-SOP on 7 November 2026: "the actual quartermaster should be ki.sop.tools, and it should live as a leader". The guardian's seat is `cairn.summit`, the root of the Cairn store's work tree: Kris took the role as the agoranomos under AGORANOMOS-ROLE on 10 November 2026, and renamed it the guardian, glyph 🪨, under ROOT-ROLE and THREAD-GLYPH a on 11 November 2026. Each role glyph differs from every other and from the banner's state and line glyphs under `ki-coordination`'s [Banner](../../../change-management/ki-coordination/references/standards-coordination.md#banner).
 
 [Back to contents](#contents)
 
@@ -142,7 +142,7 @@ A package records its role and its live seats in its entry file, `_index.md`, as
 | `status` | optional | `active` or `idle` |
 | `listening` | optional | `on` or `off` |
 
-An entry carries nothing else. The seat's name is never stored: it is derived from its role's glyph and the work id, as the [thread line](#46-thread-line) sets out. An entry carries no session address, vendor session id or host, under the work-package standard's [prohibited payloads](standard-work-package.md#416-prohibited-payloads-and-claims), as Kris answered WORKERS-URI on 7 November 2026: "Drop it". A reader that needs to find a seat's live session, such as Agora, reads the uncommitted machine-local thread binding `~/.local/state/ki/threads/<repository>/<slug>.json`, never the package. The `ki-work-package` rubric's RECORD-2 checks every value against this catalogue, reading the table in [4.3](#43-role-catalogue) at audit time, so the checker holds no copy of it.
+An entry carries nothing else. The seat's name is never stored: it is derived from its role's glyph and the work id, as the [thread line](#46-thread-line) sets out. An entry carries no session address, vendor session id or host, under the work-package standard's [prohibited payloads](standard-work-package.md#416-prohibited-payloads-and-claims), as Kris answered WORKERS-URI on 7 November 2026: "Drop it". A reader that needs to find a seat's live session, such as Cairn, reads the uncommitted machine-local thread binding `~/.local/state/ki/threads/<repository>/<slug>.json`, never the package. The `ki-work-package` rubric's RECORD-2 checks every value against this catalogue, reading the table in [4.3](#43-role-catalogue) at audit time, so the checker holds no copy of it.
 
 [Back to contents](#contents)
 
@@ -175,15 +175,15 @@ The same string appears on each surface:
 
 These are the role-catalogue brief's rules as they stand today; the admission gate, vote and seat folders land with the later seat rules.
 
-1. Only a seat with a role in this catalogue may join Agora; Agora tells an unrecognised session the path in: take a role, or ask the tier above.
-2. Agora members put being available for messages before doing work themselves, and hand work down to makers or their own pack.
+1. Only a seat with a role in this catalogue may join Cairn; Cairn tells an unrecognised session the path in: take a role, or ask the tier above.
+2. Cairn members put being available for messages before doing work themselves, and hand work down to makers or their own pack.
 3. Admission goes one tier up within scope: a maker asks its package's managers, a manager its territory's leaders. Quorum is no objection and at least 75% of that tier's live members voting; one live member is a quorum alone; a vote short of quorum after about two hours goes to Kris.
 4. Authority follows the [tiers](#42-tiers).
 5. A package's keyholder creates the seats it needs and ends them when they are no longer needed, even mid-work.
 6. Naming migrates incrementally: a seat corrects its name the next time it takes up its role, and each governor brings its territory's packages into line, under [the role migration file](standards-roles-migration.md).
 7. In web addresses, package and seat are separate query parameters, as in `package=ki.sop.main&seat=governor`.
 8. One ratification round for today's seats: each declares its tier and role, and the tier above confirms, cascading through each territory's governor.
-9. The guildmaster owns the role model as skills; `ki.prj.agora` builds the admission gate and vote into Agora; the guildmaster and the librarian together carry islands, guilds and the library into the Knowledge Islands concept.
+9. The guildmaster owns the role model as skills; `ki.cairn` builds the admission gate and vote into Cairn; the guildmaster and the librarian together carry islands, guilds and the library into the Knowledge Islands concept.
 10. There is one library, `ki.reg.library`; a territory gets its own only if it needs one.
 11. Each territory's council is its governor and any councillors. Matters that cross territories go to the governors together. No governor outranks another; `ki.sop.main`'s governor only convenes and records.
 12. "Assistant" and "liaison" are not roles: whatever Kris is talking to is his point of contact in that capacity.

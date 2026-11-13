@@ -24,7 +24,7 @@ const STRUCTURE_2: RubricItem<StructureContext> = {
   code: 'STRUCTURE-2',
   title: 'earlier copies of packages are listed',
   description:
-    'A retired working area, `+/_WORK/`, `+/_WORK_REVIEW/`, `+/_THREADS/` or `+/_CHECKPOINTS/`, left in a declaring repository holds earlier copies of packages. Each is listed for its owner, who moves any live package to `work/<territory>/<id>/` in the Agora store; the listing is never permission to delete.',
+    'A retired working area, `+/_WORK/`, `+/_WORK_REVIEW/`, `+/_THREADS/` or `+/_CHECKPOINTS/`, left in a declaring repository holds earlier copies of packages. Each is listed for its owner, who moves any live package to `work/<territory>/<id>/` in the Cairn store; the listing is never permission to delete.',
   sources: [`${SOURCE}#410-the-tidy`],
   mechanical: {
     level: 'WARN',

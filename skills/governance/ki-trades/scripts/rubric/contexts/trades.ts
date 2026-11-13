@@ -492,7 +492,7 @@ const unavailableMessage = (capital: string): string => `territory policy lives 
 /**
  * Resolve the trade policy through the local repository's own declared `capital`: the unique
  * registered checkout declaring that repository, which must be a Capital listing this member.
- * A Capital resolves its own policy. No Agora and no territory scan is consulted.
+ * A Capital resolves its own policy. No Cairn store and no territory scan is consulted.
  */
 const resolvePolicy = (local: Declaration, registered: readonly RegisteredRepository[]): PolicyResolution => {
   const capital = local.capital

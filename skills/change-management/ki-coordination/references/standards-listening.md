@@ -10,7 +10,7 @@ This file holds the inbox watch, the two session capabilities and host sync. It 
   - Every couple of minutes it fetches and fast-forwards local `main` silently and compares the Git object of the work's `messages.md` with the one it started from, reading no content.
   - It exits only on news: a new line in `messages.md`, a run in this coordinator's group finishing, or a pull that cannot fast-forward, which needs a resolve.
   - It has no timed bound while idle, so a quiet period brings no wake, no tool calls and no chat line.
-  - Polling is the baseline. AHP may later replace the polling, and only the polling, for an agent host the `ki-agentic-radar` radar shows supports it, under [The Agora Beacon](standards-messages.md#the-agora-beacon).
+  - Polling is the baseline. AHP may later replace the polling, and only the polling, for an agent host the `ki-agentic-radar` radar shows supports it, under [The Cairn Beacon](standards-messages.md#the-cairn-beacon).
 - **At a wake:** speak only about what landed. On a new line, act on it under [Messages between work](standards-messages.md#messages-between-work), commit, re-arm and tell the owner in one timed line what was done. On a finished run, receive it in one timed line and re-arm.
 - **One loop:** a coordinator never holds more than one loop. After a compaction or a recovery it checks whether one is armed before arming another.
 - **Session-bound:** the watcher lives and dies with the session. It is a session wake, not a scheduled agent, and promises nothing once the session closes. A runtime with no proven way for the watcher's exit to wake the session checks the inbox only at owner messages and run events, and shows not listening.
@@ -53,6 +53,6 @@ It mentions a tidy only when something needs the owner. It never edits another p
 
 **Host sync.** The coordinator is its Mac's sync thread. It repeats each pass until the Mac and GitHub are clean and level, or something needs judgement, and only then waits for its next slot. A quiet pass says nothing, a pass that changed something says at most one short line, and only a matter for judgement or the owner gets a full report. Host sync implies listening.
 
-The banner shows only the listening status, `👂 listening` or `🔇 not listening`. Host sync has no banner line, because Agora keeps the machines in sync through each machine's household package; the `syncing_enabled` and `syncing_status` fields stay in `state.md`.
+The banner shows only the listening status, `👂 listening` or `🔇 not listening`. Host sync has no banner line, because Cairn keeps the machines in sync through each machine's household package; the `syncing_enabled` and `syncing_status` fields stay in `state.md`.
 
 Sources: THREAD-CAPABILITIES, FOOTER-CAPABILITY-STATUS-2, LISTEN-OPT-IN, LISTEN-TENDS-PACKAGE, SYNC-UNTIL-CLEAN, SYNC-QUIET, SYNC-LINE-OFF and REPLY-FORMAT in [the decision register](sources.md#decision-register).

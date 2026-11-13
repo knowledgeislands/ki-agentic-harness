@@ -34,7 +34,7 @@ status: in force
 
 ## 1. Introduction
 
-A work package is the folder for one piece of work above a work item: its entry file, `_index.md`, and its change documents, with sub-packages of the same shape where the work has more than one strand. It lives in the Agora store, at `work/<territory>/<work id>/`. The entry file is enough to recover from: a fresh agent, or State of play routing new work, pointed at it knows where the work stands without a transcript, private runtime state or a vendor session. Git is the logbook: each move is a commit, so the package keeps no moves list and no history. The decisions behind these rules are in [the sources file](sources.md#3-decisions).
+A work package is the folder for one piece of work above a work item: its entry file, `_index.md`, and its change documents, with sub-packages of the same shape where the work has more than one strand. It lives in the Cairn store, at `work/<territory>/<work id>/`. The entry file is enough to recover from: a fresh agent, or State of play routing new work, pointed at it knows where the work stands without a transcript, private runtime state or a vendor session. Git is the logbook: each move is a commit, so the package keeps no moves list and no history. The decisions behind these rules are in [the sources file](sources.md#3-decisions).
 
 The work model is the [Work Process](https://github.com/knowledgeislands/ki-principal/blob/main/Pillars/Philosophy/Model/Processes/Work%20Process/Work%20Process.md) note's, decided by [GDR-KI-PRINCIPAL-009](https://github.com/knowledgeislands/ki-principal/blob/main/Admin/Governance/Decisions/GDR-KI-PRINCIPAL-009-the-work-model.md). The skill was `ki-checkpoint` until Kris answered WORK-FOLDER-NAME on 18 October 2026, read back as `ki-work-folder`, and became `ki-work-package` when Kris answered on 19 October 2026, "I want `ki-work-package` please, where it lives is a folder", read back as PACKAGE-NAME. The session-level checkpoint remains the conversational word for writing the package's state before a pause.
 
@@ -58,10 +58,10 @@ What a work package holds, where it lives, and how it is kept.
 
 - The contents of the work itself.
 - The format of a change document: `ki-authoring`'s [change format](../../../keystone/ki-authoring/references/standard-formats-change.md).
-- How messages and presence are stored: the Agora store's contract and its MCP.
+- How messages and presence are stored: the Cairn store's contract and its MCP.
 - When a package is tidied, the levels, states and moves, and the report forms: `ki-coordination`.
 - The run side, briefs and run reports included: `ki-delegation`.
-- How sessions share the Agora store, how its history is squashed, and how `ki` and the hooks find packages in it. These are not yet set.
+- How sessions share the Cairn store, how its history is squashed, and how `ki` and the hooks find packages in it. These are not yet set.
 
 [Back to contents](#contents)
 
@@ -96,13 +96,13 @@ This standard is the one specification of the work package, as Kris answered WOR
 | The run packet, with run briefs and reports, and how a session delegates to its agent host's subagents | `ki-delegation` |
 | The format of a change document | `ki-authoring` |
 | A change document's review and graduation | `ki-work-design` |
-| Messages and presence between work | The Agora store and its MCP |
+| Messages and presence between work | The Cairn store and its MCP |
 
 [Back to contents](#contents)
 
 ### 4.2 Location and identity
 
-A work package lives in the Agora store, at `work/<territory>/<work id>/`, one per piece of work above a work item; where the store sits on each rig is whatever that rig sets. A work item has no package, because its record is its home. `<work id>` is the work's dotted id under `ki-coordination`'s [Work naming](../../../change-management/ki-coordination/references/standards-opening.md#work-naming), which defines the id, slug and title: lower-case kebab segments joined by `.`, never a host, an underscore or a runtime session identifier. `<territory>` is the id's first segment. The folder name, the `id` field of `_index.md` and its H1 agree exactly.
+A work package lives in the Cairn store, at `work/<territory>/<work id>/`, one per piece of work above a work item; where the store sits on each rig is whatever that rig sets. A work item has no package, because its record is its home. `<work id>` is the work's dotted id under `ki-coordination`'s [Work naming](../../../change-management/ki-coordination/references/standards-opening.md#work-naming), which defines the id, slug and title: lower-case kebab segments joined by `.`, never a host, an underscore or a runtime session identifier. `<territory>` is the id's first segment. The folder name, the `id` field of `_index.md` and its H1 agree exactly.
 
 `work/` holds only territory folders, and each territory folder only packages, each a physical directory with its entry file. Symlinked, timestamped, archived and alternate layouts are invalid; the one nesting is a [sub-package](#47-sub-packages). There is no holding area for work awaiting review, as Kris set under WORK-REVIEW-RETIRE on 8 November 2026: live work is a package, and work that is not live is deleted, Git keeping its history.
 
@@ -265,7 +265,7 @@ A sub-package is one strand of a package's work: a package in miniature, with it
 
 ### 4.8 Messages
 
-Messages between work live in the Agora store, through its MCP; a package keeps no message queue of its own. Who may send, how a coordinator acts on a message and route receipt are `ki-coordination`'s [Messages between work](../../../change-management/ki-coordination/references/standards-messages.md#messages-between-work).
+Messages between work live in the Cairn store, through its MCP; a package keeps no message queue of its own. Who may send, how a coordinator acts on a message and route receipt are `ki-coordination`'s [Messages between work](../../../change-management/ki-coordination/references/standards-messages.md#messages-between-work).
 
 Owner feedback on a document the work produced arrives as a message, as Kris set under FEEDBACK-AS-MESSAGE on 31 October 2026: "we can probably drop the feedback idea. We just send a message with it instead". A message carrying the owner's words quotes them word for word, naming the owner as speaker; any later reading of the feedback, what a point means or where it is homed, goes to the change document the point reaches.
 
@@ -344,7 +344,7 @@ A runtime-specific reminder consumer is separately opt-in. It may act only when 
 
 1. The repository declares `ki-work-package` and resolves to one physical repository root.
 2. The runtime adapter is explicitly enabled in that runtime's own configuration; the portable `ki-work-package` declaration remains an empty capability marker.
-3. The adapter receives one exact, human-selected work id from that explicit runtime configuration. It resolves only `work/<territory>/<id>/_index.md` in the Agora store; directory scans, newest-record selection, runtime-derived names, and archived or nested fallback are forbidden.
+3. The adapter receives one exact, human-selected work id from that explicit runtime configuration. It resolves only `work/<territory>/<id>/_index.md` in the Cairn store; directory scans, newest-record selection, runtime-derived names, and archived or nested fallback are forbidden.
 4. The resolved record is a regular file that satisfies this standard's identity and closed-schema requirements.
 
 The only first-delivery action is a compact reminder that the already-selected package may need an explicit update. The consumer does not create, update, remove, select, or reword a package file; infer work state or completion; invoke `ki-recap`; read a transcript or vendor session; or expose a session identifier. Repeated, interrupted, malformed, unknown, absent, or otherwise unsafe input is a quiet no-op. The native runtime adapter owns its event semantics, registration, timeout, exit behaviour, and any actionable failure text; the portable contract supplies no shared hook or fallback.
@@ -368,7 +368,7 @@ An update that hands work to a fresh agent follows this lifecycle and nothing el
 The manual portable flow is deliberately small:
 
 1. Require the user-selected work id or, from an opener, the Project slug.
-2. Resolve to one exact package, `work/<territory>/<id>/` in the Agora store. If no folder, or more than one, matches, stop and ask the human which package is meant.
+2. Resolve to one exact package, `work/<territory>/<id>/` in the Cairn store. If no folder, or more than one, matches, stop and ask the human which package is meant.
 3. Read `_index.md` in full and validate the package's identity and schema; open a change document or sub-package when the work in hand lies in it.
 4. Act on its state as `ki-coordination`'s Picking work up sets it, its messages first, and continue from its Now.
 

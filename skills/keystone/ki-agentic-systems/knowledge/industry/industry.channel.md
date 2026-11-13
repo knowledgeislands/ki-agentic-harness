@@ -40,7 +40,7 @@ Sessions messaging one another are a fourth thing, which Anthropic call **cross-
 
 ## Our conventions
 
-Cairn's messages between sessions on Kris's rigs, sent through the Agora MCP, are session-to-session messaging under option A, not channels; a Cairn notice pushed into a running session would be a channel.
+Cairn's messages between sessions on Kris's rigs, sent through the Cairn MCP, are session-to-session messaging under option A, not channels; a Cairn notice pushed into a running session would be a channel.
 
 [industry.session]: ./industry.session.md
 [industry.client]: ./industry.client.md

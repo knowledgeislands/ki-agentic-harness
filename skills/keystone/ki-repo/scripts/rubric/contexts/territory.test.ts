@@ -351,7 +351,7 @@ describe('territorial enforcement', () => {
     `${capitalConfig([...members].sort(), '', ENFORCING_CAPITAL)}${prefix}`
   const member = repo(MEMBER, `capital = "${ENFORCING_CAPITAL}"\n`)
 
-  test('canonical Knowledge Islands membership enforces the Capital and every listed member without an Agora table', () => {
+  test('canonical Knowledge Islands membership enforces the Capital and every listed member without a Cairn table', () => {
     const capital = policy([ENFORCING_CAPITAL, MEMBER])
     register(checkout(capital))
     expect(territoryEvidence(member, '/x').enforcingTerritory).toBe(true)
@@ -361,7 +361,7 @@ describe('territorial enforcement', () => {
     expect(territoryEvidence(capital, '/x').enforcingTerritory).toBe(true)
   })
 
-  test('handles and obsolete Agora rosters cannot widen or suppress enforcement', () => {
+  test('handles and obsolete Cairn rosters cannot widen or suppress enforcement', () => {
     register(
       checkout(
         `${capitalConfig([CAPITAL, MEMBER])}territory_prefix = "ki"\n\n[skills.ki-agora.kis]\nmembers = ["${MEMBER}"]\n`

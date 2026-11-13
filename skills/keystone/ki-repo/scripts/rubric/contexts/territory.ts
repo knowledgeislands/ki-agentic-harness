@@ -9,7 +9,7 @@ import type { RepoEvidenceFinding } from './audit.ts'
  * A repository names its territory Capital in `[skills.ki-repo].capital`; a Capital names
  * itself and alone declares `territory_name` and `territory_members` there. Agreement is checked only through
  * the local ki registry and the `.ki.toml` files of registered checkouts. Nothing here
- * scans the filesystem or consults an Agora.
+ * scans the filesystem or consults the Cairn store.
  */
 
 const CANONICAL_REPOSITORY =
@@ -137,7 +137,7 @@ export type TerritoryEvidence = {
   enforcingTerritory?: boolean
 }
 
-/** Enforcement uses canonical territorial identity and membership, never short handles or Agora rosters. */
+/** Enforcement uses canonical territorial identity and membership, never short handles or Cairn rosters. */
 const inEnforcingTerritory = (capital: Checkout | Declaration, repository: string): boolean =>
   isCapital(capital) && capital.repository === ENFORCING_CAPITAL && members(capital).includes(repository)
 

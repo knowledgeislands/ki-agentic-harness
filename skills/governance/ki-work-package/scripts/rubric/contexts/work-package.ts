@@ -642,7 +642,7 @@ const relationshipEvidence = (packages: readonly Package[], evidence: Evidence):
 const earlierCopies = (root: string): AuditOutcome[] =>
   EARLIER_AREAS.filter((area) => existsSync(join(root, '+', area))).map((area) => ({
     status: 'VIOLATION',
-    message: `+/${area}/ is a retired working area: each live package in it moves to work/<territory>/<id>/ in the Agora store, and the earlier copy is removed only on its owner's word`,
+    message: `+/${area}/ is a retired working area: each live package in it moves to work/<territory>/<id>/ in the Cairn store, and the earlier copy is removed only on its owner's word`,
     subject: `+/${area}`
   }))
 

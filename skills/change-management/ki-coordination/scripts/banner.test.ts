@@ -275,7 +275,7 @@ test('With worker names the hold or handoff it is heading for in its own line be
 // whether or not the thread is listening to messages or not, whether it's draining". A drain and a hold stop listening.
 // Under REPLY-FORMAT, agreed on 7 November 2026, every banner before Finished shows the listening line, `🔇 not
 // listening` by default. Kris removed the sync line under SYNC-LINE-OFF, about 18:00 GMT on 4 November 2026: "remove the
-// sync mode line from the banner entirely", as Agora keeps machines in sync.
+// sync mode line from the banner entirely", as Cairn keeps machines in sync.
 test('every banner before Finished shows the listening line, on or off, and never a sync line', () => {
   expect('👂 listening').toMatch(LISTEN_LINE)
   expect('🔇 not listening').toMatch(LISTEN_OFF_LINE)
@@ -635,7 +635,7 @@ test("a reply's structure, which its trigger chooses, sets whether it ends with 
 // SUMMARY-MODEL, approved by Kris with immediate effect on 4 November 2026 and
 // relayed as SUMMARY-NOW: the mark is only a timestamp, and one Summary form
 // replaces the Summary, recap and full summary, superseding MARK-STATUS's
-// table after the queries. Its footer's art and lines are Agora's (FOOTER-AGORA).
+// table after the queries. Its footer's art and lines are Cairn's (FOOTER-AGORA).
 // Under REPLY-FORMAT its section is `## Summary`, with no time.
 test('the Summary runs its summary, the two-column status table, the queries in full, then the footer', () => {
   const summary = standard.slice(standard.indexOf('### The Summary'), standard.indexOf('## Coordinating work'))
