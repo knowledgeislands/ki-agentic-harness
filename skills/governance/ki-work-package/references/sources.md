@@ -66,6 +66,7 @@ The phase 1 work package format change, agreed by Kris on 9 November 2026, gives
 | PACKAGE-MESSAGES | Messages between work live in the Agora store, through its MCP; a package keeps no message queue of its own. | 2026-11-09 | [work package](standard-work-package.md#48-messages) | In force |
 | AGORANOMOS-ROLE | The agoranomos joins the role catalogue as a leader, glyph 🏺, keeping the state of every work package in the Agora store from `agora.sop.main`, the root of its work tree. | 2026-11-10 | [roles](standard-roles.md#43-role-catalogue) | In force |
 | PACKAGE-TIDY | The tidy's ten steps bring each package to the shape, ending with a rubric check and a short report. | 2026-11-09 | [work package](standard-work-package.md#410-the-tidy) | In force |
+| TITLE-DROP | A package's `_index.md` carries no `title` field; its id and its place in the tree name it, and a view works out a place's words from them (TITLE-WORDS). Kris, relayed by the Cairn summit's guardian from the summit's [change 43](https://github.com/krisb/ki-cairn-store/blob/main/work/cairn/cairn.summit/43-work-package-format-2.change.md). | 2026-11-13 | [work package](standard-work-package.md#44-the-entry-file) | In force |
 
 [Back to contents](#contents)
 

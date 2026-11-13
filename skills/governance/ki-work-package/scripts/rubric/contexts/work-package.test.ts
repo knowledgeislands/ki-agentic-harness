@@ -41,7 +41,6 @@ const BASE_FIELDS = (id: string): Record<string, string> => ({
   id: `id: ${id}`,
   parent: 'parent: ki.sop.main',
   level: 'level: regular',
-  title: "title: 'KI > Pilot'",
   description: 'description: Pilots the package shape. Takes pilot units. Not for other work.',
   worker: 'worker: agent',
   supervisor: 'supervisor: owner',

@@ -141,7 +141,6 @@ A package's entry file is `_index.md`, so it sorts first, as Kris set under INDE
 id: ki.prj.observatory
 parent: ki.sop.main
 level: project
-title: 'KI > Model > Observatory'
 project: observatory
 theme: model
 description: >-
@@ -171,7 +170,6 @@ The definition's field set is closed; the state fields of [4.5](#45-the-state) s
 | --- | --- | --- |
 | `id` | required | the work's dotted id, agreeing with its folder |
 | `level` | required | `territory`, `regular` or `project` |
-| `title` | required | the work's title under Work naming, a non-empty single-line string |
 | `label` | optional | title with an inventory host or category requirement suffix; never a session seat |
 | `project` | required at `project` level, else absent | the Project note's slug, typed id's third segment |
 | `theme` | optional | a theme page's slug, or `null` |
@@ -236,7 +234,7 @@ The state lives in `_index.md`: its state fields, at most five Now lines, Held a
 | `syncing_status` | required while `syncing_enabled` is `true`, else absent | `on` while host sync runs, `off` otherwise |
 | `workers` | optional | the package's live seats, each a mapping of `role` and `tier` and at most `since`, `status` and `listening`, under [the role standard's fields](standard-roles.md#45-role-fields); absent or empty when no seat is live |
 
-The holder the work lies with now and its role are derived from `state`, `target`, `worker` and `supervisor`, never stored. Timestamps use UTC RFC 3339 second precision; quote `title` and `label` in YAML because they contain `>`. The four capability fields record the thread capabilities under `ki-coordination`'s [Thread capabilities](../../../change-management/ki-coordination/references/standards-listening.md#thread-capabilities), as Kris set under FOOTER-CAPABILITY-STATUS-2, relayed on 1 November 2026: each thread carries `listening_enabled`, `listening_status`, `syncing_enabled` and `syncing_status`, and if `syncing_enabled` is true, `listening_enabled` must be true, because a syncing thread is always a listening thread. `_enabled` says whether the thread has the capability; `_status` says whether it is on now, and the banner's mode lines read both. These are the fields the Work Process note's Observatory fields read through `ki work status`. `method_read` replaces the body line a coordinator once wrote under its refresh rule; setting it is the confirmation that a `REFRESH` message has been acted on, under `ki-coordination`'s [Refreshing this guidance](../../../change-management/ki-coordination/references/standards-coordination.md#refreshing-this-guidance).
+The holder the work lies with now and its role are derived from `state`, `target`, `worker` and `supervisor`, never stored. Timestamps use UTC RFC 3339 second precision; quote `label` in YAML where it contains `>`. There is no `title` field: a package's id and its place in the tree name it, and a view works out its words from them (TITLE-DROP and TITLE-WORDS, Kris, 13 November 2026). The four capability fields record the thread capabilities under `ki-coordination`'s [Thread capabilities](../../../change-management/ki-coordination/references/standards-listening.md#thread-capabilities), as Kris set under FOOTER-CAPABILITY-STATUS-2, relayed on 1 November 2026: each thread carries `listening_enabled`, `listening_status`, `syncing_enabled` and `syncing_status`, and if `syncing_enabled` is true, `listening_enabled` must be true, because a syncing thread is always a listening thread. `_enabled` says whether the thread has the capability; `_status` says whether it is on now, and the banner's mode lines read both. These are the fields the Work Process note's Observatory fields read through `ki work status`. `method_read` replaces the body line a coordinator once wrote under its refresh rule; setting it is the confirmation that a `REFRESH` message has been acted on, under `ki-coordination`'s [Refreshing this guidance](../../../change-management/ki-coordination/references/standards-coordination.md#refreshing-this-guidance).
 
 - **Now** - at most five lines: what is running, what lies with whom, since when. It holds the present only.
 - **Held** - work waiting on a named decision or event, one line each with its release condition. Deferred deliverable work becomes an unadopted triage record in its home repository under `ki-next`'s [capture rule](../../../change-management/ki-next/references/standards-next-work.md#capture-substantive-prospective-work), as Kris took HELD-VS-RECORD a) on 7 November 2026, and ideas go to the Project note's Notes or to a record through `ki-next`; neither stays here.
@@ -309,7 +307,7 @@ The pass each package receives to reach the shape, and to keep it:
 2. **Consolidate.** Keep only what is current. Delete anything whose outcome has a lasting home: a commit, a record, a standard or `AGENTS.md`. Git keeps the history.
 3. **Sub-packages.** Each strand of work becomes a sub-package with its own `_index.md` and change documents, or its changes come up to the top where the package has one strand. Retire one that has ended; merge ones that overlap.
 4. **No empty folders.**
-5. **Identity.** `_index.md`'s `id`, `level`, `role`, title and H1 match the package's current work id and the role catalogue.
+5. **Identity.** `_index.md`'s `id`, `level`, `role` and H1 match the package's current work id and the role catalogue.
 6. **The state is now.** At most five Now lines, waiting items under Held, live seats under `workers`, no history.
 7. **Every open point is in a change document's Open section,** in full, and nothing already answered.
 8. **Every rule has a home.** A decision that changes how work is done goes into the standard that owns the practice or, if local to one repository, that repository's `AGENTS.md`.

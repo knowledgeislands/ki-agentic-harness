@@ -42,7 +42,7 @@ const WORK_ID = new RegExp(`^${KEBAB}(?:\\.${KEBAB})*$`)
 const SLUG = new RegExp(`^${KEBAB}$`)
 const HOLDER = new RegExp(`^(?:owner|agent|(?:run|person|repo)/[A-Za-z0-9_.-]+|work/${KEBAB}(?:\\.${KEBAB})*)$`)
 /** The definition fields of `_index.md`, each required one listed first. */
-const DEFINITION_REQUIRED = ['id', 'level', 'title', 'description', 'worker', 'supervisor', 'repositories'] as const
+const DEFINITION_REQUIRED = ['id', 'level', 'description', 'worker', 'supervisor', 'repositories'] as const
 const DEFINITION_FIELDS: readonly string[] = [
   ...DEFINITION_REQUIRED,
   'label',
@@ -294,7 +294,7 @@ const subPackageFailures = (
   return failures
 }
 
-/** The definition fields: level, title, label, project, theme, placement, holders, created_at and repositories. */
+/** The definition fields: level, label, project, theme, placement, holders, created_at and repositories. */
 const definitionChecks = (
   item: Package,
   fields: Readonly<Record<string, unknown>>,
@@ -320,7 +320,6 @@ const definitionChecks = (
       `a package stands in the territory folder of its id's first segment, not ${folder.territory}`
     )
   if (!WORK_LEVELS.includes(fields.level)) fail(evidence.schema, 'level must be territory, regular or project')
-  if (!singleLine(fields.title)) fail(evidence.schema, 'title must be a non-empty single-line string')
   if ('label' in fields && !singleLine(fields.label))
     fail(evidence.schema, 'label must be a non-empty single-line string')
   if (fields.level === 'project' ? !SLUG.test(String(fields.project ?? '')) : 'project' in fields)
