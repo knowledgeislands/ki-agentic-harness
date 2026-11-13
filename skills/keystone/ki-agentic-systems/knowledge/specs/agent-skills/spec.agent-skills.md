@@ -5,7 +5,7 @@ type: specification
 status: agreed
 territory: knowledge-islands
 island: ki-agentic-harness
-origin: Cairn summit change 22, SPEC-CARDS and CARD-SKILL a) (Kris, 12 November 2026)
+origin: Cairn summit change 22, SPEC-CARDS and CARD-SKILL a) (12 November 2026)
 links:
   spec.agent-skills.progressive-disclosure:
     predicate: dcterms:hasPart

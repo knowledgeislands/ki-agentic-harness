@@ -50,13 +50,13 @@ Pending, in this order and not yet defined here:
 1. Channel, drafted as a [proposal](knowledge/industry/industry.channel.md) under CARD-CHANNEL's option A, the industry's words; then integration and session-to-session messaging, under a card for the ways into a session.
 2. The agent kinds beside the subagent, drafted as proposals: the [peer agent](knowledge/industry/industry.peer-agent.md) and the [remote agent](knowledge/industry/industry.remote-agent.md).
 3. Agent team, tool, instruction file and plugin.
-4. The system's own terms: rig, actor, title, role, package, worker, seat, and the KI harness's new name, with a [naming proposal](references/naming-proposal.md) for Kris's review.
+4. The system's own terms: rig, actor, title, role, package, worker, seat, and the KI harness's new name, with a [naming proposal](references/naming-proposal.md) for the owner's review.
 
 ### Specification cards
 
 - [The Agent Skills specification](knowledge/specs/agent-skills/spec.agent-skills.md), with its part [progressive disclosure](knowledge/specs/agent-skills/spec.agent-skills.progressive-disclosure.md).
 
-Proposals, drafted for Kris's decision in the Cairn summit's change 22 and not yet agreed, so no agreed card links them yet:
+Proposals, drafted for the owner's decision in the Cairn summit's change 22 and not yet agreed, so no agreed card links them yet:
 
 - [The Model Context Protocol](knowledge/specs/mcp/spec.mcp.md), with its parts [MCP host](knowledge/specs/mcp/spec.mcp.host.md), [MCP client](knowledge/specs/mcp/spec.mcp.client.md), [MCP server](knowledge/specs/mcp/spec.mcp.server.md), [tools](knowledge/specs/mcp/spec.mcp.tools.md) and [transports](knowledge/specs/mcp/spec.mcp.transports.md).
 - [The Agent Client Protocol](knowledge/specs/acp/spec.acp.md), with its [client](knowledge/specs/acp/spec.acp.client.md), [agent](knowledge/specs/acp/spec.acp.agent.md) and [session](knowledge/specs/acp/spec.acp.session.md).
@@ -76,7 +76,7 @@ Resource cards (`diagram.`) point to diagrams of the terms, kept with the harnes
 
 ## Adding a card
 
-A card's wording is settled first in the Cairn summit's knowledge-skills change, by Kris's decision. Only then is it written here, and once it is, it leaves that change.
+A card's wording is settled first in the Cairn summit's knowledge-skills change, by the owner's decision. Only then is it written here, and once it is, it leaves that change.
 
 1. **Write the card** as `<id>.md` in its subgraph's folder under `knowledge/`, in the `ki-knowledge-graph` card format and with the properties [`_graph.md`](knowledge/_graph.md) requires of its type. A term card gives its purpose, then what the thing is and how it is built, the specifications it rests on, our conventions, and a link to the next card. A vendor card gives the vendor's word and its sense, its current examples, and its sources, and links to the industry's term with the predicate `_graph.md` sets for its match.
 2. **Use only words already defined** on earlier term cards, and link the cards it builds on. Where a term rests on a specification, link the specification card, or a card for the part it rests on, or name the pending card's id until it is written.

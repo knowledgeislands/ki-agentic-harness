@@ -5,7 +5,7 @@ type: graph
 status: agreed
 territory: knowledge-islands
 island: ki-agentic-harness
-origin: Cairn summit change 06, KG-ROOT, ROOT-FORM a) and KG-SUBGRAPHS, and change 22, SPEC-CARDS (Kris, 12 November 2026)
+origin: Cairn summit change 06, KG-ROOT, ROOT-FORM a) and KG-SUBGRAPHS, and change 22, SPEC-CARDS (12 November 2026)
 ---
 
 # The vocabulary of agentic systems

@@ -5,7 +5,7 @@ type: term
 status: agreed
 territory: knowledge-islands
 island: ki-agentic-harness
-origin: Cairn summit change 22, ENVIRONMENT a) and HOST-SENSES (Kris, 12 November 2026)
+origin: Cairn summit change 22, ENVIRONMENT a) and HOST-SENSES (12 November 2026)
 links:
   industry.environment:
     predicate: dcterms:hasPart
@@ -19,7 +19,7 @@ Networking calls a machine a host, and OpenAI and Google write "host" or "host m
 
 ## Our conventions
 
-A rig, the system's word for one of Kris's workstations, such as terra or sol, maps onto a machine; its card comes with the system's own terms.
+A rig, Knowledge Islands' word for a machine it manages through Rig, such as terra or sol, maps onto a machine; its card comes with the system's own terms.
 
 ## Next
 

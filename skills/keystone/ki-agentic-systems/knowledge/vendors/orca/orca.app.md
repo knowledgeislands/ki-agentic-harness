@@ -6,7 +6,7 @@ status: agreed
 territory: knowledge-islands
 island: ki-agentic-harness
 vendor: Orca
-origin: Cairn summit change 22, VENDORS-MORE and CARD-CLIENT a) (Kris, 12 November 2026)
+origin: Cairn summit change 22, VENDORS-MORE and CARD-CLIENT a) (12 November 2026)
 links:
   industry.client:
     predicate: skos:broadMatch

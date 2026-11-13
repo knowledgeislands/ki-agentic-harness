@@ -1,6 +1,6 @@
 # Naming proposal
 
-A proposal for Kris's review, written on 12 November 2026 by Kitteth, guardian of the Cairn summit, for the open names in the Cairn summit's change 22. It is not a card and settles nothing. Each name below is mapped onto the industry's word under INDUSTRY-FIRST and LEADERS, checked for clashes, and given a recommendation with its confidence and the alternatives.
+A proposal for the owner's review, written on 12 November 2026 by Kitteth, guardian of the Cairn summit, for the open names in the Cairn summit's change 22. It is not a card and settles nothing. Each name below is mapped onto the industry's word under INDUSTRY-FIRST and LEADERS, checked for clashes, and given a recommendation with its confidence and the alternatives.
 
 ## Contents
 
@@ -19,7 +19,7 @@ The industry's words were read on 12 November 2026 from the sources this skill c
 
 | Name | Today | Maps onto | Clash | Recommendation | Confidence |
 | --- | --- | --- | --- | --- | --- |
-| **rig** | One of Kris's machines, with its Rig profile and declared setup | [machine][industry.machine], narrower (`skos:broadMatch`) | Moderate: rig.rs and OpenRig, Rust and agent libraries; Rig, the tool | Keep, only for one of Kris's managed machines; write machine for the computer in general. The Cairn app's "host" and "plane" for a Mac become rig, under HOST-SENSES | Medium to keep; high for the app's words |
+| **rig** | A machine Knowledge Islands manages through Rig, with its Rig profile and declared setup | [machine][industry.machine], narrower (`skos:broadMatch`) | Moderate: rig.rs and OpenRig, Rust and agent libraries; Rig, the tool | Keep, only for a machine Knowledge Islands manages through Rig; write machine for the computer in general. The Cairn app's "host" and "plane" for a Mac become rig, under HOST-SENSES | Medium to keep; high for the app's words |
 | **actor** | Whoever acts at a node, agent or person; persists across sessions | No industry agentic word; the UML actor and OAuth's actor are close | Moderate: GitHub Actions' actor, the actor model, Apify's Actors, each in another field | Keep | Medium |
 | **title** | A role at a place, `<work id>+<role>`, read "Eugene, governor of 5G Emerge" | None; the system's own | None outside; inside, a package's `title:` field is a document title | Keep, and fold seat into it | Medium |
 | **role** | A job within a tier, from the catalogue | The agent-frameworks' role, as CrewAI's (`skos:closeMatch`) | Weak: chat roles and access-control roles are other fields | Keep, in the catalogue's sense only; a coordinating session is in a "mode", and a subagent definition is an "agent type", as Anthropic says | High |
@@ -37,13 +37,13 @@ Alternatives:
 - **seat:** keep it, and accept that every vendor's pricing page uses the word otherwise.
 - **The KI harness:**
   - marketplace for the canonical repository, with each guild a plugin, as Claude Code's plugin marketplaces work;
-  - a proper name such as Quarry, where a cairn's stones come from, if Kris rules it one thing rather than a kind. This was Kitteth's first choice (low); the reviewer's case for the industry's word under INDUSTRY-FIRST is stronger.
+  - a proper name such as Quarry, where a cairn's stones come from, if the owner rules it one thing rather than a kind. This was Kitteth's first choice (low); the reviewer's case for the industry's word under INDUSTRY-FIRST is stronger.
 
 ## The open names
 
 | Name | Maps onto | Clash | Recommendation | Confidence |
 | --- | --- | --- | --- | --- |
-| **agentic channel** | Three of Anthropic's words at once: channel, integration and cross-session messaging | "Agentic channel" appears only in commerce | Drop. CARD-CHANNEL's option A, the industry's words only, was taken on Kris's word for high-confidence recommendations; see the [channel card][industry.channel] | High |
+| **agentic channel** | Three of Anthropic's words at once: channel, integration and cross-session messaging | "Agentic channel" appears only in commerce | Drop. CARD-CHANNEL's option A, the industry's words only, was taken on the owner's word for high-confidence recommendations; see the [channel card][industry.channel] | High |
 | **agentic system** | Anthropic's "agentic systems", workflows and agents together; A2A's "agentic system" (`skos:exactMatch`) | None | Keep, as the industry's umbrella term, with OpenAI's "multi-agent system" as a narrower synonym; a card when the umbrella is needed | High |
 | **agent team** | Anthropic's agent team, a team lead and teammates, each a full session messaging the others | None | A card of its own, with team lead and teammate on it, linking the Anthropic card | Medium-high |
 | **peer agent** | No standard word; "peer" is descriptive everywhere, and Anthropic's inbox is a "Peer address" | Weak | Fold into a card for cross-session messaging, where peer is defined, rather than keep the drafted [peer agent card][industry.peer-agent] | Medium; the reviewer's recommendation, which changed Kitteth's |
@@ -64,7 +64,7 @@ Alternatives:
   - a session is one run;
   - the actor holding a package's title is its holder;
   - the session holding its keys is the keyholder.
-- **Machine, rig and agent host:** machine is the computer, rig is one of Kris's managed machines, and agent host is the application.
+- **Machine, rig and agent host:** machine is the computer, rig is a machine Knowledge Islands manages through Rig, and agent host is the application.
 - **"Agentic systems"** names a guild folder, a skill and an umbrella term at once. Renaming the guild settles it.
 - **Thread** has at least six senses across the store, the harness and the app. The card's sense, a thread within a session, wins; the others need their own words, in a later pass.
 - **Principal,** which was not asked about: the territories' `*-principal` repositories clash strongly with the access-control term. That needs a later look.
@@ -78,7 +78,7 @@ Alternatives:
 
 ## Cards that would follow
 
-What each pick would put in the graph, drafted on 13 November 2026 so Kris can see the cards before choosing. These are drafts, not cards: each definition is checked against its sources, and its links set, when its card is written, and only once its pick is settled.
+What each pick would put in the graph, drafted on 13 November 2026 so the owner can see the cards before choosing. These are drafts, not cards: each definition is checked against its sources, and its links set, when its card is written, and only once its pick is settled.
 
 **Industry cards,** in `industry/`:
 
@@ -95,8 +95,8 @@ What each pick would put in the graph, drafted on 13 November 2026 so Kris can s
 
 | Card | Draft definition | Maps onto | Pick |
 | --- | --- | --- | --- |
-| `system.rig` | One of Kris's managed machines, with its Rig profile and declared setup, such as sol or terra. The Cairn app's "host" and "plane" become rig | [machine][industry.machine], narrower (`skos:broadMatch`) | NAMES-RIG |
-| `system.actor` | Whoever acts at a node of the work tree, an agent or a person, Kris among them as owner. It persists across sessions and agent hosts, where a session is one run | None; UML's and OAuth's actor are close | NAMES-ACTOR |
+| `system.rig` | A machine Knowledge Islands manages through Rig, with its Rig profile and declared setup, such as sol or terra. The Cairn app's "host" and "plane" become rig | [machine][industry.machine], narrower (`skos:broadMatch`) | NAMES-RIG |
+| `system.actor` | Whoever acts at a node of the work tree, an agent or a person, the owner among them. It persists across sessions and agent hosts, where a session is one run | None; UML's and OAuth's actor are close | NAMES-ACTOR |
 | `system.title` | A role at a place, written `<work id>+<role>` and read as "warden of Cairn". An actor holds titles; seat folds into it | None; the system's own | NAMES-TITLE |
 | `system.role` | A job within a tier, from the role catalogue, such as governor, warden or housekeeper | The agent frameworks' role, as CrewAI's (`skos:closeMatch`) | NAMES-ROLE |
 | `system.work-package` | The folder for one piece of work above a work item, holding its entry file, change documents and sub-packages: a node of the work tree. Always written in full | PRINCE2's work package, close; PMBOK's, broader | NAMES-PACKAGE |

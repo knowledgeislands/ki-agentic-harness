@@ -5,7 +5,7 @@ type: term
 status: agreed
 territory: knowledge-islands
 island: ki-agentic-harness
-origin: Cairn summit change 22, ENVIRONMENT a) (Kris, 12 November 2026)
+origin: Cairn summit change 22, ENVIRONMENT a) (12 November 2026)
 links:
   industry.machine:
     predicate: dcterms:isPartOf

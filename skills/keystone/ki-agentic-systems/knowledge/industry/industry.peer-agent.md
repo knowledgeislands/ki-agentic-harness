@@ -5,7 +5,7 @@ type: term
 status: proposal
 territory: knowledge-islands
 island: ki-agentic-harness
-origin: Cairn summit change 22, AGENT-KINDS, drafted as a proposal for Kris's review (12 November 2026)
+origin: Cairn summit change 22, AGENT-KINDS, drafted as a proposal for the owner's review (12 November 2026)
 links:
   industry.agent:
     predicate: skos:broader
@@ -29,7 +29,7 @@ Alternatives for the word: **teammate**, Anthropic's, which presumes a team and 
 
 ## Our conventions
 
-Kris's sessions on different rigs, each in its own package and passing notes through Cairn, are peer agents in this sense.
+Sessions on different rigs, each in its own package and passing notes through Cairn, are peer agents in this sense.
 
 [industry.agent]: ./industry.agent.md
 [industry.session]: ./industry.session.md

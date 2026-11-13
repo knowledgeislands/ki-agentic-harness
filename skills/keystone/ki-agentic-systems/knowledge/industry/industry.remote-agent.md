@@ -5,7 +5,7 @@ type: term
 status: proposal
 territory: knowledge-islands
 island: ki-agentic-harness
-origin: Cairn summit change 22, AGENT-KINDS, drafted as a proposal for Kris's review (12 November 2026)
+origin: Cairn summit change 22, AGENT-KINDS, drafted as a proposal for the owner's review (12 November 2026)
 links:
   industry.agent:
     predicate: skos:broader
@@ -29,7 +29,7 @@ A2A defines the term; Google's Agent Development Kit and Gemini CLI use it for a
 
 ## Our conventions
 
-None of Kris's systems offer or reach a remote agent today; a session on another of Kris's rigs is a peer agent, not a remote agent, because it is in the same system.
+No Knowledge Islands system offers or reach a remote agent today; a session on another rig is a peer agent, not a remote agent, because it is in the same system.
 
 [industry.agent]: ./industry.agent.md
 [industry.subagent]: ./industry.subagent.md

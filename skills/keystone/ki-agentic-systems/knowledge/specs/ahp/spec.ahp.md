@@ -5,7 +5,7 @@ type: specification
 status: proposal
 territory: knowledge-islands
 island: ki-agentic-harness
-origin: Cairn summit change 22, SPEC-CARDS, drafted as a proposal for Kris's review (12 November 2026)
+origin: Cairn summit change 22, SPEC-CARDS, drafted as a proposal for the owner's review (12 November 2026)
 links:
   spec.ahp.agent-host:
     predicate: dcterms:hasPart

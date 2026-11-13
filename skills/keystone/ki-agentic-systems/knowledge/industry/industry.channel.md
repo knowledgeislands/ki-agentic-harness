@@ -5,7 +5,7 @@ type: term
 status: proposal
 territory: knowledge-islands
 island: ki-agentic-harness
-origin: Cairn summit change 22, CARD-CHANNEL a, on Kris's word for high-confidence recommendations; wording a proposal for Kris's review (12 November 2026)
+origin: Cairn summit change 22, CARD-CHANNEL a, on the owner's word for high-confidence recommendations; wording a proposal for the owner's review (12 November 2026)
 links:
   industry.session:
     predicate: skos:related
@@ -21,7 +21,7 @@ links:
 
 A channel lets something outside an agent's session reach it while it runs, so the agent can react to events that happen while nobody is watching.
 
-Option A of CARD-CHANNEL was taken on Kris's word for every high-confidence recommendation (12 November 2026): the industry's words only. The card stays a proposal until its wording is agreed.
+Option A of CARD-CHANNEL was taken on the owner's word for every high-confidence recommendation (12 November 2026): the industry's words only. The card stays a proposal until its wording is agreed.
 
 ## What the industry says
 
@@ -40,7 +40,7 @@ Sessions messaging one another are a fourth thing, which Anthropic call **cross-
 
 ## Our conventions
 
-Cairn's messages between sessions on Kris's rigs, sent through the Cairn MCP, are session-to-session messaging under option A, not channels; a Cairn notice pushed into a running session would be a channel.
+Cairn's messages between sessions on Knowledge Islands' rigs, sent through the Cairn MCP, are session-to-session messaging under option A, not channels; a Cairn notice pushed into a running session would be a channel.
 
 [industry.session]: ./industry.session.md
 [industry.client]: ./industry.client.md

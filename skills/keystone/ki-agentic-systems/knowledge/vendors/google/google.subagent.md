@@ -6,7 +6,7 @@ status: agreed
 territory: knowledge-islands
 island: ki-agentic-harness
 vendor: Google
-origin: Cairn summit change 22, CARD-SUBAGENT, and change 06, KG-SUBGRAPHS (Kris, 12 November 2026)
+origin: Cairn summit change 22, CARD-SUBAGENT, and change 06, KG-SUBGRAPHS (12 November 2026)
 links:
   industry.subagent:
     predicate: skos:exactMatch

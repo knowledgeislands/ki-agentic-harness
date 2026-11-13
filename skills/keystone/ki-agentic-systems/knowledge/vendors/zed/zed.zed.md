@@ -6,7 +6,7 @@ status: agreed
 territory: knowledge-islands
 island: ki-agentic-harness
 vendor: Zed Industries
-origin: Cairn summit change 22, VENDORS-MORE (Kris, 12 November 2026)
+origin: Cairn summit change 22, VENDORS-MORE (12 November 2026)
 links:
   industry.client:
     predicate: skos:broadMatch

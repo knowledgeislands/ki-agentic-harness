@@ -5,7 +5,7 @@ type: resource
 status: proposal
 territory: knowledge-islands
 island: ki-agentic-harness
-origin: Cairn summit change 22, DIAGRAM-RESOURCE (Kris, 12 November 2026); its channels and agent kinds wait on CARD-CHANNEL and AGENT-KINDS
+origin: Cairn summit change 22, DIAGRAM-RESOURCE (12 November 2026); its channels and agent kinds wait on CARD-CHANNEL and AGENT-KINDS
 links:
   industry.agent-host:
     predicate: dcterms:subject
