@@ -56,6 +56,9 @@ The format of a change document, from its front matter to its last section, and 
 | **Question** | A point to be settled before the change is agreed. **Standard:** this one, [4.5](#45-landing) |
 | **Gap** | Something the change knowingly leaves uncovered, accepted by the time it is agreed. **Standard:** this one, [4.5](#45-landing) |
 | **Consequence** | Work the change causes beyond its own outputs. **Standard:** this one, [4.5](#45-landing) |
+| **Benefit** | How much a question's answer or a step helps or opens things up: high, medium or low. **Standard:** this one, [4.3](#43-shape) |
+| **Cascade** | How far a step's effects spread and how hard they are to put back: contained, within its package and easily put back, or wide, reaching other packages, a standard, shared data, credentials or anything published. **Standard:** this one, [4.3](#43-shape) |
+| **Confidence** | How sure we are a recommendation is the right direction: high, medium or low, with a one-line reason. **Standard:** this one, [4.3](#43-shape) |
 | **Landing** | Carrying an agreed change's content into its outputs, with each gap and consequence given a home outside them. **Standard:** this one, [4.5](#45-landing) |
 
 [Back to contents](#contents)
@@ -117,6 +120,7 @@ A short status line may open the Introduction where it helps a reader, but the f
 8. **Refinements are edits, not changes.** Improving the document's own wording or ideas during review leaves no trace in it; Git history keeps it.
 9. **No names or dates on agreements:** Git history records who agreed what, and when. A date stays where it is itself content, such as a decision quoted from elsewhere.
 10. **Scope and Gaps do not repeat each other.** Out of scope sets the boundary and may link to a gap; Gaps holds the detail.
+11. **Questions are weighed.** Questions in 7.1 are numbered. Each carries, one line after its recommendation, `Benefit: high · Cascade: contained · Confidence: high (reason) · Waits on: none`; below high confidence, the line adds what would settle it. Each step says what it waits on, if anything, and a step waiting on an unsettled one is not put forward. Benefit and waits on between them say what comes first, so there is no separate priority. An older change takes the line when it is next worked on.
 
 [Back to contents](#contents)
 

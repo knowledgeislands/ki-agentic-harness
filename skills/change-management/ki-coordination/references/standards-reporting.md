@@ -9,6 +9,7 @@ This file holds the reply forms every session uses and the owner report with its
   - [Units of work](#units-of-work)
   - [Conversational bounded work](#conversational-bounded-work)
   - [Coordinator-only machinery](#coordinator-only-machinery)
+  - [Weighing what to do](#weighing-what-to-do)
 - [Owner report](#owner-report)
   - [Answers](#answers)
   - [Quiet tools](#quiet-tools)
@@ -73,6 +74,25 @@ Sources: CONVERSATIONAL-RUN and CONVRUN-NARROW in [the decision register](source
 ### Coordinator-only machinery
 
 The report heading and form line, the banner and its thread line, the mark, the acting rule for `messages.md`, re-anchoring after compaction, the turn budget and the watcher belong to coordinators only. A conversational session's optional package is a plain record: it notes a pause in `state.md`'s front matter and how to carry on in its next steps, and is finished and pruned when the work ends.
+
+### Weighing what to do
+
+Everything a session wants to do carries three weights, and one rule says what it does alone, what it puts to the node above and what it settles first. Kris took them on 11 November 2026 under TREE-WORKING, and narrowed the second rule on 12 November under 04-RULE2 a, in the Cairn summit's [change 04](https://github.com/krisb/ki-cairn-store/blob/main/work/cairn/cairn.summit/04-weighing-open-points.change.md).
+
+- **Benefit:** how much it helps or opens up: high, medium or low.
+- **Cascade:** how far its effects spread and how hard they are to put back: contained, within the session's package and easily put back, or wide, reaching other packages, a standard, shared data, credentials or anything published.
+- **Confidence:** how sure we are it is the right direction: high, medium or low, with a one-line reason.
+- **Waits on:** anything it waits on; a step waiting on an unsettled one is not put forward. Benefit and waits on between them say what comes first.
+
+The rule:
+
+1. **Within the remit, cascade contained, confidence high:** the session does it, and tells the node above as a notice, in its next record or report.
+2. **Confidence high, but outside the remit, destructive or major:** the session puts it to the node above as a query, and the node above applies the same rule. A wide cascade alone does not send it up: inside a remit, high-confidence work that more work can undo lands and is reviewed through the record, under [Landing, then review](standards-sync.md#landing-then-review).
+3. **Confidence not yet high:** nobody moves on it. The session says what would settle it, gathers that first where it can, through a read-only check or a question down or up the tree, then weighs it again. A step that is easy to put back is itself cheap evidence: trying it can be the check.
+
+The reply block stays as [Owner report](#owner-report) sets it, grouped by priority with each line's confidence (04-REPLY a).
+
+Sources: TREE-WORKING, 04-RULE2 and 04-REPLY in [the decision register](sources.md#decision-register).
 
 ## Owner report
 
