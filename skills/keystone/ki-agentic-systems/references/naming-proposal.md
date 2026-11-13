@@ -9,6 +9,7 @@ A proposal for Kris's review, written on 12 November 2026 by Kitteth, guardian o
 - [The open names](#the-open-names)
 - [Where the system's terms overlap](#where-the-systems-terms-overlap)
 - [Choices that depend on each other](#choices-that-depend-on-each-other)
+- [Cards that would follow](#cards-that-would-follow)
 
 ## How it was made
 
@@ -75,6 +76,34 @@ Alternatives:
 - **Renaming the KI harness to plugin** makes the guild folders candidates for plugin names, as in `delegation:ki-subagents`. That favours a guild name that reads well as a plugin.
 - **Option A for channels** puts peer on the cross-session messaging card, which is why the peer agent card should fold into it.
 
+## Cards that would follow
+
+What each pick would put in the graph, drafted on 13 November 2026 so Kris can see the cards before choosing. These are drafts, not cards: each definition is checked against its sources, and its links set, when its card is written, and only once its pick is settled.
+
+**Industry cards,** in `industry/`:
+
+| Card | Draft definition | Built on | Pick |
+| --- | --- | --- | --- |
+| `industry.agentic-system` | Any system in which models direct their own steps and tools: workflows, where code sets the path, and agents, where the model does. The umbrella over everything in this graph | Anthropic's agentic systems; A2A's agentic system (`skos:exactMatch`) | NAMES-SYSTEM |
+| `industry.agent-team` | Several sessions working on one piece of work together: a team lead that sets the work out, and teammates, each a full, independent session, that message each other and the lead | [Anthropic's agent team][a9], already a vendor card | NAMES-TEAM |
+| `industry.cross-session-messaging` | Sessions on the same machine sending each other messages, each arriving as a turn in the receiving session. The **peer** is the session at the other end; there is no separate peer agent | [Anthropic's cross-session messaging][a8] | NAMES-PEER, with CARD-CHANNEL option A |
+| `industry.tool` | A function an agent can call to act or to fetch something beyond its model, described by a name, a description and an input schema, and run by the harness or a server on the agent's behalf | MCP's tools, already a specification card; each vendor's tool use | Gap 1 in change 22 |
+| `industry.instruction-file` | A plain-text file a harness loads into every session as standing instructions, from the repository or the user's folder, such as `AGENTS.md`, `CLAUDE.md` or `GEMINI.md` | The `AGENTS.md` format; each vendor's memory and instructions pages | Gap 1 in change 22 |
+| `industry.plugin` | An installable bundle that extends an agent harness, holding skills and often hooks, subagents and MCP servers, packaged and shared as one unit | Anthropic's plugins; [OpenAI's skills and plugins][o13] | NAMES-HARNESS |
+
+**The system's own words,** in a new `system/` subgraph, each mapped onto its industry card. Where they live is still TERMS-SOURCE, in change 22's gaps; `system/` is the proposal.
+
+| Card | Draft definition | Maps onto | Pick |
+| --- | --- | --- | --- |
+| `system.rig` | One of Kris's managed machines, with its Rig profile and declared setup, such as sol or terra. The Cairn app's "host" and "plane" become rig | [machine][industry.machine], narrower (`skos:broadMatch`) | NAMES-RIG |
+| `system.actor` | Whoever acts at a node of the work tree, an agent or a person, Kris among them as owner. It persists across sessions and agent hosts, where a session is one run | None; UML's and OAuth's actor are close | NAMES-ACTOR |
+| `system.title` | A role at a place, written `<work id>+<role>` and read as "warden of Cairn". An actor holds titles; seat folds into it | None; the system's own | NAMES-TITLE |
+| `system.role` | A job within a tier, from the role catalogue, such as governor, warden or housekeeper | The agent frameworks' role, as CrewAI's (`skos:closeMatch`) | NAMES-ROLE |
+| `system.work-package` | The folder for one piece of work above a work item, holding its entry file, change documents and sub-packages: a node of the work tree. Always written in full | PRINCE2's work package, close; PMBOK's, broader | NAMES-PACKAGE |
+| `system.holder` | The actor holding a package's title, acting on it through its [sessions][industry.session]. It replaces worker, which Codex, Anthropic and Orca each use otherwise | [session][industry.session], through which it acts | NAMES-WORKER |
+
+**No new card** for remote agent, which keeps [its card][industry.remote-agent] (NAMES-REMOTE), or for the guild folder, whose rename moves skills and defines nothing (NAMES-GUILD). If NAMES-HARNESS is taken, the plugin card comes first, and renaming the KI harness throughout waits for a change of its own.
+
 [industry.machine]: ../knowledge/industry/industry.machine.md
 [industry.session]: ../knowledge/industry/industry.session.md
 [industry.channel]: ../knowledge/industry/industry.channel.md
@@ -84,3 +113,5 @@ Alternatives:
 [a7]: https://code.claude.com/docs/en/channels
 [a8]: https://code.claude.com/docs/en/cross-session-messaging
 [a9]: https://code.claude.com/docs/en/agent-teams
+
+[o13]: https://learn.chatgpt.com/docs/skills-and-plugins.md
