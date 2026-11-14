@@ -14,7 +14,7 @@ afterEach(() => {
 })
 
 const userHome = (): string => {
-  const root = mkdtempSync(join(tmpdir(), 'ki-housekeeping-claude-session-'))
+  const root = mkdtempSync(join(tmpdir(), 'ki-env-housekeeping-claude-session-'))
   roots.push(root)
   return root
 }

@@ -193,7 +193,7 @@ describe('compatible Harness refresh ownership', () => {
     const malformedDirectory = sourceSkill('hnr-agent-backpack')
     writeFileSync(join(malformedDirectory, '..', '..', '.ki.toml'), '[skills.ki-repo\n')
     const malformed = refreshOutcomes(malformedDirectory)
-    const wrongName = refreshOutcomes(sourceSkill('hnr-agent-backpack', { refreshOwner: 'other-agentic-harness' }))
+    const wrongName = refreshOutcomes(sourceSkill('hnr-agent-backpack', { refreshOwner: 'other-agent-backpack' }))
 
     expect(undeclared.skill?.sourceHarnessName).toBeUndefined()
     expect(undeclared.outcomes[0]?.status).toBe('VIOLATION')

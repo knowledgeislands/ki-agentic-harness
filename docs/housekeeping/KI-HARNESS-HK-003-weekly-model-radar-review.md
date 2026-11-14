@@ -24,7 +24,7 @@ Keep model and execution-route evidence current and reassess recommendations wee
 1. Use `ki-acquire pulse` for bounded recent discovery, then verify relevant model identity, availability, price, licence, lifecycle, and benchmark claims against the primary and independent sources registered by `ki-model-radar`.
 2. Audit the committed snapshot and review its models, routes, benchmarks, unresolved signals, material releases, and retirement consequences. Preserve the evaluated unit and benchmark applicability; never silently merge bare-model, endpoint, model-agent, or complete-environment scores.
 3. Prepare the smallest evidenced fact correction or recommendation, support, retirement, or benchmark-lifecycle proposal. Ring movement still requires the radar owner's evidence and human-review gates, including counter-evidence and uncertainty; a weekly cadence does not lower those gates.
-4. Record an explicit no-change result when appropriate. Apply snapshot changes only through the reviewed run, and route trial, adapter, installation, default, and retirement consequences to owner-local work through `ki-next`. Do not mutate consumer configuration.
+4. Record an explicit no-change result when appropriate. Apply snapshot changes only through the reviewed run, and route trial, adapter, installation, default, and retirement consequences to owner-local work through `ki-work next`. Do not mutate consumer configuration.
 
 ## Successful-run evidence
 

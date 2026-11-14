@@ -239,7 +239,7 @@ test('a missing catalogue produces an exact finding and one marker-bounded confo
 })
 
 test('a declared non-KI provider can publish without the KI baseline in its source shelf', () => {
-  const repository = mkdtempSync(join(tmpdir(), 'ki-repo-harness-provider-'))
+  const repository = mkdtempSync(join(tmpdir(), 'ki-repo-backpack-provider-'))
   temporaryDirectories.push(repository)
   mkdirSync(join(repository, 'skills', 'hnr-backend'), { recursive: true })
   writeFileSync(join(repository, '.ki.toml'), '[skills.ki-repo-backpack]\nprefix = "hnr"\n')
@@ -381,7 +381,7 @@ test('conform refuses a symlinked or dangling configuration path', () => {
 
 test('layout inspection does not traverse a symlinked shelf', () => {
   const repository = fixture()
-  const external = mkdtempSync(join(tmpdir(), 'ki-repo-harness-external-'))
+  const external = mkdtempSync(join(tmpdir(), 'ki-repo-backpack-external-'))
   temporaryDirectories.push(external)
   writeFileSync(join(external, 'README.md'), '# External\n')
   rmSync(join(repository, 'hooks'), { recursive: true })

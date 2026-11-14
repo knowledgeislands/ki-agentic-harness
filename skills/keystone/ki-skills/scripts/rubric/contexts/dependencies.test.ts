@@ -5,7 +5,7 @@ describe('skillMentions', () => {
   test('classifies reliance cues and leaves routing mentions unflagged', () => {
     const body = [
       'This adapter composes `ki-env-binding` and adds its delta.',
-      'The lifecycle is owned by `ki-work-roadmap`; route adoption through `ki-next`.',
+      'The lifecycle is owned by `ki-work-roadmap`; route adoption through `ki-work-recurring`.',
       'Follow `ki-authoring` for Markdown; apply the `ki-git` policy as defined in `ki-engineering`.',
       '```',
       'fenced `ki-ignored` mention',
@@ -14,7 +14,7 @@ describe('skillMentions', () => {
     expect(skillMentions(body)).toEqual([
       { name: 'ki-env-binding', line: 1, reliance: true },
       { name: 'ki-work-roadmap', line: 2, reliance: false },
-      { name: 'ki-next', line: 2, reliance: false },
+      { name: 'ki-work-recurring', line: 2, reliance: false },
       { name: 'ki-authoring', line: 3, reliance: true },
       { name: 'ki-git', line: 3, reliance: true },
       { name: 'ki-engineering', line: 3, reliance: true }

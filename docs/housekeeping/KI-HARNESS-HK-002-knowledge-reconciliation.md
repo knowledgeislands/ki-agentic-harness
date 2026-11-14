@@ -27,7 +27,7 @@ Keep decisions, specifications, guides, source references, and retained review e
 3. Check relevant skill standards, source lists, and README entry points for contradictions, stale claims, broken references, and duplicated authority. Follow each source owner's refresh procedure for volatile facts; report unavailable evidence explicitly rather than rewriting history.
 4. Examine retained `docs/reviews` evidence: ensure unresolved findings have an owner, move independently durable conclusions to their approved homes, and propose exact redundant-report cleanup through `ki-repo`'s review-retention procedure. Historical records and trades are evidence, not current policy.
 5. Check that temporary inputs and outputs remain useful and correctly routed. Each area keeps their specialist retention and delivery guards. Do not infer a blanket expiry or deletion authority.
-6. Deduplicate and route material corrections through `ki-next`. The review itself does not rewrite or prune decisions, work items, source records, or another repository.
+6. Deduplicate and route material corrections through `ki-work next`. The review itself does not rewrite or prune decisions, work items, source records, or another repository.
 
 ## Successful-run evidence
 

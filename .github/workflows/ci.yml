@@ -49,8 +49,11 @@ jobs:
           ki bootstrap
           ki registry add --repo .
           local_harness=$(realpath "$GITHUB_WORKSPACE")
-          ki dev local set knowledgeislands/ki-agentic-harness "$local_harness"
-          ki dev local on knowledgeislands/ki-agentic-harness
+          # The pinned ki names the canonical backpack by whichever identifier its release knows.
+          backpack_id=$(ki harness list | grep -oE 'knowledgeislands/ki-agent(ic-harness|-backpack)' | head -n 1)
+          test -n "$backpack_id"
+          ki dev local set "$backpack_id" "$local_harness"
+          ki dev local on "$backpack_id"
           full_diag=$(ki diag --full)
           grep -F "source: $local_harness" <<<"$full_diag"
           grep -F 'mode: on' <<<"$full_diag"

@@ -11,7 +11,7 @@ afterEach(() => {
 })
 
 const repository = (hook?: string): string => {
-  const root = mkdtempSync(join(tmpdir(), 'ki-repo-harness-gate-'))
+  const root = mkdtempSync(join(tmpdir(), 'ki-repo-backpack-gate-'))
   roots.push(root)
   if (hook !== undefined) {
     mkdirSync(join(root, '.githooks'))
