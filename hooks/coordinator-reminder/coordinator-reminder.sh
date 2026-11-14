@@ -6,8 +6,8 @@
 # Fail open silently on unusable input.
 set -u
 
-line='Only if the owner explicitly opened or resumed coordination, follow ki-coordination (skills/work/ki-coordination/references/standards-coordination.md). Otherwise use its conversational Reply forms.'
-pointer='Context was compacted. Only if explicitly coordinating, follow Re-anchoring after compaction in ki-coordination (skills/work/ki-coordination/references/standards-bootstrap.md). Otherwise use its conversational Reply forms.'
+line='Only if the owner explicitly opened or resumed coordination, follow ki-coordination (skills/work/ki-coordination/references/standards-coordination.md). Otherwise use its conversational Reply forms. Every reply opens with **Reply HH:MM** (date -u); one asking a decision ends with the reply block.'
+pointer='Context was compacted. Only if explicitly coordinating, follow Re-anchoring after compaction in ki-coordination (skills/work/ki-coordination/references/standards-bootstrap.md). Otherwise use its conversational Reply forms. Every reply opens with **Reply HH:MM** (date -u); one asking a decision ends with the reply block.'
 
 command -v jq >/dev/null 2>&1 || exit 0
 input=$(cat 2>/dev/null) || exit 0

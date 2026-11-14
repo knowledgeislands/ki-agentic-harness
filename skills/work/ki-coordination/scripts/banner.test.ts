@@ -539,8 +539,8 @@ test('the standard and the output style carry the reply block and retire the blo
 
 /** A reply block's group heading, `<n> · <what the group is>[, can run while you're away]`. */
 const REPLY_GROUP = /^(\d+) · (\S.*)$/
-/** A reply block's answer line, `<TAG> <letter>`, its bracketed confidence optional on the way back. */
-const REPLY_LINE = /^([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*) ([a-z])(?: \((high|medium|low)\))?$/
+/** A reply block's answer line, `<TAG> <letter>`, its bracketed confidence and a gloss after a colon optional on the way back. */
+const REPLY_LINE = /^([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*) ([a-z])(?: \((high|medium|low)\))?(?:: \S.*)?$/
 
 /** The groups of a reply block, refusing any line that is neither a heading, an answer line nor a blank between groups. */
 const replyGroups = (block: string): { readonly heading: string; readonly lines: readonly string[] }[] => {
@@ -605,7 +605,7 @@ test('a reply block sent back as it stands, or changed, still answers every quer
     'CON-PROFILE a',
     '',
     '3 · Roadmap housekeeping',
-    'ROADMAP-PRUNE a (high)',
+    'ROADMAP-PRUNE a (high): prune the done records',
     'ROADMAP-NET005 c (low)'
   ].join('\n')
   expect(replyAnswers(answered)).toEqual({
@@ -617,6 +617,33 @@ test('a reply block sent back as it stands, or changed, still answers every quer
   })
   expect('ROADMAP-PRUNE a (certain)').not.toMatch(REPLY_LINE)
   expect('2 Window design').not.toMatch(REPLY_GROUP)
+})
+
+// Kris, 14 November 2026, under REPLY-BLOCK a and REPLY-ID a: every reply to the owner, in every form, opens with its
+// reply id, `**Reply HH:MM**` in UTC from the clock, and every reply asking the owner to decide anything ends with the
+// reply block, a conversational reply included.
+test('every reply opens with its reply id, and every reply asking a decision ends with the reply block', () => {
+  const reporting = readReference('standards-reporting.md')
+  expect(reporting).toContain('opens with its id as a bold first line, `**Reply HH:MM**`')
+  expect(reporting).toContain('`date -u +%H:%M`, never guessed')
+  expect(reporting).toContain(
+    'Every reply that asks the owner to decide anything ends with the reply block, whatever its form'
+  )
+  expect(reporting).toContain('as `<TAG> a (high): what it does`')
+  expect(reporting).toContain('and so is a gloss after a colon')
+  expect(reporting).not.toContain("A conversational session's report carries none")
+  expect(reporting).not.toContain('A question for the owner is one line')
+  expect(readReference('standards-report-forms.md')).toContain(
+    '**Reply id.** Every reply to the owner, in every layout'
+  )
+  for (const text of [core, outputStyle]) {
+    expect(text).toContain('opens with its reply id, as Kris set under REPLY-ID on 14 November 2026')
+    expect(text).toContain('under REPLY-BLOCK of 14 November 2026 every reply that asks Kris to decide anything')
+  }
+  for (const source of [/^line='(.*)'$/m, /^pointer='(.*)'$/m])
+    expect(source.exec(hook)?.[1]).toEndWith(
+      'Every reply opens with **Reply HH:MM** (date -u); one asking a decision ends with the reply block.'
+    )
 })
 
 test("a reply's structure, which its trigger chooses, sets whether it ends with the banner", () => {

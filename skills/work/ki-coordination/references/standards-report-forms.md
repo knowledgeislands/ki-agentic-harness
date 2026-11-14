@@ -39,6 +39,8 @@ A reply is built from up to three **blocks**, always in this order, each left ou
 
 Each block is a run of coded **parts**. Each reply has one **reply structure**, saying what the reply is, such as Summary, Status or Stop, and each structure has one **layout**, its depth: **Full**, **Medium**, **Short** or **Minimal**, deepest to shallowest. The structure decides which parts appear and how each part is shaped; Minimal has no footer.
 
+**Reply id.** Every reply to the owner, in every layout, opens with its [reply id](standards-reporting.md#reply-forms), `**Reply HH:MM**`, the UTC time from `date -u +%H:%M` as the reply is written, then a blank line and the first block: in Full and Medium the heading block, so the `#` heading follows the id with no rule between them; in Short the Answer, or the banner where there is none; in Minimal the Answer or the update. The id stands outside the blocks and their parts, and the form line and banner keep their local times. A run report, saved into the package, carries none.
+
 **Time.** Every time is the owner's local time, in one of two forms, each part choosing which in its entry under [Part content](#part-content): a **friendly time**, naming the day where it is not today, as in `10:30 GMT`, `yesterday 18:05 GMT` or `Thu 5 Nov 09:12 GMT`; or a **timestamp**, ISO 8601 with its offset, as in `2026-11-07T10:30+00:00`, the fallback wherever a friendly time does not fit. A part that names no form keeps the form its template shows.
 
 ### Triggers
@@ -87,7 +89,7 @@ Which parts each reply structure carries, one column per structure with its layo
 | **B3** · Status | ● | ● | ● | ● | ● |  |  |  |
 | **B4** · Findings | ○ | ○ | ○ | ○ | ○ |  |  |  |
 | **B5** · Queries | ● | ● | ● | ● | ● |  |  |  |
-| **B6** · Reply block | ○ | ○ | ○ | ○ | ○ |  |  |  |
+| **B6** · Reply block | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
 | **Footer block** |  |  |  |  |  |  |  |  |
 | **F1** · Art | ○ | ○ |  |  |  |  |  |  |
 | **F2** · Banner heading | ● | ● | ● | ● | ● | ● |  |  |
@@ -123,7 +125,7 @@ Each part: what it carries, when it appears and how the structure, the state and
 - **B3 Status:** the full board of live items. In a Summary or Status it is `## Status`, the [status table](#the-summary). In every Medium structure it is `## In Progress`: what is running and what is waiting, each with its owner or dependency, or `Nothing is running`, then `Outstanding - no action requested now`. On hold, Left over comes here: another session's uncommitted file, or `Nothing`.
 - **B4 Findings:** `## Findings`, only while a finding the owner asked for is open, under the owner report's **Findings**.
 - **B5 Queries:** `## Queries`, each decision the owner needs to make, in full, under the [owner report](standards-reporting.md#owner-report), a proposed work transfer last, or `None.` in a Summary or Status and `No outstanding queries` in a Medium structure. On hold, the parked queries come here instead, one line each, `<TAG> - <one line>`.
-- **B6 Reply block:** the tags, letters and confidences, ready to copy: one fenced `text` block after the last query, holding exactly the text to send back, for the owner to copy, change and send. The queries in B5 are grouped by priority under numbered headings, the most pressing first, each `<n> · <what the group is>`, adding `, can run while you're away` where the group's work can go ahead while the owner is away, with a blank line between groups; under each heading, one line per query, its tag, the recommended option's letter and that option's confidence in brackets, as `<TAG> a (high)`, under the owner report's **Reply block**. It appears whenever B5 carries at least one query in full.
+- **B6 Reply block:** the tags, letters and confidences, ready to copy: one fenced `text` block after the last query, holding exactly the text to send back, for the owner to copy, change and send. The queries in B5 are grouped by priority under numbered headings, the most pressing first, each `<n> · <what the group is>`, adding `, can run while you're away` where the group's work can go ahead while the owner is away, with a blank line between groups; under each heading, one line per query, its tag, the recommended option's letter and that option's confidence in brackets, as `<TAG> a (high)`, an optional gloss after a colon, under the owner report's **Reply block**. It appears whenever the reply asks the owner to decide anything, closing the body before any footer: whenever B5 carries at least one query in full, and after the Answer of a Position, Update or Answer that asks for a decision.
 
 **Footer block.**
 
@@ -141,7 +143,7 @@ Sources: REPLY-FORMAT and REPLY-GROUPS in [the decision register](sources.md#dec
 
 ### Templates
 
-Each structure has one complete template. A line in angle brackets says what goes there; a part marked _only when there is some_ is left out otherwise. The [Banner](standards-coordination.md#banner) examples show finished banners.
+Each structure has one complete template. A line in angle brackets says what goes there; a part marked _only when there is some_ is left out otherwise. Each template starts at its first block; in a reply the [reply id](#blocks-parts-and-layouts) stands above it. The [Banner](standards-coordination.md#banner) examples show finished banners.
 
 **Summary**, Full, with each part's code in the right margin; the codes are not part of a reply:
 
