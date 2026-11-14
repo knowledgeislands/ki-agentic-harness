@@ -29,7 +29,7 @@ The standard holds coordinator responsiveness with the counted turn budget and s
 
 A repository that runs coordinating work declares `[skills.ki-coordination]` in `.ki.toml` and, under its dependencies, `ki-delegation` and `ki-work-package`. The declaration enables the harness `hooks/coordinator-reminder/coordinator-reminder.sh` conditional pointer, the `hooks/coordinator-footer/coordinator-footer.sh` footer check on an owner's mark or state word, and the ki-coordinator output-style binding; it proves checkout capability, never session selection or role. Removing it disables those surfaces. Full session-sensitive hook detection remains deferred, and the coordinator performs its own method revision check.
 
-It does not launch, brief, monitor or report for background agents, which `ki-delegation` owns; it does not define the work package or its files, which `ki-work-package` owns; and it does not summarise a single ordinary session, which `ki-work recap` owns and which keeps the ordinary session recap only.
+It does not launch, brief, monitor or report for background agents, which `ki-delegation` owns; it does not define the work package or its files, which `ki-work-package` owns; and it does not summarise a single ordinary session, which `ki-work recap` owns and which keeps the ordinary session recap only. Meetings, where named participants gather at one node of the work tree in sittings with messages, check-ins and minutes, are `ki-meeting`'s; a coordinating session that joins one follows that skill there.
 
 The [deferred host-move design notes](references/sources.md#deferred-host-move-evidence) retain unresolved queue, host-bound-run and historical handover questions without granting implementation authority.
 
