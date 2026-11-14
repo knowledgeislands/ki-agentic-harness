@@ -2,6 +2,7 @@
 name: ki-acquire-granola
 ki-kind: governance
 ki-applicability: declaration-only
+ki-guild: acquire
 ki-depends-on: [ki-acquire]
 ki-shared-dependencies: [ki-skills:rubric]
 description: >

@@ -835,6 +835,50 @@ const KI_SHAPE_21: RubricItem<KiShapeRubricContext> = {
   )
 }
 
+const GUILD_NAME = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/
+
+const KI_SHAPE_22: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-22',
+  title: 'guild membership is declared',
+  description:
+    'Every canonical Knowledge Islands skill declares the guild it belongs to, `ki-guild: <guild>`, a kebab-case guild name; the folder it sits in is storage and never declares membership. A lead skill also declares the guild it leads, `ki-leads: <guild>`, and is itself a member of Keystone, `ki-guild: keystone`; only `ki-keystone` leads Keystone. A repository-local `ki-self` is outside every guild.',
+  sources: ['GUILD-PLACE', 'KI-KEYS', 'standard-knowledge-islands.md §4.2'],
+  mechanical: {
+    level: 'FAIL',
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Declare the guild the skill works with, from the guild map in ki-keystone; give a lead skill its ki-leads key and Keystone membership, and never infer either from the folder.'
+    },
+    audit: {
+      phase: 'INSPECT',
+      run: ({ skill }) => {
+        if (!skill?.knowledgeIslandsSkill || skill.name === 'ki-self' || skill.localGovernanceSource)
+          return [{ status: 'NOT_APPLICABLE', message: 'the target is not a canonical Knowledge Islands skill' }]
+        const violations: AuditOutcome[] = []
+        if (!skill.guildPresent || skill.guild === '')
+          violations.push({ status: 'VIOLATION', message: 'missing required `ki-guild:` metadata' })
+        else if (!GUILD_NAME.test(skill.guild))
+          violations.push({ status: 'VIOLATION', message: '`ki-guild:` must be one kebab-case guild name' })
+        if (skill.leadsPresent) {
+          if (!GUILD_NAME.test(skill.leads))
+            violations.push({ status: 'VIOLATION', message: '`ki-leads:` must be one kebab-case guild name' })
+          if (skill.guild !== 'keystone')
+            violations.push({
+              status: 'VIOLATION',
+              message: 'a lead skill is a member of Keystone and declares `ki-guild: keystone`'
+            })
+          if (skill.leads === 'keystone' && skill.name !== 'ki-keystone')
+            violations.push({ status: 'VIOLATION', message: 'only `ki-keystone` leads Keystone' })
+        } else if (skill.name === 'ki-keystone')
+          violations.push({ status: 'VIOLATION', message: '`ki-keystone` must declare `ki-leads: keystone`' })
+        const [first, ...rest] = violations
+        return first ? [first, ...rest] : [{ status: 'PASS', message: 'guild membership is declared' }]
+      }
+    }
+  }
+}
+
 export const KI_SHAPE: RubricFamily<KiSkillsRubricContext, KiShapeRubricContext> = {
   code: 'KI-SHAPE',
   title: 'Knowledge Islands skill shape',
@@ -861,6 +905,7 @@ export const KI_SHAPE: RubricFamily<KiSkillsRubricContext, KiShapeRubricContext>
     KI_SHAPE_18,
     KI_SHAPE_19,
     KI_SHAPE_20,
-    KI_SHAPE_21
+    KI_SHAPE_21,
+    KI_SHAPE_22
   ]
 }

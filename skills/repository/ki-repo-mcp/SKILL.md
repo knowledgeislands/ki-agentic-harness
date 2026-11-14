@@ -2,6 +2,7 @@
 name: ki-repo-mcp
 ki-kind: governance
 ki-applicability: detected
+ki-guild: repository
 ki-runtime-binding: true
 ki-shared-dependencies: [ki-skills:rubric]
 ki-depends-on: [ki-engineering]

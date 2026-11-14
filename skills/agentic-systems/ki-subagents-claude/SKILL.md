@@ -2,6 +2,7 @@
 name: ki-subagents-claude
 ki-kind: governance
 ki-applicability: detected
+ki-guild: agentic-systems
 ki-depends-on: [ki-subagents]
 ki-runtime-binding: true
 ki-supported-runtimes: [claude-code]

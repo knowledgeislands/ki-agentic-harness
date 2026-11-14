@@ -2,6 +2,7 @@
 name: ki-diagrams
 ki-kind: governance
 ki-applicability: declaration-only
+ki-guild: authoring
 ki-depends-on: []
 ki-shared-modules: [diagram-receipts, staged-diagram-receipts]
 ki-shared-dependencies: [ki-skills:rubric]

@@ -2,6 +2,7 @@
 name: ki-repo-specifications
 ki-kind: governance
 ki-applicability: detected
+ki-guild: repository
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 contributes: [.ki.toml, '.githooks/pre-commit']

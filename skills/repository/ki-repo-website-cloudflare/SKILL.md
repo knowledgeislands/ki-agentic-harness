@@ -2,6 +2,7 @@
 name: ki-repo-website-cloudflare
 ki-kind: governance
 ki-applicability: detected
+ki-guild: repository
 ki-shared-dependencies: [ki-repo-website:site-selection, ki-skills:rubric]
 ki-depends-on: [ki-repo-website]
 contributes: ['.gitignore']

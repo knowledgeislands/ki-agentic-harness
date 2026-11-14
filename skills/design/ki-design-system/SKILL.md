@@ -2,6 +2,7 @@
 name: ki-design-system
 ki-kind: governance
 ki-applicability: declaration-only
+ki-guild: design
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 contributes: ['.ki.toml']

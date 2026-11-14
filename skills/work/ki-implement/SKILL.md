@@ -2,6 +2,7 @@
 name: ki-implement
 ki-kind: process
 ki-applicability: invocation-only
+ki-guild: work
 ki-depends-on: []
 ki-optional-depends-on: [ki-delegation]
 description: >

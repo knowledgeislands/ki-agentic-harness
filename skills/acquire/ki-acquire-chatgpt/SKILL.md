@@ -2,6 +2,7 @@
 name: ki-acquire-chatgpt
 ki-kind: governance
 ki-applicability: declaration-only
+ki-guild: acquire
 ki-depends-on: [ki-acquire]
 ki-runtime-binding: true
 ki-supported-runtimes: [chatgpt-codex]

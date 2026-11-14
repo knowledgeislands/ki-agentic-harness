@@ -2,6 +2,7 @@
 name: ki-work-design
 ki-kind: process
 ki-applicability: invocation-only
+ki-guild: work
 ki-depends-on: []
 ki-optional-depends-on: [ki-decision-records, ki-delegation]
 description: >

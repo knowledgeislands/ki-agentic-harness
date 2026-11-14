@@ -2,6 +2,8 @@
 name: ki-work
 ki-kind: governance
 ki-applicability: declaration-only
+ki-guild: keystone
+ki-leads: work
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 contributes: ['.ki.toml']

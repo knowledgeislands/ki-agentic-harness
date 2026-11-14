@@ -2,6 +2,7 @@
 name: ki-repo-kb-streams
 ki-kind: governance
 ki-applicability: detected
+ki-guild: repository
 ki-shared-dependencies: [ki-skills:rubric, ki-work-roadmap:work-identifiers, ki-work-roadmap:roadmap-areas]
 ki-depends-on: []
 description: >

@@ -2,6 +2,8 @@
 name: ki-authoring
 ki-kind: governance
 ki-applicability: baseline
+ki-guild: keystone
+ki-leads: authoring
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 owns: ['.editorconfig', '.rumdl.toml']

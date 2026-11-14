@@ -2,6 +2,7 @@
 name: ki-repo-dotfiles-chezmoi
 ki-kind: governance
 ki-applicability: declaration-only
+ki-guild: repository
 ki-shared-dependencies: [ki-skills:rubric]
 ki-depends-on: [ki-authoring]
 description: >

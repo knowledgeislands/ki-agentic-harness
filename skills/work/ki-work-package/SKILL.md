@@ -2,6 +2,7 @@
 name: ki-work-package
 ki-kind: governance
 ki-applicability: detected
+ki-guild: work
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 contributes: ['.ki.toml']

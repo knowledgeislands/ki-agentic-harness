@@ -2,6 +2,7 @@
 name: ki-work-linear
 ki-kind: governance
 ki-applicability: declaration-only
+ki-guild: work
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 contributes: ['.ki.toml']

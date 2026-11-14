@@ -2,6 +2,7 @@
 name: ki-repo-website-app
 ki-kind: governance
 ki-applicability: detected
+ki-guild: repository
 ki-shared-dependencies: [ki-skills:rubric]
 ki-depends-on: [ki-repo-website]
 owns: [vite.config.ts, vite.config.js, vite.config.mjs, vite.config.mts]

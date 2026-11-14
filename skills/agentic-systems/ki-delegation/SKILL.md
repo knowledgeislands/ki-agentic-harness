@@ -2,6 +2,7 @@
 name: ki-delegation
 ki-kind: governance
 ki-applicability: declaration-only
+ki-guild: agentic-systems
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >

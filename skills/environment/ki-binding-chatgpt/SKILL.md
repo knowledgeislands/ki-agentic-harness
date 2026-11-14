@@ -2,6 +2,7 @@
 name: ki-binding-chatgpt
 ki-kind: governance
 ki-applicability: declaration-only
+ki-guild: environment
 ki-depends-on: [ki-binding]
 ki-runtime-binding: true
 ki-supported-runtimes: [chatgpt-codex]

@@ -2,6 +2,7 @@
 name: ki-work-roadmap
 ki-kind: governance
 ki-applicability: declaration-only
+ki-guild: work
 ki-depends-on: []
 ki-shared-modules: [work-identifiers, roadmap-areas]
 ki-shared-dependencies: [ki-skills:rubric]

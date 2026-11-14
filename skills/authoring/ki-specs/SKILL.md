@@ -2,6 +2,7 @@
 name: ki-specs
 ki-kind: governance
 ki-applicability: detected
+ki-guild: authoring
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric, ki-work-roadmap:work-identifiers]
 description: >

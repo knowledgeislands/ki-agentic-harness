@@ -2,6 +2,7 @@
 name: ki-knowledge-graph
 ki-kind: governance
 ki-applicability: declaration-only
+ki-guild: keystone
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >

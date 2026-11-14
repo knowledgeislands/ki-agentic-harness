@@ -2,6 +2,7 @@
 name: ki-meeting
 ki-kind: process
 ki-applicability: invocation-only
+ki-guild: work
 ki-depends-on: []
 description: >
   Call, hold and close a meeting: a room at one node of the work tree where named participants, each reaching it by

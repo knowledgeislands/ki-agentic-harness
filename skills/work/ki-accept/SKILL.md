@@ -2,6 +2,7 @@
 name: ki-accept
 ki-kind: process
 ki-applicability: invocation-only
+ki-guild: work
 ki-depends-on: []
 ki-shared-dependencies: [ki-work-roadmap:work-identifiers]
 description: >

@@ -2,6 +2,7 @@
 name: ki-skills
 ki-kind: governance
 ki-applicability: detected
+ki-guild: keystone
 ki-depends-on: []
 ki-shared-modules: [rubric]
 description: >

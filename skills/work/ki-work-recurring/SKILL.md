@@ -2,6 +2,7 @@
 name: ki-work-recurring
 ki-kind: governance
 ki-applicability: declaration-only
+ki-guild: work
 ki-depends-on: []
 ki-shared-dependencies: [ki-work-roadmap:work-identifiers]
 contributes: ['.ki.toml']

@@ -2,6 +2,7 @@
 name: ki-binding
 ki-kind: governance
 ki-applicability: declaration-only
+ki-guild: environment
 ki-depends-on: []
 ki-shared-modules: [binding]
 ki-shared-dependencies: [ki-skills:rubric]

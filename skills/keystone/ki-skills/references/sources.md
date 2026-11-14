@@ -1,6 +1,6 @@
 ---
 type: sources@2026-11-09T21:36:32Z
-revised: 2026-11-12T20:10:00Z
+revised: 2026-11-14T03:05:00Z
 refresh: external-spec · monthly
 ---
 
@@ -153,6 +153,8 @@ The OpenAI News page is a discovery source, not a normative standard. On each RE
 | KG-HOME | Kris's decision, in the Cairn summit's change 06: a skill may hold a knowledge graph in its `references/`, as `ki-knowledge-graph` holds its own, each card named `<id>.md` beside a `_graph.md` root definition. | 2026-11-12 | [Skill shape](standard-knowledge-islands.md#42-skill-shape), KI-SHAPE-6 | In force; its place, `references/`, superseded by KNOWLEDGE-FOLDER |
 | KNOWLEDGE-FOLDER | Kris's word, relayed by the Cairn summit's guardian: a skill that holds a knowledge graph keeps it in `knowledge/` at the skill's top level, with the root definition `_graph.md` at its root; only the graph's cards go there, and everything else useful in the skill, its standards, sources, rubric, proposals and migration standards, stays in `references/`, so `knowledge/` is its own area outside `references/`. | 2026-11-12 | [Skill shape](standard-knowledge-islands.md#42-skill-shape), [Layout](standard-agent-skills.md#431-layout), KI-SHAPE-6, LAY-3 | In force |
 | GRAPH-FOLDERS | Kris's word, relayed by the Cairn summit's guardian, option a: inside `knowledge/` there is one folder for each subgraph, and files keep their id names, as `knowledge/industry/industry.session.md`; ids and front-matter `links:`, keyed by id, do not change, and only path-based Markdown links follow a card. | 2026-11-12 | [Skill shape](standard-knowledge-islands.md#42-skill-shape), KI-SHAPE-6 | In force |
+| GUILD-PLACE | Kris's decision, 13 November 2026, in the Cairn summit's change 25: each skill's frontmatter names its guild, `ki-guild: <guild>`, and a lead names the guild it leads, `ki-leads: <guild>`; the folder a skill sits in is storage, not structure. | 2026-11-13 | [Skill shape](standard-knowledge-islands.md#42-skill-shape), KI-SHAPE-22 | In force |
+| KI-KEYS | Kris's decision, 13 November 2026, in the Cairn summit's change 25: the guild keys carry the `ki-` prefix every Knowledge Islands key carries, so none collides with the Agent Skills specification's. | 2026-11-13 | [Skill shape](standard-knowledge-islands.md#42-skill-shape), KI-SHAPE-22 | In force |
 
 [Back to contents](#contents)
 

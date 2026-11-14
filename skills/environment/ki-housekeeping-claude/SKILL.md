@@ -2,6 +2,7 @@
 name: ki-housekeeping-claude
 ki-kind: governance
 ki-applicability: declaration-only
+ki-guild: environment
 ki-depends-on: []
 ki-runtime-binding: true
 ki-supported-runtimes: [claude-code]

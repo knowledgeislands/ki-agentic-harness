@@ -223,3 +223,42 @@ test('a knowledge skill is published, counted and must be invocation-only', () =
   expect(opted.state).toBe('unsafe')
   expect(opted.issues.some((issue) => issue.endsWith('knowledge capability must be invocation-only'))).toBe(true)
 })
+
+const withGuild = (capabilitySource: CapabilitySource, guild: string, leads?: string): CapabilitySource => ({
+  ...capabilitySource,
+  content: capabilitySource.content.replace(
+    /^ki-applicability: .*$/m,
+    (line) => `${line}\nki-guild: ${guild}${leads === undefined ? '' : `\nki-leads: ${leads}`}`
+  )
+})
+
+test('reads guild keys and groups the catalogue by declared guild, not by folder', () => {
+  const lead = entry(withGuild(source('ki-lead', { path: 'skills/anywhere/ki-lead/SKILL.md' }), 'keystone', 'craft'))
+  const member = entry(withGuild(source('ki-member', { path: 'skills/anywhere/ki-member/SKILL.md' }), 'craft'))
+  expect(lead).toMatchObject({ guild: 'keystone', leads: 'craft', domain: 'anywhere' })
+  const rendered = renderCapabilityCatalogue([lead, member])
+  expect(rendered).toContain('### Craft\n\n#### `ki-member`')
+  expect(rendered).toContain('### Keystone\n\n#### `ki-lead`')
+  expect(rendered).toContain('- **Leads:** Craft')
+  expect(rendered).not.toContain('### Anywhere')
+})
+
+test('fails closed when guild membership drifts', () => {
+  expect(parseCapabilitySource(withGuild(source('ki-example'), 'Not A Guild'))).toEqual({
+    issue: 'skills/governance/ki-example/SKILL.md has an invalid ki-guild'
+  })
+  const guilded = estate([]).map((candidate) => withGuild(candidate, 'keystone'))
+  expect(prepareCapabilityPublication(undefined, [...guilded, source('ki-loose')]).issues).toEqual([
+    'skills/governance/ki-loose/SKILL.md declares no ki-guild'
+  ])
+  expect(
+    prepareCapabilityPublication(undefined, [...guilded, withGuild(source('ki-lead'), 'craft', 'craft')]).issues
+  ).toEqual(['skills/governance/ki-lead/SKILL.md leads craft but is not a member of keystone'])
+  expect(
+    prepareCapabilityPublication(undefined, [
+      ...guilded,
+      withGuild(source('ki-one'), 'keystone', 'craft'),
+      withGuild(source('ki-two'), 'keystone', 'craft')
+    ]).issues
+  ).toEqual(['guild craft has more than one lead: ki-one, ki-two'])
+})

@@ -277,3 +277,68 @@ describe('KI-SHAPE-21', () => {
     ])
   })
 })
+
+const guildMembership = KI_SHAPE.items.find(({ code }) => code === 'KI-SHAPE-22')
+
+if (!guildMembership?.mechanical) throw new Error('KI-SHAPE-22 mechanical check missing')
+
+describe('KI-SHAPE-22', () => {
+  const run = (skill: Parameters<typeof createKiShapeContext>[0]['skill']) =>
+    (guildMembership.mechanical?.audit.run(createKiShapeContext({ skill })) ?? []).map(({ status, message }) => [
+      status,
+      message
+    ])
+
+  test('passes a member and a lead that declare their guilds', () => {
+    expect(run({ knowledgeIslandsSkill: true, name: 'ki-git', guildPresent: true, guild: 'repository' })).toEqual([
+      ['PASS', 'guild membership is declared']
+    ])
+    expect(
+      run({
+        knowledgeIslandsSkill: true,
+        name: 'ki-repo',
+        guildPresent: true,
+        guild: 'keystone',
+        leadsPresent: true,
+        leads: 'repository'
+      })
+    ).toEqual([['PASS', 'guild membership is declared']])
+  })
+
+  test('requires the guild key on every canonical skill, never on ki-self', () => {
+    expect(run({ knowledgeIslandsSkill: true, name: 'ki-git' })).toEqual([
+      ['VIOLATION', 'missing required `ki-guild:` metadata']
+    ])
+    expect(run({ knowledgeIslandsSkill: true, name: 'ki-self' })[0]?.[0]).toBe('NOT_APPLICABLE')
+    expect(run({ knowledgeIslandsSkill: false, name: 'other' })[0]?.[0]).toBe('NOT_APPLICABLE')
+  })
+
+  test('keeps every lead in Keystone and Keystone led by ki-keystone alone', () => {
+    expect(
+      run({
+        knowledgeIslandsSkill: true,
+        name: 'ki-work',
+        guildPresent: true,
+        guild: 'work',
+        leadsPresent: true,
+        leads: 'work'
+      })
+    ).toEqual([['VIOLATION', 'a lead skill is a member of Keystone and declares `ki-guild: keystone`']])
+    expect(
+      run({
+        knowledgeIslandsSkill: true,
+        name: 'ki-repo',
+        guildPresent: true,
+        guild: 'keystone',
+        leadsPresent: true,
+        leads: 'keystone'
+      })
+    ).toEqual([['VIOLATION', 'only `ki-keystone` leads Keystone']])
+    expect(run({ knowledgeIslandsSkill: true, name: 'ki-keystone', guildPresent: true, guild: 'keystone' })).toEqual([
+      ['VIOLATION', '`ki-keystone` must declare `ki-leads: keystone`']
+    ])
+    expect(run({ knowledgeIslandsSkill: true, name: 'ki-git', guildPresent: true, guild: 'Repository' })).toEqual([
+      ['VIOLATION', '`ki-guild:` must be one kebab-case guild name']
+    ])
+  })
+})

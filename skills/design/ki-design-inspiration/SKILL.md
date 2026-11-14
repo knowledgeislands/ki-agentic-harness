@@ -2,6 +2,7 @@
 name: ki-design-inspiration
 ki-kind: process
 ki-applicability: invocation-only
+ki-guild: design
 ki-depends-on: []
 description: >
   Find website design inspiration in curated galleries and turn selected examples into practical directions

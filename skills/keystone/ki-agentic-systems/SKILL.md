@@ -2,6 +2,8 @@
 name: ki-agentic-systems
 ki-kind: knowledge
 ki-applicability: invocation-only
+ki-guild: keystone
+ki-leads: agentic-systems
 ki-depends-on: []
 description: >
   Define the words of agentic systems as a knowledge graph: industry cards from model, agent harness, agent, session,

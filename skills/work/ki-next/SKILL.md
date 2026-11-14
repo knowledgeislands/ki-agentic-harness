@@ -2,6 +2,7 @@
 name: ki-next
 ki-kind: process
 ki-applicability: invocation-only
+ki-guild: work
 ki-depends-on: []
 description: >
   Capture substantive prospective work as unadopted triage records, or select, adopt, promote, defer,

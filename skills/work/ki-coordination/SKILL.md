@@ -2,6 +2,7 @@
 name: ki-coordination
 ki-kind: governance
 ki-applicability: declaration-only
+ki-guild: work
 ki-depends-on: [ki-delegation, ki-work-package]
 ki-shared-dependencies: [ki-skills:rubric, ki-work-roadmap:work-identifiers]
 contributes: ['.ki.toml']

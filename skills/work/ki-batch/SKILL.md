@@ -2,6 +2,7 @@
 name: ki-batch
 ki-kind: process
 ki-applicability: invocation-only
+ki-guild: work
 ki-depends-on: []
 ki-optional-depends-on: [ki-delegation]
 ki-shared-dependencies: [ki-work-roadmap:work-identifiers]

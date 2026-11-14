@@ -2,6 +2,8 @@
 name: ki-acquire
 ki-kind: governance
 ki-applicability: declaration-only
+ki-guild: keystone
+ki-leads: acquire
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >

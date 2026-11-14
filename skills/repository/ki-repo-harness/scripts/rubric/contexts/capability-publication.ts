@@ -9,6 +9,10 @@ export type CapabilityApplicability = 'baseline' | 'detected' | 'declaration-onl
 export type CapabilityEntry = {
   path: string
   domain: string
+  /** The guild the skill declares, `ki-guild:`; the catalogue groups by it, else by the source folder. */
+  guild?: string
+  /** The guild a lead skill declares it leads, `ki-leads:`. */
+  leads?: string
   name: string
   kind: CapabilityKind
   applicability: CapabilityApplicability
@@ -56,6 +60,8 @@ const stringList = (value: unknown): readonly string[] | null => {
 
 const normaliseProse = (value: string): string => value.replace(/\s+/g, ' ').trim()
 
+const GUILD_NAME = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/
+
 const domainFromPath = (path: string): string => {
   const segments = path.split('/').filter(Boolean)
   const skillsIndex = segments.lastIndexOf('skills')
@@ -86,6 +92,8 @@ export const parseCapabilitySource = ({ path, content }: CapabilitySource): Capa
   const argumentHint = frontmatter['argument-hint']
   const runtimeBinding = frontmatter['ki-runtime-binding']
   const supportedRuntimes = frontmatter['ki-supported-runtimes']
+  const guild = frontmatter['ki-guild']
+  const leads = frontmatter['ki-leads']
 
   if (typeof name !== 'string' || name.trim().length === 0) return { issue: `${path} has no non-empty name` }
   if (!CAPABILITY_KINDS.has(kind)) return { issue: `${path} has invalid or missing ki-kind` }
@@ -108,11 +116,17 @@ export const parseCapabilitySource = ({ path, content }: CapabilitySource): Capa
   if (runtimes === null) return { issue: `${path} has an invalid ki-supported-runtimes list` }
   if (runtimes.length > 0 && runtimeBinding !== true)
     return { issue: `${path} names supported runtimes without ki-runtime-binding: true` }
+  if (guild !== undefined && (typeof guild !== 'string' || !GUILD_NAME.test(guild)))
+    return { issue: `${path} has an invalid ki-guild` }
+  if (leads !== undefined && (typeof leads !== 'string' || !GUILD_NAME.test(leads)))
+    return { issue: `${path} has an invalid ki-leads` }
 
   return {
     entry: {
       path,
       domain: domainFromPath(path),
+      ...(typeof guild === 'string' ? { guild } : {}),
+      ...(typeof leads === 'string' ? { leads } : {}),
       name: name.trim(),
       kind: kind as CapabilityKind,
       applicability,
@@ -140,9 +154,14 @@ const runtimeDescription = ({ runtimeBinding, supportedRuntimes }: CapabilityEnt
 
 const counted = (count: number, singular: string): string => `${count} ${count === 1 ? singular : `${singular}s`}`
 
+/** The section a skill is catalogued under: its declared guild, or its source folder where it declares none. */
+const catalogueGroup = (entry: CapabilityEntry): string => entry.guild ?? entry.domain
+
 export const renderCapabilityCatalogue = (entries: readonly CapabilityEntry[]): string => {
   const ordered = [...entries].sort((left, right) =>
-    left.domain === right.domain ? left.name.localeCompare(right.name) : left.domain.localeCompare(right.domain)
+    catalogueGroup(left) === catalogueGroup(right)
+      ? left.name.localeCompare(right.name)
+      : catalogueGroup(left).localeCompare(catalogueGroup(right))
   )
   const governance = ordered.filter((entry) => entry.kind === 'governance').length
   const process = ordered.filter((entry) => entry.kind === 'process').length
@@ -156,19 +175,20 @@ export const renderCapabilityCatalogue = (entries: readonly CapabilityEntry[]): 
     CAPABILITY_CATALOGUE_START,
     '## Generated capability catalogue',
     '',
-    `This source harness publishes ${counted(ordered.length, 'skill')}: ${kinds.slice(0, -1).join(', ')} and ${kinds.at(-1)}. The entries below are generated from canonical \`SKILL.md\` frontmatter; edit the source skill, then run \`ki repo conform --skill ki-repo-harness\` to republish this section.`,
+    `This source harness publishes ${counted(ordered.length, 'skill')}: ${kinds.slice(0, -1).join(', ')} and ${kinds.at(-1)}. The entries below are generated from canonical \`SKILL.md\` frontmatter, grouped by each skill's declared guild; edit the source skill, then run \`ki repo conform --skill ki-repo-harness\` to republish this section.`,
     ''
   ]
 
-  for (const domain of [...new Set(ordered.map((entry) => entry.domain))]) {
-    sections.push(`### ${titleCase(domain)}`, '')
-    for (const entry of ordered.filter((candidate) => candidate.domain === domain)) {
+  for (const group of [...new Set(ordered.map(catalogueGroup))]) {
+    sections.push(`### ${titleCase(group)}`, '')
+    for (const entry of ordered.filter((candidate) => catalogueGroup(candidate) === group)) {
       sections.push(
         `#### \`${entry.name}\``,
         '',
         entry.description,
         '',
         `- **Kind:** ${titleCase(entry.kind)}`,
+        ...(entry.leads === undefined ? [] : [`- **Leads:** ${titleCase(entry.leads)}`]),
         `- **Applicability:** ${titleCase(entry.applicability)}`,
         ...(entry.detects.length === 0
           ? []
@@ -183,6 +203,26 @@ export const renderCapabilityCatalogue = (entries: readonly CapabilityEntry[]): 
 
   sections.push(CAPABILITY_CATALOGUE_END)
   return `${sections.join('\n')}\n`
+}
+
+/**
+ * Guild membership, once any skill declares a guild: every skill declares one, every lead is a member of Keystone,
+ * and no guild has two leads. Membership is read from frontmatter, never from the folder a skill sits in.
+ */
+const guildIssues = (entries: readonly CapabilityEntry[]): string[] => {
+  if (!entries.some((entry) => entry.guild !== undefined || entry.leads !== undefined)) return []
+  const issues: string[] = []
+  for (const entry of entries) {
+    if (entry.guild === undefined) issues.push(`${entry.path} declares no ki-guild`)
+    if (entry.leads !== undefined && entry.guild !== 'keystone')
+      issues.push(`${entry.path} leads ${entry.leads} but is not a member of keystone`)
+  }
+  const leadsByGuild = new Map<string, string[]>()
+  for (const entry of entries)
+    if (entry.leads !== undefined) leadsByGuild.set(entry.leads, [...(leadsByGuild.get(entry.leads) ?? []), entry.name])
+  for (const [guild, leads] of leadsByGuild)
+    if (leads.length > 1) issues.push(`guild ${guild} has more than one lead: ${leads.sort().join(', ')}`)
+  return issues
 }
 
 const markerCount = (content: string, marker: string): number => content.split(marker).length - 1
@@ -224,6 +264,7 @@ export const prepareCapabilityPublication = (
     if (entry.name !== 'ki-repo' && entry.detects.length > 0)
       issues.push(`${entry.path} declares ki-detects but ki-repo is the sole detector owner`)
   }
+  issues.push(...guildIssues(entries))
 
   const detector = entries.find((entry) => entry.name === 'ki-repo')
   if ((prefix === 'ki' || detector) && (!detector || detector.detects.length === 0))

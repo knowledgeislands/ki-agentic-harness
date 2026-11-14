@@ -2,6 +2,7 @@
 name: ki-trade
 ki-kind: process
 ki-applicability: invocation-only
+ki-guild: work
 ki-depends-on: [ki-trades]
 description: >
   Operate one repository's side of a declared cross-repository trade: prepare, inspect, submit, receive,

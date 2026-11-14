@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 70 skills: 56 governance skills, 13 process skills and 1 knowledge skill. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 70 skills: 56 governance skills, 13 process skills and 1 knowledge skill. The entries below are generated from canonical `SKILL.md` frontmatter, grouped by each skill's declared guild; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -308,6 +308,7 @@ Audit non-secret Claude Code repository evidence—instructions, rules, settings
 Govern source-independent knowledge capture and curation: supplied scope, honest coverage, faithful lean preservation, exact required originals, verified destinations, incremental curation into a staging knowledge graph and dispatch by Git move, with the transient capture package as the only record. Use for common acquisition or curation rules; ki-acquire-chatgpt and ki-acquire-granola own their provider contracts.
 
 - **Kind:** Governance
+- **Leads:** Acquire
 - **Applicability:** Declaration Only
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
 - **Dependencies:** None
@@ -318,6 +319,7 @@ Govern source-independent knowledge capture and curation: supplied scope, honest
 Define the words of agentic systems as a knowledge graph: industry cards from model, agent harness, agent, session, subagent and skill to environment, machine, agent host and client, with Anthropic's, OpenAI's, Google's and Microsoft's own words in vendor subgraphs linked to them. Use to learn what an agentic term means, which sense a vendor name such as Claude or Codex carries, how vendors' words compare, or which card to link instead of redefining a term; `ki-agentic-radar` owns maturity and stance, and `ki-subagents` how to run subagents.
 
 - **Kind:** Knowledge
+- **Leads:** Agentic Systems
 - **Applicability:** Invocation Only
 - **Arguments:** `educate <term> | help | refresh`
 - **Dependencies:** None
@@ -328,6 +330,7 @@ Define the words of agentic systems as a knowledge graph: industry cards from mo
 Govern KI document formats, Markdown, TOML, README composition, industry white papers, and durable knowledge placement. Use to format or audit authored documents, shape a README, or decide where learning belongs; use `ki-skills` for SKILL.md quality, `ki-repo` for repository contracts, and `ki-engineering` for code toolchains.
 
 - **Kind:** Governance
+- **Leads:** Authoring
 - **Applicability:** Baseline
 - **Arguments:** `audit <path> | conform <path> | educate <target> | help | refresh`
 - **Dependencies:** None
@@ -358,6 +361,7 @@ Govern knowledge graphs: Semantic Markdown cards named by readable ids, a `_grap
 Audit or conform the universal KI repository contract declared by `.ki.toml`, including setup, GitHub settings, and top-level `+` and `-` working areas. Use for whole-repository review; specialised `ki-repo-*`, `ki-engineering`, and `ki-work-roadmap` skills own their narrower structures.
 
 - **Kind:** Governance
+- **Leads:** Repository
 - **Applicability:** Baseline
 - **Detects:** `ki-decision-records`, `ki-engineering`, `ki-guides`, `ki-repo-homebrew-tap`, `ki-repo-kb`, `ki-repo-kb-streams`, `ki-repo-mcp`, `ki-repo-specifications`, `ki-repo-tools`, `ki-repo-website`, `ki-repo-website-app`, `ki-repo-website-cloudflare`, `ki-repo-website-content`, `ki-skills`, `ki-specs`, `ki-subagents`, `ki-subagents-chatgpt`, `ki-subagents-claude`, `ki-work-package`
 - **Arguments:** `audit | conform <repo> | educate <repo> | help | refresh | review [scope] | review close <REV-NNN>`
@@ -379,6 +383,7 @@ Create, audit, review, extract, or optimise Agent Skills. Use for SKILL.md scope
 Select and audit a repository's KI forward-work adapter and shared lifecycle vocabulary. Use when choosing between local roadmap, KB Streams, GitHub Issues, or Linear; the selected adapter owns record shape and process skills own lifecycle actions.
 
 - **Kind:** Governance
+- **Leads:** Work
 - **Applicability:** Declaration Only
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
 - **Dependencies:** None

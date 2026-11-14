@@ -136,6 +136,12 @@ export type KiShapeSkillContext = {
   applicability: string
   detectsPresent: boolean
   detects: string
+  /** The guild the skill declares itself a member of, `ki-guild:`. */
+  guildPresent: boolean
+  guild: string
+  /** The guild a lead skill declares it leads, `ki-leads:`. */
+  leadsPresent: boolean
+  leads: string
   governanceSkill: boolean
   localGovernanceSource: boolean
   sourceHarnessName?: string
@@ -202,6 +208,10 @@ export const createKiShapeFrontmatterEvidence = ({
   | 'applicability'
   | 'detectsPresent'
   | 'detects'
+  | 'guildPresent'
+  | 'guild'
+  | 'leadsPresent'
+  | 'leads'
   | 'governanceSkill'
   | 'localGovernanceSource'
   | 'argumentHint'
@@ -219,6 +229,10 @@ export const createKiShapeFrontmatterEvidence = ({
     applicability: (frontmatter.keys.get('ki-applicability') ?? '').trim(),
     detectsPresent: frontmatter.present.has('ki-detects'),
     detects: (frontmatter.keys.get('ki-detects') ?? '').trim(),
+    guildPresent: frontmatter.present.has('ki-guild'),
+    guild: (frontmatter.keys.get('ki-guild') ?? '').trim(),
+    leadsPresent: frontmatter.present.has('ki-leads'),
+    leads: (frontmatter.keys.get('ki-leads') ?? '').trim(),
     governanceSkill: !isProcessSkill(kiKind) && kiKind === 'governance',
     localGovernanceSource,
     argumentHint,
@@ -236,6 +250,10 @@ const emptyKiShapeSkill: KiShapeSkillContext = {
   applicability: '',
   detectsPresent: false,
   detects: '',
+  guildPresent: false,
+  guild: '',
+  leadsPresent: false,
+  leads: '',
   governanceSkill: false,
   localGovernanceSource: false,
   sourceHarnessName: undefined,

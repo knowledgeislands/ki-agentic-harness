@@ -2,6 +2,7 @@
 name: ki-subagents
 ki-kind: governance
 ki-applicability: detected
+ki-guild: agentic-systems
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
