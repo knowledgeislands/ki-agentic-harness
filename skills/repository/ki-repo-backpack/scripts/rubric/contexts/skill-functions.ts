@@ -30,7 +30,7 @@ export const FUNCTIONAL_AREAS: readonly FunctionalArea[] = [
     purpose: 'every repository and every skill builds on',
     groups: [
       { title: 'Repository and writing', skills: ['ki-repo', 'ki-authoring', 'ki-diagrams', 'ki-git'] },
-      { title: 'Skills and harness', skills: ['ki-skills', 'ki-repo-harness'] },
+      { title: 'Skills and harness', skills: ['ki-skills', 'ki-repo-backpack'] },
       { title: 'Knowledge', skills: ['ki-knowledge-graph', 'ki-agentic-systems'] },
       { title: 'Guilds', skills: ['ki-keystone', 'ki-bootstrap', 'ki-design', 'ki-env'] }
     ]
@@ -98,7 +98,7 @@ export const FUNCTIONAL_AREAS: readonly FunctionalArea[] = [
         skills: [
           'ki-repo-specifications',
           'ki-repo-mcp',
-          'ki-repo-harness',
+          'ki-repo-backpack',
           'ki-repo-tools',
           'ki-repo-packages',
           'ki-repo-homebrew-tap',

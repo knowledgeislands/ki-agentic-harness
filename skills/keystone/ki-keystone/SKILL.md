@@ -54,7 +54,7 @@ Generated from every skill's frontmatter, the guild it declares and the guild it
 | Authoring | `ki-authoring` | `ki-decision-records`, `ki-diagrams`, `ki-guides`, `ki-specs` |
 | Design | `ki-design` | `ki-design-inspiration`, `ki-design-system` |
 | Environment | `ki-env` | `ki-env-binding`, `ki-env-binding-chatgpt`, `ki-env-binding-chezmoi`, `ki-env-binding-claude`, `ki-env-housekeeping`, `ki-env-housekeeping-chatgpt`, `ki-env-housekeeping-claude`, `ki-env-tokenomics`, `ki-env-tokenomics-chatgpt`, `ki-env-tokenomics-claude` |
-| Repository | `ki-repo` | `ki-engineering`, `ki-git`, `ki-repo-dotfiles-chezmoi`, `ki-repo-harness`, `ki-repo-homebrew-tap`, `ki-repo-kb`, `ki-repo-kb-activities`, `ki-repo-kb-live-artifacts`, `ki-repo-kb-principal`, `ki-repo-kb-streams`, `ki-repo-mcp`, `ki-repo-packages`, `ki-repo-project`, `ki-repo-specifications`, `ki-repo-tools`, `ki-repo-website`, `ki-repo-website-app`, `ki-repo-website-cloudflare`, `ki-repo-website-content` |
+| Repository | `ki-repo` | `ki-engineering`, `ki-git`, `ki-repo-backpack`, `ki-repo-dotfiles-chezmoi`, `ki-repo-homebrew-tap`, `ki-repo-kb`, `ki-repo-kb-activities`, `ki-repo-kb-live-artifacts`, `ki-repo-kb-principal`, `ki-repo-kb-streams`, `ki-repo-mcp`, `ki-repo-packages`, `ki-repo-project`, `ki-repo-specifications`, `ki-repo-tools`, `ki-repo-website`, `ki-repo-website-app`, `ki-repo-website-cloudflare`, `ki-repo-website-content` |
 | Work | `ki-work` | `ki-accept`, `ki-batch`, `ki-coordination`, `ki-implement`, `ki-meeting`, `ki-next`, `ki-plan`, `ki-recap`, `ki-trade`, `ki-trades`, `ki-work-design`, `ki-work-github-issues`, `ki-work-linear`, `ki-work-package`, `ki-work-recurring`, `ki-work-roadmap` |
 
 <!-- ki-keystone:guild-map:end -->
@@ -67,7 +67,7 @@ A skill joins Keystone only when it leads a guild, or when every guild rests on 
 
 - **`ki-skills`** owns what a guild and a lead are, how skills are named and how membership is declared.
 - **Each lead** owns its own guild: which members it has and when to use each.
-- **`ki-repo-harness`** owns how a harness publishes its skills, including the catalogue in its `skills/README.md`, grouped by the same guilds.
+- **`ki-repo-backpack`** owns how a harness publishes its skills, including the catalogue in its `skills/README.md`, grouped by the same guilds.
 
 ## Operating modes
 

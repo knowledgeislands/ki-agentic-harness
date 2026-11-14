@@ -10,7 +10,7 @@
  * Usage: bun scripts/skill-graph.ts [--check | --write] [--repository <path>]
  *
  * `--check` (default) exits 1 when any committed source is missing or differs from the frontmatter-derived rendering,
- * ignoring only the traced revision. `--write` replaces each. `ki repo conform --skill ki-repo-harness` performs the same
+ * ignoring only the traced revision. `--write` replaces each. `ki repo conform --skill ki-repo-backpack` performs the same
  * write under CAP-4; this script is the direct form the diagrams manifest cites. After a write, finalize and re-export
  * each SVG as the ki-diagrams standard describes.
  */

@@ -553,12 +553,12 @@ test('script exclusions reject invalid, stale, duplicate, patterned, and owned e
   const configuration = `[skills.ki-engineering]
 script_exclusions = ["", "vendor:*", "missing", "vendor:generate", "vendor:generate", "ki:harness:eval", 7]
 
-[skills.ki-repo-harness]
+[skills.ki-repo-backpack]
 `
   expect(
     inspectGovernedScriptSurface(configuration, scripts, [
       ...engineeringClaim,
-      { script: 'ki:harness:eval', skill: 'example/harness:ki-repo-harness' }
+      { script: 'ki:harness:eval', skill: 'example/harness:ki-repo-backpack' }
     ])
   ).toEqual({
     namingOffenders: [],
@@ -567,7 +567,7 @@ script_exclusions = ["", "vendor:*", "missing", "vendor:generate", "vendor:gener
       'script exclusion "vendor:*" must be exact, not a pattern',
       'stale script exclusion names no existing script: missing',
       'duplicate script exclusion: vendor:generate',
-      'script exclusion overlaps declared owner example/harness:ki-repo-harness: ki:harness:eval',
+      'script exclusion overlaps declared owner example/harness:ki-repo-backpack: ki:harness:eval',
       'script_exclusions entries must be non-empty strings'
     ]
   })

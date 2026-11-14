@@ -211,7 +211,7 @@ const harnessPrefix = (toml: string | null): string | null => {
   if (toml === null) return null
   try {
     const parsed = Bun.TOML.parse(toml) as { skills?: Record<string, unknown> }
-    const harness = parsed.skills?.['ki-repo-harness']
+    const harness = parsed.skills?.['ki-repo-backpack']
     if (typeof harness !== 'object' || harness === null || Array.isArray(harness)) return null
     const prefix = (harness as Record<string, unknown>).prefix
     return typeof prefix === 'string' ? prefix : null
@@ -239,7 +239,7 @@ export const createHarnessSession = ({
       configState = 'unsafe'
     }
   }
-  const hasHarnessTable = configContent !== null && hasTomlTable(configContent, 'ki-repo-harness')
+  const hasHarnessTable = configContent !== null && hasTomlTable(configContent, 'ki-repo-backpack')
   const prefix = harnessPrefix(configContent)
   let markerRequested = false
   const inspectedSkills = inspectSkills(root, state)
@@ -422,7 +422,7 @@ export const createHarnessSession = ({
       if (markerRequested && configContent !== null)
         writes.push({
           path: '.ki.toml',
-          content: `${configContent.replace(/\n*$/, '\n')}\n[skills.${tableIdentity('ki-repo-harness')}]\n`
+          content: `${configContent.replace(/\n*$/, '\n')}\n[skills.${tableIdentity('ki-repo-backpack')}]\n`
         })
       if (capabilityPublicationRequested && capabilityDraft.merged !== undefined)
         writes.push({ path: 'skills/README.md', content: capabilityDraft.merged })

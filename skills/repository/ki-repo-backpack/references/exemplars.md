@@ -53,10 +53,10 @@ A source Harness opts into this standard and declares its capability namespace i
 ```toml
 [skills.ki-repo]
 
-[skills.ki-repo-harness]
+[skills.ki-repo-backpack]
 prefix = "ki"
 
 [skills.ki-skills]
 ```
 
-When the physical file already exists and only `[skills.ki-repo-harness]` is missing, CONFORM may append a keyless marker but cannot infer the provider-owned prefix. Missing, prefix-less, or unsafe configuration remains a reported manual case.
+When the physical file already exists and only `[skills.ki-repo-backpack]` is missing, CONFORM may append a keyless marker but cannot infer the provider-owned prefix. Missing, prefix-less, or unsafe configuration remains a reported manual case.

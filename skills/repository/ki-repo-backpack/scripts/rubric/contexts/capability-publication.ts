@@ -1,5 +1,5 @@
-export const CAPABILITY_CATALOGUE_START = '<!-- ki-repo-harness:capability-catalogue:start -->'
-export const CAPABILITY_CATALOGUE_END = '<!-- ki-repo-harness:capability-catalogue:end -->'
+export const CAPABILITY_CATALOGUE_START = '<!-- ki-repo-backpack:capability-catalogue:start -->'
+export const CAPABILITY_CATALOGUE_END = '<!-- ki-repo-backpack:capability-catalogue:end -->'
 
 export type CapabilityKind = 'governance' | 'process' | 'knowledge'
 
@@ -175,7 +175,7 @@ export const renderCapabilityCatalogue = (entries: readonly CapabilityEntry[]): 
     CAPABILITY_CATALOGUE_START,
     '## Generated capability catalogue',
     '',
-    `This source harness publishes ${counted(ordered.length, 'skill')}: ${kinds.slice(0, -1).join(', ')} and ${kinds.at(-1)}. The entries below are generated from canonical \`SKILL.md\` frontmatter, grouped by each skill's declared guild; edit the source skill, then run \`ki repo conform --skill ki-repo-harness\` to republish this section.`,
+    `This source harness publishes ${counted(ordered.length, 'skill')}: ${kinds.slice(0, -1).join(', ')} and ${kinds.at(-1)}. The entries below are generated from canonical \`SKILL.md\` frontmatter, grouped by each skill's declared guild; edit the source skill, then run \`ki repo conform --skill ki-repo-backpack\` to republish this section.`,
     ''
   ]
 

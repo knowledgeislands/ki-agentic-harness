@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "22a71c4bd818bd4ec44764616b1f074a13e19002"
+      "revision": "26dd45f59a8f35f1e282490ea109f8a1fd90ac84"
     },
     "legend": {
       "mode": "auto",
@@ -33,13 +33,13 @@
   },
   "components": [
     {
-      "id": "ki-repo-harness",
+      "id": "ki-repo-backpack",
       "type": "database",
-      "label": "ki-repo-harness",
+      "label": "ki-repo-backpack",
       "sublabel": "repository · opt-in",
       "sources": [
         {
-          "path": "skills/repository/ki-repo-harness/SKILL.md"
+          "path": "skills/repository/ki-repo-backpack/SKILL.md"
         }
       ],
       "tag": "R27 · CL · F4",
@@ -178,7 +178,7 @@
       "kind": "region",
       "label": "Fundamentals · Skills and harness",
       "wraps": [
-        "ki-repo-harness"
+        "ki-repo-backpack"
       ],
       "pad": 32
     },
@@ -217,8 +217,8 @@
       "variant": "default"
     },
     {
-      "id": "ki-repo-harness--ki-subagents",
-      "from": "ki-repo-harness",
+      "id": "ki-repo-backpack--ki-subagents",
+      "from": "ki-repo-backpack",
       "to": "ki-subagents",
       "variant": "default"
     },
@@ -251,7 +251,7 @@
       "title": "Generated, not drawn",
       "items": [
         "4 skills, 2 outside prerequisites, 1 outside dependent, 5 composition and 0 optional edges, read from SKILL.md frontmatter.",
-        "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
+        "Regenerate with ki repo conform --skill ki-repo-backpack; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }
   ]

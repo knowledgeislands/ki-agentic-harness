@@ -1,6 +1,6 @@
 #!/bin/sh
-# Canonical commit-msg for a ki-repo-harness repository without a package.json, composed by ki-repo.
-# Copied byte-exact from ki-repo-harness's assets/githooks/no-package/commit-msg; HOOK-4 compares it, so do not edit it here.
+# Canonical commit-msg for a ki-repo-backpack repository without a package.json, composed by ki-repo.
+# Copied byte-exact from ki-repo-backpack's assets/githooks/no-package/commit-msg; HOOK-4 compares it, so do not edit it here.
 if ! command -v ki >/dev/null 2>&1; then
   echo "commit-msg: the commit gate cannot run; not on PATH: ki" >&2
   echo "commit-msg: install it, then commit again." >&2

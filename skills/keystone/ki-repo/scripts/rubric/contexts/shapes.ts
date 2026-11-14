@@ -2,7 +2,7 @@
 export const PROJECT_SHAPES = [
   'ki-repo-project',
   'ki-repo-dotfiles-chezmoi',
-  'ki-repo-harness',
+  'ki-repo-backpack',
   'ki-repo-homebrew-tap',
   'ki-repo-mcp',
   'ki-repo-specifications',

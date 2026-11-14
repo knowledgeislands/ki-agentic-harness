@@ -1,6 +1,6 @@
 #!/bin/sh
-# Canonical pre-commit for a ki-repo-harness repository with a package.json, composed by ki-repo.
-# Copied byte-exact from ki-repo-harness's assets/githooks/package/pre-commit; HOOK-4 compares it, so do not edit it here.
+# Canonical pre-commit for a ki-repo-backpack repository with a package.json, composed by ki-repo.
+# Copied byte-exact from ki-repo-backpack's assets/githooks/package/pre-commit; HOOK-4 compares it, so do not edit it here.
 root="$(git rev-parse --show-toplevel)" || exit 1
 git diff --cached --quiet && exit 0
 missing=''

@@ -48,7 +48,7 @@ test('Project gate refuses a symlink without following it', () => {
 })
 
 test('a specialised primary shape retains its own gate even when Project orientation is declared', () => {
-  const root = fixture('ki repo audit --skill ki-repo-harness --staged || exit 1')
-  writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\nprimary_shape = "ki-repo-harness"\n')
+  const root = fixture('ki repo audit --skill ki-repo-backpack --staged || exit 1')
+  writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\nprimary_shape = "ki-repo-backpack"\n')
   expect(inspectProjectGate(root)[0]?.status).toBe('NOT_APPLICABLE')
 })

@@ -12,9 +12,9 @@ The repo root MUST contain `skills/`, `subagents/`, `evals/`, and `hooks/` as di
 
 _Conformance:_ conforming
 
-_Verify:_ `ki repo audit --skill ki-repo-harness --repo .` — LAY-1 PASSes only when all four directories are present (a missing one is a FAIL).
+_Verify:_ `ki repo audit --skill ki-repo-backpack --repo .` — LAY-1 PASSes only when all four directories are present (a missing one is a FAIL).
 
-_Evidence:_ `ki repo audit --skill ki-repo-harness --repo .` — LAY-1 checks the four required physical directories.
+_Evidence:_ `ki repo audit --skill ki-repo-backpack --repo .` — LAY-1 checks the four required physical directories.
 
 ### HARN-002 — Each part declares its status
 
@@ -22,9 +22,9 @@ Each of the four part-directories MUST contain a `README.md` that declares wheth
 
 _Conformance:_ conforming
 
-_Verify:_ `ki repo audit --skill ki-repo-harness --repo .` — LAY-2 checks a `README.md` in each of `skills/`, `subagents/`, `evals/`, and `hooks/`.
+_Verify:_ `ki repo audit --skill ki-repo-backpack --repo .` — LAY-2 checks a `README.md` in each of `skills/`, `subagents/`, `evals/`, and `hooks/`.
 
-_Evidence:_ `ki-repo-harness` LAY-2 checks all four shelf descriptions.
+_Evidence:_ `ki-repo-backpack` LAY-2 checks all four shelf descriptions.
 
 ## Root anchors
 
@@ -40,13 +40,13 @@ _Evidence:_ `audit-harness.ts` LAY-3 (`CLAUDE.md`) and LAY-5 (`.ki.toml`) FAIL w
 
 ### HARN-004 — Harness compliance table
 
-`.ki.toml` MUST contain a `[skills.ki-repo-harness]` table marking the repo as a harness, and MUST contain a `[skills.ki-repo]` table opting into KI governance, per [ADR-KI-HARNESS-005](../decisions/ADR-KI-HARNESS-005-validate-down-ki-toml-contract.md).
+`.ki.toml` MUST contain a `[skills.ki-repo-backpack]` table marking the repo as a harness, and MUST contain a `[skills.ki-repo]` table opting into KI governance, per [ADR-KI-HARNESS-005](../decisions/ADR-KI-HARNESS-005-validate-down-ki-toml-contract.md).
 
 _Conformance:_ conforming
 
-_Verify:_ `audit-harness.ts` CONFIG-1 (`[skills.ki-repo-harness]`, FAIL if absent) and CONFIG-2 (`[skills.ki-repo]`, WARN if absent).
+_Verify:_ `audit-harness.ts` CONFIG-1 (`[skills.ki-repo-backpack]`, FAIL if absent) and CONFIG-2 (`[skills.ki-repo]`, WARN if absent).
 
-_Evidence:_ `audit-harness.ts` CONFIG-1 (`[skills.ki-repo-harness]`, FAIL if absent) and CONFIG-2 (`[skills.ki-repo]`, WARN if absent).
+_Evidence:_ `audit-harness.ts` CONFIG-1 (`[skills.ki-repo-backpack]`, FAIL if absent) and CONFIG-2 (`[skills.ki-repo]`, WARN if absent).
 
 ## Toolchain surface
 
@@ -86,13 +86,13 @@ _Evidence:_ `ki-work-roadmap`'s [repository-roadmap standard](../../skills/work/
 
 ### HARN-008 — CLAUDE.md orientation coverage
 
-The effective root orientation MUST explain the four-part harness (`skills/`, `subagents/`, `evals/`, `hooks/`) and state the current status of every part, per the `ki-repo-harness` standard.
+The effective root orientation MUST explain the four-part harness (`skills/`, `subagents/`, `evals/`, `hooks/`) and state the current status of every part, per the `ki-repo-backpack` standard.
 
 _Conformance:_ conforming
 
-_Verify:_ `ki-repo-harness`'s rubric CLAUDE-1 and CLAUDE-2 ([`skills/repository/ki-repo-harness/references/rubric.md`](../../skills/repository/ki-repo-harness/references/rubric.md)), applied by reading (judgment-graded).
+_Verify:_ `ki-repo-backpack`'s rubric CLAUDE-1 and CLAUDE-2 ([`skills/repository/ki-repo-backpack/references/rubric.md`](../../skills/repository/ki-repo-backpack/references/rubric.md)), applied by reading (judgment-graded).
 
-_Evidence:_ `ki-repo-harness`'s rubric CLAUDE-1 and CLAUDE-2 ([`skills/repository/ki-repo-harness/references/rubric.md`](../../skills/repository/ki-repo-harness/references/rubric.md)), applied by reading (judgment-graded).
+_Evidence:_ `ki-repo-backpack`'s rubric CLAUDE-1 and CLAUDE-2 ([`skills/repository/ki-repo-backpack/references/rubric.md`](../../skills/repository/ki-repo-backpack/references/rubric.md)), applied by reading (judgment-graded).
 
 ### HARN-009 — Claude Code plan lifecycle hooks
 
@@ -120,7 +120,7 @@ A populated compatible Harness skills shelf MUST classify every canonical skill 
 
 _Conformance:_ conforming
 
-_Verify:_ `ki-repo-harness` capability-publication tests exercise valid publication and reject missing classification, invalid baseline membership, kind inconsistency, unknown detector targets, and registry-to-skill drift.
+_Verify:_ `ki-repo-backpack` capability-publication tests exercise valid publication and reject missing classification, invalid baseline membership, kind inconsistency, unknown detector targets, and registry-to-skill drift.
 
 _Evidence:_ `skills/README.md` is generated from the complete canonical skill collection and carries an applicability line for every entry.
 

@@ -12,7 +12,7 @@ harnesses = [
 
 [skills.ki-repo]
 repo_type = "project"
-primary_shape = "ki-repo-harness"
+primary_shape = "ki-repo-backpack"
 repository = "https://github.com/knowledgeislands/ki-agentic-harness"
 title = "Knowledge Islands Agentic Harness"
 capital = "https://github.com/knowledgeislands/ki-principal"
@@ -38,7 +38,7 @@ checks.coverage-subagents-chatgpt = false
 
 [skills.ki-repo-project]
 
-[skills.ki-repo-harness]
+[skills.ki-repo-backpack]
 prefix = "ki"
 
 # -----------------------------------------------------------------------------

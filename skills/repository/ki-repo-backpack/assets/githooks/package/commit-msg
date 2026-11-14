@@ -1,6 +1,6 @@
 #!/bin/sh
-# Canonical commit-msg for a ki-repo-harness repository with a package.json, composed by ki-repo.
-# Copied byte-exact from ki-repo-harness's assets/githooks/package/commit-msg; HOOK-4 compares it, so do not edit it here.
+# Canonical commit-msg for a ki-repo-backpack repository with a package.json, composed by ki-repo.
+# Copied byte-exact from ki-repo-backpack's assets/githooks/package/commit-msg; HOOK-4 compares it, so do not edit it here.
 root="$(git rev-parse --show-toplevel)" || exit 1
 if [ ! -x "$root/node_modules/.bin/commitlint" ]; then
   echo "commit-msg: the commit gate cannot run; missing from node_modules/.bin: commitlint" >&2

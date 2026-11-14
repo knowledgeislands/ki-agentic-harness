@@ -6,20 +6,20 @@ Knowledge Islands **Agent Skills** live here, one directory per skill. This is t
 
 Each skill is a directory containing a `SKILL.md` (YAML frontmatter — `name` + `description` required — followed by a markdown body), per the [Agent Skills open standard](https://agentskills.io/specification). Longer detail goes in `references/`, executables in `scripts/`, templates in `assets/` — all loaded on demand. The **directory name is the skill's `name`**: lowercase, hyphenated, matching the `name:` frontmatter exactly, since agents discover a skill by `name`, not path.
 
-Skill quality conforms to the **`ki-skills`** standard (a sibling here) — run its AUDIT (`ki repo audit --skill ki-skills`) before shipping. The container these skills sit in — this four-part `skills/` / `subagents/` / `evals/` / `hooks/` harness — conforms to **`ki-repo-harness`**. MCP servers remain independently released repositories outside the harness.
+Skill quality conforms to the **`ki-skills`** standard (a sibling here) — run its AUDIT (`ki repo audit --skill ki-skills`) before shipping. The container these skills sit in — this four-part `skills/` / `subagents/` / `evals/` / `hooks/` harness — conforms to **`ki-repo-backpack`**. MCP servers remain independently released repositories outside the harness.
 
 ## Adding a skill
 
 1. Scaffold `<name>/SKILL.md` (run `ki-skills` Mode EDUCATE), adding `references/` / `scripts/` / `assets/` only as needed.
 2. Write to the rubric, not from memory; self-audit with `ki repo audit --skill ki-skills`.
-3. Run `ki repo conform --skill ki-repo-harness` to refresh the generated catalogue below, then check the website-owned [skills-by-outcome guide](https://knowledgeislands.info/guidance/skills/by-outcome/) only when the new capability changes a reader journey.
+3. Run `ki repo conform --skill ki-repo-backpack` to refresh the generated catalogue below, then check the website-owned [skills-by-outcome guide](https://knowledgeislands.info/guidance/skills/by-outcome/) only when the new capability changes a reader journey.
 
 Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/guidance/skills/by-outcome/) when you know the result you want but not the skill name. Use the generated catalogue below for complete membership, descriptions, argument hints, runtime bindings, and formal dependencies. Skills are installed elsewhere through managed KI activation.
 
-<!-- ki-repo-harness:capability-catalogue:start -->
+<!-- ki-repo-backpack:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 74 skills: 60 governance skills, 13 process skills and 1 knowledge skill. The entries below are generated from canonical `SKILL.md` frontmatter, grouped by each skill's declared guild; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 74 skills: 60 governance skills, 13 process skills and 1 knowledge skill. The entries below are generated from canonical `SKILL.md` frontmatter, grouped by each skill's declared guild; edit the source skill, then run `ki repo conform --skill ki-repo-backpack` to republish this section.
 
 ### Acquire
 
@@ -413,7 +413,7 @@ Audit or conform the universal KI repository contract declared by `.ki.toml`, in
 
 #### `ki-skills`
 
-Create, audit, review, extract, or optimise Agent Skills. Use for SKILL.md scope, descriptions, progressive disclosure, scripts, references, rubrics, or reusable capability analysis; use `ki-subagents` for agent roles and `ki-repo-harness` for bundle layout.
+Create, audit, review, extract, or optimise Agent Skills. Use for SKILL.md scope, descriptions, progressive disclosure, scripts, references, rubrics, or reusable capability analysis; use `ki-subagents` for agent roles and `ki-repo-backpack` for bundle layout.
 
 - **Kind:** Governance
 - **Applicability:** Detected
@@ -454,6 +454,16 @@ Govern KI Git commits and shared-tree safety: Conventional Commits, touched-path
 - **Dependencies:** None
 - **Runtime:** Portable
 
+#### `ki-repo-backpack`
+
+Audit or design a KI-compatible harness that publishes skills, subagents, evals, and hooks as a verified installed payload. Use for source layout, prefix identity, declarations, or catalogue publication; each capability skill owns content quality.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit [path] | conform [path] | educate <name> | help | refresh`
+- **Dependencies:** `ki-skills`, `ki-subagents`, `ki-decision-records`, `ki-work-roadmap`
+- **Runtime:** Runtime-bound; supported runtimes are resolved by its host contract
+
 #### `ki-repo-dotfiles-chezmoi`
 
 Audit or conform KI chezmoi source repositories: source-versus-target editing, app-mutated configuration, shell and `bin/` layout, prefixes, fragments, comments, and reverse merges. Use for dotfiles structure, not a repository's personal tool choices.
@@ -463,16 +473,6 @@ Audit or conform KI chezmoi source repositories: source-versus-target editing, a
 - **Arguments:** `audit <repo> | conform <repo> | help | educate <repo> | refresh`
 - **Dependencies:** `ki-authoring`
 - **Runtime:** Portable
-
-#### `ki-repo-harness`
-
-Audit or design a KI-compatible harness that publishes skills, subagents, evals, and hooks as a verified installed payload. Use for source layout, prefix identity, declarations, or catalogue publication; each capability skill owns content quality.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit [path] | conform [path] | educate <name> | help | refresh`
-- **Dependencies:** `ki-skills`, `ki-subagents`, `ki-decision-records`, `ki-work-roadmap`
-- **Runtime:** Runtime-bound; supported runtimes are resolved by its host contract
 
 #### `ki-repo-homebrew-tap`
 
@@ -786,4 +786,4 @@ Govern flat local work items, roadmap horizons, lifecycle detail, dependencies, 
 - **Dependencies:** None
 - **Runtime:** Portable
 
-<!-- ki-repo-harness:capability-catalogue:end -->
+<!-- ki-repo-backpack:capability-catalogue:end -->

@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "22a71c4bd818bd4ec44764616b1f074a13e19002"
+      "revision": "26dd45f59a8f35f1e282490ea109f8a1fd90ac84"
     },
     "legend": {
       "mode": "auto",
@@ -261,13 +261,13 @@
       ]
     },
     {
-      "id": "ki-repo-harness",
+      "id": "ki-repo-backpack",
       "type": "database",
-      "label": "ki-repo-harness",
+      "label": "ki-repo-backpack",
       "sublabel": "fundamentals + repo types · opt-in",
       "sources": [
         {
-          "path": "skills/repository/ki-repo-harness/SKILL.md"
+          "path": "skills/repository/ki-repo-backpack/SKILL.md"
         }
       ],
       "pos": [
@@ -1523,7 +1523,7 @@
       "kind": "region",
       "label": "Fundamentals · Skills and harness",
       "wraps": [
-        "ki-repo-harness"
+        "ki-repo-backpack"
       ],
       "pad": 10
     },
@@ -1584,7 +1584,7 @@
       "label": "Repository · 19 skills",
       "wraps": [
         "ki-git",
-        "ki-repo-harness",
+        "ki-repo-backpack",
         "ki-engineering",
         "ki-repo-website",
         "ki-repo-website-app",
@@ -1849,7 +1849,7 @@
       "title": "Generated, not drawn",
       "items": [
         "74 skills in 8 concerns and 10 functional areas: 3 always on, 19 automatic, 38 opt-in, 14 commands.",
-        "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills owns the kind and applicability fields it reads."
+        "Regenerate with ki repo conform --skill ki-repo-backpack; ki-skills owns the kind and applicability fields it reads."
       ]
     }
   ]

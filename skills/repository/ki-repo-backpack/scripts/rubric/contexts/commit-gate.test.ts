@@ -38,9 +38,9 @@ test('GATE-1 passes both canonical hooks and any hook that runs only check-only 
 
 test('GATE-1 rejects an audit, conform, repair or rewrite at commit time, commented lines ignored', () => {
   for (const line of [
-    'ki repo audit --repo "$root" --skill ki-repo-harness --staged || exit 1',
-    'quiet_audit --skill ki-repo-harness || exit 1',
-    'ki repo conform --skill ki-repo-harness',
+    'ki repo audit --repo "$root" --skill ki-repo-backpack --staged || exit 1',
+    'quiet_audit --skill ki-repo-backpack || exit 1',
+    'ki repo conform --skill ki-repo-backpack',
     'KI_REPO_OFFLINE=1 ki repo repair --repo "$root"',
     'biome check --write . || exit 1',
     'rumdl check --fix || exit 1'
@@ -49,7 +49,7 @@ test('GATE-1 rejects an audit, conform, repair or rewrite at commit time, commen
     expect(outcome?.status, line).toBe('VIOLATION')
     expect(outcome?.message, line).toContain('check-only')
   }
-  expect(status(repository('#!/bin/sh\n# ki repo audit --skill ki-repo-harness --staged\n'))?.status).toBe('PASS')
+  expect(status(repository('#!/bin/sh\n# ki repo audit --skill ki-repo-backpack --staged\n'))?.status).toBe('PASS')
 })
 
 test('GATE-1 rejects a symlinked hook or hook directory', () => {

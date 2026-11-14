@@ -460,7 +460,7 @@ export const buildSkillArea =
                   `Home in another area: ${shared.join(', ')}; only edges within this area are drawn for them here, and their home area's diagram draws the rest.`
                 ]
               : []),
-            'Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic.'
+            'Regenerate with ki repo conform --skill ki-repo-backpack; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic.'
           ]
         }
       ]

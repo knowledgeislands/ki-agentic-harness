@@ -13,7 +13,7 @@ import { SKILLS } from './skills.ts'
 
 export default {
   contract: 1,
-  name: 'ki-repo-harness',
+  name: 'ki-repo-backpack',
   concern: 'Knowledge Islands compatible harnesses',
   packageScripts: ['ki:harness:eval'],
   createSession: createHarnessSession,

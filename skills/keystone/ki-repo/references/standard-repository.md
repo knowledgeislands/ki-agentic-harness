@@ -172,7 +172,7 @@ A KB must declare `ki-repo-kb`. It may also declare `ki-work-roadmap` for the sh
 
 #### 4.2.2 Project shapes
 
-A Project composes the shape skills it actually needs. The core shapes are `ki-repo-dotfiles-chezmoi`, `ki-repo-harness`, `ki-repo-homebrew-tap`, `ki-repo-mcp`, `ki-repo-specifications`, `ki-repo-tools`, and `ki-repo-website`. Website content, app, and Cloudflare declarations refine the website shape; they are not additional primary-shape candidates. Knowledge Base substructure skills refine the KB kind. `ki-engineering` is a governance capability, not a repository kind or shape.
+A Project composes the shape skills it actually needs. The core shapes are `ki-repo-dotfiles-chezmoi`, `ki-repo-backpack`, `ki-repo-homebrew-tap`, `ki-repo-mcp`, `ki-repo-specifications`, `ki-repo-tools`, and `ki-repo-website`. Website content, app, and Cloudflare declarations refine the website shape; they are not additional primary-shape candidates. Knowledge Base substructure skills refine the KB kind. `ki-engineering` is a governance capability, not a repository kind or shape.
 
 Every Project explicitly selects `primary_shape`, naming one of its declared core shape skills or `ki-repo-project` for a general Project. A Knowledge Base always selects its declared `ki-repo-kb` baseline. Missing, unsupported, undeclared, or kind-incompatible values fail validation. Declaring one specialist does not imply selecting it; adding another specialist does not alter the chosen primary shape. The choice identifies the repository's main responsibility without disabling its other skills. Directory names, display names, TOML table order, and an agent's judgment never replace these fields. Setup may emit an explicit general-Project scaffold; audits and consumers must not infer missing values.
 
@@ -246,7 +246,7 @@ No hook calls `ki`: the shape's audit, the general Project's `ki-repo` audit inc
 
 `HOOK-1` to `HOOK-4` are not applicable where the primary shape declares no hook; `HOOK-5` applies everywhere. They are WARN while the estate converges wave by wave, and move to FAIL after the last wave. `ki-repo` defines the canonical text but does not yet write it: conform writing the hooks and the binding sweep are `tools-ki` `KI-TOOL-KI-CLI-165` work, which finds a repository that copied its asset already canonical.
 
-Each shape skill also keeps one content criterion over the hook, not applicable without one, so a shape audit names a check-only breach or its own missing line in its own terms: `ki-engineering` `SCR-11`, `ki-authoring` `MD-hook`, `ki-repo-project`, `ki-repo-kb`, `ki-repo-harness`, `ki-repo-specifications` and `ki-repo-homebrew-tap` `GATE-1`, and `ki-repo-tools` `SHELL-HOOK`; each fails a hook that runs `ki repo audit`, `ki repo conform`, `ki repo repair`, `--fix` or `--write`.
+Each shape skill also keeps one content criterion over the hook, not applicable without one, so a shape audit names a check-only breach or its own missing line in its own terms: `ki-engineering` `SCR-11`, `ki-authoring` `MD-hook`, `ki-repo-project`, `ki-repo-kb`, `ki-repo-backpack`, `ki-repo-specifications` and `ki-repo-homebrew-tap` `GATE-1`, and `ki-repo-tools` `SHELL-HOOK`; each fails a hook that runs `ki repo audit`, `ki repo conform`, `ki repo repair`, `--fix` or `--write`.
 
 [Back to contents](#contents)
 

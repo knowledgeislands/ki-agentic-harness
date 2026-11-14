@@ -1,4 +1,4 @@
-# Sources — ki-repo-harness
+# Sources — ki-repo-backpack
 
 **Refresh:** external-spec · monthly
 
@@ -22,6 +22,7 @@ The tracked sources behind [the compatible harness standard](standards-compatibl
 | [KR] | `ki-repo` skill | The `.ki.toml` contract and what makes a KI-governed repository | 2026-09-26 |
 | [KS] | `ki-skills` skill | The governed-rubric family, session, and host boundary ‡ | 2026-09-26 |
 | [KE] | `ki-engineering` skill | Development toolchain ownership outside compatible-harness installation semantics | 2026-09-26 |
+| [BD] | Cairn summit change 23, BACKPACK-DEPTH (Kris, 14 November 2026) | This skill's name: `ki-repo-harness` became `ki-repo-backpack`; the harness wording in its standards follows when the backpack words are rolled out | 2026-11-14 |
 
 § Source layout and shelf practice are inferred from this repository; installed-payload policy comes from [CH].
 
@@ -42,7 +43,7 @@ _REFRESH last run **2026-09-26** (previous: 2026-08-12)._
 
 - The standard now separates the four-part source repository from the current three-directory compatible payload and names installed, verified harness state as the only operation source.
 - Retired package aliases, repository-vendored executors, checkout-dependent runtime links, and a skill-owned global linker are removed from the harness contract.
-- The mechanical catalogue now discovers grouped physical skill roots, uses the final session contract, and retains only the safe host-published `[skills.ki-repo-harness]` marker append.
+- The mechanical catalogue now discovers grouped physical skill roots, uses the final session contract, and retains only the safe host-published `[skills.ki-repo-backpack]` marker append.
 
 **Open watch-items:**
 

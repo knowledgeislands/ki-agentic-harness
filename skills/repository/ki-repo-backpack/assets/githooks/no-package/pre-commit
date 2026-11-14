@@ -1,6 +1,6 @@
 #!/bin/sh
-# Canonical pre-commit for a ki-repo-harness repository without a package.json, composed by ki-repo.
-# Copied byte-exact from ki-repo-harness's assets/githooks/no-package/pre-commit; HOOK-4 compares it, so do not edit it here.
+# Canonical pre-commit for a ki-repo-backpack repository without a package.json, composed by ki-repo.
+# Copied byte-exact from ki-repo-backpack's assets/githooks/no-package/pre-commit; HOOK-4 compares it, so do not edit it here.
 git diff --cached --quiet && exit 0
 if ! command -v rumdl >/dev/null 2>&1; then
   echo "pre-commit: the commit gate cannot run; not on PATH: rumdl" >&2

@@ -23,7 +23,7 @@ afterEach(() => {
 })
 
 const fixture = (): string => {
-  const repository = mkdtempSync(join(tmpdir(), 'ki-repo-harness-'))
+  const repository = mkdtempSync(join(tmpdir(), 'ki-repo-backpack-'))
   temporaryDirectories.push(repository)
   for (const part of ['skills', 'subagents', 'evals', 'hooks']) {
     mkdirSync(join(repository, part))
@@ -90,7 +90,7 @@ const rootCapabilitySummaryItem = () => {
 
 test('the catalogue preserves the current compatible-harness criteria', () => {
   expect(catalogue.contract).toBe(1)
-  expect(catalogue.name).toBe('ki-repo-harness')
+  expect(catalogue.name).toBe('ki-repo-backpack')
   expect(catalogue.packageScripts).toEqual(['ki:harness:eval'])
   expect(catalogue.createSession).toBeFunction()
   expect(catalogue.families.map((family) => family.code)).toEqual([
@@ -167,14 +167,14 @@ test('the session discovers grouped skills once and coalesces marker requests', 
   expect(session.proposal().writes).toEqual([
     {
       path: '.ki.toml',
-      content: '[skills.ki-repo]\n\n[skills.ki-repo-harness]\n'
+      content: '[skills.ki-repo]\n\n[skills.ki-repo-backpack]\n'
     }
   ])
 })
 
 test('audit is read-only and an existing marker produces no proposal', () => {
   const repository = fixture()
-  writeFileSync(join(repository, '.ki.toml'), '[skills.ki-repo]\n\n[skills.ki-repo-harness]\n')
+  writeFileSync(join(repository, '.ki.toml'), '[skills.ki-repo]\n\n[skills.ki-repo-backpack]\n')
   const session = catalogue.createSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
   const context = session.subjects[0]?.context() as HarnessRubricContext
   expect(context.config.hasHarnessTable).toBe(true)
@@ -192,7 +192,7 @@ test('the Harness declaration requires a valid explicit prefix', () => {
   ] as const) {
     writeFileSync(
       join(repository, '.ki.toml'),
-      `[skills.ki-repo]\n\n[skills.ki-repo-harness]\n${prefix ? `prefix = "${prefix}"\n` : ''}`
+      `[skills.ki-repo]\n\n[skills.ki-repo-backpack]\n${prefix ? `prefix = "${prefix}"\n` : ''}`
     )
     const session = catalogue.createSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
     const context = session.subjects[0]?.context() as HarnessRubricContext
@@ -202,7 +202,7 @@ test('the Harness declaration requires a valid explicit prefix', () => {
 
 test('published skill names use the declared Harness prefix', () => {
   const repository = fixture()
-  writeFileSync(join(repository, '.ki.toml'), '[skills.ki-repo]\n\n[skills.ki-repo-harness]\nprefix = "ki"\n')
+  writeFileSync(join(repository, '.ki.toml'), '[skills.ki-repo]\n\n[skills.ki-repo-backpack]\nprefix = "ki"\n')
   const session = catalogue.createSession({ mode: 'audit', repository, userHome: tmpdir(), configuration: {} })
   const context = session.subjects[0]?.context() as HarnessRubricContext
   const family = catalogue.families.find((candidate) => candidate.code === 'SKILLS') as
@@ -231,18 +231,18 @@ test('a missing catalogue produces an exact finding and one marker-bounded confo
   item.mechanical?.conform?.run(capability)
   const proposal = session.proposal().writes.find((write) => write.path === 'skills/README.md')
   expect(proposal?.content).toStartWith('# skills\n\n')
-  expect(proposal?.content).toContain('<!-- ki-repo-harness:capability-catalogue:start -->')
+  expect(proposal?.content).toContain('<!-- ki-repo-backpack:capability-catalogue:start -->')
   expect(proposal?.content).toContain(
     'This source harness publishes 4 skills: 4 governance skills and 0 process skills.'
   )
-  expect(proposal?.content).toContain('<!-- ki-repo-harness:capability-catalogue:end -->')
+  expect(proposal?.content).toContain('<!-- ki-repo-backpack:capability-catalogue:end -->')
 })
 
 test('a declared non-KI provider can publish without the KI baseline in its source shelf', () => {
   const repository = mkdtempSync(join(tmpdir(), 'ki-repo-harness-provider-'))
   temporaryDirectories.push(repository)
   mkdirSync(join(repository, 'skills', 'hnr-backend'), { recursive: true })
-  writeFileSync(join(repository, '.ki.toml'), '[skills.ki-repo-harness]\nprefix = "hnr"\n')
+  writeFileSync(join(repository, '.ki.toml'), '[skills.ki-repo-backpack]\nprefix = "hnr"\n')
   writeFileSync(join(repository, 'skills', 'README.md'), '# HNR skills\n')
   writeFileSync(
     join(repository, 'skills', 'hnr-backend', 'SKILL.md'),

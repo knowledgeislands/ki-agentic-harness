@@ -378,7 +378,7 @@ const KI_SHAPE_14: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-14',
   title: 'REFRESH states its ownership precondition',
   description:
-    "_REFRESH states its ownership precondition._ REFRESH's write target is normally the skill's own canonical files under `skills/<name>/` in `ki-agentic-harness` — or in a compatible source Harness that declares `ki-repo-harness` and its canonical repository identity. A governance skill's `### Mode REFRESH` section (or, per REF-5, its `references/mode-refresh.md`) must name that exact source owner as the only place it writes, and instruct the agent to stop and redirect when invoked from an installed copy (to the harness, or — for a pattern recurring across bases — to `ki-repo-kb`'s IMPROVE mode). The one committed repository-local source at `.agents/skills/ki-self/` instead names that local source and stops to promote reusable rules to their shared owner. Missing either half **WARNs**. Process skills (KI-SHAPE-3) are exempt; a skill with no REFRESH section at all is already caught by KI-SHAPE-12.",
+    "_REFRESH states its ownership precondition._ REFRESH's write target is normally the skill's own canonical files under `skills/<name>/` in `ki-agentic-harness` — or in a compatible source Harness that declares `ki-repo-backpack` and its canonical repository identity. A governance skill's `### Mode REFRESH` section (or, per REF-5, its `references/mode-refresh.md`) must name that exact source owner as the only place it writes, and instruct the agent to stop and redirect when invoked from an installed copy (to the harness, or — for a pattern recurring across bases — to `ki-repo-kb`'s IMPROVE mode). The one committed repository-local source at `.agents/skills/ki-self/` instead names that local source and stops to promote reusable rules to their shared owner. Missing either half **WARNs**. Process skills (KI-SHAPE-3) are exempt; a skill with no REFRESH section at all is already caught by KI-SHAPE-12.",
   sources: ['ADR-KI-HARNESS-SKILLS-001', 'ADR-KI-HARNESS-SKILLS-006'],
   mechanical: {
     level: 'WARN',
@@ -635,7 +635,7 @@ const KI_SHAPE_19: RubricItem<KiShapeRubricContext> = {
     remediation: {
       class: 'diagnostic',
       guidance:
-        'Classify the skill against the approved applicability vocabulary; keep detector ownership solely on ki-repo and reconcile its registry through ki-repo-harness.'
+        'Classify the skill against the approved applicability vocabulary; keep detector ownership solely on ki-repo and reconcile its registry through ki-repo-backpack.'
     },
     audit: {
       phase: 'INSPECT',

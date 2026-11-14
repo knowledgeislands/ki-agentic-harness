@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "22a71c4bd818bd4ec44764616b1f074a13e19002"
+      "revision": "26dd45f59a8f35f1e282490ea109f8a1fd90ac84"
     },
     "legend": {
       "mode": "auto",
@@ -53,6 +53,26 @@
       ]
     },
     {
+      "id": "ki-repo-backpack",
+      "type": "database",
+      "label": "ki-repo-backpack",
+      "sublabel": "repository · opt-in",
+      "sources": [
+        {
+          "path": "skills/repository/ki-repo-backpack/SKILL.md"
+        }
+      ],
+      "tag": "R27 · CL · F4",
+      "pos": [
+        588,
+        952
+      ],
+      "size": [
+        208,
+        76
+      ]
+    },
+    {
       "id": "ki-repo-dotfiles-chezmoi",
       "type": "database",
       "label": "ki-repo-dotfiles-chezmoi",
@@ -66,26 +86,6 @@
       "pos": [
         844,
         580
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
-      "id": "ki-repo-harness",
-      "type": "database",
-      "label": "ki-repo-harness",
-      "sublabel": "repository · opt-in",
-      "sources": [
-        {
-          "path": "skills/repository/ki-repo-harness/SKILL.md"
-        }
-      ],
-      "tag": "R27 · CL · F4",
-      "pos": [
-        588,
-        952
       ],
       "size": [
         208,
@@ -551,7 +551,7 @@
       "wraps": [
         "ki-repo-specifications",
         "ki-repo-mcp",
-        "ki-repo-harness",
+        "ki-repo-backpack",
         "ki-repo-tools",
         "ki-repo-packages",
         "ki-repo-homebrew-tap",
@@ -575,7 +575,7 @@
         "ki-repo-project",
         "ki-repo-specifications",
         "ki-repo-mcp",
-        "ki-repo-harness",
+        "ki-repo-backpack",
         "ki-repo-tools",
         "ki-repo-packages",
         "ki-repo-homebrew-tap",
@@ -674,8 +674,8 @@
       "title": "Generated, not drawn",
       "items": [
         "17 skills, 4 outside prerequisites, 1 outside dependent, 11 composition and 1 optional edges, read from SKILL.md frontmatter.",
-        "Home in another area: ki-repo-harness; only edges within this area are drawn for them here, and their home area's diagram draws the rest.",
-        "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
+        "Home in another area: ki-repo-backpack; only edges within this area are drawn for them here, and their home area's diagram draws the rest.",
+        "Regenerate with ki repo conform --skill ki-repo-backpack; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }
   ]

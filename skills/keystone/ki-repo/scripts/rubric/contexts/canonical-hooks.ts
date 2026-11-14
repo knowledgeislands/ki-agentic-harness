@@ -57,7 +57,7 @@ export const SHAPE_HOOKS: Readonly<Record<RepositoryShape, ShapeHooks>> = {
   'ki-repo-mcp': both('ki-repo-mcp', NONE),
   'ki-repo-website': both('ki-repo-website', NONE),
   'ki-repo-kb': both('ki-repo-kb', NONE),
-  'ki-repo-harness': both('ki-repo-harness', NONE),
+  'ki-repo-backpack': both('ki-repo-backpack', NONE),
   'ki-repo-specifications': both('ki-repo-specifications', NONE),
   'ki-repo-homebrew-tap': both('ki-repo-homebrew-tap', { tools: ['ruby'], lines: RUBY_LINES }),
   'ki-repo-tools': both('ki-repo-tools', { tools: ['shellcheck', 'bash', 'mandoc'], lines: SHELL_LINES }),

@@ -110,7 +110,7 @@ Every canonical skill MUST declare exactly one `ki-applicability` value from `ba
 
 _Conformance:_ conforming
 
-_Verify:_ `ki-skills` frontmatter tests reject missing, unknown, and kind-inconsistent applicability; `ki-repo-harness` collection tests reject an incorrect baseline.
+_Verify:_ `ki-skills` frontmatter tests reject missing, unknown, and kind-inconsistent applicability; `ki-repo-backpack` collection tests reject an incorrect baseline.
 
 _Evidence:_ All canonical `SKILL.md` files carry validated applicability metadata and the generated capability catalogue publishes it.
 
@@ -120,7 +120,7 @@ _Evidence:_ All canonical `SKILL.md` files carry validated applicability metadat
 
 _Conformance:_ conforming
 
-_Verify:_ focused `ki-repo` tests compare `ki-detects` with executable coverage targets, while `ki-skills` and `ki-repo-harness` reject invalid ownership or registry drift.
+_Verify:_ focused `ki-repo` tests compare `ki-detects` with executable coverage targets, while `ki-skills` and `ki-repo-backpack` reject invalid ownership or registry drift.
 
 _Evidence:_ `ki-repo` frontmatter, its coverage catalogue, and the canonical skill collection agree bidirectionally.
 

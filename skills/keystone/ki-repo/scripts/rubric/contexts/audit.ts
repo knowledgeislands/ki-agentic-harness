@@ -740,13 +740,13 @@ const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Si
 // table is not a stale opt-in while a dependent is declared: the host refuses to run without
 // it. Mirrors the collection's SKILL.md frontmatter; repository.test.ts checks it for drift.
 export const COVERAGE_REQUIRED_BY: Readonly<Record<string, readonly string[]>> = {
-  'ki-decision-records': ['ki-repo-harness', 'ki-repo-kb-principal'],
+  'ki-decision-records': ['ki-repo-backpack', 'ki-repo-kb-principal'],
   'ki-engineering': ['ki-repo-mcp'],
   'ki-repo-kb': ['ki-repo-kb-principal'],
   'ki-repo-kb-streams': ['ki-repo-kb', 'ki-repo-kb-principal'],
   'ki-repo-website': ['ki-repo-website-app', 'ki-repo-website-cloudflare', 'ki-repo-website-content'],
-  'ki-skills': ['ki-repo-harness'],
-  'ki-subagents': ['ki-repo-harness', 'ki-subagents-chatgpt', 'ki-subagents-claude'],
+  'ki-skills': ['ki-repo-backpack'],
+  'ki-subagents': ['ki-repo-backpack', 'ki-subagents-chatgpt', 'ki-subagents-claude'],
   'ki-work-package': ['ki-coordination', 'ki-delegation-orca']
 }
 const requiredByDeclared = (kiText: string, table: string): boolean =>

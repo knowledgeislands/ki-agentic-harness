@@ -86,7 +86,7 @@ test('staged malformed or missing manifest fails, and unsafe index files are ref
 
 test('repositories without staged diagram adoption are not applicable', () => {
   const { root } = fixture()
-  writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo-harness]\n')
+  writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo-backpack]\n')
   git(root, 'add', '--', '.ki.toml')
   expect(inspectStagedDiagramReceipts(root).applicable).toBe(false)
 })

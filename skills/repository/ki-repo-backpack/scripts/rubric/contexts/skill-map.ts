@@ -174,7 +174,7 @@ export const buildSkillMap = (nodes: readonly SkillGraphNode[], options: SkillGr
         title: 'Generated, not drawn',
         items: [
           `${nodes.length} skills in ${concerns.length} concerns and ${table.length} functional areas: ${count('baseline')} always on, ${count('detected')} automatic, ${count('declaration-only')} opt-in, ${count('invocation-only')} commands.`,
-          'Regenerate with ki repo conform --skill ki-repo-harness; ki-skills owns the kind and applicability fields it reads.'
+          'Regenerate with ki repo conform --skill ki-repo-backpack; ki-skills owns the kind and applicability fields it reads.'
         ]
       }
     ]

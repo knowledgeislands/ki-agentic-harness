@@ -2,9 +2,9 @@
 
 # Generated rubric — Knowledge Islands compatible harnesses
 
-> **Generated publication.** The TypeScript rubric items under `scripts/rubric/items/` are canonical. Edit those definitions, then rerun `ki dev skill rubric ki-repo-harness --write`.
+> **Generated publication.** The TypeScript rubric items under `scripts/rubric/items/` are canonical. Edit those definitions, then rerun `ki dev skill rubric ki-repo-backpack --write`.
 
-Line-by-line criteria for auditing ki-repo-harness. Classifications are derived from item aspects: **[M]** mechanical, **[J]** judgment, **[M + J]** hybrid, and **[M-heuristic + J]** hybrid with heuristic mechanical evidence. Sources are cited as declared by each canonical item.
+Line-by-line criteria for auditing ki-repo-backpack. Classifications are derived from item aspects: **[M]** mechanical, **[J]** judgment, **[M + J]** hybrid, and **[M-heuristic + J]** hybrid with heuristic mechanical evidence. Sources are cited as declared by each canonical item.
 
 ## Contents
 
@@ -101,7 +101,7 @@ Coverage and freshness of the effective source-harness orientation.
 
 Knowledge Islands source-harness governance declarations.
 
-- **CONFIG-1 [M] — Harness declaration** — A physical .ki.toml contains the keyless ki-repo-harness root table. (standards-compatible-harness.md#harness-declaration)
+- **CONFIG-1 [M] — Harness declaration** — A physical .ki.toml contains the keyless ki-repo-backpack root table. (standards-compatible-harness.md#harness-declaration)
   - _Remediation:_ automatic
 - **CONFIG-2 [M] — Repository governance declaration** — A physical .ki.toml contains the ki-repo root table. (standards-compatible-harness.md#harness-declaration)
   - _Remediation:_ diagnostic — Declare the ki-repo governance root in the physical configuration, then rerun the audit.
@@ -110,8 +110,8 @@ Knowledge Islands source-harness governance declarations.
   - _Review prompt:_ When skills/ is populated, does .ki.toml declare the ki-skills governance root?
   - _Outcomes:_ conforming; configuration revision; not applicable
   - _Conforming guidance:_ Add or correct the declaration only through the repository owner’s configuration decision; do not infer activation scope from shelf contents alone.
-- **CONFIG-4 [M] — Capability prefix declaration** — The ki-repo-harness table declares one valid capability prefix. (standards-compatible-harness.md#harness-declaration)
-  - _Remediation:_ diagnostic — Declare the owner-approved prefix in [skills.ki-repo-harness], then rerun the audit.
+- **CONFIG-4 [M] — Capability prefix declaration** — The ki-repo-backpack table declares one valid capability prefix. (standards-compatible-harness.md#harness-declaration)
+  - _Remediation:_ diagnostic — Declare the owner-approved prefix in [skills.ki-repo-backpack], then rerun the audit.
 
 ## SKILLS — Skill capability identity
 
@@ -132,9 +132,9 @@ Recursive physical skill discovery and identity integrity within the compatible 
 
 Refresh discipline for the compatible-harness standard.
 
-- **LONG-1 [J] — Refresh path** — The ki-repo-harness skill carries REFRESH and a dated source review record. (standards-compatible-harness.md)
-  - _Evidence scope:_ The ki-repo-harness REFRESH procedure, source list, cadence, and current compatible-harness standard.
-  - _Review prompt:_ Do the ki-repo-harness REFRESH procedure and sources.md cadence provide a usable current refresh path?
+- **LONG-1 [J] — Refresh path** — The ki-repo-backpack skill carries REFRESH and a dated source review record. (standards-compatible-harness.md)
+  - _Evidence scope:_ The ki-repo-backpack REFRESH procedure, source list, cadence, and current compatible-harness standard.
+  - _Review prompt:_ Do the ki-repo-backpack REFRESH procedure and sources.md cadence provide a usable current refresh path?
   - _Outcomes:_ conforming; refresh-path revision; source review required
   - _Conforming guidance:_ Update the documented refresh path or complete its source review through the canonical harness; do not invent a review result without source evidence.
 

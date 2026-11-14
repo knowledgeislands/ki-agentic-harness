@@ -67,7 +67,7 @@ const sourceHarnessName = (directory: string): string | undefined => {
       if (skillPath !== 'skills' && !skillPath.startsWith(`skills${sep}`)) return undefined
       try {
         const skills = table(Bun.TOML.parse(readFileSync(configuration, 'utf8')))?.skills
-        const harness = table(table(skills)?.['ki-repo-harness'])
+        const harness = table(table(skills)?.['ki-repo-backpack'])
         const identity = table(table(skills)?.['ki-repo'])?.repository
         const match =
           typeof identity === 'string'

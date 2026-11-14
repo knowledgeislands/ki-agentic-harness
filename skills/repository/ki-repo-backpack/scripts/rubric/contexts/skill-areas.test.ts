@@ -148,7 +148,7 @@ describe('buildSkillArea', () => {
           skills: ['ki-subagents', 'ki-subagents-claude', 'ki-subagents-chatgpt', 'ki-agent-adapter']
         }
       ]),
-      functional('base', 'Base', [{ skills: ['ki-git', 'ki-repo-harness'] }])
+      functional('base', 'Base', [{ skills: ['ki-git', 'ki-repo-backpack'] }])
     ]
     const agentic = buildSkillArea(areas[0] as FunctionalArea)(
       readSkillGraphNodes([
@@ -157,18 +157,18 @@ describe('buildSkillArea', () => {
         skill('agentic-systems', 'ki-subagents-chatgpt', 'ki-depends-on: [ki-subagents]\n'),
         skill('agentic-systems', 'ki-agent-adapter', 'ki-depends-on: [ki-git]\n'),
         skill('governance', 'ki-git'),
-        skill('repo-structure', 'ki-repo-harness', 'ki-depends-on: [ki-subagents]\n')
+        skill('repo-structure', 'ki-repo-backpack', 'ki-depends-on: [ki-subagents]\n')
       ]).nodes,
       { areas }
     ) as Area
     expect(grid(agentic)).toEqual([
-      ['ki-repo-harness'],
+      ['ki-repo-backpack'],
       ['ki-subagents', 'ki-subagents-claude'],
       ['ki-agent-adapter', 'ki-subagents-chatgpt'],
       ['ki-git']
     ])
     const x = new Map(agentic.components.map((c) => [c.id, c.pos[0]]))
-    for (const id of ['ki-repo-harness', 'ki-agent-adapter', 'ki-git']) expect(x.get(id)).toBe(x.get('ki-subagents'))
+    for (const id of ['ki-repo-backpack', 'ki-agent-adapter', 'ki-git']) expect(x.get(id)).toBe(x.get('ki-subagents'))
     expect(x.get('ki-subagents-chatgpt')).toBe(x.get('ki-subagents-claude'))
   })
 

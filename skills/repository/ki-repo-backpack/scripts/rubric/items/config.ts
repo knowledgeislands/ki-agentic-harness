@@ -6,7 +6,7 @@ const STANDARD = ['standards-compatible-harness.md#harness-declaration'] as cons
 const CONFIG_1: RubricItem<HarnessConfigContext> = {
   code: 'CONFIG-1',
   title: 'Harness declaration',
-  description: 'A physical .ki.toml contains the keyless ki-repo-harness root table.',
+  description: 'A physical .ki.toml contains the keyless ki-repo-backpack root table.',
   sources: STANDARD,
   mechanical: {
     level: 'FAIL',
@@ -34,12 +34,12 @@ const CONFIG_1: RubricItem<HarnessConfigContext> = {
           hasHarnessTable
             ? {
                 status: 'PASS',
-                message: 'The [skills.ki-repo-harness] declaration is present.',
+                message: 'The [skills.ki-repo-backpack] declaration is present.',
                 subject: '.ki.toml'
               }
             : {
                 status: 'VIOLATION',
-                message: 'The [skills.ki-repo-harness] declaration is missing.',
+                message: 'The [skills.ki-repo-backpack] declaration is missing.',
                 subject: '.ki.toml'
               }
         ]
@@ -105,13 +105,13 @@ const CONFIG_3: RubricItem<HarnessConfigContext> = {
 const CONFIG_4: RubricItem<HarnessConfigContext> = {
   code: 'CONFIG-4',
   title: 'Capability prefix declaration',
-  description: 'The ki-repo-harness table declares one valid capability prefix.',
+  description: 'The ki-repo-backpack table declares one valid capability prefix.',
   sources: STANDARD,
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
-      guidance: 'Declare the owner-approved prefix in [skills.ki-repo-harness], then rerun the audit.'
+      guidance: 'Declare the owner-approved prefix in [skills.ki-repo-backpack], then rerun the audit.'
     },
     audit: {
       phase: 'INSPECT',
@@ -133,7 +133,7 @@ const CONFIG_4: RubricItem<HarnessConfigContext> = {
               }
             : {
                 status: 'VIOLATION',
-                message: 'The [skills.ki-repo-harness] prefix must be a lowercase alphanumeric name.',
+                message: 'The [skills.ki-repo-backpack] prefix must be a lowercase alphanumeric name.',
                 subject: '.ki.toml'
               }
         ]

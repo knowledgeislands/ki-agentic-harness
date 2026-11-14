@@ -51,11 +51,11 @@ An installed skill's physical source directory and `SKILL.md` frontmatter are au
 
 Runtime activation is a separate managed projection. Only the host creates or verifies activation links to a verified installed source. A source-harness script must not install a harness, activate user or repository capabilities, or link runtime discovery directly to its checkout.
 
-A populated skills shelf publishes one generated capability catalogue between the `ki-repo-harness:capability-catalogue:start` and `ki-repo-harness:capability-catalogue:end` markers in `skills/README.md`. The private harness context parses canonical `SKILL.md` YAML frontmatter and derives exact governance, process and knowledge counts, source-domain groups, full descriptions, runtime-neutral argument hints, required dependencies, and runtime bindings. Per-skill dependency lists publish formal `ki-depends-on` facts; the catalogue itself carries no diagram.
+A populated skills shelf publishes one generated capability catalogue between the `ki-repo-backpack:capability-catalogue:start` and `ki-repo-backpack:capability-catalogue:end` markers in `skills/README.md`. The private harness context parses canonical `SKILL.md` YAML frontmatter and derives exact governance, process and knowledge counts, source-domain groups, full descriptions, runtime-neutral argument hints, required dependencies, and runtime bindings. Per-skill dependency lists publish formal `ki-depends-on` facts; the catalogue itself carries no diagram.
 
 AUDIT compares the marker-bounded bytes with the deterministic rendering. Missing, renamed, removed, or changed skills therefore stale the publication mechanically. CONFORM may add a missing generated section or replace one exact marker-bounded section while preserving authored content around it. It refuses malformed skill frontmatter, unknown dependencies, duplicate capability names, unsafe files, and missing, duplicate, partial, or reversed markers rather than guessing at a repair. `ki-skills` remains the owner of individual skill quality and frontmatter semantics; this standard uses those source facts only to publish the Harness inventory.
 
-That split has a verification consequence worth stating. Editing a `SKILL.md` description is authoring against `ki-skills`, and an author who audits with `ki-skills` alone gets a clean pass over a catalogue their edit has just staled, because no skill-scoped gate but this one reads `skills/README.md`. A frontmatter change is therefore complete only when `ki repo conform --skill ki-repo-harness` has regenerated the catalogue and, where the skill diagrams apply, their sources, or a whole-repository `ki repo audit` has confirmed CAP-2 and CAP-4 still pass.
+That split has a verification consequence worth stating. Editing a `SKILL.md` description is authoring against `ki-skills`, and an author who audits with `ki-skills` alone gets a clean pass over a catalogue their edit has just staled, because no skill-scoped gate but this one reads `skills/README.md`. A frontmatter change is therefore complete only when `ki repo conform --skill ki-repo-backpack` has regenerated the catalogue and, where the skill diagrams apply, their sources, or a whole-repository `ki repo audit` has confirmed CAP-2 and CAP-4 still pass.
 
 ### Generated skill diagrams
 
@@ -118,10 +118,10 @@ A source harness carries `ROADMAP.md` as its open-work register. The `ki-work-ro
 
 ## Harness declaration
 
-The source root carries `.ki.toml` with `[skills.ki-repo-harness]` declaring the Harness's stable lowercase alphanumeric capability prefix. It also declares `[skills.ki-repo]`, and a populated skills shelf declares `[skills.ki-skills]`.
+The source root carries `.ki.toml` with `[skills.ki-repo-backpack]` declaring the Harness's stable lowercase alphanumeric capability prefix. It also declares `[skills.ki-repo]`, and a populated skills shelf declares `[skills.ki-skills]`.
 
 ```toml
-[skills.ki-repo-harness]
+[skills.ki-repo-backpack]
 prefix = "ki"
 ```
 
@@ -131,17 +131,17 @@ The prefix is provider-authored metadata in the existing Harness-governance tabl
 
 The prefix `personal` is reserved for the owner's own personal Harness, which only that owner installs, so it never meets a competing provider. Other Harnesses never declare it. A KI skill may refer to a `personal-*` skill, such as one that says who the owner is, as an optional augmentation under the `ki-skills` contract, used only when it is installed. Kris set this on 29 October 2026 under PERSONAL-SPECIAL.
 
-If a physical readable `.ki.toml` exists without `[skills.ki-repo-harness]`, CONFORM may append exactly one keyless marker while preserving all existing bytes apart from normalising the trailing newline before the append:
+If a physical readable `.ki.toml` exists without `[skills.ki-repo-backpack]`, CONFORM may append exactly one keyless marker while preserving all existing bytes apart from normalising the trailing newline before the append:
 
 ```toml
-[skills.ki-repo-harness]
+[skills.ki-repo-backpack]
 ```
 
 CONFORM does not invent a prefix, create a missing configuration, or replace or follow a symlink, directory, dangling link, special file, or unreadable path. The session coalesces repeated marker requests into one host-published proposal, but a newly appended keyless marker remains a failing declaration until the owner supplies its prefix. The host owns dry-run, transaction validation, atomic publication, rollback, and post-write re-audit.
 
 ## Commit gate
 
-A source harness's committed `.githooks/pre-commit` is the canonical hook `ki-repo` composes for the harness shape, published with its `commit-msg` as worked examples under [`assets/githooks/`](../assets/githooks/), one pair with a `package.json` and one without; copy them exactly, since `ki-repo` HOOK-4 compares each hook byte for byte. It runs only check-only staged lints, `lint-staged` and the Syncpack check with a package and staged `rumdl check` without, and never `ki repo audit`, `ki repo conform`, `ki repo repair`, `--fix` or `--write` (`GATE-1`); the focused harness audit runs in CI, where it refuses a commit that breaks the harness's own container contract, as Kris chose COMMIT-VS-CI a) on 26 October 2026: "I think we just need to keep them simple". The whole-project type check and `ki-skills` audit remain manual and CI gates. The focused harness audit also enforces `GATE-2`: when the `.ki.toml` in the index declares `ki-diagrams`, it reads the manifest, sources, viewers and receipts directly from index blobs and checks the shared receipt contract; in CI the index is the commit under test. A stale source or viewer, changed or missing receipt, missing required source or viewer, malformed manifest, unsafe file or unreadable snapshot fails closed. Findings name staged diagram paths so the host's staged-path verdict filter cannot discard a receipt failure. A matching index snapshot passes even when unstaged working files differ. The host's `--staged` option scopes verdict paths, not evaluation bytes; `GATE-2` therefore gathers index evidence explicitly rather than treating working files as the snapshot. `ki-diagrams` owns the shared receipt reader; `ki-repo-harness` materialises its declared shared modules and owns this audit integration. Without a committed hook `GATE-1` is not applicable; `ki-repo` owns whether the hook exists, is bound and refuses when a tool it needs is missing ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)). `GATE-1` reports as a warning until the hooks rollout completes.
+A source harness's committed `.githooks/pre-commit` is the canonical hook `ki-repo` composes for the harness shape, published with its `commit-msg` as worked examples under [`assets/githooks/`](../assets/githooks/), one pair with a `package.json` and one without; copy them exactly, since `ki-repo` HOOK-4 compares each hook byte for byte. It runs only check-only staged lints, `lint-staged` and the Syncpack check with a package and staged `rumdl check` without, and never `ki repo audit`, `ki repo conform`, `ki repo repair`, `--fix` or `--write` (`GATE-1`); the focused harness audit runs in CI, where it refuses a commit that breaks the harness's own container contract, as Kris chose COMMIT-VS-CI a) on 26 October 2026: "I think we just need to keep them simple". The whole-project type check and `ki-skills` audit remain manual and CI gates. The focused harness audit also enforces `GATE-2`: when the `.ki.toml` in the index declares `ki-diagrams`, it reads the manifest, sources, viewers and receipts directly from index blobs and checks the shared receipt contract; in CI the index is the commit under test. A stale source or viewer, changed or missing receipt, missing required source or viewer, malformed manifest, unsafe file or unreadable snapshot fails closed. Findings name staged diagram paths so the host's staged-path verdict filter cannot discard a receipt failure. A matching index snapshot passes even when unstaged working files differ. The host's `--staged` option scopes verdict paths, not evaluation bytes; `GATE-2` therefore gathers index evidence explicitly rather than treating working files as the snapshot. `ki-diagrams` owns the shared receipt reader; `ki-repo-backpack` materialises its declared shared modules and owns this audit integration. Without a committed hook `GATE-1` is not applicable; `ki-repo` owns whether the hook exists, is bound and refuses when a tool it needs is missing ([ADR-KI-HARNESS-SKILLS-017](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-017-commit-gate-existence-and-content-are-owned-separately.md)). `GATE-1` reports as a warning until the hooks rollout completes.
 
 ## Ownership boundaries
 
@@ -157,4 +157,4 @@ This standard governs the source container and compatible-payload boundary. Cont
 | Repository declaration and GitHub settings   | `ki-repo`        |
 | Harness install, activation, and CLI runtime | `tools-ki`       |
 
-Selecting `ki-repo-harness` also selects its declared prerequisites: `ki-skills`, `ki-subagents`, `ki-decision-records`, and `ki-work-roadmap`. Coverage selects `ki-repo-mcp`, `ki-engineering`, and `ki-repo` separately when their concerns apply. This standard adds only the container and publication delta defined here.
+Selecting `ki-repo-backpack` also selects its declared prerequisites: `ki-skills`, `ki-subagents`, `ki-decision-records`, and `ki-work-roadmap`. Coverage selects `ki-repo-mcp`, `ki-engineering`, and `ki-repo` separately when their concerns apply. This standard adds only the container and publication delta defined here.

@@ -105,7 +105,7 @@ visibility = "private"
 [skills.ki-engineering]
 # Fully conforms; capabilities auto-detected.
 
-[skills.ki-repo-harness]
+[skills.ki-repo-backpack]
 # Declares this repo as a KI agentic harness (the four-part layout compliance marker).
 # No per-harness config keys defined yet — table presence is the declaration.
 

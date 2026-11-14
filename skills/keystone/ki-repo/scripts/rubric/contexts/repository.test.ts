@@ -1223,7 +1223,7 @@ coverage-guides = false
 
   test('accepts an undetected coverage table that a declared skill requires', async () => {
     const root = repository()
-    writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\n\n[skills.ki-repo-harness]\n\n[skills.ki-subagents]\n')
+    writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\n\n[skills.ki-repo-backpack]\n\n[skills.ki-subagents]\n')
 
     expect(
       (await collectAuditFindings([root])).findings.filter(

@@ -46,7 +46,7 @@ What a guild is, how one is led, named and joined, and how a session finds its w
 
 - Skill shape, kind, applicability and dependency composition: [the Knowledge Islands skill standard](standard-knowledge-islands.md).
 - Which guild each skill belongs to: each skill's own frontmatter, read into the guild map.
-- How a harness repository lays out and publishes its skills: `ki-repo-harness`.
+- How a harness repository lays out and publishes its skills: `ki-repo-backpack`.
 
 [Back to contents](#contents)
 

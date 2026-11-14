@@ -65,7 +65,7 @@ const sourceSkill = (owner: string, options: { declaresHarness?: boolean; refres
     [
       '[skills.ki-repo]',
       `repository = "https://github.com/example/${owner}"`,
-      ...(options.declaresHarness === false ? [] : ['', '[skills.ki-repo-harness]', 'prefix = "example"']),
+      ...(options.declaresHarness === false ? [] : ['', '[skills.ki-repo-backpack]', 'prefix = "example"']),
       ''
     ].join('\n')
   )

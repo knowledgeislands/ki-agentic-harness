@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "22a71c4bd818bd4ec44764616b1f074a13e19002"
+      "revision": "26dd45f59a8f35f1e282490ea109f8a1fd90ac84"
     },
     "legend": {
       "mode": "auto",
@@ -414,7 +414,7 @@
       "title": "Generated, not drawn",
       "items": [
         "7 skills, 1 outside prerequisite, 4 outside dependents, 5 composition and 5 optional edges, read from SKILL.md frontmatter.",
-        "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
+        "Regenerate with ki repo conform --skill ki-repo-backpack; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }
   ]
