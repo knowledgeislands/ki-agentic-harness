@@ -49,7 +49,7 @@ Generated from every skill's frontmatter, the guild it declares and the guild it
 | Guild | Lead | Members |
 | --- | --- | --- |
 | Keystone | `ki-keystone` | `ki-acquire`, `ki-agentic-systems`, `ki-authoring`, `ki-bootstrap`, `ki-design`, `ki-env`, `ki-knowledge-graph`, `ki-repo`, `ki-skills`, `ki-work` |
-| Acquire | `ki-acquire` | `ki-acquire-chatgpt`, `ki-acquire-granola`, `ki-dodecakrisis`, `ki-exchange-dynamics`, `ki-pulse` |
+| Acquire | `ki-acquire` | `ki-acquire-chatgpt`, `ki-acquire-granola`, `ki-dodecakrisis`, `ki-exchange-dynamics` |
 | Agentic systems | `ki-agentic-systems` | `ki-agentic-radar`, `ki-delegation`, `ki-delegation-orca`, `ki-model-radar`, `ki-subagents`, `ki-subagents-chatgpt`, `ki-subagents-claude` |
 | Authoring | `ki-authoring` | `ki-decision-records`, `ki-diagrams`, `ki-guides`, `ki-specs` |
 | Design | `ki-design` | `ki-design-inspiration`, `ki-design-system` |

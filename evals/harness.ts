@@ -54,7 +54,7 @@ import { scenarios as liveArtifactsScenarios } from './scenarios/ki-repo-kb-live
 import { scenarios as housekeepingScenarios } from './scenarios/ki-env-housekeeping-claude.ts'
 import { scenarios as bindingScenarios } from './scenarios/ki-env-binding.ts'
 import { scenarios as specsScenarios } from './scenarios/ki-specs.ts'
-import { scenarios as pulseScenarios } from './scenarios/ki-pulse.ts'
+import { scenarios as pulseScenarios } from './scenarios/ki-acquire-pulse.ts'
 
 export type Assertion = { name: string; re: RegExp }
 export type Scenario = { skill: string; id: string; prompt: string; assertions: Assertion[]; rubric: string }

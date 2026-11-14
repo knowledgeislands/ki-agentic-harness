@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-backpack:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 73 skills: 60 governance skills, 12 process skills and 1 knowledge skill. The entries below are generated from canonical `SKILL.md` frontmatter, grouped by each skill's declared guild; edit the source skill, then run `ki repo conform --skill ki-repo-backpack` to republish this section.
+This source harness publishes 72 skills: 60 governance skills, 11 process skills and 1 knowledge skill. The entries below are generated from canonical `SKILL.md` frontmatter, grouped by each skill's declared guild; edit the source skill, then run `ki repo conform --skill ki-repo-backpack` to republish this section.
 
 ### Acquire
 
@@ -63,21 +63,11 @@ Analyse a conversation, chat, thread, meeting or negotiation for its dynamics: c
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-pulse`
-
-Capture a submitted link or scan bounded public sources, then triage current signals into read or learn, watch, act, or discard. Use for link intake or what changed; `ki-agentic-radar` and `ki-model-radar` own durable landscape posture, while `ki-next` owns follow-on work.
-
-- **Kind:** Process
-- **Applicability:** Invocation Only
-- **Arguments:** `capture <url-or-source> [reason] | help | scan <interest-or-query> [sources] | triage [current-signals]`
-- **Dependencies:** None
-- **Runtime:** Portable
-
 ### Agentic Systems
 
 #### `ki-agentic-radar`
 
-Maintain an evidence-backed radar for agentic protocols, interfaces, organisations, architectures, research, and vendor terms. Use for maturity, interoperability, or stance; `ki-agentic-systems` defines the terms, `ki-model-radar` owns models, `ki-pulse` discovers signals, and `ki-next` owns follow-on work.
+Maintain an evidence-backed radar for agentic protocols, interfaces, organisations, architectures, research, and vendor terms. Use for maturity, interoperability, or stance; `ki-agentic-systems` defines the terms, `ki-model-radar` owns models, `ki-acquire pulse` discovers signals, and `ki-next` owns follow-on work.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -107,7 +97,7 @@ Start, wait on, steer, stop and close Orca supervised workers as a KI delegation
 
 #### `ki-model-radar`
 
-Maintain an evidence-backed radar for models and model-agent routes. Use for model comparisons, benchmark relevance, recommendations, or retirements. Use `ki-agentic-radar` for broader agentic standards, `ki-pulse` for signal discovery, and `ki-env-tokenomics` for model purpose.
+Maintain an evidence-backed radar for models and model-agent routes. Use for model comparisons, benchmark relevance, recommendations, or retirements. Use `ki-agentic-radar` for broader agentic standards, `ki-acquire pulse` for signal discovery, and `ki-env-tokenomics` for model purpose.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -315,12 +305,12 @@ Audit non-secret Claude Code repository evidence—instructions, rules, settings
 
 #### `ki-acquire`
 
-Govern source-independent knowledge capture and curation: supplied scope, honest coverage, faithful lean preservation, exact required originals, verified destinations, incremental curation into a staging knowledge graph and dispatch by Git move, with the transient capture package as the only record. Use for common acquisition or curation rules; ki-acquire-chatgpt and ki-acquire-granola own their provider contracts.
+Lead the Acquire guild and govern source-independent knowledge capture and curation: supplied scope, honest coverage, faithful lean preservation, verified destinations, incremental curation into a staging knowledge graph, with the transient capture package as the only record. Use for common acquisition or curation rules, and for `pulse`: capture a submitted link, scan bounded public sources for what changed, or triage signals. ki-acquire-chatgpt and ki-acquire-granola own their provider contracts.
 
 - **Kind:** Governance
 - **Leads:** Acquire
 - **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | pulse capture <source> | pulse scan <query> | pulse triage | refresh`
 - **Dependencies:** None
 - **Runtime:** Portable
 

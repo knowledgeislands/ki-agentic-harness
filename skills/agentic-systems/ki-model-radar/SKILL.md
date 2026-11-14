@@ -7,7 +7,7 @@ ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 description: >
   Maintain an evidence-backed radar for models and model-agent routes. Use for model comparisons, benchmark
-  relevance, recommendations, or retirements. Use `ki-agentic-radar` for broader agentic standards, `ki-pulse`
+  relevance, recommendations, or retirements. Use `ki-agentic-radar` for broader agentic standards, `ki-acquire pulse`
   for signal discovery, and `ki-env-tokenomics` for model purpose.
 argument-hint: "audit | conform | educate | help | refresh"
 ---
@@ -16,7 +16,7 @@ argument-hint: "audit | conform | educate | help | refresh"
 
 This governance skill maintains a portable, reviewable snapshot of models, executable routes, benchmark applicability, and evidence. Read [the model-radar standard](references/standards-model-radar.md) before assessing or changing the snapshot. [The generated rubric](references/rubric.md) publishes its criteria, [the radar snapshot](references/radar.toml) holds current structured state, and [the tracked sources](references/sources.md) govern refresh inputs.
 
-The radar informs decisions; it does not rank models automatically, install agents, change runtime defaults, buy access, provision infrastructure, or transmit private material. `ki-pulse` discovers public signals, `ki-env-tokenomics` owns portable model-purpose categories, runtime adapters own effective configuration, `ki-work-recurring` owns recurring review templates, `ki-next` captures approved downstream work, and `ki-skills` assesses the skill artifact itself.
+The radar informs decisions; it does not rank models automatically, install agents, change runtime defaults, buy access, provision infrastructure, or transmit private material. `ki-acquire pulse` discovers public signals, `ki-env-tokenomics` owns portable model-purpose categories, runtime adapters own effective configuration, `ki-work-recurring` owns recurring review templates, `ki-next` captures approved downstream work, and `ki-skills` assesses the skill artifact itself.
 
 ## Operating modes
 

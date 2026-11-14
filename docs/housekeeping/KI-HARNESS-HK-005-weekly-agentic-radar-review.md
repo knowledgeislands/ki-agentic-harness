@@ -21,7 +21,7 @@ Keep evidence about agentic protocols, portable formats, architectural patterns,
 
 ## Procedure
 
-1. Use `ki-pulse` to bound recent public signals, then verify relevant identity, stewardship, specification maturity, release, implementation, interoperability, governance, and adoption claims against the primary sources registered by `ki-agentic-radar`.
+1. Use `ki-acquire pulse` to bound recent public signals, then verify relevant identity, stewardship, specification maturity, release, implementation, interoperability, governance, and adoption claims against the primary sources registered by `ki-agentic-radar`.
 2. Audit the committed snapshot for malformed, stale, unsupported, or internally inconsistent entries, preserving uncertainty and distinguishing formal standards, versioned protocols, incubation work, de facto formats, patterns, research claims, and vendor terminology.
 3. Record an evidenced no-change result or prepare the smallest reviewed snapshot update. Do not treat package count, a reference implementation, or standards-body affiliation as proof of independent interoperability or maturity.
 4. Route material consequences to an existing capability REFRESH, a Decision Record, or an owner-local roadmap item through `ki-next`; do not mutate consumer configuration or prototype an integration in the review run.

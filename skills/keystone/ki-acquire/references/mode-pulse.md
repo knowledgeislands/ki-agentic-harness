@@ -1,21 +1,8 @@
----
-name: ki-pulse
-ki-kind: process
-ki-applicability: invocation-only
-ki-guild: acquire
-ki-depends-on: []
-description: >
-  Capture a submitted link or scan bounded public sources, then triage current signals into read or learn,
-  watch, act, or discard. Use for link intake or what changed; `ki-agentic-radar` and `ki-model-radar` own
-  durable landscape posture, while `ki-next` owns follow-on work.
-argument-hint: 'capture <url-or-source> [reason] | help | scan <interest-or-query> [sources] | triage [current-signals]'
----
+# Pulse
 
-# ki-pulse
+`ki-acquire pulse` runs one bounded, on-demand knowledge-acquisition pulse and retains no standing state. It was the `ki-pulse` process skill until the Acquire guild folded it into its lead (PROCESS-SUBCOMMANDS). Read [the Pulse standard](standards-pulse.md) before Capture, Scan, or Triage. It defines the invocation-scoped brief, common signal shape, evidence rules, dispositions, and destination owners.
 
-**Kind:** process. Runs one bounded, on-demand knowledge-acquisition pulse and retains no standing state.
-
-Read [the Pulse standard](references/standards-pulse.md) before Capture, Scan, or Triage. It defines the invocation-scoped brief, common signal shape, evidence rules, dispositions, and destination owners.
+Invoked as `pulse capture <url-or-source> [reason]`, `pulse scan <interest-or-query> [sources]` or `pulse triage [current-signals]`. With `pulse` alone and no clear contextual signal, explain the three operations, the transient default, limits and off-ramps, then stop without browsing or writing; in an interactive session only, ask which operation and required input the user intends.
 
 ## Shared boundary
 
@@ -30,10 +17,6 @@ Every result is transient unless the user explicitly authorises a durable hand-o
 Accept exactly one explicitly submitted URL or source and the user's optional reason for interest. A casual link mention is not capture authority.
 
 Resolve only available metadata. If content is inaccessible, preserve the submitted source, observed date, resolvable author, user context, `unread / content unavailable`, and uncertainty. Never invent a title, subject, summary, or claim. An explicit capture request may authorise the minimal reading-candidate hand-off, but only through its destination owner.
-
-### Help
-
-Invoked as `help` / `-h` / `?`, explain the purpose, invocation, four operations, transient default, limits, and off-ramps, then stop without browsing or writing. With no recognisable operation and no clear contextual signal, provide the same explanation; in an interactive session only, ask which operation and required input the user intends.
 
 ### Scan
 
@@ -56,5 +39,5 @@ Return the bounded observations with their source metadata, access state, uncert
 - `ki-repo-kb` owns saving a reading candidate in the selected Knowledge Base.
 - `ki-trades` owns transport to another declared repository.
 - An owning governance skill's REFRESH mode owns normative-source refresh.
-- `ki-next` owns finite work capture and selection in the owning repository.
+- `ki-work next` owns finite work capture and selection in the owning repository.
 - An existing owning record owns a durable watch trigger; without one, Watch stays transient.

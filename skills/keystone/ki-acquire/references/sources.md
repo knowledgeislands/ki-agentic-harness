@@ -12,6 +12,8 @@ Review additionally alongside material changes to the common capture contract.
 
 ## Last review
 
+On 14 November 2026, under PROCESS-SUBCOMMANDS and RENAME-NOW in the Cairn summit's change 25, the `ki-pulse` process skill folded into this skill as the PULSE mode: its body became [the pulse reference](mode-pulse.md) and its standard [the Pulse standard](standards-pulse.md), unchanged in substance, and this skill now leads the Acquire guild. No external source was refreshed.
+
 On 6 November 2026, under INBOX-RENAME from `personal.reg.inbox-terra`, at Kris's word ("Do full rename to inbox now and coordinate that"), the assistant repository became the Inbox: `krisb/assistant` is now `krisb/inbox`, its packages `personal.reg.inbox-terra` and `personal.reg.inbox-sol`, and its store `sources-inbox`. Live wording here follows; older lines below keep the names they had.
 
 On 5 November 2026, under ATER-027 from `personal.reg.assistant-terra`, at Kris's word, `ki acquire` left tools-ki in `4faf9724` and acquisition moved to the assistant's `ki-muninn` (krisb/assistant, `packages/ki-muninn/`), which reads `[muninn.<source>]` settings and refuses settings left in `[skills.ki-acquire-<source>]`. The common method stays here; the provider skills now point their how-to at `ki-muninn`, and no skill was retired or reduced to a pointer. `ki muninn` will run it once tools-ki's extension mechanism, KI-TOOL-KI-CLI-176, lands.

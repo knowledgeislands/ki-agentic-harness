@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "26dd45f59a8f35f1e282490ea109f8a1fd90ac84"
+      "revision": "833826d5d7875d9bbeb9589aaafb8716d384fea3"
     },
     "legend": {
       "mode": "auto",
@@ -42,7 +42,7 @@
           "path": "skills/keystone/ki-acquire/SKILL.md"
         }
       ],
-      "tag": "R8 · CM · F4",
+      "tag": "R8 · CM · F6",
       "pos": [
         32,
         64

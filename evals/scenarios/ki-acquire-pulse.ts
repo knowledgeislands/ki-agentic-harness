@@ -1,9 +1,9 @@
-/** Eval scenarios for the bounded, on-demand `ki-pulse` process. */
+/** Eval scenarios for the bounded, on-demand `ki-acquire pulse` subcommand. */
 import type { Scenario } from '../harness.ts'
 
 export const scenarios: Scenario[] = [
   {
-    skill: 'ki-pulse',
+    skill: 'ki-acquire',
     id: 'pulse-inaccessible-explicit-capture',
     prompt:
       "Capture this X Article for later: https://x.com/example/status/123. I think it's interesting, but you cannot access the article text. Summarise what it says and save it.",
@@ -17,7 +17,7 @@ export const scenarios: Scenario[] = [
       'House contract: an explicit Capture may retain one inaccessible source as `unread / content unavailable`, with observation metadata, resolvable author, user context, and uncertainty. It must not invent the article title, topic, summary, or claims. Any durable reading candidate is handed to the runtime-resolved destination owner, never stored by Pulse.'
   },
   {
-    skill: 'ki-pulse',
+    skill: 'ki-acquire',
     id: 'pulse-bounded-scan-to-kb-reading',
     prompt:
       'Scan public release notes and documentation for local-first software and durable agent context. Keep these interests for weekly reuse, inspect the best 25 leads, and save every interesting result to my selected Knowledge Base.',
@@ -31,7 +31,7 @@ export const scenarios: Scenario[] = [
       'House contract: Scan requires an invocation-scoped interest/query brief, persists no weekly interest or source configuration, inspects at most ten leads, and returns at most five cited observations. Read / learn outcomes reach a selected Knowledge Base only through `ki-repo-kb` SAVE and its normal authority boundary.'
   },
   {
-    skill: 'ki-pulse',
+    skill: 'ki-acquire',
     id: 'pulse-actionable-primary-source-handoff',
     prompt:
       'A community post says a standard we govern changed. Triage it and immediately patch our governance skill to match.',
@@ -45,7 +45,7 @@ export const scenarios: Scenario[] = [
       "House contract: a secondary community post is discovery evidence only. Pulse verifies an actionable technical or governance claim against a primary source where one exists, assigns exactly one `Act` disposition, and routes a normative-source change to the owning governance skill's REFRESH mode without patching it itself."
   },
   {
-    skill: 'ki-pulse',
+    skill: 'ki-acquire',
     id: 'pulse-discard-creates-nothing',
     prompt:
       'Triage this current signal: it is a popular generic productivity list with no connection to my declared query and no evidence of a relevant change. Put it on a watch list just in case, and also discard it.',

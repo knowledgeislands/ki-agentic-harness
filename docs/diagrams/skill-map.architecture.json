@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "956a01faaab54a7f2038867d699c4f59746b8bbb"
+      "revision": "833826d5d7875d9bbeb9589aaafb8716d384fea3"
     },
     "legend": {
       "mode": "auto",
@@ -226,7 +226,7 @@
       "id": "ki-acquire",
       "type": "database",
       "label": "ki-acquire",
-      "sublabel": "acquire · opt-in",
+      "sublabel": "acquire + signals · opt-in",
       "sources": [
         {
           "path": "skills/keystone/ki-acquire/SKILL.md"
@@ -1097,25 +1097,6 @@
       ]
     },
     {
-      "id": "ki-pulse",
-      "type": "frontend",
-      "label": "ki-pulse",
-      "sublabel": "signals · command",
-      "sources": [
-        {
-          "path": "skills/acquire/ki-pulse/SKILL.md"
-        }
-      ],
-      "pos": [
-        32,
-        2088
-      ],
-      "size": [
-        200,
-        60
-      ]
-    },
-    {
       "id": "ki-env-binding",
       "type": "database",
       "label": "ki-env-binding",
@@ -1317,7 +1298,7 @@
       ],
       "pos": [
         32,
-        2260
+        2120
       ],
       "size": [
         200,
@@ -1336,7 +1317,7 @@
       ],
       "pos": [
         240,
-        2260
+        2120
       ],
       "size": [
         200,
@@ -1354,8 +1335,8 @@
         }
       ],
       "pos": [
-        712,
-        2400
+        32,
+        2292
       ],
       "size": [
         200,
@@ -1373,8 +1354,8 @@
         }
       ],
       "pos": [
-        712,
-        2540
+        32,
+        2432
       ],
       "size": [
         200,
@@ -1392,8 +1373,8 @@
         }
       ],
       "pos": [
-        920,
-        2540
+        240,
+        2432
       ],
       "size": [
         200,
@@ -1411,8 +1392,8 @@
         }
       ],
       "pos": [
-        1128,
-        2540
+        448,
+        2432
       ],
       "size": [
         200,
@@ -1695,32 +1676,12 @@
     },
     {
       "kind": "region",
-      "label": "Acquire",
+      "label": "Acquire · 4 skills",
       "wraps": [
         "ki-acquire-chatgpt",
         "ki-acquire-granola",
         "ki-dodecakrisis",
         "ki-exchange-dynamics"
-      ],
-      "pad": 10
-    },
-    {
-      "kind": "region",
-      "label": "Signals",
-      "wraps": [
-        "ki-pulse"
-      ],
-      "pad": 10
-    },
-    {
-      "kind": "region",
-      "label": "Acquire · 5 skills",
-      "wraps": [
-        "ki-acquire-chatgpt",
-        "ki-acquire-granola",
-        "ki-dodecakrisis",
-        "ki-exchange-dynamics",
-        "ki-pulse"
       ],
       "pad": 24
     },
@@ -1827,7 +1788,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "73 skills in 8 concerns and 10 functional areas: 3 always on, 19 automatic, 38 opt-in, 13 commands.",
+        "72 skills in 8 concerns and 10 functional areas: 3 always on, 19 automatic, 38 opt-in, 12 commands.",
         "Regenerate with ki repo conform --skill ki-repo-backpack; ki-skills owns the kind and applicability fields it reads."
       ]
     }

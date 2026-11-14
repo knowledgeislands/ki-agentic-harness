@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "26dd45f59a8f35f1e282490ea109f8a1fd90ac84"
+      "revision": "833826d5d7875d9bbeb9589aaafb8716d384fea3"
     },
     "legend": {
       "mode": "auto",
@@ -33,6 +33,26 @@
   },
   "components": [
     {
+      "id": "ki-acquire",
+      "type": "database",
+      "label": "ki-acquire",
+      "sublabel": "keystone · opt-in",
+      "sources": [
+        {
+          "path": "skills/keystone/ki-acquire/SKILL.md"
+        }
+      ],
+      "tag": "R8 · CM · F6",
+      "pos": [
+        32,
+        64
+      ],
+      "size": [
+        208,
+        76
+      ]
+    },
+    {
       "id": "ki-agentic-radar",
       "type": "database",
       "label": "ki-agentic-radar",
@@ -45,7 +65,7 @@
       "tag": "R7 · CM · F4",
       "pos": [
         32,
-        64
+        188
       ],
       "size": [
         208,
@@ -64,26 +84,6 @@
       ],
       "tag": "R6 · CM · F4",
       "pos": [
-        32,
-        188
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
-      "id": "ki-pulse",
-      "type": "frontend",
-      "label": "ki-pulse",
-      "sublabel": "acquire · command",
-      "sources": [
-        {
-          "path": "skills/acquire/ki-pulse/SKILL.md"
-        }
-      ],
-      "tag": "R– · C0 · F1",
-      "pos": [
         288,
         188
       ],
@@ -98,7 +98,7 @@
       "kind": "region",
       "label": "Signals · 3 skills",
       "wraps": [
-        "ki-pulse",
+        "ki-acquire",
         "ki-agentic-radar",
         "ki-model-radar"
       ],
@@ -122,6 +122,7 @@
       "title": "Generated, not drawn",
       "items": [
         "3 skills, 0 outside prerequisites, 0 outside dependents, 0 composition and 0 optional edges, read from SKILL.md frontmatter.",
+        "Home in another area: ki-acquire; only edges within this area are drawn for them here, and their home area's diagram draws the rest.",
         "Regenerate with ki repo conform --skill ki-repo-backpack; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }
