@@ -5,13 +5,13 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated patterns from the KI repo set that show what a well-configured Knowledge Islands repo looks like. Use these as reference when onboarding a new repo, running CONFORM, or auditing against the standard. The `ki-agentic-harness` is the primary exemplar — it carries every required layer-1 file, a fully-populated `.ki.toml`, and a `CLAUDE.md` with correct topic imports. The `mcp-*` repos are the reference set for public repos (topics, secret scanning, MIT license). For the full source list and last-review dates, see [sources.md](sources.md).
+Curated patterns from the KI repo set that show what a well-configured Knowledge Islands repo looks like. Use these as reference when onboarding a new repo, running CONFORM, or auditing against the standard. The `ki-agent-backpack` is the primary exemplar — it carries every required layer-1 file, a fully-populated `.ki.toml`, and a `CLAUDE.md` with correct topic imports. The `mcp-*` repos are the reference set for public repos (topics, secret scanning, MIT license). For the full source list and last-review dates, see [sources.md](sources.md).
 
 ## Collections
 
 | Source | URL | What it covers |
 | --- | --- | --- |
-| ki-agentic-harness | [github][harness] | Private repo; all layer-1 files; full `.ki.toml`; rich `CLAUDE.md` |
+| ki-agent-backpack | [github][harness] | Private repo; all layer-1 files; full `.ki.toml`; rich `CLAUDE.md` |
 | mcp-gsuite | [github][mcp-gsuite] | Public repo; MIT license; standard topic set |
 | mcp-kb-fs | [github][mcp-kb-fs] | Public repo; canonical layer-2/3 settings; `branch-protection` off |
 | GitHub REST API — repo settings | [docs.github.com][repo-settings] | Merge methods, auto-delete-branch, features |
@@ -96,7 +96,7 @@ The shared orientation lives in AGENTS.md, imported above. The following topic f
 
 ### Four-part harness layout with coverage declarations
 
-When a repo carries a four-part agentic harness layout (`skills/`, `subagents/`, `evals/`, `hooks/`), its `.ki.toml` must declare all relevant tables so `ki-repo`'s coverage cascade does not warn on detected-but-undeclared artifacts. MCP servers remain independent repositories and declare `ki-repo-mcp` themselves. The harness repo (`ki-agentic-harness`) is the canonical example — it opts into every applicable governance skill and documents why each table is present.
+When a repo carries a four-part agent backpack layout (`skills/`, `subagents/`, `evals/`, `hooks/`), its `.ki.toml` must declare all relevant tables so `ki-repo`'s coverage cascade does not warn on detected-but-undeclared artifacts. MCP servers remain independent repositories and declare `ki-repo-mcp` themselves. The harness repo (`ki-agent-backpack`) is the canonical example — it opts into every applicable governance skill and documents why each table is present.
 
 ```toml
 [skills.ki-repo]
@@ -106,7 +106,7 @@ visibility = "private"
 # Fully conforms; capabilities auto-detected.
 
 [skills.ki-repo-backpack]
-# Declares this repo as a KI agentic harness (the four-part layout compliance marker).
+# Declares this repo as a KI agent backpack (the four-part layout compliance marker).
 # No per-harness config keys defined yet — table presence is the declaration.
 
 [skills.ki-skills]
@@ -128,7 +128,7 @@ my-repo/
     └── README.md
 ```
 
-[harness]: https://github.com/knowledgeislands/ki-agentic-harness
+[harness]: https://github.com/knowledgeislands/ki-agent-backpack
 [mcp-gsuite]: https://github.com/knowledgeislands/mcp-gsuite
 [mcp-kb-fs]: https://github.com/knowledgeislands/mcp-kb-fs
 [repo-settings]: https://docs.github.com/en/rest/repos/repos#update-a-repository

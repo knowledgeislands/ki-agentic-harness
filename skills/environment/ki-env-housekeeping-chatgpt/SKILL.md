@@ -54,7 +54,7 @@ Explain the opaque ChatGPT store, shared Codex memory store, four comparable pro
 
 ### Mode REFRESH
 
-REFRESH writes only the canonical `ki-env-housekeeping-chatgpt` source in `ki-agentic-harness`; when invoked from an installed copy, stop and redirect to the Harness. Revalidate ChatGPT store containment, Codex memory controls, and the Codex app-server protocol using [the refresh procedure](references/mode-refresh.md). Source mutation remains unavailable except reviewed Codex session deletion.
+REFRESH writes only the canonical `ki-env-housekeeping-chatgpt` source in `ki-agent-backpack`; when invoked from an installed copy, stop and redirect to the Harness. Revalidate ChatGPT store containment, Codex memory controls, and the Codex app-server protocol using [the refresh procedure](references/mode-refresh.md). Source mutation remains unavailable except reviewed Codex session deletion.
 
 ## Off-ramps
 

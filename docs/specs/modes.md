@@ -48,7 +48,7 @@ _Evidence:_ `ki repo educate --skill <declared-skill> --repo <repo>` renders tha
 
 ### MODE-005 — REFRESH runs only in the harness
 
-REFRESH MUST write only to the skill's canonical files under `skills/<name>/` in `ki-agentic-harness`, and when invoked from a repo where the skill is merely vendored it MUST stop and name the harness as where to run it, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-audit-conform-educate-refresh-canonical-modes-help.md).
+REFRESH MUST write only to the skill's canonical files under `skills/<name>/` in `ki-agent-backpack`, and when invoked from a repo where the skill is merely vendored it MUST stop and name the harness as where to run it, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-audit-conform-educate-refresh-canonical-modes-help.md).
 
 _Conformance:_ conforming
 

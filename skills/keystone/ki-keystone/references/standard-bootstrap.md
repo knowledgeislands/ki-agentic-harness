@@ -68,7 +68,7 @@ The user setup and capability-activation model, and the boundaries the `ki` comm
 
 | Term | Definition |
 | --- | --- |
-| **Canonical harness** | `knowledgeislands/ki-agentic-harness`, always registered and installed by `ki bootstrap`, and never uninstalled. **Standard:** this one, [4.1](#41-authoritative-installed-harnesses) |
+| **Canonical harness** | `knowledgeislands/ki-agent-backpack`, always registered and installed by `ki bootstrap`, and never uninstalled. **Standard:** this one, [4.1](#41-authoritative-installed-harnesses) |
 | **Activation** | Changing the managed discovery links and configuration that make a skill available, for the user's runtimes or for one repository; separate from installing a harness. **Standard:** this one, [4.3](#43-explicit-activation-scopes) |
 | **Ready to coordinate** | The result when every step of the machine-readiness checklist passes. **Standard:** this one, [4.7](#47-machine-readiness-for-coordinating-work) |
 | **User state** | The XDG-owned harness registry and data, configuration, cache, state, and user-runtime activation. **Standard:** this one, [4.12](#412-scope-and-safety-separation) |
@@ -82,7 +82,7 @@ The rules, part by part.
 
 ### 4.1 Authoritative installed harnesses
 
-One verified, XDG-managed harness set exists per user. The canonical `knowledgeislands/ki-agentic-harness` is always registered and installed by `ki bootstrap`; each additional compatible harness is installed explicitly.
+One verified, XDG-managed harness set exists per user. The canonical `knowledgeislands/ki-agent-backpack` is always registered and installed by `ki bootstrap`; each additional compatible harness is installed explicitly.
 
 The harness payload, configuration, cache, and mutable state occupy separate XDG-owned locations. `ki diag --full` reports the effective paths.
 

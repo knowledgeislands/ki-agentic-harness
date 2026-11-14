@@ -24,7 +24,7 @@ You are helping hold git repos to one **Knowledge Islands repo standard** — ho
 
 Load [the exemplars](references/exemplars.md) when onboarding a repo or when a standard rule needs a worked example.
 
-This skill governs a repo's **configuration and Knowledge Islands compliance** — how a repo is set up, not its source code. REVIEW is the deliberate exception: it may inspect architecture and implementation as evidence, but it creates no compliance criterion or automatic verdict. The skill owns the shared shape and direction of required repository `+` / `-` working areas and reserves the ignored, disposable `tmp/` area; `ki-trades` owns any declared cross-repository `_TRADES` subdirectories and lifecycle, while `ki-repo-kb` applies the same generic directionality within its fixed base working-area model. It is a **standard, base-agnostic governance skill**: it hard-codes no single repo or org and discovers its targets at runtime (a local tree, or a whole org via `gh`). How it sits alongside the other skills in this repo (where they complement and where they must not overlap) is documented once in the ki-agentic-harness `README.md`, not repeated here.
+This skill governs a repo's **configuration and Knowledge Islands compliance** — how a repo is set up, not its source code. REVIEW is the deliberate exception: it may inspect architecture and implementation as evidence, but it creates no compliance criterion or automatic verdict. The skill owns the shared shape and direction of required repository `+` / `-` working areas and reserves the ignored, disposable `tmp/` area; `ki-trades` owns any declared cross-repository `_TRADES` subdirectories and lifecycle, while `ki-repo-kb` applies the same generic directionality within its fixed base working-area model. It is a **standard, base-agnostic governance skill**: it hard-codes no single repo or org and discovers its targets at runtime (a local tree, or a whole org via `gh`). How it sits alongside the other skills in this repo (where they complement and where they must not overlap) is documented once in the ki-agent-backpack `README.md`, not repeated here.
 
 ## The standard at a glance
 
@@ -80,7 +80,7 @@ Onboard a repo by adding the marker file (and the other root files) so it joins 
 
 ### Mode REFRESH — re-anchor the standard to GitHub's surface
 
-**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from an installed copy, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-repo-kb`'s IMPROVE mode instead.
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agent-backpack`. Invoked from an installed copy, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-repo-kb`'s IMPROVE mode instead.
 
 GitHub's settings surface moves (rulesets vs classic protection, new security toggles, Actions policy). Run on its declared cadence (see `references/sources.md`), or when asked "is the repo standard current".
 

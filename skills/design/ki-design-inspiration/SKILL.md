@@ -50,6 +50,6 @@ For example:
 
 ### Mode REFRESH
 
-Refresh the canonical skill under `skills/design/ki-design-inspiration/` in `ki-agentic-harness`. From an installed copy, report suggested updates and route them to that source repository.
+Refresh the canonical skill under `skills/design/ki-design-inspiration/` in `ki-agent-backpack`. From an installed copy, report suggested updates and route them to that source repository.
 
 Follow the cadence in [the source list](references/sources.md), or refresh when a link fails, a resource changes purpose, or the user asks to update the collection. Revisit each source, verify its current subject and access state, and reconcile its routing notes. Retain unavailable sources with an honest access note; update a URL only after establishing the destination's identity. Preserve user selections and distinguish proposed additions from accepted collection members. Record actual review dates and current limitations, then check the edited skill against `ki-skills`.

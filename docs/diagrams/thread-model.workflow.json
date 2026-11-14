@@ -7,7 +7,7 @@
     "animation": "trace",
     "quality_profile": "showcase",
     "repository": {
-      "url": "https://github.com/knowledgeislands/ki-agentic-harness",
+      "url": "https://github.com/knowledgeislands/ki-agent-backpack",
       "provider": "github",
       "revision": "791c4ed635f658f0dc6e2e480281aee26feddeac"
     },

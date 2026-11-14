@@ -4,7 +4,7 @@ title: Channel
 type: term
 status: proposal
 territory: knowledge-islands
-island: ki-agentic-harness
+island: ki-agent-backpack
 origin: Cairn summit change 22, CARD-CHANNEL a, on the owner's word for high-confidence recommendations; wording a proposal for the owner's review (12 November 2026)
 links:
   industry.session:

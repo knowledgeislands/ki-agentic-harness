@@ -51,7 +51,7 @@ notes = "Cloudflare documents independent MCP client and server support in its A
 [evidence.mcp-ki-local]
 id = "mcp-ki-local"
 title = "Knowledge Islands MCP binding"
-url = "https://github.com/knowledgeislands/ki-agentic-harness/tree/main/skills/environment/ki-env-binding"
+url = "https://github.com/knowledgeislands/ki-agent-backpack/tree/main/skills/environment/ki-env-binding"
 evidence_class = "local-evaluation"
 source_role = "primary"
 reviewed_on = "2026-10-19"
@@ -377,7 +377,7 @@ notes = "The project reports use across more than 60,000 open-source repositorie
 [evidence.agents-ki-local]
 id = "agents-ki-local"
 title = "Knowledge Islands AGENTS.md"
-url = "https://github.com/knowledgeislands/ki-agentic-harness/blob/main/AGENTS.md"
+url = "https://github.com/knowledgeislands/ki-agent-backpack/blob/main/AGENTS.md"
 evidence_class = "local-evaluation"
 source_role = "primary"
 reviewed_on = "2026-10-19"

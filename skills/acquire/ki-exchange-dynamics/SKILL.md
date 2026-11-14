@@ -47,4 +47,4 @@ Take one validated analysis and render it under the rendering standard: an `arch
 
 ### Mode REFRESH
 
-REFRESH writes only in the canonical `ki-agentic-harness` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the method's lineage and the renderers' current behaviour with the standards, then make and verify the smallest correction. When a migration item is done, delete its line, and delete the overlay once it is empty.
+REFRESH writes only in the canonical `ki-agent-backpack` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the method's lineage and the renderers' current behaviour with the standards, then make and verify the smallest correction. When a migration item is done, delete its line, and delete the overlay once it is empty.

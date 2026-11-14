@@ -1,6 +1,6 @@
 # Specifications
 
-This is the accepted behaviour and quality contract for **ki-agentic-harness** — **what** it promises. Decisions capture why ([`../decisions/`](../decisions)), guides capture how ([`../guides/`](../guides)), and roadmap items capture when ([`../roadmap/`](../roadmap)). The `ki-specs` skill governs and audits this corpus.
+This is the accepted behaviour and quality contract for **ki-agent-backpack** — **what** it promises. Decisions capture why ([`../decisions/`](../decisions)), guides capture how ([`../guides/`](../guides)), and roadmap items capture when ([`../roadmap/`](../roadmap)). The `ki-specs` skill governs and audits this corpus.
 
 ## How it fits with other documentation
 

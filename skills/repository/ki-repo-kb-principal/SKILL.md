@@ -49,7 +49,7 @@ Describe the principal-only governance delta and route general base structure to
 
 ### Mode REFRESH
 
-**Precondition:** REFRESH writes only the canonical `ki-repo-kb-principal` files in `ki-agentic-harness`. From an installed copy, stop and route reusable pressure back to this harness.
+**Precondition:** REFRESH writes only the canonical `ki-repo-kb-principal` files in `ki-agent-backpack`. From an installed copy, stop and route reusable pressure back to this harness.
 
 Reconcile repeated principal-base experience into the standard and rubric; do not turn one island's identity into a shared rule.
 

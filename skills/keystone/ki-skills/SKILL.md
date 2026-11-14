@@ -16,7 +16,7 @@ argument-hint: 'audit <skill-or-repo> | conform <skill> | educate <description> 
 
 You are helping author or audit **Agent Skills** — directories with a `SKILL.md` (frontmatter + body), per the [Agent Skills open standard](https://agentskills.io/). This skill is the house rubric for what a _good_ skill looks like and the procedures that apply it.
 
-The canonical home for these skills is the **ki-agentic-harness** repository; its `README.md` covers install, the symlink workflow, and the Knowledge Islands structure. This skill governs skill _quality_, not installation.
+The canonical home for these skills is the **ki-agent-backpack** repository; its `README.md` covers install, the symlink workflow, and the Knowledge Islands structure. This skill governs skill _quality_, not installation.
 
 ## The two-aspect model
 
@@ -58,7 +58,7 @@ Review a skill (or every skill in a repo) against the rubric and report.
 
 ### Mode EDUCATE — write a new skill
 
-1. **Clarify scope first**: what should fire the skill (the triggers), what kind it is (Knowledge Islands / process / scoped — see ki-agentic-harness `README.md`), and how it relates to siblings. Declare **composition** only when selecting this skill necessarily selects and runs the sibling first; treat coverage-detected governance, off-ramps, and shared modules as separate relationships. Never create a base-coupled extension that takes another skill's modes.
+1. **Clarify scope first**: what should fire the skill (the triggers), what kind it is (Knowledge Islands / process / scoped — see ki-agent-backpack `README.md`), and how it relates to siblings. Declare **composition** only when selecting this skill necessarily selects and runs the sibling first; treat coverage-detected governance, off-ramps, and shared modules as separate relationships. Never create a base-coupled extension that takes another skill's modes.
 2. **Scaffold** `<name>/SKILL.md` with `references/`, `scripts/`, `assets/` only as needed. The directory name **is** the `name:` frontmatter (lowercase, hyphenated, in sync).
 3. **Write to the rubric, not from memory** — open [the rubric](references/rubric.md) and satisfy each criterion as you draft. In particular: trigger-rich third-person `description`; body under 500 lines / ~5,000 tokens; one default approach with an escape hatch, not a menu; detail in `references/`; relative markdown links (angle-bracket form for paths with spaces), never wikilinks; refer to other skills by `name`, never path.
 4. **Self-audit before finishing** — run Mode AUDIT on the new skill. EDUCATE and AUDIT share one rubric on purpose.
@@ -82,13 +82,13 @@ Read and follow [the EXTRACT procedure](references/mode-extract.md). It produces
 
 ### Mode REFRESH — re-anchor best practice
 
-**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from an installed copy, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-repo-kb`'s IMPROVE mode instead.
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agent-backpack`. Invoked from an installed copy, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-repo-kb`'s IMPROVE mode instead.
 
 Keep the rubric current — the standard and the community move, and this is why the skill tracks its own sources. Run on its declared cadence (see `references/sources.md`), or when asked "is the skills rubric current".
 
 1. **Read [the source list](references/sources.md)** — the tracked authoritative + community sources, each with a `last reviewed` date and what it governs. For Agent Skills, fetch its [documentation index](https://agentskills.io/llms.txt) first, reconcile the listed page inventory (add new pages and retire removed ones), then review every current page individually.
 2. **Re-fetch each source** (WebFetch/WebSearch) and **diff against the current [Agent Skills](references/standard-agent-skills.md) and [Knowledge Islands](references/standard-knowledge-islands.md) standards plus [rubric](references/rubric.md)**: new required/optional frontmatter fields, changed caps (length, line, token budgets), new anti-patterns, deprecations. Scan the declared discovery sources' landing pages for newly published articles materially relevant to agent skills, agentic practice, or authoring workflows; treat those articles as discovery evidence, not a normative standard. Note where sources disagree.
-3. **Scan our own skills** in the ki-agentic-harness repo for emergent patterns that work but aren't yet codified — promote the good ones into the standard + rubric; flag drift that contradicts them. On each cadence, review their judgment-only and hybrid AUDIT criteria for deterministic subchecks, and their diagnostic or guarded mechanical CONFORM results for newly safe automatic repairs. Record a concrete failing case and the remaining judgment or authority boundary for each candidate; an evidenced no-change result is valid.
+3. **Scan our own skills** in the ki-agent-backpack repo for emergent patterns that work but aren't yet codified — promote the good ones into the standard + rubric; flag drift that contradicts them. On each cadence, review their judgment-only and hybrid AUDIT criteria for deterministic subchecks, and their diagnostic or guarded mechanical CONFORM results for newly safe automatic repairs. Record a concrete failing case and the remaining judgment or authority boundary for each candidate; an evidenced no-change result is valid.
 4. **Propose a diff** to the applicable standard and the structured item definitions under `scripts/rubric/items/`; update a criterion's mechanical execution when new evidence can be checked deterministically. Confirm before writing, then republish [the readable rubric](references/rubric.md) with `ki dev skill rubric ki-skills --write`.
 5. **Update [the source list](references/sources.md)** — bump each `last reviewed` date, add any new source, retire any dead one, and refresh the `## Last review` block (what's confirmed, open watch-items). The record of _what changed_ is the commit itself — history lives in git, not a changelog. This step is mandatory: the source list is the skill's memory of where best practice comes from.
 

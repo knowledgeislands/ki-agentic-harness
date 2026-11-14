@@ -79,7 +79,7 @@ While coordinating, `/ki-coordination receive` records the owner's receive under
 
 ### Mode REFRESH
 
-**Precondition:** REFRESH writes only this canonical skill under `ki-agentic-harness`.
+**Precondition:** REFRESH writes only this canonical skill under `ki-agent-backpack`.
 
 When invoked from an installed copy, stop and redirect to the harness.
 

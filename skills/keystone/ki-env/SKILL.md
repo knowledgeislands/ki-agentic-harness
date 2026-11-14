@@ -50,4 +50,4 @@ Name the family for the concern in hand and its runtime skill for the agent host
 
 ### Mode REFRESH
 
-REFRESH writes only in the canonical `ki-agentic-harness` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the families and their boundaries with the decisions they come from, then make and verify the smallest correction.
+REFRESH writes only in the canonical `ki-agent-backpack` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the families and their boundaries with the decisions they come from, then make and verify the smallest correction.

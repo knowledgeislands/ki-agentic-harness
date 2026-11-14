@@ -4,7 +4,7 @@ title: Skill (Google)
 type: vendor-term
 status: agreed
 territory: knowledge-islands
-island: ki-agentic-harness
+island: ki-agent-backpack
 vendor: Google
 origin: Cairn summit change 22, CARD-SKILL, and change 06, KG-SUBGRAPHS (12 November 2026)
 links:

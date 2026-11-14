@@ -69,10 +69,10 @@ ki repo skill remove ki-work-roadmap --repo .
 Use a checkout only through the explicit development switch:
 
 ```sh
-ki dev local set knowledgeislands/ki-agentic-harness /absolute/path/to/ki-agentic-harness
-ki dev local on knowledgeislands/ki-agentic-harness
+ki dev local set knowledgeislands/ki-agent-backpack /absolute/path/to/ki-agent-backpack
+ki dev local on knowledgeislands/ki-agent-backpack
 ki repo audit --repo /absolute/path/to/governed-repository
-ki dev local off knowledgeislands/ki-agentic-harness
+ki dev local off knowledgeislands/ki-agent-backpack
 ```
 
 The first command validates the checkout before switching the canonical installed payload. The last restores the verified archive; proximity to a checkout never changes resolution by itself.

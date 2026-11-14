@@ -199,7 +199,7 @@ The window's inventory is every repository in the `ki` repository registry that 
 
 The assignee window, opened on 5 November 2026 with [Assignee](standards-work-item-format.md#assignee), covers the `assignee` field alone: during it the checker warns on an open record without one, and once it closes it fails. It closes on the same terms as the field migration window, measured from the first `ki` release that accepts the field. A value outside the holder vocabulary, and a changed assignee on an in-progress record, fail from the start.
 
-The work model's tolerance window, which [KI-HARNESS-GOV-210 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/08468196/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md) opens and a later phase of the migration closes, adds warnings for the thread-model classification: a record's `initiative`, read as its theme; and, in the record's own territory, a registry that keeps `Streams/Initiatives/`, a Project folder note or a Project note's `initiative:`. This section is the one place these rules are defined.
+The work model's tolerance window, which [KI-HARNESS-GOV-210 (pruned)](https://github.com/knowledgeislands/ki-agent-backpack/blob/08468196/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md) opens and a later phase of the migration closes, adds warnings for the thread-model classification: a record's `initiative`, read as its theme; and, in the record's own territory, a registry that keeps `Streams/Initiatives/`, a Project folder note or a Project note's `initiative:`. This section is the one place these rules are defined.
 
 ## Work-item discipline
 

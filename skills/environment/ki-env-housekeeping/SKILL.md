@@ -46,4 +46,4 @@ Explain the native-memory policy values, where durable learning goes, and why se
 
 ### Mode REFRESH
 
-REFRESH writes only in the canonical `ki-agentic-harness` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the shared rules with both runtime skills' standards, move a rule here only when both hold it, then make and verify the smallest correction.
+REFRESH writes only in the canonical `ki-agent-backpack` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the shared rules with both runtime skills' standards, move a rule here only when both hold it, then make and verify the smallest correction.

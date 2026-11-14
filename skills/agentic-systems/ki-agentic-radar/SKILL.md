@@ -40,7 +40,7 @@ Explain the subject kinds, evidence classes, maturity and implementation dimensi
 
 ### Mode REFRESH
 
-REFRESH applies only to this skill's canonical files in `ki-agentic-harness`. From an installed copy, stop and redirect to the harness.
+REFRESH applies only to this skill's canonical files in `ki-agent-backpack`. From an installed copy, stop and redirect to the harness.
 
 Read [the tracked sources](references/sources.md), perform a bounded current-evidence review, and reconcile proposed changes against [the standard](references/standards-agentic-radar.md). Preserve uncertainty and counter-evidence. Provider claims alone cannot move a subject inward; Adopt or Trial requires a concrete Knowledge Islands use case and local evidence.
 

@@ -4,7 +4,7 @@ title: Model
 type: term
 status: agreed
 territory: knowledge-islands
-island: ki-agentic-harness
+island: ki-agent-backpack
 origin: Cairn summit change 22, CARDS-AGENT (12 November 2026)
 ---
 

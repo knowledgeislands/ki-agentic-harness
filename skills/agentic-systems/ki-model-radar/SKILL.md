@@ -36,7 +36,7 @@ Run `ki repo educate --skill ki-model-radar --repo <repo>` to render the catalog
 
 ### Mode REFRESH
 
-REFRESH writes only this skill's canonical files in `ki-agentic-harness`. When invoked from an installed copy, stop and redirect to that Harness. Read [the tracked sources](references/sources.md), gather bounded current evidence, reconcile it with [the snapshot](references/radar.toml), and propose reviewed changes. If the last review is still within cadence and no material release or deprecation triggered the run, confirm before forcing an early refresh.
+REFRESH writes only this skill's canonical files in `ki-agent-backpack`. When invoked from an installed copy, stop and redirect to that Harness. Read [the tracked sources](references/sources.md), gather bounded current evidence, reconcile it with [the snapshot](references/radar.toml), and propose reviewed changes. If the last review is still within cadence and no material release or deprecation triggered the run, confirm before forcing an early refresh.
 
 Movement inward requires current identity and lifecycle evidence, materially independent evaluation where available, and local-fit evidence proportional to the recommendation. Preserve counter-evidence and uncertainty. Route any approved consumer change through `ki-work next`; do not mutate a consumer from this mode.
 

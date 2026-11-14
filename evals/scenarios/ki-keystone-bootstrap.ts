@@ -15,7 +15,7 @@ export const scenarios: Scenario[] = [
       'What exactly does `ki bootstrap` establish for a first-time user, and what repository state does it deliberately leave alone?',
     assertions: [
       { name: 'detects agent runtimes', re: /detect[^.\n]{0,30}(agent|runtime)/i },
-      { name: 'installs canonical harness', re: /(install|verified)[^.\n]{0,50}(canonical|ki-agentic-harness)/i },
+      { name: 'installs canonical harness', re: /(install|verified)[^.\n]{0,50}(canonical|ki-agent-backpack)/i },
       {
         name: 'activates core user skills',
         re: /(core|six)[^.\n]{0,40}user skills|user skills[^.\n]{0,40}(core|six)/i
@@ -26,7 +26,7 @@ export const scenarios: Scenario[] = [
       }
     ],
     rubric:
-      'House contract: `ki bootstrap` detects supported local agent runtimes, creates the KI XDG configuration, installs the verified canonical `knowledgeislands/ki-agentic-harness`, and activates the core user skills, `ki-keystone` and `ki-work`. `ki-delegation` is opt-in. It does not edit a repository or declare repository governance. A correct answer names both the user-environment work and the repository boundary.'
+      'House contract: `ki bootstrap` detects supported local agent runtimes, creates the KI XDG configuration, installs the verified canonical `knowledgeislands/ki-agent-backpack`, and activates the core user skills, `ki-keystone` and `ki-work`. `ki-delegation` is opt-in. It does not edit a repository or declare repository governance. A correct answer names both the user-environment work and the repository boundary.'
   },
   {
     skill: 'ki-keystone',

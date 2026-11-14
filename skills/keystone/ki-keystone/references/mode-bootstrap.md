@@ -12,7 +12,7 @@ When delegating work into another repository, name each governance skill it need
 
 Run `ki bootstrap`.
 
-KI detects supported local agent runtimes, creates its XDG configuration if absent, installs the canonical `knowledgeislands/ki-agentic-harness`, and links the core user skills into each detected agent's user skill directory.
+KI detects supported local agent runtimes, creates its XDG configuration if absent, installs the canonical `knowledgeislands/ki-agent-backpack`, and links the core user skills into each detected agent's user skill directory.
 
 Run `ki bootstrap --refresh` to redetect agents and reconcile the recorded harness and managed user-skill inventory with installed state.
 

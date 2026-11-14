@@ -94,4 +94,4 @@ Name the guild and the lead for the work in hand, from the guild map, and say wh
 
 ### Mode REFRESH
 
-REFRESH writes only in the canonical `ki-agentic-harness` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the guild purposes and the joining rule with the decisions they come from, then make and verify the smallest correction and regenerate the guild map. For the bootstrap guidance, follow the refresh steps at the end of [the bootstrap reference](references/mode-bootstrap.md).
+REFRESH writes only in the canonical `ki-agent-backpack` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the guild purposes and the joining rule with the decisions they come from, then make and verify the smallest correction and regenerate the guild map. For the bootstrap guidance, follow the refresh steps at the end of [the bootstrap reference](references/mode-bootstrap.md).

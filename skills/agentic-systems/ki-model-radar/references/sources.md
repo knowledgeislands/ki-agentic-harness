@@ -101,8 +101,8 @@ This is the refresh ledger for the reviewed sources used by the current snapshot
 [kimi-k3]: https://github.com/MoonshotAI/Kimi-K3
 
 [kimi-k3-license]: https://github.com/MoonshotAI/Kimi-K3/blob/main/LICENSE
-[local-defaults]: https://github.com/knowledgeislands/ki-agentic-harness/commit/709f49fec523f596d1b388391bff6aed39ac5198
-[local-roadmap]: https://github.com/knowledgeislands/ki-agentic-harness/blob/dd45807722a06cf3e54686f4eaa38c1149836e3a/docs/roadmap/KI-HARNESS-REV-003-establish-model-radar.md
+[local-defaults]: https://github.com/knowledgeislands/ki-agent-backpack/commit/709f49fec523f596d1b388391bff6aed39ac5198
+[local-roadmap]: https://github.com/knowledgeislands/ki-agent-backpack/blob/dd45807722a06cf3e54686f4eaa38c1149836e3a/docs/roadmap/KI-HARNESS-REV-003-establish-model-radar.md
 [openai-astra]: https://openai.com/index/gpt-6-astra/
 [openai-gpt-6]: https://developers.openai.com/api/docs/guides/latest-model
 [openai-models]: https://developers.openai.com/api/docs/models

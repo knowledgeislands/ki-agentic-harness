@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/knowledgeislands/ki-agentic-harness/skills/acquire/ki-exchange-dynamics/assets/eda-analysis.schema.json",
+  "$id": "https://github.com/knowledgeislands/ki-agent-backpack/skills/acquire/ki-exchange-dynamics/assets/eda-analysis.schema.json",
   "title": "Exchange dynamics analysis",
   "description": "One structured, evidence-linked analysis of one exchange. Cross-references are checked by scripts/validate-analysis.ts.",
   "type": "object",

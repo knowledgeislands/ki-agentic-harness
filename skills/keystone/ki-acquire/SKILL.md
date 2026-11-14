@@ -47,4 +47,4 @@ Explain the common workflow and the repository's capture entry point, and route 
 
 ### Mode REFRESH
 
-REFRESH writes only in the canonical `ki-agentic-harness` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the durable acquisition model and actual capture practice, then make and verify the smallest correction. Provider capability refresh stays with its provider skill.
+REFRESH writes only in the canonical `ki-agent-backpack` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the durable acquisition model and actual capture practice, then make and verify the smallest correction. Provider capability refresh stays with its provider skill.

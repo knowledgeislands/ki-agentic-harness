@@ -33,7 +33,7 @@ Keep the repository's code, tests, skills, and mechanical governance aligned wit
 
 The linked run records inspected revision and scope, checks and their limits, concrete code and governance findings, audit and conform mechanicalisation candidates, separately routed follow-ups, or an evidenced no-change result for each reviewed concern. It records the successful completion date and full reviewed commit for acceptance to advance the schedule. Missing effectiveness or runtime evidence is unavailable, not a passing score.
 
-The carried-forward date comes from the accepted [mechanical-governance review](https://github.com/knowledgeislands/ki-agentic-harness/blob/d3b18f1c9d67a96b58017ffa1675df90e489baf3/docs/roadmap/KI-HARNESS-REV-004-review-mechanical-governance.md). That earlier review covered the narrower mechanical-governance scope; it is not retrospective evidence of full engineering alignment.
+The carried-forward date comes from the accepted [mechanical-governance review](https://github.com/knowledgeislands/ki-agent-backpack/blob/d3b18f1c9d67a96b58017ffa1675df90e489baf3/docs/roadmap/KI-HARNESS-REV-004-review-mechanical-governance.md). That earlier review covered the narrower mechanical-governance scope; it is not retrospective evidence of full engineering alignment.
 
 The recorded historical baseline does not resolve in the local Git object database. Commit-volume evidence is therefore unavailable until an accepted run supplies a verified reviewed revision; calendar scheduling remains active. Do not substitute the current HEAD or infer a baseline from the date.
 

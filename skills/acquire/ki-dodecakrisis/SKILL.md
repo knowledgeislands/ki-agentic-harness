@@ -53,4 +53,4 @@ Read one mailbox's corrections through `ki-muninn d12 learn`, append correction 
 
 ### Mode REFRESH
 
-REFRESH writes only in the canonical `ki-agentic-harness` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the D12 card, the mail servers' capabilities and `ki-muninn`'s D12 runner with the standards, then make and verify the smallest correction. When a migration item is done, delete its line, and delete the overlay once it is empty.
+REFRESH writes only in the canonical `ki-agent-backpack` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the D12 card, the mail servers' capabilities and `ki-muninn`'s D12 runner with the standards, then make and verify the smallest correction. When a migration item is done, delete its line, and delete the overlay once it is empty.

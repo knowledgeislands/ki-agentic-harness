@@ -68,7 +68,7 @@ Replaced by BOOT-016. Native repository operations preserve unowned state rather
 
 ### BOOT-011 — First-time bootstrap establishes the minimum user environment
 
-`ki bootstrap` MUST detect supported local agent runtimes, create the KI user configuration when absent, install or restore the canonical `knowledgeislands/ki-agentic-harness`, and activate the core user skills — `ki-keystone`, which carries `ki-keystone bootstrap`, and `ki-work`, which carries the work subcommands — for every detected runtime. `ki-delegation` is opt-in and augments runtime subagent delegation only when active in the same scope.
+`ki bootstrap` MUST detect supported local agent runtimes, create the KI user configuration when absent, install or restore the canonical `knowledgeislands/ki-agent-backpack`, and activate the core user skills — `ki-keystone`, which carries `ki-keystone bootstrap`, and `ki-work`, which carries the work subcommands — for every detected runtime. `ki-delegation` is opt-in and augments runtime subagent delegation only when active in the same scope.
 
 _Conformance:_ conforming
 
@@ -94,9 +94,9 @@ Native capability resolution MUST use verified installed compatible harnesses, t
 
 _Conformance:_ conforming
 
-_Verify:_ run capability resolution with only a nearby harness checkout and confirm it fails, then install the compatible harness and confirm resolution succeeds; confirm `ki harness uninstall knowledgeislands/ki-agentic-harness` is refused.
+_Verify:_ run capability resolution with only a nearby harness checkout and confirm it fails, then install the compatible harness and confirm resolution succeeds; confirm `ki harness uninstall knowledgeislands/ki-agent-backpack` is refused.
 
-_Evidence:_ run capability resolution with only a nearby harness checkout and confirm it fails, then install the compatible harness and confirm resolution succeeds; confirm `ki harness uninstall knowledgeislands/ki-agentic-harness` is refused.
+_Evidence:_ run capability resolution with only a nearby harness checkout and confirm it fails, then install the compatible harness and confirm resolution succeeds; confirm `ki harness uninstall knowledgeislands/ki-agent-backpack` is refused.
 
 ### BOOT-014 — User and repository activation remain separate
 

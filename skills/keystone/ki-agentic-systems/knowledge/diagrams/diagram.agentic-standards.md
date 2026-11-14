@@ -4,7 +4,7 @@ title: Agentic standards and channels
 type: resource
 status: proposal
 territory: knowledge-islands
-island: ki-agentic-harness
+island: ki-agent-backpack
 origin: Cairn summit change 22, DIAGRAM-RESOURCE (12 November 2026); its channels and agent kinds wait on CARD-CHANNEL and AGENT-KINDS
 links:
   industry.agent-host:
@@ -31,7 +31,7 @@ The specification cards it points to, [MCP][spec.mcp], [ACP][spec.acp], [AHP][sp
 [spec.acp]: ../specs/acp/spec.acp.md
 [spec.ahp]: ../specs/ahp/spec.ahp.md
 [spec.a2a]: ../specs/a2a/spec.a2a.md
-[svg]: https://github.com/knowledgeislands/ki-agentic-harness/blob/main/docs/diagrams/agentic-standards.svg
-[html]: https://github.com/knowledgeislands/ki-agentic-harness/blob/main/docs/diagrams/agentic-standards.html
-[src]: https://github.com/knowledgeislands/ki-agentic-harness/blob/main/docs/diagrams/agentic-standards.architecture.json
-[manifest]: https://github.com/knowledgeislands/ki-agentic-harness/blob/main/docs/diagrams/diagrams.toml
+[svg]: https://github.com/knowledgeislands/ki-agent-backpack/blob/main/docs/diagrams/agentic-standards.svg
+[html]: https://github.com/knowledgeislands/ki-agent-backpack/blob/main/docs/diagrams/agentic-standards.html
+[src]: https://github.com/knowledgeislands/ki-agent-backpack/blob/main/docs/diagrams/agentic-standards.architecture.json
+[manifest]: https://github.com/knowledgeislands/ki-agent-backpack/blob/main/docs/diagrams/diagrams.toml

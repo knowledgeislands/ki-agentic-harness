@@ -38,7 +38,7 @@ Use `ki-subagents` to establish the semantic definition first. Then author the M
 
 ### Mode REFRESH — re-anchor best practice
 
-**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from an installed copy, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-repo-kb`'s IMPROVE mode instead.
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agent-backpack`. Invoked from an installed copy, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-repo-kb`'s IMPROVE mode instead.
 
 Keep only Claude Code source-format claims current. The portable parent and Codex adapter own their own sources.
 

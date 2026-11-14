@@ -38,7 +38,7 @@ Explain digest versus full-thread coverage, the front-matter end point, linked s
 
 ### Mode REFRESH
 
-Run only in the canonical `ki-agentic-harness`; from an installed copy, stop and redirect there. Re-read [the sources](references/sources.md), inspect only official capability documentation and privacy-minimised schemas, update the standard and rubric when supported behaviour changes, and record the review date.
+Run only in the canonical `ki-agent-backpack`; from an installed copy, stop and redirect there. Re-read [the sources](references/sources.md), inspect only official capability documentation and privacy-minimised schemas, update the standard and rubric when supported behaviour changes, and record the review date.
 
 ## Off-ramps
 

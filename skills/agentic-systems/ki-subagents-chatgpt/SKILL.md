@@ -40,7 +40,7 @@ Explain the native TOML source boundary and host-unavailable status without publ
 
 ### Mode REFRESH
 
-**Precondition:** REFRESH writes only in the canonical `ki-agentic-harness` source checkout. From an installed copy, stop and route the source refresh to that Harness.
+**Precondition:** REFRESH writes only in the canonical `ki-agent-backpack` source checkout. From an installed copy, stop and route the source refresh to that Harness.
 
 Re-read the official Codex Subagents documentation and refresh this adapter's native fields only. Keep portable semantics in the parent.
 

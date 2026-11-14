@@ -4,7 +4,7 @@ title: Progressive disclosure, in the Agent Skills specification
 type: specification
 status: agreed
 territory: knowledge-islands
-island: ki-agentic-harness
+island: ki-agent-backpack
 origin: Cairn summit change 22, CARD-SKILL a), and change 06, KG-GRAIN (12 November 2026)
 links:
   spec.agent-skills:

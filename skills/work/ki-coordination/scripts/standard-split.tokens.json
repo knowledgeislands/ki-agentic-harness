@@ -381,7 +381,7 @@
     "ki work status",
     "ki work status --format json",
     "ki-work accept",
-    "ki-agentic-harness",
+    "ki-agent-backpack",
     "ki-coordination",
     "ki-coordinator",
     "ki-delegation",

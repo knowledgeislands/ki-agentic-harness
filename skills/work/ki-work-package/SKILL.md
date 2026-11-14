@@ -64,7 +64,7 @@ Explain the package's shape, its entry file and change documents, sub-packages, 
 
 ### Mode REFRESH
 
-REFRESH writes only in `ki-agentic-harness`. When invoked from an installed copy, stop and name the Harness as the place to run it. Read [the sources](references/sources.md), re-check the portable work-state boundary and current runtime capabilities, propose any standard change, then update the source review evidence only after the review occurs.
+REFRESH writes only in `ki-agent-backpack`. When invoked from an installed copy, stop and name the Harness as the place to run it. Read [the sources](references/sources.md), re-check the portable work-state boundary and current runtime capabilities, propose any standard change, then update the source review evidence only after the review occurs.
 
 ### Mode REMOVE
 

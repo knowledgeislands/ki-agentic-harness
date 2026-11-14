@@ -145,7 +145,7 @@ A repository names the harnesses that provide its skills once, in `[repo]`, and 
 ```toml
 [repo]
 harnesses = [
-  "knowledgeislands/ki-agentic-harness",
+  "knowledgeislands/ki-agent-backpack",
 ]
 
 [skills.ki-repo]

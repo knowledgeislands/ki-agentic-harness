@@ -24,7 +24,7 @@ const KI_LINK_1: RubricItem<KiLinkRubricContext> = {
   code: 'KI-LINK-1',
   title: 'internal links use standard relative Markdown links',
   description: 'Internal links are **standard relative markdown links**, not wikilinks.',
-  sources: ['ki-agentic-harness README'],
+  sources: ['ki-agent-backpack README'],
   mechanical: {
     level: 'FAIL',
     remediation: {
@@ -46,7 +46,7 @@ const KI_LINK_2: RubricItem<KiLinkRubricContext> = {
   code: 'KI-LINK-2',
   title: 'relative link targets resolve',
   description: 'Links resolve — every relative target exists (angle-bracket form for paths with spaces).',
-  sources: ['ki-agentic-harness README'],
+  sources: ['ki-agent-backpack README'],
   mechanical: {
     level: 'FAIL',
     remediation: {
@@ -71,7 +71,7 @@ const KI_LINK_3: RubricItem<KiLinkRubricContext> = {
   code: 'KI-LINK-3',
   title: 'other skills are referred to by name',
   description: 'Other skills are referenced by `name`, never by file path.',
-  sources: ['ki-agentic-harness README'],
+  sources: ['ki-agent-backpack README'],
   judgment: judgment('Are other skills referred to by their public name rather than by a file path?')
 }
 
@@ -79,7 +79,7 @@ const KI_LINK_4: RubricItem<KiLinkRubricContext> = {
   code: 'KI-LINK-4',
   title: 'the house toolchain passes',
   description: 'The house toolchain passes: Biome (TS/JSON), rumdl (markdown).',
-  sources: ['ki-agentic-harness README'],
+  sources: ['ki-agent-backpack README'],
   judgment: judgment('Does the repository pass its configured Biome and rumdl toolchain?')
 }
 

@@ -227,7 +227,7 @@ The state lives in `_index.md`: its state fields, at most five Now lines, Held a
 | `received` | optional | UTC time of the supervisor's receive, or `null` |
 | `beat` | optional | UTC time of the last heartbeat while with a worker, or `null` |
 | `mark` | optional | UTC time of the last mark |
-| `method_read` | optional | the short ki-agentic-harness revision whose `ki-coordination` and `ki-work-package` guidance the worker last read, or `null` |
+| `method_read` | optional | the short ki-agent-backpack revision whose `ki-coordination` and `ki-work-package` guidance the worker last read, or `null` |
 | `listening_enabled` | optional | `true` when the thread has the listening capability, by the owner's express word or an agreed role; absent reads `false` |
 | `listening_status` | required while `listening_enabled` is `true`, else absent | `on` while the inbox watcher is armed, `off` otherwise |
 | `syncing_enabled` | optional | `true` when the thread is its host's sync thread; absent reads `false`; `true` requires `listening_enabled: true` |

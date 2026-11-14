@@ -27,7 +27,7 @@ Treat user messages arriving during work as steering unless they expressly repla
 bun skills/keystone/ki-work/scripts/recap-grounding.ts --json --runtime detect
 ```
 
-(From another repo, use the harness-absolute path, per the "Audit script paths" convention: `bun /path/to/ki-agentic-harness/skills/keystone/ki-work/scripts/recap-grounding.ts --json`.) Run it separately with each repository path touched by this thread, not only the invocation's working directory. Record which repository each result grounds.
+(From another repo, use the harness-absolute path, per the "Audit script paths" convention: `bun /path/to/ki-agent-backpack/skills/keystone/ki-work/scripts/recap-grounding.ts --json`.) Run it separately with each repository path touched by this thread, not only the invocation's working directory. Record which repository each result grounds.
 
 When the runtime does not identify the live session and more than one eligible Claude or Codex session is active for the repository, choose the session explicitly instead of relying on newest modification time:
 

@@ -38,7 +38,7 @@ Explain window splitting, folder routing and flags, one capture per UUID, the Ac
 
 ### Mode REFRESH
 
-Run only in the canonical `ki-agentic-harness`; from an installed copy, stop and redirect there. Read [sources](references/sources.md), re-fetch the official Granola MCP documentation, inspect a separately approved read-only live schema, and update the standard, rubric and review date together. Retain no meeting content or credentials.
+Run only in the canonical `ki-agent-backpack`; from an installed copy, stop and redirect there. Read [sources](references/sources.md), re-fetch the official Granola MCP documentation, inspect a separately approved read-only live schema, and update the standard, rubric and review date together. Retain no meeting content or credentials.
 
 ## Off-ramps
 

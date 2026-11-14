@@ -16,7 +16,7 @@ argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 
 You are applying the **chezmoi dotfiles-management standard** — house conventions for structuring and operating a [chezmoi](https://www.chezmoi.io/) source-state repository, on top of what chezmoi itself already enforces. Only a physical `[skills.ki-repo-dotfiles-chezmoi]` declaration selects this optional standard. A **chezmoi-managed repo** can be detected by the presence of `.chezmoiroot`, `.chezmoi.toml.tmpl`, a `.chezmoidata/` directory, or any `dot_*`/`private_*`/`executable_*`-prefixed file at the tree root, but detection is coverage evidence for `ki-repo`, not a local audit result. The rationale lives in [the standard](references/standards-chezmoi-dotfiles.md); the line-by-line checkable criteria are in [the generated rubric](references/rubric.md); where the standard's claims come from is in [the sources list](references/sources.md).
 
-This is a **standard, repo- and application-agnostic governance skill** — it hard-codes no specific dotfiles content and assumes no particular set of managed applications. It names general-purpose format editors where a reusable default is justified; a repo's exact scripts and package choices remain local. Install it in any chezmoi source repo. How it sits alongside the other skills in this repository is documented once in the `ki-agentic-harness` `README.md`, not repeated here.
+This is a **standard, repo- and application-agnostic governance skill** — it hard-codes no specific dotfiles content and assumes no particular set of managed applications. It names general-purpose format editors where a reusable default is justified; a repo's exact scripts and package choices remain local. Install it in any chezmoi source repo. How it sits alongside the other skills in this repository is documented once in the `ki-agent-backpack` `README.md`, not repeated here.
 
 **Origin note:** this standard was reverse-engineered from a single real chezmoi repo (a personal dotfiles source tree audited 2026-07-12) — it is an n=1 case study, not a corpus of many repos the way `ki-repo`'s standard was. Treat the mechanical criteria as solid (they check chezmoi's own documented tool behavior) but the judgment criteria as provisional until more repos have been audited against this skill — see [the sources list](references/sources.md) for the honest scoping.
 
@@ -61,7 +61,7 @@ Run `ki repo educate --skill ki-repo-dotfiles-chezmoi --repo <target>` to explai
 
 ### Mode REFRESH — re-anchor the standard to its sources
 
-**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from an installed copy, it stops here and names the harness as where to run it.
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agent-backpack`. Invoked from an installed copy, it stops here and names the harness as where to run it.
 
 chezmoi's own documented behavior (naming semantics, `.chezmoiignore`, `run_onchange_` scripts, health-check commands) and the selected format editors' documented APIs are the authoritative tool-behavior layer; the house-convention layer on top of them (shell-loader pattern, the two app-mutated-config patterns, editor-selection and verification policy, the templating pattern) is this skill's own judgment and should be re-anchored as tools change and more repos are audited against it. Run on the declared cadence (see [the sources list](references/sources.md)), or when asked "is the chezmoi standard current".
 

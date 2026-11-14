@@ -50,7 +50,7 @@ Run `ki repo educate --skill ki-trades --repo <repo>` to render the concern and 
 
 ### Mode REFRESH
 
-REFRESH writes only this skill's canonical files in `ki-agentic-harness`. When invoked from an installed copy, stop and redirect to the harness. Reconcile the standard, structured catalogue, generated rubric, sources, and GDR-KI-HARNESS-013 when the contract changes; confirm before changing the authority or lifecycle model.
+REFRESH writes only this skill's canonical files in `ki-agent-backpack`. When invoked from an installed copy, stop and redirect to the harness. Reconcile the standard, structured catalogue, generated rubric, sources, and GDR-KI-HARNESS-013 when the contract changes; confirm before changing the authority or lifecycle model.
 
 While the hold notice above stands, REFRESH reports that the hold is reviewed when the Trades revamp Project opens or by the notice's date, whichever comes first; `HOLD-1` warns in AUDIT once that date has passed. At the review the owner either re-enables trades, removing the notice and bringing this skill up to date with the Trades revamp's trade policy, or renews the hold by changing the date in the notice, which is the only place it is written.
 

@@ -261,7 +261,7 @@ const canonical = (target: string, shape: RepositoryShape | undefined): readonly
     const line = firstDifference(text, want)
     return {
       status: 'VIOLATION',
-      message: `${hook} differs from the canonical ${shape} ${variant} hook from line ${line}; copy ${hookAsset(owner, variant, name)} from the ki-agentic-harness byte-exact`,
+      message: `${hook} differs from the canonical ${shape} ${variant} hook from line ${line}; copy ${hookAsset(owner, variant, name)} from the ki-agent-backpack byte-exact`,
       subject: hook
     }
   })

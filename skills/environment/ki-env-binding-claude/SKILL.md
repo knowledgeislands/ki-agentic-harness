@@ -34,7 +34,7 @@ Explain the Claude-only surface contract without creating a second MCP source.
 
 ### Mode REFRESH
 
-Refresh only in `ki-agentic-harness` when Claude's JSON or web convention contracts change. From an installed copy, stop and redirect to the canonical harness.
+Refresh only in `ki-agent-backpack` when Claude's JSON or web convention contracts change. From an installed copy, stop and redirect to the canonical harness.
 
 ### Mode HELP
 

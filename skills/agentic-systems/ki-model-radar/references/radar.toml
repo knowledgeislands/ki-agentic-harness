@@ -6,7 +6,7 @@ reviewed_on = "2026-10-18"
 [evidence.local-model-radar-roadmap]
 id = "local-model-radar-roadmap"
 title = "KI-HARNESS-REV-003 initial model and route ownership"
-url = "https://github.com/knowledgeislands/ki-agentic-harness/blob/dd45807722a06cf3e54686f4eaa38c1149836e3a/docs/roadmap/KI-HARNESS-REV-003-establish-model-radar.md"
+url = "https://github.com/knowledgeislands/ki-agent-backpack/blob/dd45807722a06cf3e54686f4eaa38c1149836e3a/docs/roadmap/KI-HARNESS-REV-003-establish-model-radar.md"
 unit = "model-agent"
 independence = "local"
 reviewed_on = "2026-10-18"
@@ -15,7 +15,7 @@ notes = "Local owner evidence for the 2026-09-26 defaults, available higher-tier
 [evidence.local-default-route-use]
 id = "local-default-route-use"
 title = "Owner decision adopting the 2026-10-06 default routes"
-url = "https://github.com/knowledgeislands/ki-agentic-harness/commit/709f49fec523f596d1b388391bff6aed39ac5198"
+url = "https://github.com/knowledgeislands/ki-agent-backpack/commit/709f49fec523f596d1b388391bff6aed39ac5198"
 unit = "model-agent"
 independence = "local"
 reviewed_on = "2026-10-18"

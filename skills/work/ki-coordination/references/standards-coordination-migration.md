@@ -38,7 +38,7 @@ This file holds temporary adjustments to [the coordinating-work standard](standa
 
 ## Thread model
 
-The model replaced the thread model of 13 to 17 October. Kris agreed it on 18 October and launched its migration the same day; the harness half is [KI-HARNESS-GOV-210 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/08468196/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md). The old words map to the new:
+The model replaced the thread model of 13 to 17 October. Kris agreed it on 18 October and launched its migration the same day; the harness half is [KI-HARNESS-GOV-210 (pruned)](https://github.com/knowledgeislands/ki-agent-backpack/blob/08468196/docs/roadmap/KI-HARNESS-GOV-210-work-model-write-in.md). The old words map to the new:
 
 | Thread model | Work model |
 | --- | --- |

@@ -22,7 +22,7 @@ const KI_SHAPE_1: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-1',
   title: 'standard skills resolve base bindings at runtime',
   description: 'A **standard** KI skill resolves base bindings at runtime and hard-codes **no single base**.',
-  sources: ['ki-agentic-harness README', '`ki-repo-kb`'],
+  sources: ['ki-agent-backpack README', '`ki-repo-kb`'],
   judgment: judgment('Does this standard skill resolve base bindings at runtime without hard-coding one base?')
 }
 
@@ -31,7 +31,7 @@ const KI_SHAPE_2: RubricItem<KiShapeRubricContext> = {
   title: 'skills compose or optionally augment rather than extend',
   description:
     '**Composition and optional augmentation are the only dependent inter-skill relationships — the base-coupled extension pattern is retired.** Formal composition means selecting one skill necessarily selects and runs another governance capability before adding its delta; declare it in `ki-depends-on:`. An optional augmentation is declared in `ki-optional-depends-on:` and applies only when the named capability is active in the same scope; it never makes that capability mandatory or claims composition. List order is not semantic. Separately coverage-detected standards are audited alongside, off-ramps are routing, and `ki-shared-dependencies:` is packaging — none is composition. What a base needs differently is **declared, not forked**: data in the repo\'s own `.ki.toml` table (read validate-down), prose in its `CLAUDE.md` — never a `<base>-kb`-style skill that takes the shared modes by name. _Delegation between two standards (kb → streams) is composition at sub-scope and is declared by the delegating parent._ The linter flags **endorsement of the retired pattern** (telling a base to ship/"prefer" an extension skill, or that a skill "delegates the modes back" / "extends this one") as a mechanical heuristic; the **[J]** gate is that every claimed composition has the matching dependency edge and no adjacent relationship is mislabeled as composition.',
-  sources: ['ki-agentic-harness README', '`ki-engineering`'],
+  sources: ['ki-agent-backpack README', '`ki-engineering`'],
   mechanical: {
     level: 'WARN',
     remediation: {
@@ -66,7 +66,7 @@ const KI_SHAPE_3: RubricItem<KiShapeRubricContext> = {
   title: 'the skill declares its kind',
   description:
     'Every KI skill declares its **kind** in exact frontmatter as `ki-kind: governance`, `ki-kind: process` or `ki-kind: knowledge`; a directory and prose never establish kind (ADR-KI-HARNESS-SKILLS-006). A **governance skill** holds a house standard and exposes the four universal acting modes plus the required HELP entry point (KI-SHAPE-5, KI-SHAPE-11). A **process skill** drives an action or lifecycle rather than holding a standard: it is lightweight, may bundle a helper `scripts/` and a `references/` procedure, and is exempt from universal governance modes — its mode count follows its own lifecycle and it exposes HELP only optionally. A **knowledge skill** only equips a session with a body of knowledge, held as a knowledge graph in its `knowledge/`: it audits and conforms nothing, publishes no rubric, and its modes are EDUCATE and REFRESH with HELP (KNOWLEDGE-KIND). Every kind uses the closed Knowledge Islands reference vocabulary (KI-SHAPE-6) and is dual-invocable (`/<name>` and model-triggered).',
-  sources: ['ki-agentic-harness README', 'ADR-KI-HARNESS-SKILLS-006'],
+  sources: ['ki-agent-backpack README', 'ADR-KI-HARNESS-SKILLS-006'],
   mechanical: {
     level: 'FAIL',
     remediation: {
@@ -109,7 +109,7 @@ const KI_SHAPE_5: RubricItem<KiShapeRubricContext> = {
   title: 'governance skills expose universal modes',
   description:
     "A **governance skill** (one that holds a standard) exposes the universal modes **AUDIT** + **CONFORM** + **EDUCATE** + **REFRESH**. AUDIT and CONFORM run through the skill's hosted rubric; EDUCATE teaches or creates the governed artifact from that standard; REFRESH re-anchors the standard to its sources. Further modes (`OPTIMISE` to push a compliant artifact from the floor toward excellent, and operational modes like kb's note-ops) are skill-specific. Modes are named, not lettered, and ordered alphabetically in the body and `argument-hint`.",
-  sources: ['ki-agentic-harness README'],
+  sources: ['ki-agent-backpack README'],
   judgment: judgment('Does this governance skill expose the universal modes with appropriate additional modes only?')
 }
 
@@ -118,7 +118,7 @@ const KI_SHAPE_6: RubricItem<KiShapeRubricContext> = {
   title: 'Knowledge Islands skills use the closed reference vocabulary',
   description:
     "_Closed reference vocabulary — Knowledge Islands skills only._ Every top-level Markdown reference is `standard-<topic>.md` (or the older `standards-<topic>.md` until renamed), generated `rubric.md`, `sources.md`, optional `exemplars.md`, one-mode-only `mode-<verb>.md`, or a `<topic>-proposal.md` awaiting decision; a skill includes only the classes it needs. Normative formats, process doctrine, and shared mode contracts are standards, following the `ki-authoring` standard format; `sources.md` follows its sources format. A skill that holds a knowledge graph keeps it in `knowledge/` at the skill's top level, never in `references/`: the graph's root definition `knowledge/_graph.md` and its cards, each named `<id>.md` with its front-matter `id` equal to that name, in a folder for each subgraph or flat where the graph has none, under the `ki-knowledge-graph` standard; `knowledge/` holds nothing else, and a knowledge skill always holds a graph. Combined mode names, bare `standards.md`, `<topic>-standards.md`, nested references, and ad hoc guide, format, or contract filenames are retired. Templates and reusable output material live in `assets/`. A skill tracking a moving external spec keeps a current-state `## Last review` block in `sources.md`. Skills outside the Knowledge Islands set are exempt.",
-  sources: ['ki-agentic-harness README', 'KNOWLEDGE-KIND', 'KNOWLEDGE-FOLDER', 'GRAPH-FOLDERS'],
+  sources: ['ki-agent-backpack README', 'KNOWLEDGE-KIND', 'KNOWLEDGE-FOLDER', 'GRAPH-FOLDERS'],
   mechanical: {
     level: 'FAIL',
     remediation: {
@@ -378,7 +378,7 @@ const KI_SHAPE_14: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-14',
   title: 'REFRESH states its ownership precondition',
   description:
-    "_REFRESH states its ownership precondition._ REFRESH's write target is normally the skill's own canonical files under `skills/<name>/` in `ki-agentic-harness` — or in a compatible source Harness that declares `ki-repo-backpack` and its canonical repository identity. A governance skill's `### Mode REFRESH` section (or, per REF-5, its `references/mode-refresh.md`) must name that exact source owner as the only place it writes, and instruct the agent to stop and redirect when invoked from an installed copy (to the harness, or — for a pattern recurring across bases — to `ki-repo-kb`'s IMPROVE mode). The one committed repository-local source at `.agents/skills/ki-self/` instead names that local source and stops to promote reusable rules to their shared owner. Missing either half **WARNs**. Process skills (KI-SHAPE-3) are exempt; a skill with no REFRESH section at all is already caught by KI-SHAPE-12.",
+    "_REFRESH states its ownership precondition._ REFRESH's write target is normally the skill's own canonical files under `skills/<name>/` in `ki-agent-backpack` — or in a compatible source Harness that declares `ki-repo-backpack` and its canonical repository identity. A governance skill's `### Mode REFRESH` section (or, per REF-5, its `references/mode-refresh.md`) must name that exact source owner as the only place it writes, and instruct the agent to stop and redirect when invoked from an installed copy (to the harness, or — for a pattern recurring across bases — to `ki-repo-kb`'s IMPROVE mode). The one committed repository-local source at `.agents/skills/ki-self/` instead names that local source and stops to promote reusable rules to their shared owner. Missing either half **WARNs**. Process skills (KI-SHAPE-3) are exempt; a skill with no REFRESH section at all is already caught by KI-SHAPE-12.",
   sources: ['ADR-KI-HARNESS-SKILLS-001', 'ADR-KI-HARNESS-SKILLS-006'],
   mechanical: {
     level: 'WARN',
@@ -392,7 +392,7 @@ const KI_SHAPE_14: RubricItem<KiShapeRubricContext> = {
       run: ({ skill }) => {
         if (!skill?.governanceSkill || !skill.refreshText)
           return [{ status: 'NOT_APPLICABLE', message: 'the target has no governance REFRESH procedure to inspect' }]
-        const owner = skill.sourceHarnessName ?? 'ki-agentic-harness'
+        const owner = skill.sourceHarnessName ?? 'ki-agent-backpack'
         const ownerPattern = new RegExp(
           `(?:^|[^a-z0-9-])${owner.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?=$|[^a-z0-9-])`,
           'i'

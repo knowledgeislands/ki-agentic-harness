@@ -62,7 +62,7 @@ Declare in the base's `.ki.toml` `[skills.ki-repo-kb-activities]` table:
 ```toml
 [skills.ki-repo-kb-activities]
 # Path to a harness root (absolute or relative to the base). Used to resolve skill names.
-# harness = "../ki-agentic-harness"
+# harness = "../ki-agent-backpack"
 #
 # Folder holding activity notes, relative to the base (default: Admin/Operations/Activities).
 # activities_dir = "Admin/Operations/Activities"

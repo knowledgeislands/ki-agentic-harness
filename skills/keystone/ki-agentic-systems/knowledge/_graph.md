@@ -4,7 +4,7 @@ title: The vocabulary of agentic systems
 type: graph
 status: agreed
 territory: knowledge-islands
-island: ki-agentic-harness
+island: ki-agent-backpack
 origin: Cairn summit change 06, KG-ROOT, ROOT-FORM a) and KG-SUBGRAPHS, and change 22, SPEC-CARDS (12 November 2026)
 ---
 
@@ -52,7 +52,7 @@ A predicate reads from the card that holds it to its target. A vendor card whose
 | `type` | The card's type | A card type above | Every card |
 | `status` | Whether the card is adopted | `proposal`, `future-concept` or `agreed` | Every card |
 | `territory` | The territory the knowledge belongs to | `knowledge-islands` | Every card |
-| `island` | The island that owns the knowledge | `ki-agentic-harness` | Every card |
+| `island` | The island that owns the knowledge | `ki-agent-backpack` | Every card |
 | `vendor` | The vendor whose word the card holds | `Anthropic`, `OpenAI`, `Google`, `Microsoft`, `Orca` or `Zed Industries` | `vendor-term`, `vendor-name` |
 | `origin` | The decisions the card was written from, in one line | Text | Every card |
 | `links` | Typed links, keyed by the target card's id | A predicate from the vocabulary above | Optional |

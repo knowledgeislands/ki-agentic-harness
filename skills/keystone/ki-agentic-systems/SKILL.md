@@ -113,6 +113,6 @@ Explain the named term from its industry card: its purpose and definition first,
 
 ### Mode REFRESH
 
-REFRESH writes only in this skill's canonical source in the `ki-agentic-harness` repository; invoked from an installed copy, stop and name the harness as the place to run it.
+REFRESH writes only in this skill's canonical source in the `ki-agent-backpack` repository; invoked from an installed copy, stop and name the harness as the place to run it.
 
 Refreshing is a regular activity (TERMS-REFRESH), because vendors' naming keeps changing. Follow the procedure in [the sources](references/sources.md#1-introduction): re-check each vendor source, see how the industry's terms are moving, keep every vendor card's examples and links current, add a vendor card for a new word and retire one a vendor has dropped, and record the review there. A change to an industry card's definition is not a refresh; it goes back to the change that settles cards.

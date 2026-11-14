@@ -7,16 +7,16 @@
 
 [repo]
 harnesses = [
-  "knowledgeislands/ki-agentic-harness",
+  "knowledgeislands/ki-agent-backpack",
 ]
 
 [skills.ki-repo]
 repo_type = "project"
 primary_shape = "ki-repo-backpack"
-repository = "https://github.com/knowledgeislands/ki-agentic-harness"
-title = "Knowledge Islands Agentic Harness"
+repository = "https://github.com/knowledgeislands/ki-agent-backpack"
+title = "Knowledge Islands Agent Backpack"
 capital = "https://github.com/knowledgeislands/ki-principal"
-description = "Knowledge Islands agentic harness — canonical home for Agent Skills, Agents, Evals, and Hooks across the ecosystem."
+description = "Knowledge Islands agent backpack — canonical home for Agent Skills, Agents, Evals, and Hooks across the ecosystem."
 repo_code = "KI-HARNESS"
 visibility = "public"
 license = "MIT"

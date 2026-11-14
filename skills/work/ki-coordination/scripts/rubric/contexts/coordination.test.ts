@@ -89,7 +89,7 @@ describe('repository identity', () => {
   })
 
   test('a repository naming another capital is not', () => {
-    const root = fixture({ repository: 'ki-agentic-harness', capital: 'ki-principal' })
+    const root = fixture({ repository: 'ki-agent-backpack', capital: 'ki-principal' })
     expect(isCapital(repositoryIdentity(root))).toBe(false)
   })
 
@@ -124,7 +124,7 @@ describe('state-of-play checkpoint', () => {
   })
 
   test('a state-of-play checkpoint outside a Capital is a violation', () => {
-    const root = fixture({ repository: 'ki-agentic-harness', capital: 'ki-principal' })
+    const root = fixture({ repository: 'ki-agent-backpack', capital: 'ki-principal' })
     checkpoint(root, '_state-of-play', { label: 'Master: state-of-play' })
     const [outcome] = context(root).master.outcomes
     expect(outcome?.status).toBe('VIOLATION')
@@ -132,7 +132,7 @@ describe('state-of-play checkpoint', () => {
   })
 
   test('no checkpoints outside a Capital is not applicable', () => {
-    const root = fixture({ repository: 'ki-agentic-harness', capital: 'ki-principal' })
+    const root = fixture({ repository: 'ki-agent-backpack', capital: 'ki-principal' })
     const ctx = context(root)
     expect(statuses(ctx.master.outcomes)).toEqual(['NOT_APPLICABLE'])
     expect(statuses(ctx.labels.outcomes)).toEqual(['NOT_APPLICABLE'])
@@ -196,7 +196,7 @@ describe('coordination thread checkpoints', () => {
   })
 
   test('the registry is not consulted outside a Capital', () => {
-    const root = fixture({ repository: 'ki-agentic-harness', capital: 'ki-principal' })
+    const root = fixture({ repository: 'ki-agent-backpack', capital: 'ki-principal' })
     checkpoint(root, 'knowledge-islands-model.ways-of-working', { label: 'KI Model: ways-of-working' })
     expect(statuses(context(root).labels.outcomes)).toEqual(['WARN'])
   })
@@ -328,7 +328,7 @@ describe('record identifiers in prose', () => {
 
   test('a link outside the checkout whose folder is absent is checked for shape only', () => {
     const findings = reportLinkFindings(
-      '- [KI-TOOL-KI-CLI-123](/Users/nobody/workspaces/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-123-channel.md#goal) and [ADR-KI-HARNESS-010](/Users/nobody/workspaces/ki-agentic-harness/docs/decisions/ADR-KI-HARNESS-010.md) pass;\n- [KI-TOOL-KI-CLI-124](/Users/nobody/workspaces/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-125-other.md), [KI-TOOL-KI-CLI-126](/Users/nobody/workspaces/tools-ki/docs/roadmap/) and [KI-TOOL-KI-CLI-127](/Users/nobody/workspaces/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-1270-x.md) do not.\n',
+      '- [KI-TOOL-KI-CLI-123](/Users/nobody/workspaces/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-123-channel.md#goal) and [ADR-KI-HARNESS-010](/Users/nobody/workspaces/ki-agent-backpack/docs/decisions/ADR-KI-HARNESS-010.md) pass;\n- [KI-TOOL-KI-CLI-124](/Users/nobody/workspaces/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-125-other.md), [KI-TOOL-KI-CLI-126](/Users/nobody/workspaces/tools-ki/docs/roadmap/) and [KI-TOOL-KI-CLI-127](/Users/nobody/workspaces/tools-ki/docs/roadmap/KI-TOOL-KI-CLI-1270-x.md) do not.\n',
       CHECKOUT
     )
     expect(findings).toEqual({
@@ -395,7 +395,7 @@ describe('thread report links', () => {
       root,
       'ways-of-working',
       'pruned',
-      '# Report\n\n- Pruned [KI-HARNESS-GOV-181 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/50dc6a56/docs/roadmap/KI-HARNESS-GOV-181-link-rule.md) and [KI-HARNESS-GOV-185 (pruned)](https://github.com/knowledgeislands/ki-agentic-harness/blob/50dc6a56/docs/roadmap/KI-HARNESS-GOV-185-ki-coordination-extraction.md).\n'
+      '# Report\n\n- Pruned [KI-HARNESS-GOV-181 (pruned)](https://github.com/knowledgeislands/ki-agent-backpack/blob/50dc6a56/docs/roadmap/KI-HARNESS-GOV-181-link-rule.md) and [KI-HARNESS-GOV-185 (pruned)](https://github.com/knowledgeislands/ki-agent-backpack/blob/50dc6a56/docs/roadmap/KI-HARNESS-GOV-185-ki-coordination-extraction.md).\n'
     )
     expect(statuses(context(root).links.outcomes)).toEqual(['PASS'])
     report(
@@ -412,7 +412,7 @@ describe('thread report links', () => {
 
   test('a link to another checkout absent from this machine passes by shape and a misshapen one is a violation', () => {
     const root = fixture({ repository: 'ki-principal', capital: 'ki-principal' })
-    const elsewhere = '/Users/nobody/workspaces/ki-agentic-harness/docs/roadmap'
+    const elsewhere = '/Users/nobody/workspaces/ki-agent-backpack/docs/roadmap'
     report(
       root,
       'ways-of-working',
@@ -605,7 +605,7 @@ describe('work files', () => {
     const titled = fixture(capital)
     work(titled, 'ki', { id: 'ki', level: 'territory', title: 'KI state of play' })
     expect(statuses(context(titled).master.outcomes)).toEqual(['VIOLATION'])
-    const outside = fixture({ repository: 'ki-agentic-harness', capital: 'ki-principal' })
+    const outside = fixture({ repository: 'ki-agent-backpack', capital: 'ki-principal' })
     work(outside, 'ki', { id: 'ki', level: 'territory', title: 'KI > SoP' })
     expect(statuses(context(outside).master.outcomes)).toEqual(['VIOLATION'])
   })
@@ -622,7 +622,7 @@ describe('work files', () => {
     work(titled, 'ki', { id: 'ki', level: 'territory', title: 'KI > SoP' })
     work(titled, 'ki.sop.sites', { id: 'ki.sop.sites', level: 'territory', title: 'KI > SoP (web)', parent: 'ki' })
     expect(statuses(context(titled).master.outcomes)).toEqual(['VIOLATION'])
-    const outside = fixture({ repository: 'ki-agentic-harness', capital: 'ki-principal' })
+    const outside = fixture({ repository: 'ki-agent-backpack', capital: 'ki-principal' })
     work(outside, 'ki.sop.sites', { id: 'ki.sop.sites', level: 'territory', title: 'KI > SoP (sites)', parent: 'ki' })
     expect(statuses(context(outside).master.outcomes)).toEqual(['VIOLATION'])
   })
@@ -780,7 +780,7 @@ describe('work files', () => {
       )
     }
     const root = checkout('ki-principal', 'ki-principal')
-    const sibling = checkout('ki-agentic-harness', 'ki-principal')
+    const sibling = checkout('ki-agent-backpack', 'ki-principal')
     const stranger = checkout('er-principal', 'er-principal')
     const folder = work(root, 'ki.ways-of-working', project())
     for (const name of ['decisions.md', 'state.md', 'messages.md', 'queries.md'])

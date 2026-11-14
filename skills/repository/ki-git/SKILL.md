@@ -59,7 +59,7 @@ Explain the policy boundary, the available guidance modes, and the off-ramps abo
 
 ### Mode REFRESH
 
-**Precondition:** REFRESH writes only to this skill's canonical files in `ki-agentic-harness`. Invoked from an installed copy, stop and name the harness as the place to run it.
+**Precondition:** REFRESH writes only to this skill's canonical files in `ki-agent-backpack`. Invoked from an installed copy, stop and name the harness as the place to run it.
 
 Read [the source list](references/sources.md), re-check the Git and Conventional Commits sources and current Knowledge Islands practice, then propose any change to this skill and its standard.
 

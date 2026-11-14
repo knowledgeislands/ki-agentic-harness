@@ -17,12 +17,12 @@ The tracked sources behind [the compatible harness standard](standards-compatibl
 
 | Tag | Source | Governs | Last reviewed |
 | --- | --- | --- | --- |
-| [AH] | [ki-agentic-harness README][ah-readme] | The KI canonical source-harness implementation § | 2026-09-26 |
+| [AH] | [ki-agent-backpack README][ah-readme] | The KI canonical source-harness implementation § | 2026-09-26 |
 | [CH] | [ADR-KI-HARNESS-012][compatible] | Installed identity, direct payload, capability, host, and activation boundaries | 2026-09-26 |
 | [KR] | `ki-repo` skill | The `.ki.toml` contract and what makes a KI-governed repository | 2026-09-26 |
 | [KS] | `ki-skills` skill | The governed-rubric family, session, and host boundary ‡ | 2026-09-26 |
 | [KE] | `ki-engineering` skill | Development toolchain ownership outside compatible-harness installation semantics | 2026-09-26 |
-| [BD] | Cairn summit change 23, BACKPACK-DEPTH (Kris, 14 November 2026) | This skill's name: `ki-repo-harness` became `ki-repo-backpack`; the harness wording in its standards follows when the backpack words are rolled out | 2026-11-14 |
+| [BD] | Cairn summit change 23, BACKPACK-DEPTH (Kris, 14 November 2026) | This skill's name: `ki-repo-backpack` became `ki-repo-backpack`; the harness wording in its standards follows when the backpack words are rolled out | 2026-11-14 |
 
 § Source layout and shelf practice are inferred from this repository; installed-payload policy comes from [CH].
 

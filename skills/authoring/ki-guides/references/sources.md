@@ -6,7 +6,7 @@ The [Guides standard](standards-guides.md) is Knowledge Islands house policy, de
 
 | Source                                                           | last reviewed |
 | ---------------------------------------------------------------- | ------------- |
-| `ki-agentic-harness` `docs/docs.md` documentation map            | 2026-08-02    |
+| `ki-agent-backpack` `docs/docs.md` documentation map            | 2026-08-02    |
 | GDR-KI-HARNESS-004 — four-doc repository documentation ownership | 2026-08-02    |
 
 ## Last review

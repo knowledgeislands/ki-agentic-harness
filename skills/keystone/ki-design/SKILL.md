@@ -50,4 +50,4 @@ Start a design: write the brief, name the kind and the level it starts at, and r
 
 ### Mode REFRESH
 
-REFRESH writes only in the canonical `ki-agentic-harness` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the standard with the decisions it comes from, then make and verify the smallest correction.
+REFRESH writes only in the canonical `ki-agent-backpack` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the standard with the decisions it comes from, then make and verify the smallest correction.

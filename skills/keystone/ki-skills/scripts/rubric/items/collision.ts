@@ -19,7 +19,7 @@ const COLL_1: RubricItem<CollisionRubricContext> = {
   title: 'quoted trigger phrases are not shared across skills',
   description:
     '_Shared triggers._ Within a set of ≥ 2 skills, no two `description`s declare the **same quoted trigger phrase** (WARN — a shared trigger signals scopes that overlap and need separating).',
-  sources: ['COMMUNITY', 'ki-agentic-harness README'],
+  sources: ['COMMUNITY', 'ki-agent-backpack README'],
   mechanical: {
     level: 'WARN',
     remediation: {
@@ -59,7 +59,7 @@ const COLL_2: RubricItem<CollisionRubricContext> = {
   title: 'adjacent skills have non-overlapping scope and reciprocal off-ramps',
   description:
     "_Non-overlapping scope by design, with a reciprocal off-ramp where adjacency remains._ The first guard is **design**: skills are scoped so they don't compete for the same request, and each `description` is primarily **self-scoped** (what it does, and briefly what it doesn't). Where two skills are nonetheless genuinely adjacent, **each** description names the other as the off-ramp — the reciprocal pattern (`ki-repo-mcp` ↔ `ki-skills`); a one-directional guard is a half-fix. A COLL-1 hit means the scopes overlap and the **design** needs fixing first, before any off-ramp papers over it.",
-  sources: ['standard §15', 'ki-agentic-harness README'],
+  sources: ['standard §15', 'ki-agent-backpack README'],
   judgment: judgment(
     'Do adjacent skills have non-overlapping scopes and reciprocal off-ramps where their requests are genuinely adjacent?'
   )

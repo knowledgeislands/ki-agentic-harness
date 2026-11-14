@@ -18,7 +18,7 @@ Bootstrap installs the verified canonical harness and the core user skills. It d
 From any directory, point `ki` at the physical harness checkout:
 
 ```bash
-ki dev local set /path/to/ki-agentic-harness
+ki dev local set /path/to/ki-agent-backpack
 ki dev local on
 ```
 

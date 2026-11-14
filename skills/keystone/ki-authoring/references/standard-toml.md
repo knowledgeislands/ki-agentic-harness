@@ -96,7 +96,7 @@ In `.ki.toml`, the exact conformance header, skill-root declarations, semantic n
 
 [repo]
 harnesses = [
-  "knowledgeislands/ki-agentic-harness",
+  "knowledgeislands/ki-agent-backpack",
 ]
 ```
 

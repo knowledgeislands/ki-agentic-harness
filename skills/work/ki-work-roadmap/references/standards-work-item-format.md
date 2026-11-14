@@ -213,10 +213,10 @@ An item MAY carry `task_links` in its own frontmatter. This is the only authorit
 task_links:
   github:
     - authority: https://github.com
-      scope: knowledgeislands/ki-agentic-harness
+      scope: knowledgeislands/ki-agent-backpack
       id: I_kwDOexample5
       key: '#5'
-      url: https://github.com/knowledgeislands/ki-agentic-harness/issues/5
+      url: https://github.com/knowledgeislands/ki-agent-backpack/issues/5
       relation: implementation
 ```
 

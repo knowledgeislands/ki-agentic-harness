@@ -1,6 +1,6 @@
 {
-  "name": "@knowledgeislands/ki-agentic-harness",
-  "description": "Knowledge Islands agentic harness — canonical home for Agent Skills, Agents, Evals, and Hooks across the ecosystem.",
+  "name": "@knowledgeislands/ki-agent-backpack",
+  "description": "Knowledge Islands agent backpack — canonical home for Agent Skills, Agents, Evals, and Hooks across the ecosystem.",
   "version": "1.0.0",
   "author": "kris@kris.me.uk",
   "devDependencies": {
@@ -18,7 +18,7 @@
   "engines": {
     "node": ">=22"
   },
-  "homepage": "https://github.com/knowledgeislands/ki-agentic-harness#readme",
+  "homepage": "https://github.com/knowledgeislands/ki-agent-backpack#readme",
   "keywords": [
     "agent-skills",
     "anthropic",
@@ -42,7 +42,7 @@
   "packageManager": "bun@1.4.4",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/knowledgeislands/ki-agentic-harness.git"
+    "url": "git+https://github.com/knowledgeislands/ki-agent-backpack.git"
   },
   "scripts": {
     "clean": "rm -rf node_modules",

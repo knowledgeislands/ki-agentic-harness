@@ -46,7 +46,7 @@ const BASE_FIELDS = (id: string): Record<string, string> => ({
   supervisor: 'supervisor: owner',
   role: 'role: warden',
   created_at: 'created_at: 2026-11-01T10:00:00Z',
-  repositories: 'repositories:\n  - ki-agentic-harness',
+  repositories: 'repositories:\n  - ki-agent-backpack',
   state: 'state: with-worker',
   since: 'since: 2026-11-09T10:00:00Z'
 })
@@ -73,7 +73,7 @@ const entry = ({ id, fields = [], drop = [], body, changes = ['10-pilot.change.m
         '',
         '## Scope',
         '',
-        'In: the pilot. Out: everything else. Works mainly in ki-agentic-harness and may change others.',
+        'In: the pilot. Out: everything else. Works mainly in ki-agent-backpack and may change others.',
         '',
         '## Now',
         '',

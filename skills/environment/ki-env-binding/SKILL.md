@@ -35,7 +35,7 @@ Explain the canonical source and target separation with `ki repo educate --skill
 
 ### Mode REFRESH
 
-Refresh this root only in `ki-agentic-harness` when the portable source/schema or mcporter contract changes. From an installed copy, stop and redirect to the canonical harness. Runtime-specific configuration changes are refreshed by their adapter.
+Refresh this root only in `ki-agent-backpack` when the portable source/schema or mcporter contract changes. From an installed copy, stop and redirect to the canonical harness. Runtime-specific configuration changes are refreshed by their adapter.
 
 ### Mode HELP
 

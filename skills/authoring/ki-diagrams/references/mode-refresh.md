@@ -1,6 +1,6 @@
 # Mode REFRESH - regenerate stale diagrams, or re-anchor the standard
 
-**Precondition:** re-anchoring edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from an installed copy, it stops there and names the harness as where to run it; regenerating an adopting repository's own diagrams is the only REFRESH work done elsewhere.
+**Precondition:** re-anchoring edits this skill's own canonical files, which exist only in `ki-agent-backpack`. Invoked from an installed copy, it stops there and names the harness as where to run it; regenerating an adopting repository's own diagrams is the only REFRESH work done elsewhere.
 
 ## In an adopting repository
 
@@ -11,7 +11,7 @@ REFRESH regenerates diagrams. It needs Archify; without it, stop with the Rig in
 3. Review the rebuilt SVG by eye in both themes before committing it with its source and manifest change.
 4. Re-run AUDIT.
 
-## In `ki-agentic-harness`
+## In `ki-agent-backpack`
 
 1. Re-examine each entry in [sources.md](sources.md): has Archify gained a command-line SVG export, a tree layout or an importer, and has any considered alternative changed enough to revisit the choice?
 2. If Archify ships a command-line SVG export, shrink `scripts/export-svg.ts` to a wrapper or retire it.

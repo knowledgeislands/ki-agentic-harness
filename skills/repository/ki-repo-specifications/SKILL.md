@@ -64,7 +64,7 @@ Explain the skill's purpose, modes, invocation, and boundaries without changing 
 
 ### Mode REFRESH
 
-**Precondition:** REFRESH writes only in `ki-agentic-harness`. When invoked from an installed copy, stop and redirect the work to the Harness source repository.
+**Precondition:** REFRESH writes only in `ki-agent-backpack`. When invoked from an installed copy, stop and redirect the work to the Harness source repository.
 
 1. Read [the source list](references/sources.md) and inspect the live KI Specifications repository.
 2. Promote only stable, repeated structural constraints; leave changing specification-process detail in that repository.

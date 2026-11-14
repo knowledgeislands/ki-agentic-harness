@@ -36,4 +36,4 @@ Explain the explicit Project kind, its mandatory primary shape, how `ki-repo-*` 
 
 ### Mode REFRESH
 
-**Precondition:** REFRESH writes only this canonical skill in `ki-agentic-harness`. From an installed copy, stop and redirect to the Harness. Revisit the standard when a new primary structure, inheritance rule, or mutually exclusive repository classification is introduced.
+**Precondition:** REFRESH writes only this canonical skill in `ki-agent-backpack`. From an installed copy, stop and redirect to the Harness. Revisit the standard when a new primary structure, inheritance rule, or mutually exclusive repository classification is introduced.

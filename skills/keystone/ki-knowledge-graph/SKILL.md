@@ -51,4 +51,4 @@ Dry-run first: list each package, its receiving island and its destination under
 
 ### Mode REFRESH
 
-REFRESH writes only in the canonical `ki-agentic-harness` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the skill's own cards, the knowledge-tending cards and actual practice in the graphs that follow the standard with the standard, then make and verify the smallest correction. When a migration item is done, delete its line, and delete the overlay once it is empty.
+REFRESH writes only in the canonical `ki-agent-backpack` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the skill's own cards, the knowledge-tending cards and actual practice in the graphs that follow the standard with the standard, then make and verify the smallest correction. When a migration item is done, delete its line, and delete the overlay once it is empty.

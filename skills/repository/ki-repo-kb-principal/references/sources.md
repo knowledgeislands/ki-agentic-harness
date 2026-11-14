@@ -5,7 +5,7 @@
 ## Sources
 
 - [Principal standard](standards-principal.md): portable governance, scaffold ownership and receiver authority.
-- [Acquired-packet intake contract](standards-principal.md#acquired-packet-scaffold): the durable scaffold and receiver conformance boundary; the [21 October 2026 accepted delivery](https://github.com/knowledgeislands/ki-agentic-harness/commit/52779419) remains historical evidence, with hosted availability pending an online check.
+- [Acquired-packet intake contract](standards-principal.md#acquired-packet-scaffold): the durable scaffold and receiver conformance boundary; the [21 October 2026 accepted delivery](https://github.com/knowledgeislands/ki-agent-backpack/commit/52779419) remains historical evidence, with hosted availability pending an online check.
 - [Principal audit and conform fixtures](../scripts/rubric/items/index.test.ts): exact-scaffold, unsafe-path and packet-preservation evidence.
 
 ## Acquired scaffold rollout

@@ -6,7 +6,7 @@
     "output": "+/diagrams/skill-area-acquire/skill-area-acquire.html",
     "quality_profile": "showcase",
     "repository": {
-      "url": "https://github.com/knowledgeislands/ki-agentic-harness",
+      "url": "https://github.com/knowledgeislands/ki-agent-backpack",
       "provider": "github",
       "revision": "5c0f2fff379ad1e9e9683e10438a8d50b6025045"
     },

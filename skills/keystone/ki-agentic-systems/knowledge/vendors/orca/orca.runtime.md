@@ -4,7 +4,7 @@ title: Orca runtime (Orca)
 type: vendor-term
 status: agreed
 territory: knowledge-islands
-island: ki-agentic-harness
+island: ki-agent-backpack
 vendor: Orca
 origin: Cairn summit change 22, VENDORS-MORE and CARD-AGENT-HOST a) (12 November 2026)
 links:

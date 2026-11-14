@@ -4,7 +4,7 @@ title: Zed (Zed Industries)
 type: vendor-term
 status: agreed
 territory: knowledge-islands
-island: ki-agentic-harness
+island: ki-agent-backpack
 vendor: Zed Industries
 origin: Cairn summit change 22, VENDORS-MORE (12 November 2026)
 links:

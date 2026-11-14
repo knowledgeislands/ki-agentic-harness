@@ -33,7 +33,7 @@ Keep decisions, specifications, guides, source references, and retained review e
 
 The linked run records inspected collections and revision, coverage gaps, contradictions or an evidenced no-change result, source freshness, preserved reasoning, proposed dispositions, and canonical follow-up owners. It records the successful completion date and full reviewed commit for acceptance to advance the schedule.
 
-The carried-forward date comes from the accepted [decision reconciliation](https://github.com/knowledgeislands/ki-agentic-harness/blob/d3b18f1c9d67a96b58017ffa1675df90e489baf3/docs/roadmap/KI-HARNESS-REV-005-reconcile-decision-records.md). That review covered the narrower decision collection, not all documentation and source material.
+The carried-forward date comes from the accepted [decision reconciliation](https://github.com/knowledgeislands/ki-agent-backpack/blob/d3b18f1c9d67a96b58017ffa1675df90e489baf3/docs/roadmap/KI-HARNESS-REV-005-reconcile-decision-records.md). That review covered the narrower decision collection, not all documentation and source material.
 
 The recorded historical baseline does not resolve in the local Git object database. Commit-volume evidence is therefore unavailable until an accepted run supplies a verified reviewed revision; calendar scheduling remains active. Do not substitute the current HEAD or infer a baseline from the date.
 

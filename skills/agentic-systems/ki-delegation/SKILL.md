@@ -60,7 +60,7 @@ Ask the delegating owner or planner to supply every semantic value; EDUCATE neve
 
 ### Mode REFRESH
 
-**Precondition:** REFRESH writes only this canonical skill under `ki-agentic-harness`.
+**Precondition:** REFRESH writes only this canonical skill under `ki-agent-backpack`.
 
 When invoked from an installed copy, stop and redirect to the harness.
 

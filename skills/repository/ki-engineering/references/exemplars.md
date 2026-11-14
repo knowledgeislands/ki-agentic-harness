@@ -5,7 +5,7 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated patterns from the KI sibling repos that illustrate what the engineering standard looks like in practice. Use these as pattern references when configuring a new repo or auditing an existing one — the goal is to show the standard not as abstract rules but as concrete file contents. The `mcp-*` repos are the primary exemplar set for the compiled-TS profile; `ki-agentic-harness` is the primary exemplar for the scripts-only (no `src/`, no `vitest.config`) profile.
+Curated patterns from the KI sibling repos that illustrate what the engineering standard looks like in practice. Use these as pattern references when configuring a new repo or auditing an existing one — the goal is to show the standard not as abstract rules but as concrete file contents. The `mcp-*` repos are the primary exemplar set for the compiled-TS profile; `ki-agent-backpack` is the primary exemplar for the scripts-only (no `src/`, no `vitest.config`) profile.
 
 For the full upstream pin list and in-house sources, see [sources.md](sources.md).
 
@@ -15,7 +15,7 @@ For the full upstream pin list and in-house sources, see [sources.md](sources.md
 | --- | --- | --- |
 | mcp-gsuite | [github][mcp-gsuite] | Canonical flat-repo compiled-TS profile with env config |
 | mcp-kb-fs | [github][mcp-kb-fs] | Canonical flat-repo compiled-TS profile, no CLI binary |
-| ki-agentic-harness | [github][harness] | Scripts-only profile; runner-neutral standalone self-tests |
+| ki-agent-backpack | [github][harness] | Scripts-only profile; runner-neutral standalone self-tests |
 | Biome configuration reference | [biomejs.dev][biome-config] | The schema the `$schema` pin tracks |
 | TypeScript compiler options | [typescriptlang.org][ts-tsconfig] | The invariants and the compiled-TS profile options |
 
@@ -182,7 +182,7 @@ Verify adoption by running the build twice: the second run reports `FULL TURBO`.
 
 ### Released `ki` pin and its receiver (CI-1)
 
-`ki-agentic-harness` keeps the released `ki` tag in `.github/ki-version`, one line such as `v0.8.4`, and its CI reads that file before installing the release:
+`ki-agent-backpack` keeps the released `ki` tag in `.github/ki-version`, one line such as `v0.8.4`, and its CI reads that file before installing the release:
 
 ```yaml
 - name: Read released KI pin
@@ -307,6 +307,6 @@ The table is a conformance marker — its presence declares "the engineering sta
 
 [mcp-gsuite]: https://github.com/knowledgeislands/mcp-gsuite
 [mcp-kb-fs]: https://github.com/knowledgeislands/mcp-kb-fs
-[harness]: https://github.com/knowledgeislands/ki-agentic-harness
+[harness]: https://github.com/knowledgeislands/ki-agent-backpack
 [biome-config]: https://biomejs.dev/reference/configuration/
 [ts-tsconfig]: https://www.typescriptlang.org/tsconfig

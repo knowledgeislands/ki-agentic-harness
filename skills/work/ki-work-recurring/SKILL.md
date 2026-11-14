@@ -45,7 +45,7 @@ Run `ki repo educate --skill ki-work-recurring --repo <repo>` to explain the loc
 
 ### Mode REFRESH
 
-**Precondition:** REFRESH writes only this skill's canonical files in `ki-agentic-harness`. From an installed copy, stop and redirect to that harness.
+**Precondition:** REFRESH writes only this skill's canonical files in `ki-agent-backpack`. From an installed copy, stop and redirect to that harness.
 
 On the cadence in [the sources](references/sources.md), compare observed template use with [the housekeeping template standard](references/standards-recurring-work.md), the shared `ki-work-roadmap` lifecycle, and the `ki-repo-kb-streams` adapter. Update the source review and explain any normative change in the commit.
 

@@ -4,7 +4,7 @@ title: Agentic terms by example
 type: resource
 status: agreed
 territory: knowledge-islands
-island: ki-agentic-harness
+island: ki-agent-backpack
 origin: Cairn summit change 22, DIAGRAM-RESOURCE (12 November 2026)
 links:
   industry.machine:
@@ -39,7 +39,7 @@ sol's session and the cloud row are illustrative.
 [industry.session]: ../industry/industry.session.md
 [industry.subagent]: ../industry/industry.subagent.md
 [industry.client]: ../industry/industry.client.md
-[svg]: https://github.com/knowledgeislands/ki-agentic-harness/blob/main/docs/diagrams/agentic-terms-by-example.svg
-[html]: https://github.com/knowledgeislands/ki-agentic-harness/blob/main/docs/diagrams/agentic-terms-by-example.html
-[src]: https://github.com/knowledgeislands/ki-agentic-harness/blob/main/docs/diagrams/agentic-terms-by-example.architecture.json
-[manifest]: https://github.com/knowledgeislands/ki-agentic-harness/blob/main/docs/diagrams/diagrams.toml
+[svg]: https://github.com/knowledgeislands/ki-agent-backpack/blob/main/docs/diagrams/agentic-terms-by-example.svg
+[html]: https://github.com/knowledgeislands/ki-agent-backpack/blob/main/docs/diagrams/agentic-terms-by-example.html
+[src]: https://github.com/knowledgeislands/ki-agent-backpack/blob/main/docs/diagrams/agentic-terms-by-example.architecture.json
+[manifest]: https://github.com/knowledgeislands/ki-agent-backpack/blob/main/docs/diagrams/diagrams.toml

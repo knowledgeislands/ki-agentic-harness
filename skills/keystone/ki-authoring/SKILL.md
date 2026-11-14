@@ -19,7 +19,7 @@ argument-hint: 'audit <path> | conform <path> | educate <target> | help | refres
 
 You are applying the **Knowledge Islands authoring conventions** — the foundational authoring and formatting rules every other skill, repository, and base in this work builds on rather than restates. Conventions are a common theme across the skill set; this skill is the one place they live, so the rest can assume them. It is the **single source of truth**: a repository's always-loaded orientation carries a one-line pointer here instead of restating the rules, keeping that standing context small and the detail in one versioned place.
 
-This is a **standard, base-agnostic governance skill** — it hard-codes no single base and assumes no knowledge-base structure. Install it anywhere the conventions should apply. How it sits alongside the other skills in this repository, and where it must not overlap them, is documented once in the ki-agentic-harness `README.md`, not repeated here.
+This is a **standard, base-agnostic governance skill** — it hard-codes no single base and assumes no knowledge-base structure. Install it anywhere the conventions should apply. How it sits alongside the other skills in this repository, and where it must not overlap them, is documented once in the ki-agent-backpack `README.md`, not repeated here.
 
 ## Document formats come first
 
@@ -56,7 +56,7 @@ Run `ki repo educate --skill ki-authoring --repo <repo-path>` to render the regi
 
 ### Mode REFRESH — re-anchor the conventions to their sources
 
-**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from an installed copy, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-repo-kb`'s IMPROVE mode instead.
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agent-backpack`. Invoked from an installed copy, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-repo-kb`'s IMPROVE mode instead.
 
 The house conventions sit on top of external tools and specs (CommonMark, rumdl, the TOML spec), which move. Run on its declared cadence (see `references/sources.md`), or when asked "are the authoring conventions current".
 

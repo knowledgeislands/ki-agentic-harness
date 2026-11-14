@@ -4,7 +4,7 @@ title: Subagent
 type: term
 status: agreed
 territory: knowledge-islands
-island: ki-agentic-harness
+island: ki-agent-backpack
 origin: Cairn summit change 22, CARD-SUBAGENT (12 November 2026)
 links:
   industry.agent:

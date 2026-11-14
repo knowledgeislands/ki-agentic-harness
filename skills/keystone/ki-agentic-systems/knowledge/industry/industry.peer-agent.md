@@ -4,7 +4,7 @@ title: Peer agent
 type: term
 status: proposal
 territory: knowledge-islands
-island: ki-agentic-harness
+island: ki-agent-backpack
 origin: Cairn summit change 22, AGENT-KINDS, drafted as a proposal for the owner's review (12 November 2026)
 links:
   industry.agent:

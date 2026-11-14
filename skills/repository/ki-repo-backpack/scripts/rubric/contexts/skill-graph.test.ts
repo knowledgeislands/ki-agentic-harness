@@ -79,7 +79,7 @@ describe('the committed harness skill diagrams', () => {
         committed = undefined
       }
       const draft = prepareSkillDiagram(diagram, committed, sources, {
-        repositoryUrl: 'https://github.com/knowledgeislands/ki-agentic-harness',
+        repositoryUrl: 'https://github.com/knowledgeislands/ki-agent-backpack',
         revision: '0'.repeat(40),
         stats: readSkillStats(root, sources)
       })

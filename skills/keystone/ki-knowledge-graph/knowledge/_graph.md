@@ -4,7 +4,7 @@ title: The knowledge-graph method's own graph
 type: graph
 status: agreed
 territory: knowledge-islands
-island: ki-agentic-harness
+island: ki-agent-backpack
 origin: Cairn summit change 06, KG-SELF and KG-HOME a) (Kris, 12 November 2026)
 ---
 
@@ -42,7 +42,7 @@ This graph holds the concepts the knowledge-graph standard relies on, so the sta
 | `type` | The thing's type | A card type above | Every card |
 | `status` | Whether the idea is adopted | `proposal`, `future-concept` or `agreed` | Every card |
 | `territory` | The territory the knowledge belongs to | `knowledge-islands` | Every card |
-| `island` | The island that owns the knowledge | `ki-principal`, or `ki-agentic-harness` for this card | Every card |
+| `island` | The island that owns the knowledge | `ki-principal`, or `ki-agent-backpack` for this card | Every card |
 | `pillar` | The Principal's pillar the card was staged under | `Philosophy` | Every card but this one |
 | `attachment` | Whether the card is offered as an attachment point | `proposed` | Optional |
 | `links` | Typed links, keyed by reference label | A predicate from the vocabulary above | Optional |

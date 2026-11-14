@@ -62,7 +62,7 @@ Every governance skill carries the universal four **AUDIT · CONFORM · EDUCATE 
 
 → Read [references/mode-refresh.md](references/mode-refresh.md)
 
-Refresh only in `ki-agentic-harness`; from an installed copy, stop and redirect to the canonical harness.
+Refresh only in `ki-agent-backpack`; from an installed copy, stop and redirect to the canonical harness.
 
 ## Composition
 

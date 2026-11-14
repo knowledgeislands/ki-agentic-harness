@@ -4,7 +4,7 @@ title: Agent harness
 type: term
 status: agreed
 territory: knowledge-islands
-island: ki-agentic-harness
+island: ki-agent-backpack
 origin: Cairn summit change 22, CARDS-AGENT (12 November 2026)
 links:
   industry.model:
@@ -21,7 +21,7 @@ Vendor text often writes "harness" for the harness and the agent together; read 
 
 ## Our conventions
 
-The Knowledge Islands harness, the `ki-agentic-harness` repository of skills, subagents, evals and hooks, is not an agent harness: it runs no loop and calls no model. Under INDUSTRY-FIRST it takes another name, settled after the industry's cards. Until then, write "the KI harness" or name the repository, and never a bare "harness" for it.
+The Knowledge Islands harness, the `ki-agent-backpack` repository of skills, subagents, evals and hooks, is not an agent harness: it runs no loop and calls no model. Under INDUSTRY-FIRST it takes another name, settled after the industry's cards. Until then, write "the KI harness" or name the repository, and never a bare "harness" for it.
 
 ## Next
 

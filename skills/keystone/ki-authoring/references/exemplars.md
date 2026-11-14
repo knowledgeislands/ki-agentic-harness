@@ -82,7 +82,7 @@ Keys are lowercase `snake_case`. Strings are double-quoted. Arrays are multiline
 
 [repo]
 harnesses = [
-  "knowledgeislands/ki-agentic-harness",
+  "knowledgeislands/ki-agent-backpack",
 ]
 
 [skills.ki-repo]

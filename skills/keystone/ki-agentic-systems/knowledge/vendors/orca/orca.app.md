@@ -4,7 +4,7 @@ title: Orca app (Orca)
 type: vendor-name
 status: agreed
 territory: knowledge-islands
-island: ki-agentic-harness
+island: ki-agent-backpack
 vendor: Orca
 origin: Cairn summit change 22, VENDORS-MORE and CARD-CLIENT a) (12 November 2026)
 links:

@@ -238,13 +238,13 @@ describe('KI-SHAPE-21', () => {
         skill: {
           name: 'ki-a',
           dependsOn: '[ki-b]',
-          sourceHarnessName: 'ki-agentic-harness',
+          sourceHarnessName: 'ki-agent-backpack',
           dependencyGraph: graph,
           skillMentions: [
             { name: 'ki-b', line: 3, reliance: true },
             { name: 'ki-c', line: 4, reliance: false },
             { name: 'ki-a', line: 5, reliance: true },
-            { name: 'ki-agentic-harness', line: 6, reliance: true }
+            { name: 'ki-agent-backpack', line: 6, reliance: true }
           ]
         }
       })

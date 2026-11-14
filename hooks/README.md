@@ -16,7 +16,7 @@ Part 2 is the expected behaviour, not shipped behaviour. Its `ki` implementation
 
 ## Payload
 
-`ki` installs every hook below with the harness, under `<installed harness>/hooks/`, which on a Mac is `~/.local/share/ki/harnesses/knowledgeislands/ki-agentic-harness/hooks/`. A user-environment manager registers each from that installed path, never from a source checkout; `payload.test.ts` keeps this table and the shipped executables in step.
+`ki` installs every hook below with the harness, under `<installed harness>/hooks/`, which on a Mac is `~/.local/share/ki/harnesses/knowledgeislands/ki-agent-backpack/hooks/`. A user-environment manager registers each from that installed path, never from a source checkout; `payload.test.ts` keeps this table and the shipped executables in step.
 
 Each hook has its own folder, `hooks/<hook>/`, holding its script `<hook>.sh` and its test `<hook>.test.ts`. The table gives each script's path under `hooks/`. `git-hooks/` holds no runtime hook: it carries the tests of the repository's own `.githooks/` `commit-msg` and `pre-commit` and of the stub a linked worktree runs in their place.
 

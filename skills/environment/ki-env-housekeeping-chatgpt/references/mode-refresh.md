@@ -2,7 +2,7 @@
 
 ## Preconditions
 
-REFRESH writes only the canonical `skills/environment/ki-env-housekeeping-chatgpt/` source in `ki-agentic-harness`. When invoked from an installed copy, stop and redirect to the Harness.
+REFRESH writes only the canonical `skills/environment/ki-env-housekeeping-chatgpt/` source in `ki-agent-backpack`. When invoked from an installed copy, stop and redirect to the Harness.
 
 Run quarterly and whenever the Codex CLI or app-server changes the thread inventory, descendant filtering, deletion, initialization, or maturity contract.
 

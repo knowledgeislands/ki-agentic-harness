@@ -52,7 +52,7 @@ Explain the vendoring contract, the declaration and the release rule using `pack
 
 ### Mode REFRESH
 
-**Precondition:** REFRESH writes only this skill's canonical files in `ki-agentic-harness`. From an installed copy, stop and name the harness as where to run it.
+**Precondition:** REFRESH writes only this skill's canonical files in `ki-agent-backpack`. From an installed copy, stop and name the harness as where to run it.
 
 Re-read the reference repository and [the sources](references/sources.md), propose a diff to the standard and rubric, and confirm before writing. When a second package repository appears, test each rule against it and narrow any that proves Stoa-specific.
 

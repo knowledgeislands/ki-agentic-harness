@@ -19,7 +19,7 @@ argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 
 You are applying the **Knowledge Islands engineering standard** — the shared code-design and software-engineering toolchain every TypeScript/Bun repo in this work builds on. It is the build/test twin of `ki-authoring`: that skill owns _how we write_ (Markdown/TOML style); this one owns _how we structure, build, lint, and test_. `ki-skills` owns the governance-skill enforcement framework that this skill follows.
 
-This is a **standard, base-agnostic governance skill**. It hard-codes no single repo; it applies to any repo carrying a `[skills.ki-engineering]` table in its `.ki.toml`. The active repository set is local supporting evidence, not a normative count: derive it from the current configured collection during REFRESH. How this skill sits alongside the other skills, and where it must not overlap them, is documented once in the ki-agentic-harness `README.md`.
+This is a **standard, base-agnostic governance skill**. It hard-codes no single repo; it applies to any repo carrying a `[skills.ki-engineering]` table in its `.ki.toml`. The active repository set is local supporting evidence, not a normative count: derive it from the current configured collection during REFRESH. How this skill sits alongside the other skills, and where it must not overlap them, is documented once in the ki-agent-backpack `README.md`.
 
 The boundary ruleset is selected conditionally by DESIGN-2: prefer `.dependency-cruiser.ts` when present, otherwise `.dependency-cruiser.mjs`. These are alternatives, so neither filename is an unconditional `requires:` entry. The selected path must remain contained in the repository and load under native Node.
 
@@ -78,7 +78,7 @@ Run `ki repo educate --skill ki-engineering` to inspect the complete criterion c
 
 ### Mode REFRESH — re-anchor the toolchain pins to their sources
 
-**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from an installed copy, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-repo-kb`'s IMPROVE mode instead.
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agent-backpack`. Invoked from an installed copy, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-repo-kb`'s IMPROVE mode instead.
 
 The standard pins volatile versions (Bun, Node, Biome, TypeScript, vitest, syncpack, rumdl, dependency-cruiser). Run on its declared cadence (see `references/sources.md`), or when asked "are the engineering standards current".
 

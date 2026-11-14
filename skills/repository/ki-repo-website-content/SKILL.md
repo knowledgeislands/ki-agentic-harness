@@ -21,7 +21,7 @@ The keyless content table covers every core-selected site. A named multi-site re
 
 You are applying the **Knowledge Islands content website standard** — the shared way every static website in this work is built: **Eleventy 3, Nunjucks and Markdown; TypeScript run natively on Bun; Tailwind 4 config-less with design tokens**, compiling to a **portable `dist/`**. A new site is scaffolded to it; an existing one is audited and conformed against it. This skill carries that standard and the procedure.
 
-This is a **base-agnostic governance skill**. It hard-codes no single repo; it applies to any repo carrying a `[skills.ki-repo-website-content]` table in its `.ki.toml`. How it sits beside the other skills, and where it must not overlap them, is documented once in the ki-agentic-harness `README.md`.
+This is a **base-agnostic governance skill**. It hard-codes no single repo; it applies to any repo carrying a `[skills.ki-repo-website-content]` table in its `.ki.toml`. How it sits beside the other skills, and where it must not overlap them, is documented once in the ki-agent-backpack `README.md`.
 
 `ki-repo` owns that repository declaration. Detected Eleventy files are coverage evidence only; hosted conform never infers or adds the opt-in.
 
@@ -97,7 +97,7 @@ The four procedures remain on demand because each coordinates work outside the h
 
 → Read [references/mode-refresh.md](references/mode-refresh.md)
 
-REFRESH writes only in `ki-agentic-harness`; when invoked from an installed copy, stop and redirect the work to the harness.
+REFRESH writes only in `ki-agent-backpack`; when invoked from an installed copy, stop and redirect the work to the harness.
 
 ## Boundaries (out of scope, with their homes)
 

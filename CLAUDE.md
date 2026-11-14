@@ -1,4 +1,4 @@
-# CLAUDE.md — ki-agentic-harness
+# CLAUDE.md — ki-agent-backpack
 
 @AGENTS.md
 

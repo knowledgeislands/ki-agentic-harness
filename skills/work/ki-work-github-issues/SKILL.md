@@ -41,4 +41,4 @@ Explain the configuration, lifecycle metadata mapping, mutable-locator migration
 
 ### Mode REFRESH
 
-**Precondition:** REFRESH writes only this canonical skill in `ki-agentic-harness`. From an installed copy, stop and redirect to the Harness. Re-fetch every primary source in [the source record](references/sources.md) when GitHub changes Issue identity, transfer, fields, hierarchy, dependency, closure, permissions, or API semantics, or when the common lifecycle gains a state that cannot be mapped without ambiguity.
+**Precondition:** REFRESH writes only this canonical skill in `ki-agent-backpack`. From an installed copy, stop and redirect to the Harness. Re-fetch every primary source in [the source record](references/sources.md) when GitHub changes Issue identity, transfer, fields, hierarchy, dependency, closure, permissions, or API semantics, or when the common lifecycle gains a state that cannot be mapped without ambiguity.

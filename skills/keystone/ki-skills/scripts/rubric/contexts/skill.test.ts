@@ -176,7 +176,7 @@ describe('repository-local ki-self source', () => {
 })
 
 describe('compatible Harness refresh ownership', () => {
-  test.each(['ki-agentic-harness', 'hnr-agentic-harness'])(
+  test.each(['ki-agent-backpack', 'hnr-agent-backpack'])(
     'accepts a declared source Harness naming %s as its configured repository identity',
     (owner) => {
       const result = refreshOutcomes(sourceSkill(owner))
@@ -189,22 +189,22 @@ describe('compatible Harness refresh ownership', () => {
   )
 
   test('rejects an unconfigured, malformed, or wrongly named compatible source owner', () => {
-    const undeclared = refreshOutcomes(sourceSkill('hnr-agentic-harness', { declaresHarness: false }))
-    const malformedDirectory = sourceSkill('hnr-agentic-harness')
+    const undeclared = refreshOutcomes(sourceSkill('hnr-agent-backpack', { declaresHarness: false }))
+    const malformedDirectory = sourceSkill('hnr-agent-backpack')
     writeFileSync(join(malformedDirectory, '..', '..', '.ki.toml'), '[skills.ki-repo\n')
     const malformed = refreshOutcomes(malformedDirectory)
-    const wrongName = refreshOutcomes(sourceSkill('hnr-agentic-harness', { refreshOwner: 'other-agentic-harness' }))
+    const wrongName = refreshOutcomes(sourceSkill('hnr-agent-backpack', { refreshOwner: 'other-agentic-harness' }))
 
     expect(undeclared.skill?.sourceHarnessName).toBeUndefined()
     expect(undeclared.outcomes[0]?.status).toBe('VIOLATION')
     expect(malformed.skill?.sourceHarnessName).toBeUndefined()
     expect(malformed.outcomes[0]?.status).toBe('VIOLATION')
-    expect(wrongName.skill?.sourceHarnessName).toBe('hnr-agentic-harness')
+    expect(wrongName.skill?.sourceHarnessName).toBe('hnr-agent-backpack')
     expect(wrongName.outcomes[0]?.status).toBe('VIOLATION')
   })
 
   test('reads the compatible owner from the source of an installed copy', () => {
-    const source = sourceSkill('hnr-agentic-harness')
+    const source = sourceSkill('hnr-agent-backpack')
     const consumer = mkdtempSync(join(tmpdir(), 'ki-skills-installed-copy-'))
     temporaryDirectories.push(consumer)
     const installed = join(consumer, '.agents', 'skills', 'ki-example')
@@ -213,7 +213,7 @@ describe('compatible Harness refresh ownership', () => {
 
     const result = refreshOutcomes(installed)
 
-    expect(result.skill?.sourceHarnessName).toBe('hnr-agentic-harness')
+    expect(result.skill?.sourceHarnessName).toBe('hnr-agent-backpack')
     expect(result.outcomes[0]?.status).toBe('PASS')
   })
 })
