@@ -1,6 +1,6 @@
 ---
 type: standard@2026-11-09T21:36:32Z
-revised: 2026-11-10T02:24:37Z
+revised: 2026-11-14T13:51:34Z
 status: in force
 ---
 
@@ -120,7 +120,7 @@ Two marks stand in the thread line beside the role glyph. They are not roles and
 
 | Mark | Name | Meaning |
 | --- | --- | --- |
-| 🔑 | keyholder | The session holding the package's keys: the seat that may write its package and speak for it |
+| 🔑 | keyholder | The session holding the package's keys: the seat that may write its package and speak for it. A seat without the keys carries no mark and closes with its seat address instead |
 | 🧵 | thread | A session with no role yet, and every background run, which takes no seat and reports to the work it serves |
 
 [Back to contents](#contents)
@@ -142,7 +142,7 @@ A package records its role and its live seats in its entry file, `_index.md`, as
 | `status` | optional | `active` or `idle` |
 | `listening` | optional | `on` or `off` |
 
-An entry carries nothing else. The seat's name is never stored: it is derived from its role's glyph and the work id, as the [thread line](#46-thread-line) sets out. An entry carries no session address, vendor session id or host, under the work-package standard's [prohibited payloads](standard-work-package.md#416-prohibited-payloads-and-claims), as Kris answered WORKERS-URI on 7 November 2026: "Drop it". A reader that needs to find a seat's live session, such as Cairn, reads the uncommitted machine-local thread binding `~/.local/state/ki/threads/<repository>/<slug>.json`, never the package. The `ki-work-package` rubric's RECORD-2 checks every value against this catalogue, reading the table in [4.3](#43-role-catalogue) at audit time, so the checker holds no copy of it.
+An entry carries nothing else. The seat's name is never stored: it is derived from its role's glyph and the work id, with its role for a seat without the keys, as the [thread line](#46-thread-line) sets out. An entry carries no session address, vendor session id or host, under the work-package standard's [prohibited payloads](standard-work-package.md#416-prohibited-payloads-and-claims), as Kris answered WORKERS-URI on 7 November 2026: "Drop it". A reader that needs to find a seat's live session, such as Cairn, reads the uncommitted machine-local thread binding `~/.local/state/ki/threads/<repository>/<slug>.json`, never the package. The `ki-work-package` rubric's RECORD-2 checks every value against this catalogue, reading the table in [4.3](#43-role-catalogue) at audit time, so the checker holds no copy of it.
 
 [Back to contents](#contents)
 
@@ -151,23 +151,30 @@ An entry carries nothing else. The seat's name is never stored: it is derived fr
 The thread line is the one string that names a session's seat. It closes every banner under `ki-coordination`'s [Banner](../../ki-coordination/references/standards-coordination.md#banner), names the session, ends a bootstrap or re-bootstrap report's `Rename thread:` line and signs every message the seat sends:
 
 ```text
-thread-line = role-glyph " 🔑 " work-id   ; a session whose seat has a role
-            | "🧵 " work-id               ; a session with no role yet, and every background run
-role-glyph  = the catalogue glyph of the seat's one role
-work-id     = the authoritative id from _index.md
+thread-line  = role-glyph " 🔑 " work-id   ; the seat holding the package's keys
+             | role-glyph " " seat-address ; a seat working in the package without its keys
+             | "🧵 " work-id               ; a session with no role yet, and every background run
+seat-address = work-id "+" role
+role-glyph   = the catalogue glyph of the seat's one role
+role         = the catalogue name of that role, such as architect
+work-id      = the authoritative id from _index.md
 ```
 
-Examples: `⚖️ 🔑 ki.reg.guilds`, `🏛️ 🔑 ki.sop.main`, `🏠 🔑 personal.reg.household-sol`, `🦉 🔑 personal.reg.inbox-terra`. The role glyph standing ahead of the work id says the role, so the work id stays the package's own id; a seat address beyond it waits for the seat rules. A background run closes its report with `🧵 <work-id>` of the work it reports to, as Kris took RUN-THREAD-LINE a) under ROLES-WRITE.
+Examples: `⚖️ 🔑 ki.reg.guilds`, `🏛️ 🔑 ki.sop.main`, `🏠 🔑 personal.reg.household-sol`, `🦉 🔑 personal.reg.inbox-terra`. The role glyph standing ahead of the work id says the role, so the work id stays the package's own id. A background run closes its report with `🧵 <work-id>` of the work it reports to, as Kris took RUN-THREAD-LINE a) under ROLES-WRITE.
+
+Only the keyholder carries 🔑. A seat working inside a package without holding its keys, such as a maker in a meeting or a role handed work in the package, takes the keyless form: its catalogue glyph, no key, and its seat address, `<work-id>+<role>`, as in `📐 ki.cairn+architect` and `🎨 ki.cairn+illustrator`, as Kris took SEAT-LINE a on 14 November 2026. The work id is the package it works in; a seat address is what the Cairn store calls a title.
 
 The same string appears on each surface:
 
 | Surface | Form |
 | --- | --- |
 | Banner's closing line | `<thread line>` |
-| Session name | `claude --name "<thread line>"` at launch, or `/rename <thread line>` |
+| Session name | `claude --name "<thread line>"` at launch, or `/rename <thread line>` as the session's first act when its opener names it |
 | Bootstrap and re-bootstrap report | `Rename thread: /rename <thread line>`, the last line of `## Done` |
 | Message sender | `<label> (<thread line>):`, as in `KI > Guilds (⚖️ 🔑 ki.reg.guilds):` |
 | Run report | `🧵 <work-id>` of the work it reports to |
+
+Every brief or opener that starts a new agent session names the thread line it is to take and tells the session to rename itself to that line as its first act, by its agent host's rename (runtime-specific: `/rename <thread line>` in Claude Code), as Kris took OPENER-NAME a on 14 November 2026. `ki-coordination`'s [Opening work](../../ki-coordination/references/standards-opening.md#opening-work) carries it for openers. A background run starts no session and needs none.
 
 [Back to contents](#contents)
 
