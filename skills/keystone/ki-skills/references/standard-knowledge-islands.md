@@ -1,6 +1,6 @@
 ---
 type: standard@2026-11-09T21:36:32Z
-revised: 2026-11-14T03:05:00Z
+revised: 2026-11-14T03:12:34Z
 status: in force
 ---
 
@@ -83,7 +83,7 @@ A **knowledge skill** only equips a session with a body of knowledge: terms, def
 
 **Runtime compatibility is installation metadata, not prose classification.** A skill that is useful only from specific agent runtimes declares `ki-supported-runtimes: [<runtime>...]` as a non-empty, duplicate-free single-line flow list using the same `claude-code` and `chatgpt-codex` identifiers as `[skills.ki-repo].supported_runtimes`. It also declares `ki-runtime-binding: true`, which separately marks its prose as intentionally runtime-specific. Absence of `ki-supported-runtimes` means the skill is portable across the runtimes an installed harness and host support. Activation uses the list to create only compatible runtime-discovery links; it never infers compatibility from a suffix or duplicates a restricted skill into every configured agent.
 
-**Guild membership is declared, never foldered.** Every Knowledge Islands skill names the guild it belongs to in exact frontmatter, `ki-guild: <guild>`, and a lead skill also names the guild it leads, `ki-leads: <guild>`; each key carries the `ki-` prefix every Knowledge Islands key carries, so none collides with the Agent Skills specification's. A lead is a member of Keystone, `ki-guild: keystone`, and only `ki-keystone` leads Keystone. The folder a skill sits in is storage, not structure: membership is read from the frontmatter, never from the path. A repository-local `ki-self` belongs to no guild. (GUILD-PLACE; KI-KEYS; rubric **KI-SHAPE-22**)
+**Guild membership is declared, never foldered.** Every Knowledge Islands skill names the guild it belongs to in exact frontmatter, `ki-guild: <guild>`, and a lead skill also names the guild it leads, `ki-leads: <guild>`; each key carries the `ki-` prefix every Knowledge Islands key carries, so none collides with the Agent Skills specification's. A lead is a member of Keystone, `ki-guild: keystone`, and only `ki-keystone` leads Keystone. The folder a skill sits in is storage, not structure: membership is read from the frontmatter, never from the path. A repository-local `ki-self` belongs to no guild. What a guild and its lead are, and how Keystone is joined, is set by [the guilds standard](standard-guilds.md). (GUILD-PLACE; KI-KEYS; rubric **KI-SHAPE-22**)
 
 A skill that reads declared repo config does so through the shared **`.ki.toml`** — the file whose presence marks a Knowledge Islands–compliant repo, whose contract is defined by `ki-repo` — and only through **its own `[<skill-name>]` table**. It **validates that table**: it warns on a key it doesn't recognise (a typo or stale option should surface, not silently do nothing) and advises dropping one that merely restates a default, while leaving every other skill's table untouched, even keys it can't interpret. Validate down, ignore across. (`ki-repo` is the reference implementation.)
 

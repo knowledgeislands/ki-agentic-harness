@@ -842,7 +842,7 @@ const KI_SHAPE_22: RubricItem<KiShapeRubricContext> = {
   title: 'guild membership is declared',
   description:
     'Every canonical Knowledge Islands skill declares the guild it belongs to, `ki-guild: <guild>`, a kebab-case guild name; the folder it sits in is storage and never declares membership. A lead skill also declares the guild it leads, `ki-leads: <guild>`, and is itself a member of Keystone, `ki-guild: keystone`; only `ki-keystone` leads Keystone. A repository-local `ki-self` is outside every guild.',
-  sources: ['GUILD-PLACE', 'KI-KEYS', 'standard-knowledge-islands.md §4.2'],
+  sources: ['GUILD-PLACE', 'KI-KEYS', 'standard-knowledge-islands.md §4.2', 'standard-guilds.md §4.4'],
   mechanical: {
     level: 'FAIL',
     remediation: {

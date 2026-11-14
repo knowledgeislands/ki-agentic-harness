@@ -1,6 +1,6 @@
 ---
 type: sources@2026-11-09T21:36:32Z
-revised: 2026-11-14T03:05:00Z
+revised: 2026-11-14T03:12:34Z
 refresh: external-spec · monthly
 ---
 
@@ -25,7 +25,7 @@ refresh: external-spec · monthly
 
 ## 1. Introduction
 
-The authoritative and community sources behind the [Agent Skills](standard-agent-skills.md), [Knowledge Islands](standard-knowledge-islands.md), and [rubric-authoring](standard-rubric-authoring.md) standards and their [rubric](rubric.md). Mode REFRESH reads this file, re-fetches each source, diffs it against those standards and the rubric, then **bumps the `last reviewed` dates** and refreshes the [Last review](#4-last-review) block below (what changed is recorded in the commit, not a changelog). This is the skill's memory of where best practice comes from — keep it current.
+The authoritative and community sources behind the [Agent Skills](standard-agent-skills.md), [Knowledge Islands](standard-knowledge-islands.md), [guilds](standard-guilds.md) and [rubric-authoring](standard-rubric-authoring.md) standards and their [rubric](rubric.md). Mode REFRESH reads this file, re-fetches each source, diffs it against those standards and the rubric, then **bumps the `last reviewed` dates** and refreshes the [Last review](#4-last-review) block below (what changed is recorded in the commit, not a changelog). This is the skill's memory of where best practice comes from — keep it current.
 
 Abbreviations match the `(SOURCE)` tags in the standards and [rubric](rubric.md).
 
@@ -155,6 +155,19 @@ The OpenAI News page is a discovery source, not a normative standard. On each RE
 | GRAPH-FOLDERS | Kris's word, relayed by the Cairn summit's guardian, option a: inside `knowledge/` there is one folder for each subgraph, and files keep their id names, as `knowledge/industry/industry.session.md`; ids and front-matter `links:`, keyed by id, do not change, and only path-based Markdown links follow a card. | 2026-11-12 | [Skill shape](standard-knowledge-islands.md#42-skill-shape), KI-SHAPE-6 | In force |
 | GUILD-PLACE | Kris's decision, 13 November 2026, in the Cairn summit's change 25: each skill's frontmatter names its guild, `ki-guild: <guild>`, and a lead names the guild it leads, `ki-leads: <guild>`; the folder a skill sits in is storage, not structure. | 2026-11-13 | [Skill shape](standard-knowledge-islands.md#42-skill-shape), KI-SHAPE-22 | In force |
 | KI-KEYS | Kris's decision, 13 November 2026, in the Cairn summit's change 25: the guild keys carry the `ki-` prefix every Knowledge Islands key carries, so none collides with the Agent Skills specification's. | 2026-11-13 | [Skill shape](standard-knowledge-islands.md#42-skill-shape), KI-SHAPE-22 | In force |
+| GUILD-TERM | Kris's decision, 13 November 2026, in the Cairn summit's change 25: a guild is a set of skills that belong together and work together. | 2026-11-13 | [Guilds](standard-guilds.md#41-what-a-guild-is) | In force |
+| GUILD-LEAD | Kris's decision, 13 November 2026, in the Cairn summit's change 25: each guild is a tree of skills led by one lead skill, which discloses the rest as a skill discloses its references; nothing new sits above skills. | 2026-11-13 | [Guilds](standard-guilds.md#41-what-a-guild-is) | In force |
+| KEYSTONE-HUB | Kris's decision, 13 November 2026, in the Cairn summit's change 25: Keystone is the guild of guilds: its lead, `ki-keystone`, mostly signposts, and each guild's lead is a member of Keystone as well as the root of its own guild; there is no deeper hierarchy. | 2026-11-13 | [Guilds](standard-guilds.md#42-keystone) | In force |
+| KEYSTONE-MIN | Kris's decision, 13 November 2026, in the Cairn summit's change 25: Keystone holds only what every other guild rests on, and never becomes a dumping ground. | 2026-11-13 | [Guilds](standard-guilds.md#42-keystone) | In force |
+| GUILD-NAMED | Kris's decision, 13 November 2026, in the Cairn summit's change 25: a guild's lead is named after it, and the guild's prefix is the lead's name, as `ki-repo` and `ki-repo-*`. | 2026-11-13 | [Guilds](standard-guilds.md#43-names-and-prefixes) | In force |
+| ENV-PREFIX | Kris's decision, 13 November 2026, in the Cairn summit's change 25: the Environment guild is led by `ki-env`, and its families are `ki-env-binding`, `ki-env-housekeeping` and `ki-env-tokenomics`. | 2026-11-13 | [Guilds](standard-guilds.md#43-names-and-prefixes) | In force |
+| AGENTS-GUILD | Kris's decision, 13 November 2026, in the Cairn summit's change 25: option b: the Agentic systems guild is led by the knowledge skill `ki-agentic-systems`, with the prefix `ki-agentic-`; there is no `ki-agents`. | 2026-11-13 | [Guilds](standard-guilds.md#43-names-and-prefixes) | In force |
+| DESIGN-LEAD | Kris's decision, 13 November 2026, in the Cairn summit's change 25: option a: a new `ki-design` leads the Design guild, covering technical as well as visual design. | 2026-11-13 | [Guilds](standard-guilds.md#43-names-and-prefixes) | In force |
+| GUILD-FOLDERS | Kris's decision, 14 November 2026, in the Cairn summit's change 25: option a: a harness stores its skills in a folder per guild, named by the guild, with every lead in `keystone/`. | 2026-11-14 | [Guilds](standard-guilds.md#44-membership) | In force |
+| HOUSEKEEPING-LEAD | Kris's decision, 14 November 2026, in the Cairn summit's change 25: option a: a new `ki-env-housekeeping` holds the rules its Claude and ChatGPT skills share, as `ki-env-binding` and `ki-env-tokenomics` do for theirs. | 2026-11-14 | [Guilds](standard-guilds.md#45-how-a-lead-discloses-its-guild) | In force |
+| PROCESS-SUBCOMMANDS | Kris's decision, 13 November 2026, in the Cairn summit's change 25: process skills that form one lifecycle become subcommands of their guild's lead, each with a reference loaded only when called, keeping the separate skills' boundaries as rules. | 2026-11-13 | [Guilds](standard-guilds.md#45-how-a-lead-discloses-its-guild) | In force |
+| BOOTSTRAP-FOLD | Kris's decision, 13 November 2026, in the Cairn summit's change 25: `ki-bootstrap` becomes `ki-keystone bootstrap`. | 2026-11-13 | [Guilds](standard-guilds.md#45-how-a-lead-discloses-its-guild) | In force |
+| KEYSTONE-SKILL | Kris's decision, 13 November 2026, in the Cairn summit's change 25: `ki-keystone` holds the guild map, generated from frontmatter, where a session starts in a repository, and Keystone's joining rule. | 2026-11-13 | [Guilds](standard-guilds.md#46-the-guild-map) | In force |
 
 [Back to contents](#contents)
 

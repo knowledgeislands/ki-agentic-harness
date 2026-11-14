@@ -453,7 +453,7 @@ The common shape of a Knowledge Islands governance skill.
   - _Review prompt:_ Does each undeclared body mention of a sibling skill route the reader elsewhere, or does the skill actually apply that sibling’s standard and need a declaration?
   - _Outcomes:_ conforming; gap; exclusion
   - _Conforming guidance:_ Record the review as conforming, a named Gap with its next action, or an explicit justified exclusion.
-- **KI-SHAPE-22 [M] — guild membership is declared** — Every canonical Knowledge Islands skill declares the guild it belongs to, `ki-guild: <guild>`, a kebab-case guild name; the folder it sits in is storage and never declares membership. A lead skill also declares the guild it leads, `ki-leads: <guild>`, and is itself a member of Keystone, `ki-guild: keystone`; only `ki-keystone` leads Keystone. A repository-local `ki-self` is outside every guild. (GUILD-PLACE, KI-KEYS, standard-knowledge-islands.md §4.2)
+- **KI-SHAPE-22 [M] — guild membership is declared** — Every canonical Knowledge Islands skill declares the guild it belongs to, `ki-guild: <guild>`, a kebab-case guild name; the folder it sits in is storage and never declares membership. A lead skill also declares the guild it leads, `ki-leads: <guild>`, and is itself a member of Keystone, `ki-guild: keystone`; only `ki-keystone` leads Keystone. A repository-local `ki-self` is outside every guild. (GUILD-PLACE, KI-KEYS, standard-knowledge-islands.md §4.2, standard-guilds.md §4.4)
   - _Remediation:_ diagnostic — Declare the guild the skill works with, from the guild map in ki-keystone; give a lead skill its ki-leads key and Keystone membership, and never infer either from the folder.
 
 ## KI-INVOKE — Invocation protocol
