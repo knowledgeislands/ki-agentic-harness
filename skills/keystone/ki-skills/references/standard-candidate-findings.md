@@ -85,7 +85,7 @@ Use this readable report shape:
 
 - **Evidence:** `scripts/a.ts` and `scripts/b.ts` repeat the same content-hash scan.
 - **Disposition:** extract script
-- **Roadmap treatment:** amend existing item — `foundation-tooling/review-ki-bootstrap-for-further-simplification`
+- **Roadmap treatment:** amend existing item — `foundation-tooling/review-ki-keystone-bootstrap-for-further-simplification`
 - **Proposed action:** add a pure scan helper and focused tests; retain judgment over which files are candidates.
 ```
 

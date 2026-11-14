@@ -10,7 +10,7 @@ afterEach(() => {
   for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true })
 })
 const temp = () => {
-  const root = mkdtempSync(join(tmpdir(), 'ki-housekeeping-schedule-'))
+  const root = mkdtempSync(join(tmpdir(), 'ki-env-housekeeping-schedule-'))
   roots.push(root)
   return root
 }
