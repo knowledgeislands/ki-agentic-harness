@@ -4,6 +4,7 @@ ki-kind: process
 ki-applicability: invocation-only
 ki-guild: work
 ki-depends-on: []
+ki-shared-dependencies: [ki-skills:rubric]
 description: >
   Call, hold and close a meeting: a room at one node of the work tree where named participants, each reaching it by
   the first route that works, make, review or look back on something together, in sittings with a roll call, one file
@@ -17,7 +18,7 @@ argument-hint: 'adjourn <meeting> | call <node id> <slug> | close <meeting> | he
 
 **Kind:** process. Runs one meeting from its call to its close, held by hand in a folder of plain files that every participant reaches by its own route.
 
-Read [the meeting standard](references/standard-meeting.md) before calling, joining or keeping a meeting, and the standard for the meeting's type: [workshop](references/standard-workshop.md), which makes something together; [review](references/standard-review.md), which gives a verdict on each part of something made; or [retrospective](references/standard-retrospective.md), which looks back for what to keep and what to change. [The sources](references/sources.md) record the decisions behind them, the ten taken overnight on 14 November for the owner's review, and the open questions.
+Read [the meeting standard](references/standard-meeting.md) before calling, joining or keeping a meeting, and the standard for the meeting's type: [workshop](references/standard-workshop.md), which makes something together; [review](references/standard-review.md), which gives a verdict on each part of something made; or [retrospective](references/standard-retrospective.md), which looks back for what to keep and what to change. [The sources](references/sources.md) record the decisions behind them, the ten taken overnight on 14 November for the owner's review, and the open questions. [The rubric](references/rubric.md) lists what a review of a meeting checks, each criterion a judgment drawn from the meeting standard.
 
 ## When to use it
 
