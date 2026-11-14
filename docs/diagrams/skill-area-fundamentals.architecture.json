@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "34b0f04618f78b9b9d13222647a032bdb55e28ca"
+      "revision": "6839cdd83835c92a944898f2c44345e68bfdf0da"
     },
     "legend": {
       "mode": "auto",
@@ -36,10 +36,10 @@
       "id": "ki-recap",
       "type": "frontend",
       "label": "ki-recap",
-      "sublabel": "change management · command",
+      "sublabel": "work · command",
       "sources": [
         {
-          "path": "skills/change-management/ki-recap/SKILL.md"
+          "path": "skills/work/ki-recap/SKILL.md"
         }
       ],
       "tag": "R– · CM · F2",
@@ -56,10 +56,10 @@
       "id": "ki-repo-dotfiles-chezmoi",
       "type": "database",
       "label": "ki-repo-dotfiles-chezmoi",
-      "sublabel": "repository structure · opt-in",
+      "sublabel": "repository · opt-in",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-dotfiles-chezmoi/SKILL.md"
+          "path": "skills/repository/ki-repo-dotfiles-chezmoi/SKILL.md"
         }
       ],
       "tag": "R9 · CM · F3",
@@ -136,10 +136,10 @@
       "id": "ki-diagrams",
       "type": "database",
       "label": "ki-diagrams",
-      "sublabel": "governance · opt-in",
+      "sublabel": "authoring · opt-in",
       "sources": [
         {
-          "path": "skills/governance/ki-diagrams/SKILL.md"
+          "path": "skills/authoring/ki-diagrams/SKILL.md"
         }
       ],
       "tag": "R9 · CL · F8",
@@ -156,10 +156,10 @@
       "id": "ki-git",
       "type": "database",
       "label": "ki-git",
-      "sublabel": "governance · opt-in",
+      "sublabel": "repository · opt-in",
       "sources": [
         {
-          "path": "skills/governance/ki-git/SKILL.md"
+          "path": "skills/repository/ki-git/SKILL.md"
         }
       ],
       "tag": "R17 · CM · F3",
@@ -216,10 +216,10 @@
       "id": "ki-repo-harness",
       "type": "database",
       "label": "ki-repo-harness",
-      "sublabel": "repository structure · opt-in",
+      "sublabel": "repository · opt-in",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-harness/SKILL.md"
+          "path": "skills/repository/ki-repo-harness/SKILL.md"
         }
       ],
       "tag": "R27 · CL · F4",
@@ -256,10 +256,10 @@
       "id": "ki-decision-records",
       "type": "backend",
       "label": "ki-decision-records",
-      "sublabel": "governance · automatic",
+      "sublabel": "authoring · automatic",
       "sources": [
         {
-          "path": "skills/governance/ki-decision-records/SKILL.md"
+          "path": "skills/authoring/ki-decision-records/SKILL.md"
         }
       ],
       "tag": "R37 · CL · F9",
@@ -276,10 +276,10 @@
       "id": "ki-work-roadmap",
       "type": "database",
       "label": "ki-work-roadmap",
-      "sublabel": "change management · opt-in",
+      "sublabel": "work · opt-in",
       "sources": [
         {
-          "path": "skills/change-management/ki-work-roadmap/SKILL.md"
+          "path": "skills/work/ki-work-roadmap/SKILL.md"
         }
       ],
       "tag": "R24 · CL · F4",

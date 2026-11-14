@@ -114,7 +114,7 @@
       "sublabel": "instruction or answer",
       "sources": [
         {
-          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "path": "skills/work/ki-coordination/references/standards-coordination.md",
           "line": 175,
           "label": "coordinator responsiveness"
         }
@@ -130,12 +130,12 @@
       "sublabel": "decisions.md",
       "sources": [
         {
-          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "path": "skills/work/ki-coordination/references/standards-coordination.md",
           "line": 797,
           "label": "decisions log"
         },
         {
-          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "path": "skills/agentic-systems/ki-delegation/references/standards-background-runs.md",
           "line": 161,
           "label": "decisions log, run side"
         }
@@ -151,12 +151,12 @@
       "sublabel": "state.md · ki-work-package",
       "sources": [
         {
-          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "path": "skills/work/ki-coordination/references/standards-coordination.md",
           "line": 877,
           "label": "committing the work folder"
         },
         {
-          "path": "skills/governance/ki-work-package/SKILL.md",
+          "path": "skills/work/ki-work-package/SKILL.md",
           "line": 1
         }
       ],
@@ -172,12 +172,12 @@
       "tag": "ki-delegation",
       "sources": [
         {
-          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "path": "skills/agentic-systems/ki-delegation/references/standards-background-runs.md",
           "line": 111,
           "label": "prompt shape"
         },
         {
-          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "path": "skills/agentic-systems/ki-delegation/references/standards-background-runs.md",
           "line": 135,
           "label": "authority tiers"
         }
@@ -193,17 +193,17 @@
       "sublabel": "detached, own session",
       "sources": [
         {
-          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "path": "skills/agentic-systems/ki-delegation/references/standards-background-runs.md",
           "line": 35,
           "label": "detachment"
         },
         {
-          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "path": "skills/agentic-systems/ki-delegation/references/standards-background-runs.md",
           "line": 186,
           "label": "run queue"
         },
         {
-          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "path": "skills/agentic-systems/ki-delegation/references/standards-background-runs.md",
           "line": 217,
           "label": "reference launcher"
         }
@@ -220,7 +220,7 @@
       "tag": "ki-git",
       "sources": [
         {
-          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "path": "skills/agentic-systems/ki-delegation/references/standards-background-runs.md",
           "line": 169,
           "label": "coordination"
         }
@@ -236,7 +236,7 @@
       "sublabel": "next → plan → accept",
       "sources": [
         {
-          "path": "skills/change-management/ki-work-roadmap/SKILL.md",
+          "path": "skills/work/ki-work-roadmap/SKILL.md",
           "line": 1
         }
       ],
@@ -251,12 +251,12 @@
       "sublabel": "+/_WORK/<id>/",
       "sources": [
         {
-          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "path": "skills/agentic-systems/ki-delegation/references/standards-background-runs.md",
           "line": 203,
           "label": "reporting"
         },
         {
-          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "path": "skills/agentic-systems/ki-delegation/references/standards-background-runs.md",
           "line": 209,
           "label": "owner report"
         }
@@ -272,7 +272,7 @@
       "sublabel": "non-blocking monitor",
       "sources": [
         {
-          "path": "skills/governance/ki-delegation/references/standards-background-runs.md",
+          "path": "skills/agentic-systems/ki-delegation/references/standards-background-runs.md",
           "line": 195,
           "label": "monitoring"
         }
@@ -289,12 +289,12 @@
       "tag": "ki-coordination",
       "sources": [
         {
-          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "path": "skills/work/ki-coordination/references/standards-coordination.md",
           "line": 447,
           "label": "owner report"
         },
         {
-          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "path": "skills/work/ki-coordination/references/standards-coordination.md",
           "line": 197,
           "label": "coordinating practices"
         }
@@ -310,7 +310,7 @@
       "sublabel": "speech, tag or a letter",
       "sources": [
         {
-          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "path": "skills/work/ki-coordination/references/standards-coordination.md",
           "line": 531,
           "label": "answers"
         }
@@ -326,12 +326,12 @@
       "sublabel": "home decisions, prune folder",
       "sources": [
         {
-          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "path": "skills/work/ki-coordination/references/standards-coordination.md",
           "line": 823,
           "label": "decisions life cycle"
         },
         {
-          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "path": "skills/work/ki-coordination/references/standards-coordination.md",
           "line": 881,
           "label": "pruning the work folder"
         }
@@ -347,7 +347,7 @@
       "sublabel": "record, standard, ADR",
       "sources": [
         {
-          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "path": "skills/work/ki-coordination/references/standards-coordination.md",
           "line": 808,
           "label": "decision classes"
         }
@@ -363,7 +363,7 @@
       "sublabel": "finish, ki agent close",
       "sources": [
         {
-          "path": "skills/change-management/ki-coordination/references/standards-coordination.md",
+          "path": "skills/work/ki-coordination/references/standards-coordination.md",
           "line": 835,
           "label": "finishing project work"
         }

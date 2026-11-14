@@ -89,7 +89,7 @@ The records are living, compact, and independent. The order below is a **curated
 
 ## Template
 
-Each record is a **living present-state record** — it states the decision as it stands now and is edited in place; there is no bold Status, Mutability, supersession, or Changelog line. Required frontmatter carries the ID, title, date, maintenance status, human-readable type, type URL, and machine decision type. The filename is its uppercase ID followed by the slugified title. The full rules live in the `ki-decision-records` skill ([dr-format.md](../../skills/governance/ki-decision-records/references/standards-decision-records.md)).
+Each record is a **living present-state record** — it states the decision as it stands now and is edited in place; there is no bold Status, Mutability, supersession, or Changelog line. Required frontmatter carries the ID, title, date, maintenance status, human-readable type, type URL, and machine decision type. The filename is its uppercase ID followed by the slugified title. The full rules live in the `ki-decision-records` skill ([dr-format.md](../../skills/authoring/ki-decision-records/references/standards-decision-records.md)).
 
 ```markdown
 ---

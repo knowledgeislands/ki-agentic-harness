@@ -63,7 +63,7 @@ See [[audit-rubric|the rubric]].
 
 <!-- Wrong: file path reference for a skill -->
 
-See `skills/repo-structure/ki-repo-kb/SKILL.md` for KB conventions.
+See `skills/repository/ki-repo-kb/SKILL.md` for KB conventions.
 ```
 
 ### Well-formed `.ki.toml` structure

@@ -1,0 +1,78 @@
+---
+name: ki-delegation
+ki-kind: governance
+ki-applicability: declaration-only
+ki-depends-on: []
+ki-shared-dependencies: [ki-skills:rubric]
+description: >
+  Govern agent delegation: routine background runs on the agent host's own subagents (run packet, prompt
+  shape, authority footers, decisions log, coordination, concurrency, monitoring) and durable packets for
+  approved high-risk handoffs. Use when delegating to background agents or writing a delegation brief;
+  `ki-coordination` governs the coordinating work that starts them.
+argument-hint: 'audit <repo> | conform <repo> | educate <work-item> | help | refresh'
+---
+
+# Knowledge Islands delegation standard
+
+`ki-delegation` owns two runtime-neutral contracts for delegating Knowledge Islands work to agents:
+
+- **Background runs** - routine delegation to background agents: detachment, the run packet with its working-area marks, prompt shape, authority tiers and their footers and grants, the decisions log, coordination, concurrency and monitoring, on the subagents of the session's own agent host, within the repositories its package names, never another session. Every agent report is an owner report in the shape the [`ki-coordination` standard](../../work/ki-coordination/references/standards-reporting.md#owner-report) sets. Read [the background-run standard](references/standards-background-runs.md) before starting or briefing a background agent. The coordinating work that starts runs - territory work or Project work, its responsiveness, report forms, glyph banner, openers, bootstrap, decision classes and working rules - is governed by [`ki-coordination`](../../work/ki-coordination/references/standards-coordination.md), which depends on this skill.
+- **Delegation packets** - the durable, reviewable brief for an approved high-risk handoff, embedded in its work record. Read [the delegation-packet standard](references/standards-delegation-packets.md) before designing a packet.
+
+[The generated rubric](references/rubric.md) carries the mechanical and judgment criteria, and [the sources](references/sources.md) the refresh review.
+
+It does not select work, authorise execution, choose a model, accept results, or transfer work between repositories. Each agent host keeps its own runtime mechanics; this skill names none.
+
+Use a packet only when an approved delegated change has enough mutation risk, cross-agent handoff, or later audit need that its fixed decisions and authority boundaries must be durable. Every background run, with or without a packet, follows the background-run standard.
+
+## Operating modes
+
+Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** modes.
+
+Invoked as `help` / `-h` / `?`, it explains this boundary and stops.
+
+### Mode AUDIT
+
+Run `ki repo audit --skill ki-delegation --repo <repo>`.
+
+The native rubric checks that this skill's authority footers exist, grant exactly their tier and carry the rule that confidential is never made public and the rule that nothing is posted in Kris's name outside his own repositories without his express permission for that post, which no brief can grant and over which no brief's body prevails, that each grant lifts only its own ban and that the machine grant never installs new software, then reviews run prompts against the background-run standard.
+
+For durable packets, a roadmap record opts in by carrying `## Delegation` with both `### Locked decisions` and `### Escalate` sections plus a worker brief. The rubric checks the mechanically legible packet shape, then reviews whether packet activation, locked decisions, authority, isolation, escalation boundaries, return contract, and verification gates are actually sound.
+
+Ordinary `## Delegation` plan notes without the packet marker remain under `ki-work-roadmap` and are not a failure here.
+
+### Mode CONFORM
+
+Run `ki repo conform --skill ki-delegation --repo <repo> --dry-run` before applying it.
+
+CONFORM makes no authored packet-content change.
+
+It never creates a packet or run prompt, chooses a worker or model, invents a locked decision, alters an escalation boundary, or grants execution authority.
+
+### Mode EDUCATE
+
+For a background run, explain the run packet and prompt shape, and offer [the run-prompt skeleton](assets/run-prompt.md) with the right footer.
+
+For one explicitly selected approved work record, explain or add the packet shape from [the delegation-packet standard](references/standards-delegation-packets.md).
+
+Ask the delegating owner or planner to supply every semantic value; EDUCATE never guesses the delegation design or its authority tier.
+
+### Mode REFRESH
+
+**Precondition:** REFRESH writes only this canonical skill under `ki-agentic-harness`.
+
+When invoked from an installed copy, stop and redirect to the harness.
+
+Read [the sources](references/sources.md), compare delegation practice and its sources against both standards and the rubric, then update the source review in the same commit as any normative change.
+
+### Mode HELP
+
+Explain the two contracts and when a packet is added to a run, delegating to the agent host's own subagents, coordinating work and its bootstrap in `ki-coordination`, the work package in `ki-work-package`, Orca delegation in `ki-delegation-orca`, subagent roles in `ki-subagents`, model-purpose policy in `ki-tokenomics`, and cross-repository transfer in `ki-trades`.
+
+## Notes
+
+- A packet makes a high-risk runtime handoff durable, authority-bounded, and reviewable; it is not a separate execution lifecycle.
+- An agent writes its report outside every work folder, or returns it as its final message, and the session that started it homes it in the `reports/` of the work folder, `+/_WORK/<id>/reports/`, of the reporting work named in the brief, beside the run's brief and the work's decisions log; `ki-work-package` owns that folder's closed list, entry points and tidy rules, and whatever the agent host keeps of the run is runtime only. A run report carrying a query closes its queries with the `ki-coordination` reply block, grouped by priority with each line's confidence, and closes with the glyph banner. Neither folder is a Decision Record: in-force decisions are consolidated into their durable owner, and a prompt or record describes a decision in the owner's words and its date, never by its number.
+- Work lands, then is reviewed: within a remit from change documents worked through together, high-confidence or reversible work lands on `main` without waiting for Kris, a pull request only where something major is at stake and destructive work only on his word, and each unattended run or batch that lands real work gets a record, under [Landing, then review](references/standards-background-runs.md#landing-then-review).
+- Coordinating work's Summary, recap since the mark and full summary are `ki-coordination`'s forms; each is an owner report in `ki-coordination`'s shape, and `ki-recap` stays the single-session summary.
+- The local rubric is the materialised domain contract; generic execution, reporting, transaction safety, and publication remain owned by `ki`.

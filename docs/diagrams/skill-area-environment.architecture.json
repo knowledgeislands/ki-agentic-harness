@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "0bb75ac911fd11faf0d19db2f7bf344efa393ab3"
+      "revision": "6839cdd83835c92a944898f2c44345e68bfdf0da"
     },
     "legend": {
       "mode": "auto",
@@ -216,10 +216,10 @@
       "id": "ki-repo-dotfiles-chezmoi",
       "type": "database",
       "label": "ki-repo-dotfiles-chezmoi",
-      "sublabel": "repository structure · opt-in",
+      "sublabel": "repository · opt-in",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-dotfiles-chezmoi/SKILL.md"
+          "path": "skills/repository/ki-repo-dotfiles-chezmoi/SKILL.md"
         }
       ],
       "tag": "R9 · CM · F3",

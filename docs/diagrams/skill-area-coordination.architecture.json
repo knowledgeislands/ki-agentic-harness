@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "869b15cc72b69503e8e1a98ab068862019316192"
+      "revision": "6839cdd83835c92a944898f2c44345e68bfdf0da"
     },
     "legend": {
       "mode": "auto",
@@ -36,10 +36,10 @@
       "id": "ki-batch",
       "type": "frontend",
       "label": "ki-batch",
-      "sublabel": "change management · command",
+      "sublabel": "work · command",
       "sources": [
         {
-          "path": "skills/change-management/ki-batch/SKILL.md"
+          "path": "skills/work/ki-batch/SKILL.md"
         }
       ],
       "tag": "R– · CM · F5",
@@ -56,10 +56,10 @@
       "id": "ki-implement",
       "type": "frontend",
       "label": "ki-implement",
-      "sublabel": "change management · command",
+      "sublabel": "work · command",
       "sources": [
         {
-          "path": "skills/change-management/ki-implement/SKILL.md"
+          "path": "skills/work/ki-implement/SKILL.md"
         }
       ],
       "tag": "R– · CS · F2",
@@ -76,10 +76,10 @@
       "id": "ki-plan",
       "type": "frontend",
       "label": "ki-plan",
-      "sublabel": "change management · command",
+      "sublabel": "work · command",
       "sources": [
         {
-          "path": "skills/change-management/ki-plan/SKILL.md"
+          "path": "skills/work/ki-plan/SKILL.md"
         }
       ],
       "tag": "R– · CS · F1",
@@ -116,10 +116,10 @@
       "id": "ki-coordination",
       "type": "database",
       "label": "ki-coordination",
-      "sublabel": "change management · opt-in",
+      "sublabel": "work · opt-in",
       "sources": [
         {
-          "path": "skills/change-management/ki-coordination/SKILL.md"
+          "path": "skills/work/ki-coordination/SKILL.md"
         }
       ],
       "tag": "R13 · CL · F17",
@@ -136,10 +136,10 @@
       "id": "ki-delegation",
       "type": "database",
       "label": "ki-delegation",
-      "sublabel": "governance · opt-in",
+      "sublabel": "agentic systems · opt-in",
       "sources": [
         {
-          "path": "skills/governance/ki-delegation/SKILL.md"
+          "path": "skills/agentic-systems/ki-delegation/SKILL.md"
         }
       ],
       "tag": "R6 · CM · F4",
@@ -156,10 +156,10 @@
       "id": "ki-meeting",
       "type": "frontend",
       "label": "ki-meeting",
-      "sublabel": "change management · command",
+      "sublabel": "work · command",
       "sources": [
         {
-          "path": "skills/change-management/ki-meeting/SKILL.md"
+          "path": "skills/work/ki-meeting/SKILL.md"
         }
       ],
       "tag": "R– · C0 · F5",
@@ -176,10 +176,10 @@
       "id": "ki-trade",
       "type": "frontend",
       "label": "ki-trade",
-      "sublabel": "governance · command",
+      "sublabel": "work · command",
       "sources": [
         {
-          "path": "skills/governance/ki-trade/SKILL.md"
+          "path": "skills/work/ki-trade/SKILL.md"
         }
       ],
       "tag": "R– · C0 · F1",
@@ -196,10 +196,10 @@
       "id": "ki-trades",
       "type": "database",
       "label": "ki-trades",
-      "sublabel": "governance · opt-in",
+      "sublabel": "work · opt-in",
       "sources": [
         {
-          "path": "skills/governance/ki-trades/SKILL.md"
+          "path": "skills/work/ki-trades/SKILL.md"
         }
       ],
       "tag": "R16 · CL · F3",
@@ -216,10 +216,10 @@
       "id": "ki-work-design",
       "type": "frontend",
       "label": "ki-work-design",
-      "sublabel": "change management · command",
+      "sublabel": "work · command",
       "sources": [
         {
-          "path": "skills/change-management/ki-work-design/SKILL.md"
+          "path": "skills/work/ki-work-design/SKILL.md"
         }
       ],
       "tag": "R– · C0 · F2",
@@ -236,10 +236,10 @@
       "id": "ki-work-package",
       "type": "backend",
       "label": "ki-work-package",
-      "sublabel": "governance · automatic",
+      "sublabel": "work · automatic",
       "sources": [
         {
-          "path": "skills/governance/ki-work-package/SKILL.md"
+          "path": "skills/work/ki-work-package/SKILL.md"
         }
       ],
       "tag": "R13 · CL · F5",
@@ -256,10 +256,10 @@
       "id": "ki-decision-records",
       "type": "backend",
       "label": "ki-decision-records",
-      "sublabel": "governance · automatic",
+      "sublabel": "authoring · automatic",
       "sources": [
         {
-          "path": "skills/governance/ki-decision-records/SKILL.md"
+          "path": "skills/authoring/ki-decision-records/SKILL.md"
         }
       ],
       "tag": "R37 · CL · F9",

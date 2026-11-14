@@ -7,10 +7,10 @@
 | Source                                                                                       | Bears on                                                   | last reviewed |
 | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------- |
 | [WCAG 2.2](https://www.w3.org/TR/WCAG22/)                                                    | The floor: 1.4.1 Use of Color, 1.4.3 and 1.4.11 contrast, 2.1.1 Keyboard, 2.4.7 Focus Visible | 2026-10-11    |
-| [The Guides standard](../../../governance/ki-guides/references/standards-guides.md)          | The design guide's home and form                           | 2026-10-11    |
-| [The Specifications standard](../../../governance/ki-specs/references/standards-specs.md)    | When a design rule becomes a Specification                 | 2026-10-11    |
-| [The Decision Records standard](../../../governance/ki-decision-records/references/standards-decision-records.md) | Prefix choice and the living-record rule for design decisions | 2026-10-11    |
-| [The design-loop standard](../../../change-management/ki-work-design/references/standards-work-design.md) | The boundary with shape-level design, and temporary artefacts | 2026-10-11    |
+| [The Guides standard](../../../authoring/ki-guides/references/standards-guides.md)          | The design guide's home and form                           | 2026-10-11    |
+| [The Specifications standard](../../../authoring/ki-specs/references/standards-specs.md)    | When a design rule becomes a Specification                 | 2026-10-11    |
+| [The Decision Records standard](../../../authoring/ki-decision-records/references/standards-decision-records.md) | Prefix choice and the living-record rule for design decisions | 2026-10-11    |
+| [The design-loop standard](../../../work/ki-work-design/references/standards-work-design.md) | The boundary with shape-level design, and temporary artefacts | 2026-10-11    |
 | `5g-emerge-phase3` at `ceaf95344da3564693302a359d3a20959f0b0a19`                             | The pilot: tokens, guide, decision record and checks       | 2026-10-11    |
 | An annotated design board for a knowledge-base viewer, 2 and 3 November 2026                | The annotated board: numbering, shells and components, region codes, measuring, and the first board tooling | 2026-11-03    |
 

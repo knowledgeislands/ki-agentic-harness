@@ -7,7 +7,7 @@ question = "What skills does the harness hold, in which source concern does each
 audience = "Skill authors, reviewers and newcomers orienting themselves in the collection"
 traced = ["skills/*/*/SKILL.md"]
 stale_when = "a skill is added, moved between concerns, renamed or removed, its ki-kind or ki-applicability changes, or the functional-area table changes"
-regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout and SKILL.md frontmatter, then run `bun run self:diagrams:html --svg skill-map` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+regenerate = "Run `bun skills/repository/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout and SKILL.md frontmatter, then run `bun run self:diagrams:html --svg skill-map` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
 last_checked = "80fde15b648d3a93ab4a0a16c46e4c0dcab05a1a"
 commit_html = true
 
@@ -17,7 +17,7 @@ question = "Which outside skills do the Fundamentals skills rely on, which outsi
 audience = "Skill authors and reviewers deciding where a new or changed skill sits"
 traced = ["skills/*/*/SKILL.md"]
 stale_when = "a skill joins or leaves the Fundamentals functional area, or one of its skills is moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from one of its skills changes"
-regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-fundamentals` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+regenerate = "Run `bun skills/repository/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-fundamentals` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
 last_checked = "ccbe690457da02b9d5ff7f6c07a94c4650b41ee5"
 commit_html = true
 
@@ -27,7 +27,7 @@ question = "Which outside skills do the Records and code skills rely on, which o
 audience = "Skill authors and reviewers deciding where a new or changed skill sits"
 traced = ["skills/*/*/SKILL.md"]
 stale_when = "a skill joins or leaves the Records and code functional area, or one of its skills is moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from one of its skills changes"
-regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-records-and-code` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+regenerate = "Run `bun skills/repository/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-records-and-code` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
 last_checked = "8f4005240c3002a64af17add4bc8e878fd7e2ccd"
 commit_html = true
 
@@ -37,7 +37,7 @@ question = "Which outside skills do the Coordination skills rely on, which outsi
 audience = "Skill authors and reviewers deciding where a new or changed skill sits"
 traced = ["skills/*/*/SKILL.md"]
 stale_when = "a skill joins or leaves the Coordination functional area, or one of its skills is moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from one of its skills changes"
-regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-coordination` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+regenerate = "Run `bun skills/repository/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-coordination` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
 last_checked = "940341c56fb8ee94c902f53a9ca80bd8dfd01eb1"
 commit_html = true
 
@@ -47,7 +47,7 @@ question = "Which outside skills do the Work and delivery skills rely on, which 
 audience = "Skill authors and reviewers deciding where a new or changed skill sits"
 traced = ["skills/*/*/SKILL.md"]
 stale_when = "a skill joins or leaves the Work and delivery functional area, or one of its skills is moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from one of its skills changes"
-regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-work-and-delivery` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+regenerate = "Run `bun skills/repository/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-work-and-delivery` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
 last_checked = "8f4005240c3002a64af17add4bc8e878fd7e2ccd"
 commit_html = true
 
@@ -57,7 +57,7 @@ question = "Which outside skills do the Repository types skills rely on, which o
 audience = "Skill authors and reviewers deciding where a new or changed skill sits"
 traced = ["skills/*/*/SKILL.md"]
 stale_when = "a skill joins or leaves the Repository types functional area, or one of its skills is moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from one of its skills changes"
-regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-repository-types` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+regenerate = "Run `bun skills/repository/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-repository-types` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
 last_checked = "80fde15b648d3a93ab4a0a16c46e4c0dcab05a1a"
 commit_html = true
 
@@ -67,7 +67,7 @@ question = "Which outside skills do the Agentic systems skills rely on, which ou
 audience = "Skill authors and reviewers deciding where a new or changed skill sits"
 traced = ["skills/*/*/SKILL.md"]
 stale_when = "a skill joins or leaves the Agentic systems functional area, or one of its skills is moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from one of its skills changes"
-regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-agentic-systems` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+regenerate = "Run `bun skills/repository/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-agentic-systems` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
 last_checked = "940341c56fb8ee94c902f53a9ca80bd8dfd01eb1"
 commit_html = true
 
@@ -77,7 +77,7 @@ question = "Which outside skills do the Environment skills rely on, which outsid
 audience = "Skill authors and reviewers deciding where a new or changed skill sits"
 traced = ["skills/*/*/SKILL.md"]
 stale_when = "a skill joins or leaves the Environment functional area, or one of its skills is moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from one of its skills changes"
-regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-environment` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+regenerate = "Run `bun skills/repository/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-environment` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
 last_checked = "ccbe690457da02b9d5ff7f6c07a94c4650b41ee5"
 commit_html = true
 
@@ -87,7 +87,7 @@ question = "Which outside skills do the Acquire skills rely on, which outside sk
 audience = "Skill authors and reviewers deciding where a new or changed skill sits"
 traced = ["skills/*/*/SKILL.md"]
 stale_when = "a skill joins or leaves the Acquire functional area, or one of its skills is moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from one of its skills changes"
-regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-acquire` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+regenerate = "Run `bun skills/repository/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-acquire` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
 last_checked = "a24e05270da551dedb03b5724edd7b44eefe99b0"
 commit_html = true
 
@@ -97,7 +97,7 @@ question = "Which outside skills do the Signals skills rely on, which outside sk
 audience = "Skill authors and reviewers deciding where a new or changed skill sits"
 traced = ["skills/*/*/SKILL.md"]
 stale_when = "a skill joins or leaves the Signals functional area, or one of its skills is moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from one of its skills changes"
-regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-signals` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+regenerate = "Run `bun skills/repository/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-signals` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
 last_checked = "8f4005240c3002a64af17add4bc8e878fd7e2ccd"
 commit_html = true
 
@@ -107,7 +107,7 @@ question = "Which outside skills do the Design skills rely on, which outside ski
 audience = "Skill authors and reviewers deciding where a new or changed skill sits"
 traced = ["skills/*/*/SKILL.md"]
 stale_when = "a skill joins or leaves the Design functional area, or one of its skills is moved, renamed or removed, its ki-applicability changes, or a ki-depends-on or ki-optional-depends-on declaration to or from one of its skills changes"
-regenerate = "Run `bun skills/repo-structure/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-design` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
+regenerate = "Run `bun skills/repository/ki-repo-harness/scripts/skill-graph.ts --write` to derive the source from the skills layout, SKILL.md frontmatter and the functional-area table, then run `bun run self:diagrams:html --svg skill-area-design` to finalize it at showcase quality, commit its HTML and re-export the SVG. Do not hand-draw it."
 last_checked = "8f4005240c3002a64af17add4bc8e878fd7e2ccd"
 commit_html = true
 
@@ -115,7 +115,7 @@ commit_html = true
 type = "workflow"
 question = "What steps does a piece of owner-directed work take, from the owner's message through a coordinating thread and a detached agent to the report, the mark and Project close?"
 audience = "The owner, coordinating threads and agents learning how threads and background runs fit together"
-traced = ["skills/change-management/ki-coordination/references/standards-coordination.md", "skills/governance/ki-delegation/references/standards-background-runs.md"]
+traced = ["skills/work/ki-coordination/references/standards-coordination.md", "skills/agentic-systems/ki-delegation/references/standards-background-runs.md"]
 stale_when = "a step of the coordinating-thread loop, the run packet, the report-and-DONE hand-off, the mark or Project close changes in either standard, or a cited heading moves"
 regenerate = "Re-trace the thread loop from the ki-coordination and ki-delegation standards at HEAD, keeping the five lanes and the layout where the facts hold, cite each node's source heading by line at the pinned revision, then run `bun run self:diagrams:html --svg thread-model` to finalize it at showcase quality, commit its HTML and re-export the SVG."
 last_checked = "b3b6a8085316555dfe92712595a442194b34905e"

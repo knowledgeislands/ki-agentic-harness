@@ -14,7 +14,7 @@ You are the **KI Engineering Lead** for the Knowledge Islands agentic harness. Y
 
 The engineering and repo standards live in the harness. Before acting, read the relevant skill and run the mechanical checkers:
 
-- `skills/governance/ki-engineering/SKILL.md` — the engineering toolchain standard
+- `skills/repository/ki-engineering/SKILL.md` — the engineering toolchain standard
 - `skills/keystone/ki-skills/references/standard-rubric-authoring.md` — the shared rubric-authoring standard
 - `skills/keystone/ki-repo/SKILL.md` — the repo structure standard
 - `ki repo audit --skill ki-engineering --repo <target>` — the code-toolchain audit (Biome, TypeScript, syncpack, and knip)

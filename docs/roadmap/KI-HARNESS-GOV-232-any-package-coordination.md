@@ -4,7 +4,7 @@ area: GOV
 title: Any package coordination
 kind: deliver
 purpose: capability
-component: change-management
+component: work
 priority: high
 size: m
 status: done
@@ -41,27 +41,27 @@ Primary main is clean at ede90d68bc1facc5d1dcc6185f0e39e317170de7 and equals fet
 
 ## Files touched
 
-- `skills/change-management/ki-coordination/SKILL.md`
-- `skills/change-management/ki-coordination/references/standards-coordination.md`
-- `skills/change-management/ki-coordination/scripts/rubric/contexts/coordination.ts`
-- `skills/change-management/ki-coordination/scripts/rubric/contexts/coordination.test.ts`
-- `skills/change-management/ki-coordination/scripts/rubric/items/threads.ts`
-- `skills/change-management/ki-coordination/scripts/banner.test.ts`
-- `skills/change-management/ki-coordination/references/rubric.md`
-- `skills/governance/ki-work-package/references/standard-work-package.md`
-- `skills/governance/ki-work-package/scripts/rubric/contexts/work-package.ts`
-- `skills/governance/ki-work-package/scripts/rubric/contexts/work-package.test.ts`
-- `skills/governance/ki-work-package/scripts/rubric/items/records.ts`
-- `skills/governance/ki-work-package/references/rubric.md`
+- `skills/work/ki-coordination/SKILL.md`
+- `skills/work/ki-coordination/references/standards-coordination.md`
+- `skills/work/ki-coordination/scripts/rubric/contexts/coordination.ts`
+- `skills/work/ki-coordination/scripts/rubric/contexts/coordination.test.ts`
+- `skills/work/ki-coordination/scripts/rubric/items/threads.ts`
+- `skills/work/ki-coordination/scripts/banner.test.ts`
+- `skills/work/ki-coordination/references/rubric.md`
+- `skills/work/ki-work-package/references/standard-work-package.md`
+- `skills/work/ki-work-package/scripts/rubric/contexts/work-package.ts`
+- `skills/work/ki-work-package/scripts/rubric/contexts/work-package.test.ts`
+- `skills/work/ki-work-package/scripts/rubric/items/records.ts`
+- `skills/work/ki-work-package/references/rubric.md`
 - `skills/keystone/ki-bootstrap/references/standards-bootstrap.md`
 - `hooks/coordinator-reminder.sh`
 - `hooks/coordinator-reminder.test.ts`
 - `output-styles/ki-coordinator.md`
-- `skills/governance/ki-delegation/assets/run-prompt.md`
-- `skills/governance/ki-delegation/assets/rules-none.md`
-- `skills/governance/ki-delegation/assets/rules-push.md`
-- `skills/governance/ki-delegation/assets/rules-prune.md`
-- `skills/governance/ki-delegation/assets/rules-release.md`
+- `skills/agentic-systems/ki-delegation/assets/run-prompt.md`
+- `skills/agentic-systems/ki-delegation/assets/rules-none.md`
+- `skills/agentic-systems/ki-delegation/assets/rules-push.md`
+- `skills/agentic-systems/ki-delegation/assets/rules-prune.md`
+- `skills/agentic-systems/ki-delegation/assets/rules-release.md`
 - `docs/roadmap/KI-HARNESS-GOV-232-any-package-coordination.md`
 - `docs/roadmap/_ISSUES.md`
 

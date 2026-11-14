@@ -4,7 +4,7 @@ area: GOV
 title: Home the work spec
 purpose: capability
 project: portable-specifications
-component: governance
+component: work
 priority: medium
 size: m
 status: triage
@@ -31,7 +31,7 @@ This is step 6a of the [Portable specifications plan](/Users/krisbrown/workspace
 The [home plan](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_WORK/ki.portable-specifications/design/home-plan.md#6a-home-work-ki-work-package) sets the change:
 
 - Add `references/standards-work-spec.md` from the approved `work` text and `references/standards-work-spec-profile.md` from the approved house profile, each through the plan's homing transform: an attribution line, unlinked names for the sibling specifications, and a `## Contents` list.
-- Add one `## Shared model` bullet to [`SKILL.md`](../../skills/governance/ki-work-package/SKILL.md) pointing to the specification and the profile, leaving `description` and the [work-package standard](../../skills/governance/ki-work-package/references/standard-work-package.md) unchanged.
+- Add one `## Shared model` bullet to [`SKILL.md`](../../skills/work/ki-work-package/SKILL.md) pointing to the specification and the profile, leaving `description` and the [work-package standard](../../skills/work/ki-work-package/references/standard-work-package.md) unchanged.
 - Add two provenance rows and a Last review entry to `references/sources.md`.
 - Add the `SPEC` rubric family with the judgment-only criterion SPEC-1, whose description text the home plan fixes so that the three owning skills agree, and regenerate `references/rubric.md`.
 
@@ -39,7 +39,7 @@ HOMING-REVIEW a) was decided on 20 October 2026 under the work's overnight autho
 
 ## Boundary
 
-- In: the two references, the `SKILL.md` bullet, `sources.md`, the `SPEC` family and SPEC-1, and the regenerated rubric, all under `skills/governance/ki-work-package/`.
+- In: the two references, the `SKILL.md` bullet, `sources.md`, the `SPEC` family and SPEC-1, and the regenerated rubric, all under `skills/work/ki-work-package/`.
 - Out: any change to the house work-package standard or the skill's `description`, so the generated catalogue and diagrams are untouched; refreshing the skill's older `scripts/shared/rubric.ts` copy, which SPEC-1 does not need; the `work.md` to `WORK.md` rename, which belongs to ki.ways-of-working's ENTRY-NAMES run; publication on the website and the move into KI Specifications, which are later plan steps.
 - Out: the sibling homings, [KI-HARNESS-GOV-229](KI-HARNESS-GOV-229-home-acquire-spec.md) for `acquire` and [KI-HARNESS-GOV-230](KI-HARNESS-GOV-230-knowledge-package-skill.md) for `knowledge`.
 

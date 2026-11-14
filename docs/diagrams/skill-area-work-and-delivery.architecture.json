@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "0bb75ac911fd11faf0d19db2f7bf344efa393ab3"
+      "revision": "6839cdd83835c92a944898f2c44345e68bfdf0da"
     },
     "legend": {
       "mode": "auto",
@@ -36,10 +36,10 @@
       "id": "ki-repo-kb-activities",
       "type": "database",
       "label": "ki-repo-kb-activities",
-      "sublabel": "repository structure · opt-in",
+      "sublabel": "repository · opt-in",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-kb-activities/SKILL.md"
+          "path": "skills/repository/ki-repo-kb-activities/SKILL.md"
         }
       ],
       "tag": "R19 · CM · F8",
@@ -56,10 +56,10 @@
       "id": "ki-repo-harness",
       "type": "database",
       "label": "ki-repo-harness",
-      "sublabel": "repository structure · opt-in",
+      "sublabel": "repository · opt-in",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-harness/SKILL.md"
+          "path": "skills/repository/ki-repo-harness/SKILL.md"
         }
       ],
       "tag": "R27 · CL · F4",
@@ -76,10 +76,10 @@
       "id": "ki-accept",
       "type": "frontend",
       "label": "ki-accept",
-      "sublabel": "change management · command",
+      "sublabel": "work · command",
       "sources": [
         {
-          "path": "skills/change-management/ki-accept/SKILL.md"
+          "path": "skills/work/ki-accept/SKILL.md"
         }
       ],
       "tag": "R– · CM · F2",
@@ -96,10 +96,10 @@
       "id": "ki-batch",
       "type": "frontend",
       "label": "ki-batch",
-      "sublabel": "change management · command",
+      "sublabel": "work · command",
       "sources": [
         {
-          "path": "skills/change-management/ki-batch/SKILL.md"
+          "path": "skills/work/ki-batch/SKILL.md"
         }
       ],
       "tag": "R– · CM · F5",
@@ -116,10 +116,10 @@
       "id": "ki-implement",
       "type": "frontend",
       "label": "ki-implement",
-      "sublabel": "change management · command",
+      "sublabel": "work · command",
       "sources": [
         {
-          "path": "skills/change-management/ki-implement/SKILL.md"
+          "path": "skills/work/ki-implement/SKILL.md"
         }
       ],
       "tag": "R– · CS · F2",
@@ -136,10 +136,10 @@
       "id": "ki-next",
       "type": "frontend",
       "label": "ki-next",
-      "sublabel": "change management · command",
+      "sublabel": "work · command",
       "sources": [
         {
-          "path": "skills/change-management/ki-next/SKILL.md"
+          "path": "skills/work/ki-next/SKILL.md"
         }
       ],
       "tag": "R– · CM · F1",
@@ -156,10 +156,10 @@
       "id": "ki-plan",
       "type": "frontend",
       "label": "ki-plan",
-      "sublabel": "change management · command",
+      "sublabel": "work · command",
       "sources": [
         {
-          "path": "skills/change-management/ki-plan/SKILL.md"
+          "path": "skills/work/ki-plan/SKILL.md"
         }
       ],
       "tag": "R– · CS · F1",
@@ -176,10 +176,10 @@
       "id": "ki-recap",
       "type": "frontend",
       "label": "ki-recap",
-      "sublabel": "change management · command",
+      "sublabel": "work · command",
       "sources": [
         {
-          "path": "skills/change-management/ki-recap/SKILL.md"
+          "path": "skills/work/ki-recap/SKILL.md"
         }
       ],
       "tag": "R– · CM · F2",
@@ -196,10 +196,10 @@
       "id": "ki-work",
       "type": "database",
       "label": "ki-work",
-      "sublabel": "change management · opt-in",
+      "sublabel": "keystone · opt-in",
       "sources": [
         {
-          "path": "skills/change-management/ki-work/SKILL.md"
+          "path": "skills/keystone/ki-work/SKILL.md"
         }
       ],
       "tag": "R1 · CM · F5",
@@ -216,10 +216,10 @@
       "id": "ki-work-github-issues",
       "type": "database",
       "label": "ki-work-github-issues",
-      "sublabel": "change management · opt-in",
+      "sublabel": "work · opt-in",
       "sources": [
         {
-          "path": "skills/change-management/ki-work-github-issues/SKILL.md"
+          "path": "skills/work/ki-work-github-issues/SKILL.md"
         }
       ],
       "tag": "R2 · CM · F3",
@@ -236,10 +236,10 @@
       "id": "ki-work-linear",
       "type": "database",
       "label": "ki-work-linear",
-      "sublabel": "change management · opt-in",
+      "sublabel": "work · opt-in",
       "sources": [
         {
-          "path": "skills/change-management/ki-work-linear/SKILL.md"
+          "path": "skills/work/ki-work-linear/SKILL.md"
         }
       ],
       "tag": "R2 · CM · F3",
@@ -256,10 +256,10 @@
       "id": "ki-work-recurring",
       "type": "database",
       "label": "ki-work-recurring",
-      "sublabel": "change management · opt-in",
+      "sublabel": "work · opt-in",
       "sources": [
         {
-          "path": "skills/change-management/ki-work-recurring/SKILL.md"
+          "path": "skills/work/ki-work-recurring/SKILL.md"
         }
       ],
       "tag": "R2 · CM · F3",
@@ -276,10 +276,10 @@
       "id": "ki-work-roadmap",
       "type": "database",
       "label": "ki-work-roadmap",
-      "sublabel": "change management · opt-in",
+      "sublabel": "work · opt-in",
       "sources": [
         {
-          "path": "skills/change-management/ki-work-roadmap/SKILL.md"
+          "path": "skills/work/ki-work-roadmap/SKILL.md"
         }
       ],
       "tag": "R24 · CL · F4",
@@ -316,10 +316,10 @@
       "id": "ki-delegation",
       "type": "database",
       "label": "ki-delegation",
-      "sublabel": "governance · opt-in",
+      "sublabel": "agentic systems · opt-in",
       "sources": [
         {
-          "path": "skills/governance/ki-delegation/SKILL.md"
+          "path": "skills/agentic-systems/ki-delegation/SKILL.md"
         }
       ],
       "tag": "R6 · CM · F4",

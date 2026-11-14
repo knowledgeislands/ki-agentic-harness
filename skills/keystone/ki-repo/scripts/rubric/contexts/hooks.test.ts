@@ -137,7 +137,7 @@ test('HOOK-4 compares each committed hook with its shape canonical text byte for
   addHook(root, 0o755, 'pre-commit', hooks['pre-commit'].replace('rumdl check --quiet', 'rumdl check --quiet --fix'))
   const changed = hookEvidence(root, 'ki-repo-kb', local).hook4[0]
   expect(changed?.status).toBe('VIOLATION')
-  expect(changed?.message).toContain('skills/repo-structure/ki-repo-kb/assets/githooks/no-package/pre-commit')
+  expect(changed?.message).toContain('skills/repository/ki-repo-kb/assets/githooks/no-package/pre-commit')
 
   writeFileSync(join(root, 'package.json'), '{}\n')
   expect(hookEvidence(root, 'ki-repo-kb', local).hook4[1]?.message).toContain('canonical ki-repo-kb package hook')

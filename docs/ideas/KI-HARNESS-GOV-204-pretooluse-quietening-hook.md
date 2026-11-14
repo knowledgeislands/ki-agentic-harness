@@ -3,7 +3,7 @@ id: KI-HARNESS-GOV-204
 area: GOV
 title: PreToolUse quietening hook
 project: ways-of-working
-component: governance
+component: environment
 kind: decide
 priority: medium
 size: s

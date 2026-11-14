@@ -4,7 +4,7 @@ area: GOV
 title: Typed work naming readers
 kind: deliver
 purpose: corrective
-component: change-management
+component: work
 priority: high
 size: s
 status: done
@@ -49,12 +49,12 @@ The actual Personal pure-rename gate fails on unchanged historical Markdown. The
 
 The canonical COORD rubric item descriptions and their generated `references/rubric.md` are also owned so published naming wording does not contradict the new canonical table.
 
-- `skills/change-management/ki-coordination/scripts/rubric/contexts/coordination.ts`
-- `skills/change-management/ki-coordination/scripts/rubric/contexts/coordination.test.ts`
-- `skills/governance/ki-work-package/scripts/rubric/contexts/work-package.ts`
-- `skills/governance/ki-work-package/scripts/rubric/contexts/work-package.test.ts`
-- `skills/change-management/ki-coordination/references/standards-coordination.md`
-- `skills/governance/ki-work-package/references/standard-work-package.md`
+- `skills/work/ki-coordination/scripts/rubric/contexts/coordination.ts`
+- `skills/work/ki-coordination/scripts/rubric/contexts/coordination.test.ts`
+- `skills/work/ki-work-package/scripts/rubric/contexts/work-package.ts`
+- `skills/work/ki-work-package/scripts/rubric/contexts/work-package.test.ts`
+- `skills/work/ki-coordination/references/standards-coordination.md`
+- `skills/work/ki-work-package/references/standard-work-package.md`
 
 Generated coordination surfaces may change only through their canonical generator if naming wording affects them. This record is also owned.
 

@@ -4,7 +4,7 @@ area: GOV
 title: Knowledge package skill
 purpose: capability
 project: portable-specifications
-component: governance
+component: keystone
 priority: medium
 size: l
 status: triage
@@ -36,7 +36,7 @@ This is step 6c of the [Portable specifications plan](/Users/krisbrown/workspace
 The [home plan](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_WORK/ki.portable-specifications/design/home-plan.md#6c-home-knowledge-the-new-ki-knowledge-package) sets the change:
 
 - Create `skills/governance/ki-knowledge-package/` with `SKILL.md` (draft text in the plan, `declaration-only`, no dependencies, the `ki-skills:rubric` shared module), `references/standards-knowledge-spec.md` from the approved `knowledge` text through the homing transform, `references/sources.md` with an `external-spec · quarterly` refresh class, a generated `references/rubric.md`, and rubric scripts with the `CONFIG`, `SPEC` and `RUBRIC` families and a configuration test modelled on `ki-acquire`'s. SPEC-1 uses the description text the home plan fixes so that the three owning skills agree.
-- Register it: an empty `[skills.ki-knowledge-package]` table in `.ki.toml`; an entry in the records group of [`skill-functions.ts`](../../skills/repo-structure/ki-repo-harness/scripts/rubric/contexts/skill-functions.ts); and a reciprocal off-ramp in [`ki-skills`](../../skills/keystone/ki-skills/SKILL.md)' description, since a knowledge package is a skill and both fire on "write a skill about X".
+- Register it: an empty `[skills.ki-knowledge-package]` table in `.ki.toml`; an entry in the records group of [`skill-functions.ts`](../../skills/repository/ki-repo-harness/scripts/rubric/contexts/skill-functions.ts); and a reciprocal off-ramp in [`ki-skills`](../../skills/keystone/ki-skills/SKILL.md)' description, since a knowledge package is a skill and both fire on "write a skill about X".
 - Regenerate, through the one write-mode conform, the capability catalogue in `skills/README.md`, the counts in `README.md` and the two architecture sources under `docs/diagrams/`, then re-export their two SVGs through `ki-diagrams`.
 
 ## Boundary

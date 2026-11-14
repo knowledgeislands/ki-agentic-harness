@@ -30,7 +30,7 @@ _Conformance:_ conforming
 
 _Verify:_ construct and audit a valid package containing only portable repository evidence and durable-owner references, with no runtime-session fields.
 
-_Evidence:_ `skills/governance/ki-work-package/scripts/rubric/contexts/checkpoint-handoff.test.ts` proves the portable record passes schema and boundary checks without transcript or runtime state.
+_Evidence:_ `skills/work/ki-work-package/scripts/rubric/contexts/checkpoint-handoff.test.ts` proves the portable record passes schema and boundary checks without transcript or runtime state.
 
 ### AHO-006 — ~~Result evidence return~~ (deprecated)
 

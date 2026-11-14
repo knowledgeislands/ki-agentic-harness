@@ -30,7 +30,7 @@ transferred_from: ki-principal ki.observatory STORAGE-OWNER a), 2026-10-20
 
 Kris Brown decided STORAGE-OWNER a) on 20 October 2026 in the Observatory work, under the overnight authority recorded as OVERNIGHT in the [Observatory decisions log](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_WORK/ki.observatory/decisions.md): `ki-repo`, as a `.ki.toml` declaration, with `ki-engineering` keeping the path-resolution rule and Rig later adding third-party tools. It was recommended because `ki-repo` is the one repository-wide contract, so it covers tools, MCP servers and apps alike, and `ki` can expose it as a stable machine contract. A blind review agreed and lifted the recommendation to high confidence.
 
-The alternatives considered were [`ki-repo-tools`](../../skills/repo-structure/ki-repo-tools/references/standards-tool-repositories.md), which already requires a tool to follow XDG but covers only tool repositories and would leave MCP servers and apps undeclared; Rig's catalogue, which describes declared intent and profile selection on one machine rather than a repository-owned standard; and [`ki-engineering`](../../skills/governance/ki-engineering/references/standards-engineering.md), which owns how code resolves XDG paths, not what a tool declares.
+The alternatives considered were [`ki-repo-tools`](../../skills/repository/ki-repo-tools/references/standards-tool-repositories.md), which already requires a tool to follow XDG but covers only tool repositories and would leave MCP servers and apps undeclared; Rig's catalogue, which describes declared intent and profile selection on one machine rather than a repository-owned standard; and [`ki-engineering`](../../skills/repository/ki-engineering/references/standards-engineering.md), which owns how code resolves XDG paths, not what a tool declares.
 
 The review made one point this record carries: choosing `.ki.toml` does not itself choose a schema owner, because the [configuration contract](../../skills/keystone/ki-repo/references/standard-configuration.md#412-scaffolding--ownership) assigns each table's schema and conformer to the skill that owns it. This decision therefore extends `ki-repo`'s responsibilities to a new table; it does not apply an existing storage-declaration rule. The schema is still to be designed.
 
@@ -54,7 +54,7 @@ Checked on 20 October 2026 at `071567a1`. No `.ki.toml` table declares storage. 
 ## Files touched
 
 - `skills/keystone/ki-repo/references/standard-repository.md`, `standard-configuration.md`, `rubric.md`, and its rubric context, items and tests
-- `skills/governance/ki-engineering/references/standards-engineering.md`
+- `skills/repository/ki-engineering/references/standards-engineering.md`
 
 ## Verify
 

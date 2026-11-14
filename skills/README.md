@@ -23,16 +23,6 @@ This source harness publishes 70 skills: 56 governance skills, 13 process skills
 
 ### Acquire
 
-#### `ki-acquire`
-
-Govern source-independent knowledge capture and curation: supplied scope, honest coverage, faithful lean preservation, exact required originals, verified destinations, incremental curation into a staging knowledge graph and dispatch by Git move, with the transient capture package as the only record. Use for common acquisition or curation rules; ki-acquire-chatgpt and ki-acquire-granola own their provider contracts.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
-
 #### `ki-acquire-chatgpt`
 
 Govern ChatGPT conversation capture: honest digest or full-thread coverage, routing from project and conversation evidence, and the capture end point recorded in the digest's README front matter. Use for ChatGPT capture or audit; `ki-acquire` owns the common contract.
@@ -85,6 +75,26 @@ Capture a submitted link or scan bounded public sources, then triage current sig
 
 ### Agentic Systems
 
+#### `ki-agentic-radar`
+
+Maintain an evidence-backed radar for agentic protocols, interfaces, organisations, architectures, research, and vendor terms. Use for maturity, interoperability, or stance; `ki-agentic-systems` defines the terms, `ki-model-radar` owns models, `ki-pulse` discovers signals, and `ki-next` owns follow-on work.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit | conform | educate | help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-delegation`
+
+Govern agent delegation: routine background runs on the agent host's own subagents (run packet, prompt shape, authority footers, decisions log, coordination, concurrency, monitoring) and durable packets for approved high-risk handoffs. Use when delegating to background agents or writing a delegation brief; `ki-coordination` governs the coordinating work that starts them.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | educate <work-item> | help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
 #### `ki-delegation-orca`
 
 Start, wait on, steer, stop and close Orca supervised workers as a KI delegation launcher, on attended Macs for a work package that opts in. Use when a coordinator dispatches runs through `orca orchestration`; `ki-delegation` owns the portable run contract, `ki-coordination` the coordinating work, and Orca's own `orchestration` skill its command mechanics.
@@ -93,6 +103,16 @@ Start, wait on, steer, stop and close Orca supervised workers as a KI delegation
 - **Applicability:** Invocation Only
 - **Arguments:** `start <brief> | wait | status | steer <dispatch> | stop <dispatch> | close <dispatch> | recover | help`
 - **Dependencies:** `ki-delegation`, `ki-coordination`
+- **Runtime:** Portable
+
+#### `ki-model-radar`
+
+Maintain an evidence-backed radar for models and model-agent routes. Use for model comparisons, benchmark relevance, recommendations, or retirements. Use `ki-agentic-radar` for broader agentic standards, `ki-pulse` for signal discovery, and `ki-tokenomics` for model purpose.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit | conform | educate | help | refresh`
+- **Dependencies:** None
 - **Runtime:** Portable
 
 #### `ki-subagents`
@@ -125,145 +145,45 @@ Audit or write Claude Code Markdown/YAML projections of approved portable KI sub
 - **Dependencies:** `ki-subagents`
 - **Runtime:** Runtime-bound: `claude-code`
 
-### Change Management
+### Authoring
 
-#### `ki-accept`
+#### `ki-decision-records`
 
-Close a reviewed local work record as done, cancel an open record with an approved resolution, or prune explicitly selected eligible terminal records. Use only with human approval; use `ki-implement` for delivery, `ki-plan` for readiness, and `ki-next` for selection or adoption.
+Create or audit typed KI Decision Records for durable rationale and authority. Use `ki-specs` for accepted behaviour, `ki-guides` for procedures, and `ki-work-roadmap` for future delivery.
 
-- **Kind:** Process
-- **Applicability:** Invocation Only
-- **Arguments:** `accept <work> | prune <work-record-or-glob>... | help`
+- **Kind:** Governance
+- **Applicability:** Detected
+- **Arguments:** `audit [dir] | conform [dir] | consolidate [dir] | educate [dir] | help | new <scope> "<title>" | refresh`
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-batch`
+#### `ki-diagrams`
 
-Retired batch authority, kept only so existing batch records stay readable while its removal lands. Use only to read an existing batch record; deliver new work as a frozen wave in a `ki-coordination` unattended window.
-
-- **Kind:** Process
-- **Applicability:** Invocation Only
-- **Arguments:** `batch <work>... | batch outcome <outcome> | run <batch-authorisation> | help`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-coordination`
-
-Govern coordinating work under the Knowledge Islands work model: the responsive coordinator and its turn budget, the work levels and forms with their ids, openers and bootstrap, the seven states and the receive words, the mark and the one Summary with its status table and footer, the reply format, the closing glyph banner and thread line, On hold with its Stop, the work package and its message queue, route receipt and the inbox check, re-anchoring after compaction, decision classes and their life cycle, change documents, Finished, the working rules, and the three reply forms every session uses. Use while coordinating any explicitly opened work package to give a summary or banner or strike the mark, or to decide how any session replies; `ki-delegation` owns the background runs the coordinator launches.
+Create, audit or refresh a repository's living Archify diagrams: committed sources and SVGs, the manifest, privacy, type choice and freshness. Use to keep diagrams that explain a system; use `ki-authoring` for prose and `ki-guides` for where a guide embeds a figure.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | conform <repo> | drain | educate <repo> | help | hold | mark [only | status only] [no art] | receive | refresh | resume | send | status [no art] | summary [since <time>] [no art]`
-- **Dependencies:** `ki-delegation`, `ki-work-package`
-- **Runtime:** Portable
-
-#### `ki-implement`
-
-Deliver one approved Ready local work record from immutable baseline through verification and Awaiting review. Use to implement planned work; it never selects, replans, self-accepts, prunes, pushes, releases, or expands authority.
-
-- **Kind:** Process
-- **Applicability:** Invocation Only
-- **Arguments:** `implement <work-item> | help`
+- **Arguments:** `audit [dir] | conform [dir] | help | educate [dir] | refresh`
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-meeting`
+#### `ki-guides`
 
-Call, hold and close a meeting: a room at one node of the work tree where named participants, each reaching it by the first route that works, make, review or look back on something together, in sittings with a roll call, one file per message, check-ins and minutes, while decisions go to a change document. Use to call a meeting, open, adjourn or join a sitting, or close one, and to choose a workshop, review or retrospective; use `ki-coordination` for coordinating work and its reports, and `ki-work-package` for the package a meeting serves.
-
-- **Kind:** Process
-- **Applicability:** Invocation Only
-- **Arguments:** `adjourn <meeting> | call <node id> <slug> | close <meeting> | help | join <meeting> | sit <meeting>`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-next`
-
-Capture substantive prospective work as unadopted triage records, or select, adopt, promote, defer, hold, and release work in the shared queue. Use when new work emerges or deciding what comes next; use `ki-plan` for readiness and `ki-trades` for trade transport.
-
-- **Kind:** Process
-- **Applicability:** Invocation Only
-- **Arguments:** `next [--review] | defer <item> <horizon> | help`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-plan`
-
-Shape selected Now or Next draft work in the local roadmap or KB Streams adapter until it is Ready. Use to plan or prepare implementation; it does not capture, select, implement, close, or prune work.
-
-- **Kind:** Process
-- **Applicability:** Invocation Only
-- **Arguments:** `plan <work>... | help`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-recap`
-
-Recap the live session by summarising changes, decisions, touched files, unfinished work, and durable learning routes. Use for a session recap or outstanding-work handoff; use `ki-next` to select backlog work and housekeeping skills for historical session acquisition.
-
-- **Kind:** Process
-- **Applicability:** Invocation Only
-- **Arguments:** `help | recap [--runtime detect|claude|codex] [--transcript <session-file>]`
-- **Dependencies:** `ki-authoring`
-- **Runtime:** Portable
-
-#### `ki-work`
-
-Select and audit a repository's KI forward-work adapter and shared lifecycle vocabulary. Use when choosing between local roadmap, KB Streams, GitHub Issues, or Linear; the selected adapter owns record shape and process skills own lifecycle actions.
+Create or audit repository-local guides for the practical how of using, operating, contributing to, or maintaining a system. Use `ki-decision-records` for why, `ki-specs` for accepted behaviour, `ki-work-roadmap` for future work, and `ki-authoring` for style.
 
 - **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
+- **Applicability:** Detected
+- **Arguments:** `audit [dir] | conform [dir] | help | educate [dir] | refresh`
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-work-design`
+#### `ki-specs`
 
-Shape a new Project, theme or cross-cutting model before any work record exists, through a brief, independent reviews, one merged report, the owner's decisions and a piloted rollout, with every artefact committed in the work folder's `design/`, `+/_WORK/<id>/design/`. Use when the shape itself is undecided; use `ki-next` to capture or select known work, `ki-plan` to ready one record, `ki-design-inspiration` for website visual design, and `ki-design-system` for interface design work.
-
-- **Kind:** Process
-- **Applicability:** Invocation Only
-- **Arguments:** `start <subject> | resume <id> | help`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-work-github-issues`
-
-Define GitHub Issues configuration, lifecycle mapping, hierarchy, dependencies, review, closure, and remote-write safety as a KI work adapter. Use when GitHub Issues is selected; remote execution is unavailable, while local files use `ki-work-roadmap` and Linear uses `ki-work-linear`.
+Create or audit repository Specifications: accepted behaviour and quality requirements with conformance state, verification plans, and evidence. Use `ki-decision-records` for why, `ki-guides` for procedures, and `ki-work-roadmap` for future delivery.
 
 - **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-work-linear`
-
-Define Linear configuration, lifecycle mapping, hierarchy, dependencies, review, closure, and remote-write safety as a KI work adapter. Use when Linear is selected; remote execution is unavailable, while local files use `ki-work-roadmap` and GitHub Issues uses `ki-work-github-issues`.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-work-recurring`
-
-Govern recurring-work identity, cadence, due-run reservation, and successful-run evidence for Project templates and opted-in KB Activities. Use for recurring maintenance; `ki-repo-kb-activities` owns Activity notes and `ki-housekeeping-*` skills own runtime cleanup.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-work-roadmap`
-
-Govern flat local work items, roadmap horizons, lifecycle detail, dependencies, root orientation, and done-before-prune commit boundaries. Use to audit or shape roadmap records; `ki-next`, `ki-plan`, `ki-implement`, and `ki-accept` apply the lifecycle, while Decision Records own durable rationale.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | conform <repo> | help | educate <repo> | refresh`
+- **Applicability:** Detected
+- **Arguments:** `audit [dir] | conform [dir] | help | educate [dir] | new <area> "<title>" | refresh`
 - **Dependencies:** None
 - **Runtime:** Portable
 
@@ -381,129 +301,17 @@ Audit non-secret Claude Code repository evidence—instructions, rules, settings
 - **Dependencies:** `ki-tokenomics`
 - **Runtime:** Runtime-bound: `claude-code`
 
-### Governance
+### Keystone
 
-#### `ki-agentic-radar`
+#### `ki-acquire`
 
-Maintain an evidence-backed radar for agentic protocols, interfaces, organisations, architectures, research, and vendor terms. Use for maturity, interoperability, or stance; `ki-agentic-systems` defines the terms, `ki-model-radar` owns models, `ki-pulse` discovers signals, and `ki-next` owns follow-on work.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit | conform | educate | help | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-decision-records`
-
-Create or audit typed KI Decision Records for durable rationale and authority. Use `ki-specs` for accepted behaviour, `ki-guides` for procedures, and `ki-work-roadmap` for future delivery.
-
-- **Kind:** Governance
-- **Applicability:** Detected
-- **Arguments:** `audit [dir] | conform [dir] | consolidate [dir] | educate [dir] | help | new <scope> "<title>" | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-delegation`
-
-Govern agent delegation: routine background runs on the agent host's own subagents (run packet, prompt shape, authority footers, decisions log, coordination, concurrency, monitoring) and durable packets for approved high-risk handoffs. Use when delegating to background agents or writing a delegation brief; `ki-coordination` governs the coordinating work that starts them.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | conform <repo> | educate <work-item> | help | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-diagrams`
-
-Create, audit or refresh a repository's living Archify diagrams: committed sources and SVGs, the manifest, privacy, type choice and freshness. Use to keep diagrams that explain a system; use `ki-authoring` for prose and `ki-guides` for where a guide embeds a figure.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit [dir] | conform [dir] | help | educate [dir] | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-engineering`
-
-Audit or conform KI TypeScript/Bun engineering: modularity, reuse, boundary testing, package scripts, tsconfig, Biome, and toolchain consistency. Use `ki-repo` for repository configuration, `ki-authoring` for documents, and `ki-repo-mcp` for MCP specifics.
-
-- **Kind:** Governance
-- **Applicability:** Detected
-- **Arguments:** `audit <repo> | conform <repo> | help | educate <repo> | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-git`
-
-Govern KI Git commits and shared-tree safety: Conventional Commits, touched-path tracking, explicit staging, branch or worktree choice, and stale locks. Use when preparing commits or coordinating concurrent edits; `ki-repo` owns GitHub settings.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit <repo> | conform <repo> | help | educate <repo> | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-guides`
-
-Create or audit repository-local guides for the practical how of using, operating, contributing to, or maintaining a system. Use `ki-decision-records` for why, `ki-specs` for accepted behaviour, `ki-work-roadmap` for future work, and `ki-authoring` for style.
-
-- **Kind:** Governance
-- **Applicability:** Detected
-- **Arguments:** `audit [dir] | conform [dir] | help | educate [dir] | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-model-radar`
-
-Maintain an evidence-backed radar for models and model-agent routes. Use for model comparisons, benchmark relevance, recommendations, or retirements. Use `ki-agentic-radar` for broader agentic standards, `ki-pulse` for signal discovery, and `ki-tokenomics` for model purpose.
-
-- **Kind:** Governance
-- **Applicability:** Declaration Only
-- **Arguments:** `audit | conform | educate | help | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-specs`
-
-Create or audit repository Specifications: accepted behaviour and quality requirements with conformance state, verification plans, and evidence. Use `ki-decision-records` for why, `ki-guides` for procedures, and `ki-work-roadmap` for future delivery.
-
-- **Kind:** Governance
-- **Applicability:** Detected
-- **Arguments:** `audit [dir] | conform [dir] | help | educate [dir] | new <area> "<title>" | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-trade`
-
-Operate one repository's side of a declared cross-repository trade: prepare, inspect, submit, receive, release, or prune a work or knowledge record. Use for one concrete trade action; `ki-trades` owns record and route governance, while `ki-next` owns receiver disposition.
-
-- **Kind:** Process
-- **Applicability:** Invocation Only
-- **Arguments:** `prepare <receiver> | observe <TRD> | submit <TRD> | abandon <TRD> | receive <TRD> | release <TRD> | prune <TRD> | routes <list|check> | standing <list|check|capture> | list | show <TRD> | help`
-- **Dependencies:** `ki-trades`
-- **Runtime:** Portable
-
-#### `ki-trades`
-
-Govern directional work and knowledge trades between KI repositories: routes, records, authority, receipt, decisions, release, and pruning. Use to design or audit the system; `ki-trade` performs one side and `ki-next` owns receiver disposition.
+Govern source-independent knowledge capture and curation: supplied scope, honest coverage, faithful lean preservation, exact required originals, verified destinations, incremental curation into a staging knowledge graph and dispatch by Git move, with the transient capture package as the only record. Use for common acquisition or curation rules; ki-acquire-chatgpt and ki-acquire-granola own their provider contracts.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
 - **Dependencies:** None
 - **Runtime:** Portable
-
-#### `ki-work-package`
-
-Own the work package of one piece of work, `work/<territory>/<id>/` in the Cairn store: its `_index.md`, holding the definition with its routing description, goals, scope and repositories and the state for recovery, its `NN-<slug>.change.md` change documents, where decisions and open points live, and sub-packages of the same shape, plus the closed list, the writers and the tidy. Use to create, update, resume, audit, tidy or remove a package, or to pick work up without a transcript or vendor session; Git is the logbook, messages go through the Cairn store, and durable knowledge stays with its owners.
-
-- **Kind:** Governance
-- **Applicability:** Detected
-- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh | remove <id> | resume <id> | update <id>`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-### Keystone
 
 #### `ki-agentic-systems`
 
@@ -566,7 +374,37 @@ Create, audit, review, extract, or optimise Agent Skills. Use for SKILL.md scope
 - **Dependencies:** None
 - **Runtime:** Portable
 
-### Repo Structure
+#### `ki-work`
+
+Select and audit a repository's KI forward-work adapter and shared lifecycle vocabulary. Use when choosing between local roadmap, KB Streams, GitHub Issues, or Linear; the selected adapter owns record shape and process skills own lifecycle actions.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+### Repository
+
+#### `ki-engineering`
+
+Audit or conform KI TypeScript/Bun engineering: modularity, reuse, boundary testing, package scripts, tsconfig, Biome, and toolchain consistency. Use `ki-repo` for repository configuration, `ki-authoring` for documents, and `ki-repo-mcp` for MCP specifics.
+
+- **Kind:** Governance
+- **Applicability:** Detected
+- **Arguments:** `audit <repo> | conform <repo> | help | educate <repo> | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-git`
+
+Govern KI Git commits and shared-tree safety: Conventional Commits, touched-path tracking, explicit staging, branch or worktree choice, and stale locks. Use when preparing commits or coordinating concurrent edits; `ki-repo` owns GitHub settings.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | help | educate <repo> | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
 
 #### `ki-repo-dotfiles-chezmoi`
 
@@ -736,6 +574,168 @@ Govern KI content sites built with Eleventy 3, Markdown or data, Nunjucks, Tailw
 - **Applicability:** Detected
 - **Arguments:** `audit <repo> | conform <repo> | help | educate <repo> | refresh`
 - **Dependencies:** `ki-repo-website`
+- **Runtime:** Portable
+
+### Work
+
+#### `ki-accept`
+
+Close a reviewed local work record as done, cancel an open record with an approved resolution, or prune explicitly selected eligible terminal records. Use only with human approval; use `ki-implement` for delivery, `ki-plan` for readiness, and `ki-next` for selection or adoption.
+
+- **Kind:** Process
+- **Applicability:** Invocation Only
+- **Arguments:** `accept <work> | prune <work-record-or-glob>... | help`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-batch`
+
+Retired batch authority, kept only so existing batch records stay readable while its removal lands. Use only to read an existing batch record; deliver new work as a frozen wave in a `ki-coordination` unattended window.
+
+- **Kind:** Process
+- **Applicability:** Invocation Only
+- **Arguments:** `batch <work>... | batch outcome <outcome> | run <batch-authorisation> | help`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-coordination`
+
+Govern coordinating work under the Knowledge Islands work model: the responsive coordinator and its turn budget, the work levels and forms with their ids, openers and bootstrap, the seven states and the receive words, the mark and the one Summary with its status table and footer, the reply format, the closing glyph banner and thread line, On hold with its Stop, the work package and its message queue, route receipt and the inbox check, re-anchoring after compaction, decision classes and their life cycle, change documents, Finished, the working rules, and the three reply forms every session uses. Use while coordinating any explicitly opened work package to give a summary or banner or strike the mark, or to decide how any session replies; `ki-delegation` owns the background runs the coordinator launches.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | drain | educate <repo> | help | hold | mark [only | status only] [no art] | receive | refresh | resume | send | status [no art] | summary [since <time>] [no art]`
+- **Dependencies:** `ki-delegation`, `ki-work-package`
+- **Runtime:** Portable
+
+#### `ki-implement`
+
+Deliver one approved Ready local work record from immutable baseline through verification and Awaiting review. Use to implement planned work; it never selects, replans, self-accepts, prunes, pushes, releases, or expands authority.
+
+- **Kind:** Process
+- **Applicability:** Invocation Only
+- **Arguments:** `implement <work-item> | help`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-meeting`
+
+Call, hold and close a meeting: a room at one node of the work tree where named participants, each reaching it by the first route that works, make, review or look back on something together, in sittings with a roll call, one file per message, check-ins and minutes, while decisions go to a change document. Use to call a meeting, open, adjourn or join a sitting, or close one, and to choose a workshop, review or retrospective; use `ki-coordination` for coordinating work and its reports, and `ki-work-package` for the package a meeting serves.
+
+- **Kind:** Process
+- **Applicability:** Invocation Only
+- **Arguments:** `adjourn <meeting> | call <node id> <slug> | close <meeting> | help | join <meeting> | sit <meeting>`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-next`
+
+Capture substantive prospective work as unadopted triage records, or select, adopt, promote, defer, hold, and release work in the shared queue. Use when new work emerges or deciding what comes next; use `ki-plan` for readiness and `ki-trades` for trade transport.
+
+- **Kind:** Process
+- **Applicability:** Invocation Only
+- **Arguments:** `next [--review] | defer <item> <horizon> | help`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-plan`
+
+Shape selected Now or Next draft work in the local roadmap or KB Streams adapter until it is Ready. Use to plan or prepare implementation; it does not capture, select, implement, close, or prune work.
+
+- **Kind:** Process
+- **Applicability:** Invocation Only
+- **Arguments:** `plan <work>... | help`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-recap`
+
+Recap the live session by summarising changes, decisions, touched files, unfinished work, and durable learning routes. Use for a session recap or outstanding-work handoff; use `ki-next` to select backlog work and housekeeping skills for historical session acquisition.
+
+- **Kind:** Process
+- **Applicability:** Invocation Only
+- **Arguments:** `help | recap [--runtime detect|claude|codex] [--transcript <session-file>]`
+- **Dependencies:** `ki-authoring`
+- **Runtime:** Portable
+
+#### `ki-trade`
+
+Operate one repository's side of a declared cross-repository trade: prepare, inspect, submit, receive, release, or prune a work or knowledge record. Use for one concrete trade action; `ki-trades` owns record and route governance, while `ki-next` owns receiver disposition.
+
+- **Kind:** Process
+- **Applicability:** Invocation Only
+- **Arguments:** `prepare <receiver> | observe <TRD> | submit <TRD> | abandon <TRD> | receive <TRD> | release <TRD> | prune <TRD> | routes <list|check> | standing <list|check|capture> | list | show <TRD> | help`
+- **Dependencies:** `ki-trades`
+- **Runtime:** Portable
+
+#### `ki-trades`
+
+Govern directional work and knowledge trades between KI repositories: routes, records, authority, receipt, decisions, release, and pruning. Use to design or audit the system; `ki-trade` performs one side and `ki-next` owns receiver disposition.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-work-design`
+
+Shape a new Project, theme or cross-cutting model before any work record exists, through a brief, independent reviews, one merged report, the owner's decisions and a piloted rollout, with every artefact committed in the work folder's `design/`, `+/_WORK/<id>/design/`. Use when the shape itself is undecided; use `ki-next` to capture or select known work, `ki-plan` to ready one record, `ki-design-inspiration` for website visual design, and `ki-design-system` for interface design work.
+
+- **Kind:** Process
+- **Applicability:** Invocation Only
+- **Arguments:** `start <subject> | resume <id> | help`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-work-github-issues`
+
+Define GitHub Issues configuration, lifecycle mapping, hierarchy, dependencies, review, closure, and remote-write safety as a KI work adapter. Use when GitHub Issues is selected; remote execution is unavailable, while local files use `ki-work-roadmap` and Linear uses `ki-work-linear`.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-work-linear`
+
+Define Linear configuration, lifecycle mapping, hierarchy, dependencies, review, closure, and remote-write safety as a KI work adapter. Use when Linear is selected; remote execution is unavailable, while local files use `ki-work-roadmap` and GitHub Issues uses `ki-work-github-issues`.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-work-package`
+
+Own the work package of one piece of work, `work/<territory>/<id>/` in the Cairn store: its `_index.md`, holding the definition with its routing description, goals, scope and repositories and the state for recovery, its `NN-<slug>.change.md` change documents, where decisions and open points live, and sub-packages of the same shape, plus the closed list, the writers and the tidy. Use to create, update, resume, audit, tidy or remove a package, or to pick work up without a transcript or vendor session; Git is the logbook, messages go through the Cairn store, and durable knowledge stays with its owners.
+
+- **Kind:** Governance
+- **Applicability:** Detected
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh | remove <id> | resume <id> | update <id>`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-work-recurring`
+
+Govern recurring-work identity, cadence, due-run reservation, and successful-run evidence for Project templates and opted-in KB Activities. Use for recurring maintenance; `ki-repo-kb-activities` owns Activity notes and `ki-housekeeping-*` skills own runtime cleanup.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-work-roadmap`
+
+Govern flat local work items, roadmap horizons, lifecycle detail, dependencies, root orientation, and done-before-prune commit boundaries. Use to audit or shape roadmap records; `ki-next`, `ki-plan`, `ki-implement`, and `ki-accept` apply the lifecycle, while Decision Records own durable rationale.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | help | educate <repo> | refresh`
+- **Dependencies:** None
 - **Runtime:** Portable
 
 <!-- ki-repo-harness:capability-catalogue:end -->

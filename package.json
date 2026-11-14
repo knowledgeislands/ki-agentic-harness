@@ -49,7 +49,7 @@
     "ki:deps:update": "bun update --latest",
     "ki:harness:eval": "bun evals/harness.ts",
     "prepare": "git config core.hooksPath .githooks",
-    "self:diagrams:html": "bun skills/governance/ki-diagrams/scripts/build-html.ts",
+    "self:diagrams:html": "bun skills/authoring/ki-diagrams/scripts/build-html.ts",
     "test": "bun test --isolate --max-concurrency=1 ./skills ./hooks ./evals"
   },
   "type": "module"

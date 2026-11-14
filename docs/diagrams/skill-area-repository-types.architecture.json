@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "0bb75ac911fd11faf0d19db2f7bf344efa393ab3"
+      "revision": "6839cdd83835c92a944898f2c44345e68bfdf0da"
     },
     "legend": {
       "mode": "auto",
@@ -56,10 +56,10 @@
       "id": "ki-repo-dotfiles-chezmoi",
       "type": "database",
       "label": "ki-repo-dotfiles-chezmoi",
-      "sublabel": "repository structure · opt-in",
+      "sublabel": "repository · opt-in",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-dotfiles-chezmoi/SKILL.md"
+          "path": "skills/repository/ki-repo-dotfiles-chezmoi/SKILL.md"
         }
       ],
       "tag": "R9 · CM · F3",
@@ -76,10 +76,10 @@
       "id": "ki-repo-harness",
       "type": "database",
       "label": "ki-repo-harness",
-      "sublabel": "repository structure · opt-in",
+      "sublabel": "repository · opt-in",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-harness/SKILL.md"
+          "path": "skills/repository/ki-repo-harness/SKILL.md"
         }
       ],
       "tag": "R27 · CL · F4",
@@ -96,10 +96,10 @@
       "id": "ki-repo-homebrew-tap",
       "type": "backend",
       "label": "ki-repo-homebrew-tap",
-      "sublabel": "repository structure · automatic",
+      "sublabel": "repository · automatic",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-homebrew-tap/SKILL.md"
+          "path": "skills/repository/ki-repo-homebrew-tap/SKILL.md"
         }
       ],
       "tag": "R10 · CM · F7",
@@ -116,10 +116,10 @@
       "id": "ki-repo-kb",
       "type": "backend",
       "label": "ki-repo-kb",
-      "sublabel": "repository structure · automatic",
+      "sublabel": "repository · automatic",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-kb/SKILL.md"
+          "path": "skills/repository/ki-repo-kb/SKILL.md"
         }
       ],
       "tag": "R25 · CL · F18",
@@ -136,10 +136,10 @@
       "id": "ki-repo-kb-activities",
       "type": "database",
       "label": "ki-repo-kb-activities",
-      "sublabel": "repository structure · opt-in",
+      "sublabel": "repository · opt-in",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-kb-activities/SKILL.md"
+          "path": "skills/repository/ki-repo-kb-activities/SKILL.md"
         }
       ],
       "tag": "R19 · CM · F8",
@@ -156,10 +156,10 @@
       "id": "ki-repo-kb-live-artifacts",
       "type": "database",
       "label": "ki-repo-kb-live-artifacts",
-      "sublabel": "repository structure · opt-in",
+      "sublabel": "repository · opt-in",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-kb-live-artifacts/SKILL.md"
+          "path": "skills/repository/ki-repo-kb-live-artifacts/SKILL.md"
         }
       ],
       "tag": "R13 · CM · F8",
@@ -176,10 +176,10 @@
       "id": "ki-repo-kb-principal",
       "type": "database",
       "label": "ki-repo-kb-principal",
-      "sublabel": "repository structure · opt-in",
+      "sublabel": "repository · opt-in",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-kb-principal/SKILL.md"
+          "path": "skills/repository/ki-repo-kb-principal/SKILL.md"
         }
       ],
       "tag": "R6 · CM · F3",
@@ -196,10 +196,10 @@
       "id": "ki-repo-kb-streams",
       "type": "backend",
       "label": "ki-repo-kb-streams",
-      "sublabel": "repository structure · automatic",
+      "sublabel": "repository · automatic",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-kb-streams/SKILL.md"
+          "path": "skills/repository/ki-repo-kb-streams/SKILL.md"
         }
       ],
       "tag": "R19 · CL · F8",
@@ -216,10 +216,10 @@
       "id": "ki-repo-mcp",
       "type": "backend",
       "label": "ki-repo-mcp",
-      "sublabel": "repository structure · automatic",
+      "sublabel": "repository · automatic",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-mcp/SKILL.md"
+          "path": "skills/repository/ki-repo-mcp/SKILL.md"
         }
       ],
       "tag": "R14 · CL · F12",
@@ -236,10 +236,10 @@
       "id": "ki-repo-packages",
       "type": "database",
       "label": "ki-repo-packages",
-      "sublabel": "repository structure · opt-in",
+      "sublabel": "repository · opt-in",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-packages/SKILL.md"
+          "path": "skills/repository/ki-repo-packages/SKILL.md"
         }
       ],
       "tag": "R9 · CM · F4",
@@ -256,10 +256,10 @@
       "id": "ki-repo-project",
       "type": "database",
       "label": "ki-repo-project",
-      "sublabel": "repository structure · opt-in",
+      "sublabel": "repository · opt-in",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-project/SKILL.md"
+          "path": "skills/repository/ki-repo-project/SKILL.md"
         }
       ],
       "tag": "R2 · CM · F3",
@@ -276,10 +276,10 @@
       "id": "ki-repo-specifications",
       "type": "backend",
       "label": "ki-repo-specifications",
-      "sublabel": "repository structure · automatic",
+      "sublabel": "repository · automatic",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-specifications/SKILL.md"
+          "path": "skills/repository/ki-repo-specifications/SKILL.md"
         }
       ],
       "tag": "R6 · CM · F3",
@@ -296,10 +296,10 @@
       "id": "ki-repo-tools",
       "type": "backend",
       "label": "ki-repo-tools",
-      "sublabel": "repository structure · automatic",
+      "sublabel": "repository · automatic",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-tools/SKILL.md"
+          "path": "skills/repository/ki-repo-tools/SKILL.md"
         }
       ],
       "tag": "R4 · CL · F11",
@@ -316,10 +316,10 @@
       "id": "ki-repo-website",
       "type": "backend",
       "label": "ki-repo-website",
-      "sublabel": "repository structure · automatic",
+      "sublabel": "repository · automatic",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-website/SKILL.md"
+          "path": "skills/repository/ki-repo-website/SKILL.md"
         }
       ],
       "tag": "R8 · CM · F7",
@@ -336,10 +336,10 @@
       "id": "ki-repo-website-app",
       "type": "backend",
       "label": "ki-repo-website-app",
-      "sublabel": "repository structure · automatic",
+      "sublabel": "repository · automatic",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-website-app/SKILL.md"
+          "path": "skills/repository/ki-repo-website-app/SKILL.md"
         }
       ],
       "tag": "R12 · CM · F7",
@@ -356,10 +356,10 @@
       "id": "ki-repo-website-cloudflare",
       "type": "backend",
       "label": "ki-repo-website-cloudflare",
-      "sublabel": "repository structure · automatic",
+      "sublabel": "repository · automatic",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-website-cloudflare/SKILL.md"
+          "path": "skills/repository/ki-repo-website-cloudflare/SKILL.md"
         }
       ],
       "tag": "R20 · CM · F8",
@@ -376,10 +376,10 @@
       "id": "ki-repo-website-content",
       "type": "backend",
       "label": "ki-repo-website-content",
-      "sublabel": "repository structure · automatic",
+      "sublabel": "repository · automatic",
       "sources": [
         {
-          "path": "skills/repo-structure/ki-repo-website-content/SKILL.md"
+          "path": "skills/repository/ki-repo-website-content/SKILL.md"
         }
       ],
       "tag": "R43 · CM · F8",
@@ -396,10 +396,10 @@
       "id": "ki-work-recurring",
       "type": "database",
       "label": "ki-work-recurring",
-      "sublabel": "change management · opt-in",
+      "sublabel": "work · opt-in",
       "sources": [
         {
-          "path": "skills/change-management/ki-work-recurring/SKILL.md"
+          "path": "skills/work/ki-work-recurring/SKILL.md"
         }
       ],
       "tag": "R2 · CM · F3",
@@ -416,10 +416,10 @@
       "id": "ki-decision-records",
       "type": "backend",
       "label": "ki-decision-records",
-      "sublabel": "governance · automatic",
+      "sublabel": "authoring · automatic",
       "sources": [
         {
-          "path": "skills/governance/ki-decision-records/SKILL.md"
+          "path": "skills/authoring/ki-decision-records/SKILL.md"
         }
       ],
       "tag": "R37 · CL · F9",
@@ -436,10 +436,10 @@
       "id": "ki-engineering",
       "type": "backend",
       "label": "ki-engineering",
-      "sublabel": "governance · automatic",
+      "sublabel": "repository · automatic",
       "sources": [
         {
-          "path": "skills/governance/ki-engineering/SKILL.md"
+          "path": "skills/repository/ki-engineering/SKILL.md"
         }
       ],
       "tag": "R63 · CL · F4",

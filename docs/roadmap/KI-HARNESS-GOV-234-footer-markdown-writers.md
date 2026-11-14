@@ -4,7 +4,7 @@ area: GOV
 title: Footer and Markdown writers
 kind: deliver
 purpose: corrective
-component: change-management
+component: work
 priority: high
 size: s
 status: done
@@ -43,7 +43,7 @@ Immutable source baseline: `12f09a3b7f08f1c2dddae22261923857a10f04bb`. It preced
 
 ## Files touched
 
-The actual committed delivery paths are enumerated under Review / Change Summary. Both product units were authored in this Harness repository. The structural repair touched only this native record. This causal follow-through additionally changes the unsafe-path fixture literals in `skills/governance/ki-authoring/scripts/rubric/items/index.test.ts`; it changes no production authoring code.
+The actual committed delivery paths are enumerated under Review / Change Summary. Both product units were authored in this Harness repository. The structural repair touched only this native record. This causal follow-through additionally changes the unsafe-path fixture literals in `skills/keystone/ki-authoring/scripts/rubric/items/index.test.ts`; it changes no production authoring code.
 
 ## Verify
 
@@ -79,9 +79,9 @@ Delivered the owner-approved bare-ID closing line for every explicitly coordinat
 
 ### Change Summary
 
-The footer unit changed `skills/change-management/ki-coordination/SKILL.md`, its `references/standards-coordination.md`, `references/sources.md`, `references/rubric.md`, `scripts/banner.test.ts`, `scripts/rubric/items/threads.ts`, `output-styles/ki-coordinator.md` and the five delegation assets `run-prompt.md`, `rules-none.md`, `rules-prune.md`, `rules-push.md` and `rules-release.md`. The canonical generator ran once; `hooks/coordinator-reminder.sh` was already unchanged. The closing line is `🧵 <work-id>` for main and secondary State of play, Project, regular and ad hoc coordinating work.
+The footer unit changed `skills/work/ki-coordination/SKILL.md`, its `references/standards-coordination.md`, `references/sources.md`, `references/rubric.md`, `scripts/banner.test.ts`, `scripts/rubric/items/threads.ts`, `output-styles/ki-coordinator.md` and the five delegation assets `run-prompt.md`, `rules-none.md`, `rules-prune.md`, `rules-push.md` and `rules-release.md`. The canonical generator ran once; `hooks/coordinator-reminder.sh` was already unchanged. The closing line is `🧵 <work-id>` for main and secondary State of play, Project, regular and ad hoc coordinating work.
 
-The Markdown unit changed `skills/governance/ki-authoring/scripts/rubric/contexts/authoring.ts`, `scripts/rubric/items/index.test.ts`, `references/standards-authoring.md` and `references/sources.md`. The independent frontmatter walker now observes `.rumdl.toml` `global.exclude`, including directory descendants. No capture-specific exemption, new schema, marker, transport or blanket exclusion was introduced. Current scoped-verdict and report-copy paths did not justify a Tools product change. The continuation changes only two matching literals in the authoring test: the outside fixture and its byte-preservation assertion. Production TOML parsing and missing/unsafe-path handling are unchanged; no catch-and-ignore, assertion removal or exclusion was added.
+The Markdown unit changed `skills/keystone/ki-authoring/scripts/rubric/contexts/authoring.ts`, `scripts/rubric/items/index.test.ts`, `references/standards-authoring.md` and `references/sources.md`. The independent frontmatter walker now observes `.rumdl.toml` `global.exclude`, including directory descendants. No capture-specific exemption, new schema, marker, transport or blanket exclusion was introduced. Current scoped-verdict and report-copy paths did not justify a Tools product change. The continuation changes only two matching literals in the authoring test: the outside fixture and its byte-preservation assertion. Production TOML parsing and missing/unsafe-path handling are unchanged; no catch-and-ignore, assertion removal or exclusion was added.
 
 ### Verification
 

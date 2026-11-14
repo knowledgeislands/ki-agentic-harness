@@ -80,9 +80,9 @@ The repository roadmap MUST list only open work — no completed items, no ticke
 
 _Conformance:_ conforming
 
-_Verify:_ `ki-work-roadmap`'s [repository-roadmap standard](../../skills/change-management/ki-work-roadmap/references/standards-repository-roadmaps.md), plus its mechanical audit of the root orientation and canonical work items.
+_Verify:_ `ki-work-roadmap`'s [repository-roadmap standard](../../skills/work/ki-work-roadmap/references/standards-repository-roadmaps.md), plus its mechanical audit of the root orientation and canonical work items.
 
-_Evidence:_ `ki-work-roadmap`'s [repository-roadmap standard](../../skills/change-management/ki-work-roadmap/references/standards-repository-roadmaps.md), plus its mechanical audit of the root orientation and canonical work items.
+_Evidence:_ `ki-work-roadmap`'s [repository-roadmap standard](../../skills/work/ki-work-roadmap/references/standards-repository-roadmaps.md), plus its mechanical audit of the root orientation and canonical work items.
 
 ### HARN-008 — CLAUDE.md orientation coverage
 
@@ -90,9 +90,9 @@ The effective root orientation MUST explain the four-part harness (`skills/`, `s
 
 _Conformance:_ conforming
 
-_Verify:_ `ki-repo-harness`'s rubric CLAUDE-1 and CLAUDE-2 ([`skills/repo-structure/ki-repo-harness/references/rubric.md`](../../skills/repo-structure/ki-repo-harness/references/rubric.md)), applied by reading (judgment-graded).
+_Verify:_ `ki-repo-harness`'s rubric CLAUDE-1 and CLAUDE-2 ([`skills/repository/ki-repo-harness/references/rubric.md`](../../skills/repository/ki-repo-harness/references/rubric.md)), applied by reading (judgment-graded).
 
-_Evidence:_ `ki-repo-harness`'s rubric CLAUDE-1 and CLAUDE-2 ([`skills/repo-structure/ki-repo-harness/references/rubric.md`](../../skills/repo-structure/ki-repo-harness/references/rubric.md)), applied by reading (judgment-graded).
+_Evidence:_ `ki-repo-harness`'s rubric CLAUDE-1 and CLAUDE-2 ([`skills/repository/ki-repo-harness/references/rubric.md`](../../skills/repository/ki-repo-harness/references/rubric.md)), applied by reading (judgment-graded).
 
 ### HARN-009 — Claude Code plan lifecycle hooks
 
@@ -140,7 +140,7 @@ The harness MUST ship `output-styles/ki-coordinator.md`, a Claude Code output st
 
 _Conformance:_ conforming
 
-_Verify:_ `output-styles/ki-coordinator.md` exists with `name: ki-coordinator` frontmatter and carries the three rules, the owner-report shape, the report heading and the glyph banners, which `bun test skills/change-management/ki-coordination/scripts/banner.test.ts` compares with the standard, asserting the report heading example and the banners byte-identical to the standard's, the glyph form line, the banner heading, counts line and holder list, the closing thread lines, the grouped reply block with each line's confidence and the absence of send or resume lines; `.claude/settings.json` carries `"outputStyle": "ki-coordinator"`.
+_Verify:_ `output-styles/ki-coordinator.md` exists with `name: ki-coordinator` frontmatter and carries the three rules, the owner-report shape, the report heading and the glyph banners, which `bun test skills/work/ki-coordination/scripts/banner.test.ts` compares with the standard, asserting the report heading example and the banners byte-identical to the standard's, the glyph form line, the banner heading, counts line and holder list, the closing thread lines, the grouped reply block with each line's confidence and the absence of send or resume lines; `.claude/settings.json` carries `"outputStyle": "ki-coordinator"`.
 
 _Evidence:_ both files are tracked in this repository; the pilot's live acceptance in a coordinating thread is recorded by KI-PRINCIPAL-ECO-013 in Knowledge Islands Principal.
 

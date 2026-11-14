@@ -31,7 +31,7 @@ This is step 6b of the [Portable specifications plan](/Users/krisbrown/workspace
 The [home plan](/Users/krisbrown/workspaces/knowledge-islands/ki-principal/+/_WORK/ki.portable-specifications/design/home-plan.md#6b-home-acquire-ki-acquire) sets the change:
 
 - Add `references/standards-acquire-spec.md` from the approved `acquire` text through the plan's homing transform: an attribution line, unlinked names for the sibling specifications, and a `## Contents` list.
-- Add one paragraph to [`SKILL.md`](../../skills/acquire/ki-acquire/SKILL.md) after the one on the common capture contract, pointing to the specification and leaving the [common acquisition standard](../../skills/acquire/ki-acquire/references/standards-acquisition.md) and provider skills as the house contract; `description` does not change.
+- Add one paragraph to [`SKILL.md`](../../skills/keystone/ki-acquire/SKILL.md) after the one on the common capture contract, pointing to the specification and leaving the [common acquisition standard](../../skills/keystone/ki-acquire/references/standards-acquisition.md) and provider skills as the house contract; `description` does not change.
 - Add provenance bullets to `references/sources.md`, with the provider front-matter mapping recorded in its Last review paragraph rather than in the standard.
 - Add the `SPEC` rubric family with the judgment-only criterion SPEC-1, as a subject in the acquisition context, using the description text the home plan fixes so that the three owning skills agree, and regenerate `references/rubric.md`.
 
@@ -39,7 +39,7 @@ No profile file is needed: WORK-PROFILE asked for one only for `work`. HOMING-RE
 
 ## Boundary
 
-- In: the reference, the `SKILL.md` paragraph, `sources.md`, the `SPEC` family and SPEC-1, and the regenerated rubric, all under `skills/acquire/ki-acquire/`.
+- In: the reference, the `SKILL.md` paragraph, `sources.md`, the `SPEC` family and SPEC-1, and the regenerated rubric, all under `skills/keystone/ki-acquire/`.
 - Out: any change to the common acquisition standard, the provider skills or the skill's `description`, so the generated catalogue and diagrams are untouched; publication on the website and the move into KI Specifications, which are later plan steps.
 - Out: the sibling homings, [KI-HARNESS-GOV-228](KI-HARNESS-GOV-228-home-work-spec.md) for `work` and [KI-HARNESS-GOV-230](KI-HARNESS-GOV-230-knowledge-package-skill.md) for `knowledge`.
 

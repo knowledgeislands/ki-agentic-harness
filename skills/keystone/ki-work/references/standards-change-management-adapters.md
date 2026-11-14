@@ -1,0 +1,40 @@
+# Change-management adapter standard
+
+## Scope
+
+Change management uses one configured adapter per repository. The adapter is the authoritative source of forward-work records; the selector and process skills do not duplicate its queue or synchronise a second tracker.
+
+## Selection
+
+The repository declares exactly one supported value:
+
+```toml
+[skills.ki-work]
+adapter = "roadmap" # or kb-streams, github-issues, linear
+```
+
+`roadmap` resolves to `ki-work-roadmap` and is the default for an ordinary Project repository. `kb-streams` resolves to `ki-repo-kb-streams` and is the default for a Knowledge Base. `github-issues` resolves to `ki-work-github-issues`; `linear` resolves to `ki-work-linear`. The remote adapters are explicit alternatives for either primary structure.
+
+The selected adapter's `[skills.<skill-name>]` table must be declared in the same configuration. `roadmap` is valid only for an explicit `repo_type = "project"`; `kb-streams` is valid only for `repo_type = "kb"`. Remote adapters support either valid kind. `ki-repo` owns validation of the mandatory kind and primary shape; no inferred kind or alternate value is accepted. Missing, unknown, undeclared, or inapplicable values are failures, not opportunities for shape-based inference. The selector resolves this declared mapping; the host separately invokes the resolved adapter's audit rather than treating resolution as an adapter audit.
+
+Repository feature selection follows the adapter declaration rather than a parallel toggle. `ki-repo` requires GitHub Issues disabled and no `package.json` `bugs` field for `roadmap`, `kb-streams`, and `linear`; the root `[skills.ki-work-github-issues]` declaration requires Issues enabled and the canonical Issues URL.
+
+## Common adapter boundary
+
+The selector owns only the abstract lifecycle vocabulary: capture, queue placement, readiness, delivery evidence, review evidence, closure, and an explicitly selected prune path. It does not define status labels or a state machine. Each adapter owns its concrete record identity, storage, local lifecycle/status mapping, and local rules. A process skill may ask the selector to resolve that adapter but never assumes a filesystem path, remote issue API, or KB zone.
+
+Every adapter carries an explicit mapping for record identity, status/lifecycle translation, authority for writes, conflict handling, and closure semantics. Local adapters may use the repository's configured identifier and, where declared, fixed issuing areas; remote adapters retain the remote system's native identity. It is never an implicit alias for another tracker.
+
+## Abstract record vocabulary
+
+Every adapter maps these abstract terms; the [repository-roadmap standard](../../../work/ki-work-roadmap/references/standards-repository-roadmaps.md) and [work-item format](../../../work/ki-work-roadmap/references/standards-work-item-format.md) give their local shape.
+
+- **Status** - how far work has got: triage (unadopted intake), draft, ready, in progress, awaiting review, and two terminal endings, done and cancelled.
+- **Horizon** - when adopted, open work is intended: now, next, soon, future, or hold. Hold carries a reason, a named release condition, an optional review date, and any observed trades.
+- **Priority** - how important the work is among records at the same horizon: high, a material cost from deferral; medium, useful planned progress; or low, a discretionary benefit. It is written at capture, and an absent priority reads as medium.
+- **Size** - the relative end-to-end effort the work involves, from implementation to owner review but not external waiting, and not hours: s, m, l, or xl, xl meaning split before Ready. Required on open work from capture, provisional until revisited before Ready.
+- **Selection order** - adoption, holds and dependencies first, then horizon, then priority, then size, smallest first. Priority never crosses horizons; a high-priority record at a later horizon prompts a proposal to move its horizon.
+- **Resolution** - why cancelled work ended: obsolete, rejected, duplicate, merged, or superseded, with a qualified target record for the last three. Only the owning repository closes its own record.
+- **Classification** - `kind` (deliver, decide, investigate, audit), optional `purpose`, territory-owned `project` or, for projectless work, an optional `theme`, and repository-owned `component`.
+
+Projects and themes are territory registry entries under the [Project registry standard](standards-project-registry.md); an adapter maps them to its native grouping where one exists, such as Linear Projects and Initiatives for themes, and otherwise stores the slugs.

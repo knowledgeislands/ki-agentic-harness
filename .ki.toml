@@ -105,16 +105,16 @@ budgets.mcp_servers = 20
 adapter = "roadmap"
 
 [skills.ki-work-roadmap]
-# Mirrors the skills/ family directories.
+# Mirrors the skills/ guild directories.
 components = [
   "acquire",
   "agentic-systems",
-  "change-management",
+  "authoring",
   "design",
   "environment",
-  "governance",
   "keystone",
-  "repo-structure",
+  "repository",
+  "work",
 ]
 
 [skills.ki-work-roadmap.areas]
