@@ -86,7 +86,7 @@ Run `ki repo audit --skill ki-keystone --repo <repo>`. In a repository with no s
 
 ### Mode CONFORM
 
-Run AUDIT, then `ki repo conform --skill ki-keystone --repo <repo> --dry-run`. The host may regenerate the rubric publication; regenerate the guild map with `ki dev skill generate ki-keystone`. This mode never moves a skill between guilds; that is decided, then declared in the skill's frontmatter.
+Run AUDIT, then `ki repo conform --skill ki-keystone --repo <repo> --dry-run`. The host may regenerate the rubric publication; regenerate the guild map with `ki dev skill generate ki-keystone --write`. This mode never moves a skill between guilds; that is decided, then declared in the skill's frontmatter.
 
 ### Mode EDUCATE
 
