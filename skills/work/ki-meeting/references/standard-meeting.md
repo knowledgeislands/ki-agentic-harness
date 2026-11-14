@@ -1,6 +1,6 @@
 ---
 type: standard@2026-11-09T21:36:32Z
-revised: 2026-11-14T06:00:00Z
+revised: 2026-11-14T13:51:34Z
 status: in force
 ---
 
@@ -167,7 +167,7 @@ The `chair` field (CHAIR-FIELD, taken overnight for the owner's review) names th
 
 1. **Summary,** kept current: where the meeting stands, the decisions it has led to, and what comes next.
 2. **Brief:** why the meeting exists, what it should produce, the change document that will hold its decisions, and what participants work from.
-3. **Agenda:** the sittings, each with its items and its end, stated when it opens ([4.7](#47-sittings-and-the-roll-call)), and each participant with its role, how it is reached, how it writes, and who listens at what interval and until when.
+3. **Agenda:** the sittings, each with its items and its end, stated when it opens ([4.7](#47-sittings-and-the-roll-call)), and each participant with its role, its session line ([4.7](#47-sittings-and-the-roll-call)), how it is reached, how it writes, and who listens at what interval and until when.
 4. **Boundaries:** what the meeting may and may not do.
 5. **Open asks,** as a checklist the caller ticks as each is answered.
 6. **Minutes,** one part per sitting ([4.14](#414-minutes)).
@@ -190,10 +190,11 @@ How participants reach each other, three levels, the first that works:
 
 1. **Sittings.** A meeting has no fixed end; it runs in sittings, A, B, C and on. A sitting that reaches its end, or runs out of work, is adjourned: the caller writes its minutes and a resume note saying where the next sitting picks up. The meeting closes after its last sitting.
 2. **Each sitting has a stated end** (SITTING-END, taken overnight for the owner's review). The sitting's opening message states its end, from `date -u`, and the chair may extend it by posting a new one. Fifteen minutes before the end, the chair sends one closing call, asking what each participant will finish by then.
-3. **Roll call.** Each sitting opens with one. Every participant answers with its clock, from `date -u`, its role, and the sitting's goal in its own words, so all work to one time and one aim.
-4. **Each route to Git** (GIT-ROUTE, taken overnight for the owner's review). At roll call each participant also states its route to Git: whether it can commit, pull and push.
-5. **The join check.** In the first sitting, the roll call also proves each route. The caller sends each participant a code word by its own route, the owner gives each a small task in its own session, and each answers by its route, which proves listening and replying before real work starts.
-6. **First needs.** Each participant's first message says what it needs from the meeting.
+3. **Each new session is named** (OPENER-NAME, Kris, 14 November 2026). The opener or brief that starts a participant in a new agent session names the session line it is to take and tells it to rename itself to that line as its first act, by its agent host's rename (runtime-specific: `/rename <line>` in Claude Code). A participant working in the package without its keys, as a maker in a meeting does, takes `<role glyph> <work-id>+<role>`, as in `📐 ki.cairn+architect`: the glyph and name of its role in `ki-work-package`'s role catalogue and the id of the package the meeting serves, under that skill's [thread line](../../ki-work-package/references/standard-roles.md#46-thread-line) (SEAT-LINE, Kris, 14 November 2026). The holder of the package keeps its own line, with 🔑.
+4. **Roll call.** Each sitting opens with one. Every participant answers with its clock, from `date -u`, its role, and the sitting's goal in its own words, so all work to one time and one aim.
+5. **Each route to Git** (GIT-ROUTE, taken overnight for the owner's review). At roll call each participant also states its route to Git: whether it can commit, pull and push.
+6. **The join check.** In the first sitting, the roll call also proves each route. The caller sends each participant a code word by its own route, the owner gives each a small task in its own session, and each answers by its route, which proves listening and replying before real work starts.
+7. **First needs.** Each participant's first message says what it needs from the meeting.
 
 [Back to contents](#contents)
 

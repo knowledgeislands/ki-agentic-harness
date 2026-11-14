@@ -47,7 +47,7 @@ A repository that cannot work without this skill, such as the Cairn store, carri
 - `help`, `-h`, or `?` explains the meeting shape and these verbs without reading or writing anything.
 - `call <node id> <slug>` checks the caller may call at that node and that no simpler route serves, chooses the type, makes the folder, writes `_index.md` with its summary, brief, agenda and boundaries, commits it, and opens sitting A.
 - `sit <meeting>` opens the next sitting: its stated end, the roll call with each participant's route to Git, the join check in the first sitting, listening at the agenda's intervals and the check-ins.
-- `join <meeting>` takes part as a participant: read `_index.md` and the brief, answer the roll call by its own route, say what it needs, and listen at the interval the agenda gives it.
+- `join <meeting>` takes part as a participant: rename the session to the line its opener names, first, then read `_index.md` and the brief, answer the roll call by its own route, say what it needs, and listen at the interval the agenda gives it.
 - `adjourn <meeting>` ends the current sitting with its minutes and a resume note.
 - `close <meeting>` writes the closing message naming each outcome and the change document holding it, stops listening, and leaves the folder for removal once the owner has reviewed the work's record.
 
