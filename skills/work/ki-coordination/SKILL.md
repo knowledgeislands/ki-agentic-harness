@@ -81,7 +81,7 @@ While coordinating, `/ki-coordination receive` records the owner's receive under
 
 **Precondition:** REFRESH writes only this canonical skill under `ki-agent-backpack`.
 
-When invoked from an installed copy, stop and redirect to the harness.
+When invoked from an installed copy, stop and redirect to the backpack's source checkout.
 
 Read [the sources](references/sources.md), compare coordinating practice against the standard, the Work Process note and the rubric, then update the source review in the same commit as any normative change. A change here also regenerates the hook line in `hooks/coordinator-reminder/coordinator-reminder.sh` and the ki-coordinator output style where the three rules, the owner-report shape or the banner changed; `scripts/banner.test.ts` holds the report heading and the live glyph banners in the standard and the output style byte-identical, and asserts the form line, the banner heading, counts line and holder list, the closing thread lines, the reply block and the absence of send or resume lines.
 
