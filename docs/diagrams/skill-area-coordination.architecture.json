@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "26dd45f59a8f35f1e282490ea109f8a1fd90ac84"
+      "revision": "956a01faaab54a7f2038867d699c4f59746b8bbb"
     },
     "legend": {
       "mode": "auto",
@@ -33,26 +33,6 @@
   },
   "components": [
     {
-      "id": "ki-batch",
-      "type": "frontend",
-      "label": "ki-batch",
-      "sublabel": "work · command",
-      "sources": [
-        {
-          "path": "skills/work/ki-batch/SKILL.md"
-        }
-      ],
-      "tag": "R– · CM · F5",
-      "pos": [
-        44,
-        64
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
       "id": "ki-implement",
       "type": "frontend",
       "label": "ki-implement",
@@ -64,7 +44,7 @@
       ],
       "tag": "R– · CS · F2",
       "pos": [
-        300,
+        44,
         64
       ],
       "size": [
@@ -84,7 +64,7 @@
       ],
       "tag": "R– · CS · F1",
       "pos": [
-        556,
+        300,
         64
       ],
       "size": [
@@ -104,7 +84,7 @@
       ],
       "tag": "R– · C0 · F3",
       "pos": [
-        876,
+        620,
         64
       ],
       "size": [
@@ -278,7 +258,6 @@
       "kind": "region",
       "label": "Work and delivery · Delivery cycle",
       "wraps": [
-        "ki-batch",
         "ki-implement",
         "ki-plan"
       ],
@@ -337,12 +316,6 @@
     }
   ],
   "connections": [
-    {
-      "id": "ki-batch--ki-delegation",
-      "from": "ki-batch",
-      "to": "ki-delegation",
-      "variant": "dashed"
-    },
     {
       "id": "ki-coordination--ki-delegation",
       "from": "ki-coordination",
@@ -413,7 +386,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "7 skills, 1 outside prerequisite, 4 outside dependents, 5 composition and 5 optional edges, read from SKILL.md frontmatter.",
+        "7 skills, 1 outside prerequisite, 3 outside dependents, 5 composition and 4 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-backpack; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

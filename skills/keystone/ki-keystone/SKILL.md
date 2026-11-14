@@ -55,7 +55,7 @@ Generated from every skill's frontmatter, the guild it declares and the guild it
 | Design | `ki-design` | `ki-design-inspiration`, `ki-design-system` |
 | Environment | `ki-env` | `ki-env-binding`, `ki-env-binding-chatgpt`, `ki-env-binding-chezmoi`, `ki-env-binding-claude`, `ki-env-housekeeping`, `ki-env-housekeeping-chatgpt`, `ki-env-housekeeping-claude`, `ki-env-tokenomics`, `ki-env-tokenomics-chatgpt`, `ki-env-tokenomics-claude` |
 | Repository | `ki-repo` | `ki-engineering`, `ki-git`, `ki-repo-backpack`, `ki-repo-dotfiles-chezmoi`, `ki-repo-homebrew-tap`, `ki-repo-kb`, `ki-repo-kb-activities`, `ki-repo-kb-live-artifacts`, `ki-repo-kb-principal`, `ki-repo-kb-streams`, `ki-repo-mcp`, `ki-repo-packages`, `ki-repo-project`, `ki-repo-specifications`, `ki-repo-tools`, `ki-repo-website`, `ki-repo-website-app`, `ki-repo-website-cloudflare`, `ki-repo-website-content` |
-| Work | `ki-work` | `ki-accept`, `ki-batch`, `ki-coordination`, `ki-implement`, `ki-meeting`, `ki-next`, `ki-plan`, `ki-recap`, `ki-trade`, `ki-trades`, `ki-work-design`, `ki-work-github-issues`, `ki-work-linear`, `ki-work-package`, `ki-work-recurring`, `ki-work-roadmap` |
+| Work | `ki-work` | `ki-accept`, `ki-coordination`, `ki-implement`, `ki-meeting`, `ki-next`, `ki-plan`, `ki-recap`, `ki-trade`, `ki-trades`, `ki-work-design`, `ki-work-github-issues`, `ki-work-linear`, `ki-work-package`, `ki-work-recurring`, `ki-work-roadmap` |
 
 <!-- ki-keystone:guild-map:end -->
 

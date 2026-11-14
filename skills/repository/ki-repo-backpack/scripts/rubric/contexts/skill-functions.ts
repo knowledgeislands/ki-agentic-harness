@@ -69,7 +69,7 @@ export const FUNCTIONAL_AREAS: readonly FunctionalArea[] = [
         title: 'Work items',
         skills: ['ki-work', 'ki-work-roadmap', 'ki-work-github-issues', 'ki-work-linear', 'ki-work-recurring']
       },
-      { title: 'Delivery cycle', skills: ['ki-next', 'ki-plan', 'ki-batch', 'ki-implement', 'ki-accept', 'ki-recap'] }
+      { title: 'Delivery cycle', skills: ['ki-next', 'ki-plan', 'ki-implement', 'ki-accept', 'ki-recap'] }
     ]
   },
   {

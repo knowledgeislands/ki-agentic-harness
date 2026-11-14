@@ -17,8 +17,7 @@ const RESTATING = [
   'work/ki-work-recurring',
   'authoring/ki-decision-records',
   'authoring/ki-specs',
-  'work/ki-accept',
-  'work/ki-batch'
+  'work/ki-accept'
 ] as const
 
 /** The grammar's shapes, in any spelling a restating skill has used: a repository code, and a scope segment. */

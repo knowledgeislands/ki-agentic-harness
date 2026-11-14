@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-backpack:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 74 skills: 60 governance skills, 13 process skills and 1 knowledge skill. The entries below are generated from canonical `SKILL.md` frontmatter, grouped by each skill's declared guild; edit the source skill, then run `ki repo conform --skill ki-repo-backpack` to republish this section.
+This source harness publishes 73 skills: 60 governance skills, 12 process skills and 1 knowledge skill. The entries below are generated from canonical `SKILL.md` frontmatter, grouped by each skill's declared guild; edit the source skill, then run `ki repo conform --skill ki-repo-backpack` to republish this section.
 
 ### Acquire
 
@@ -633,16 +633,6 @@ Close a reviewed local work record as done, cancel an open record with an approv
 - **Kind:** Process
 - **Applicability:** Invocation Only
 - **Arguments:** `accept <work> | prune <work-record-or-glob>... | help`
-- **Dependencies:** None
-- **Runtime:** Portable
-
-#### `ki-batch`
-
-Retired batch authority, kept only so existing batch records stay readable while its removal lands. Use only to read an existing batch record; deliver new work as a frozen wave in a `ki-coordination` unattended window.
-
-- **Kind:** Process
-- **Applicability:** Invocation Only
-- **Arguments:** `batch <work>... | batch outcome <outcome> | run <batch-authorisation> | help`
 - **Dependencies:** None
 - **Runtime:** Portable
 

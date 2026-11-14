@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "26dd45f59a8f35f1e282490ea109f8a1fd90ac84"
+      "revision": "956a01faaab54a7f2038867d699c4f59746b8bbb"
     },
     "legend": {
       "mode": "auto",
@@ -812,25 +812,6 @@
       ]
     },
     {
-      "id": "ki-batch",
-      "type": "frontend",
-      "label": "ki-batch",
-      "sublabel": "work · command",
-      "sources": [
-        {
-          "path": "skills/work/ki-batch/SKILL.md"
-        }
-      ],
-      "pos": [
-        240,
-        1608
-      ],
-      "size": [
-        200,
-        60
-      ]
-    },
-    {
       "id": "ki-implement",
       "type": "frontend",
       "label": "ki-implement",
@@ -841,7 +822,7 @@
         }
       ],
       "pos": [
-        448,
+        240,
         1608
       ],
       "size": [
@@ -860,8 +841,8 @@
         }
       ],
       "pos": [
-        32,
-        1692
+        448,
+        1608
       ],
       "size": [
         200,
@@ -879,7 +860,7 @@
         }
       ],
       "pos": [
-        240,
+        32,
         1692
       ],
       "size": [
@@ -898,7 +879,7 @@
         }
       ],
       "pos": [
-        448,
+        240,
         1692
       ],
       "size": [
@@ -1641,7 +1622,6 @@
       "label": "Work and delivery · Delivery cycle",
       "wraps": [
         "ki-accept",
-        "ki-batch",
         "ki-implement",
         "ki-next",
         "ki-plan",
@@ -1651,7 +1631,7 @@
     },
     {
       "kind": "region",
-      "label": "Work · 16 skills",
+      "label": "Work · 15 skills",
       "wraps": [
         "ki-work-package",
         "ki-coordination",
@@ -1664,7 +1644,6 @@
         "ki-work-recurring",
         "ki-work-roadmap",
         "ki-accept",
-        "ki-batch",
         "ki-implement",
         "ki-next",
         "ki-plan",
@@ -1848,7 +1827,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "74 skills in 8 concerns and 10 functional areas: 3 always on, 19 automatic, 38 opt-in, 14 commands.",
+        "73 skills in 8 concerns and 10 functional areas: 3 always on, 19 automatic, 38 opt-in, 13 commands.",
         "Regenerate with ki repo conform --skill ki-repo-backpack; ki-skills owns the kind and applicability fields it reads."
       ]
     }

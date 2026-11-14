@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "26dd45f59a8f35f1e282490ea109f8a1fd90ac84"
+      "revision": "956a01faaab54a7f2038867d699c4f59746b8bbb"
     },
     "legend": {
       "mode": "auto",
@@ -84,28 +84,8 @@
       ],
       "tag": "R– · CM · F2",
       "pos": [
-        300,
-        580
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
-      "id": "ki-batch",
-      "type": "frontend",
-      "label": "ki-batch",
-      "sublabel": "work · command",
-      "sources": [
-        {
-          "path": "skills/work/ki-batch/SKILL.md"
-        }
-      ],
-      "tag": "R– · CM · F5",
-      "pos": [
         44,
-        704
+        580
       ],
       "size": [
         208,
@@ -124,7 +104,7 @@
       ],
       "tag": "R– · CS · F2",
       "pos": [
-        300,
+        44,
         704
       ],
       "size": [
@@ -144,7 +124,7 @@
       ],
       "tag": "R– · CM · F1",
       "pos": [
-        556,
+        300,
         580
       ],
       "size": [
@@ -164,7 +144,7 @@
       ],
       "tag": "R– · CS · F1",
       "pos": [
-        556,
+        300,
         704
       ],
       "size": [
@@ -184,7 +164,7 @@
       ],
       "tag": "R– · CM · F2",
       "pos": [
-        44,
+        556,
         580
       ],
       "size": [
@@ -293,26 +273,6 @@
       ]
     },
     {
-      "id": "ki-authoring",
-      "type": "security",
-      "label": "ki-authoring",
-      "sublabel": "keystone · always on",
-      "sources": [
-        {
-          "path": "skills/keystone/ki-authoring/SKILL.md"
-        }
-      ],
-      "tag": "R4 · CM · F13",
-      "pos": [
-        44,
-        908
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
       "id": "ki-delegation",
       "type": "database",
       "label": "ki-delegation",
@@ -323,6 +283,26 @@
         }
       ],
       "tag": "R6 · CM · F4",
+      "pos": [
+        44,
+        908
+      ],
+      "size": [
+        208,
+        76
+      ]
+    },
+    {
+      "id": "ki-authoring",
+      "type": "security",
+      "label": "ki-authoring",
+      "sublabel": "keystone · always on",
+      "sources": [
+        {
+          "path": "skills/keystone/ki-authoring/SKILL.md"
+        }
+      ],
+      "tag": "R4 · CM · F13",
       "pos": [
         364,
         908
@@ -352,17 +332,17 @@
     },
     {
       "kind": "region",
-      "label": "Fundamentals · Repository and writing",
+      "label": "Coordination · Delegation and programme",
       "wraps": [
-        "ki-authoring"
+        "ki-delegation"
       ],
       "pad": 32
     },
     {
       "kind": "region",
-      "label": "Coordination · Delegation and programme",
+      "label": "Fundamentals · Repository and writing",
       "wraps": [
-        "ki-delegation"
+        "ki-authoring"
       ],
       "pad": 32
     },
@@ -384,7 +364,6 @@
       "wraps": [
         "ki-next",
         "ki-plan",
-        "ki-batch",
         "ki-implement",
         "ki-accept",
         "ki-recap"
@@ -393,7 +372,7 @@
     },
     {
       "kind": "region",
-      "label": "Work and delivery · 11 skills",
+      "label": "Work and delivery · 10 skills",
       "wraps": [
         "ki-work",
         "ki-work-roadmap",
@@ -402,7 +381,6 @@
         "ki-work-recurring",
         "ki-next",
         "ki-plan",
-        "ki-batch",
         "ki-implement",
         "ki-accept",
         "ki-recap"
@@ -411,12 +389,6 @@
     }
   ],
   "connections": [
-    {
-      "id": "ki-batch--ki-delegation",
-      "from": "ki-batch",
-      "to": "ki-delegation",
-      "variant": "dashed"
-    },
     {
       "id": "ki-implement--ki-delegation",
       "from": "ki-implement",
@@ -463,7 +435,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "11 skills, 2 outside prerequisites, 2 outside dependents, 2 composition and 4 optional edges, read from SKILL.md frontmatter.",
+        "10 skills, 2 outside prerequisites, 2 outside dependents, 2 composition and 3 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-backpack; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }
