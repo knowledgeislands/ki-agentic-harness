@@ -9,8 +9,9 @@ ki-shared-dependencies: [ki-skills:rubric]
 description: >
   Lead the Keystone guild, the guild of guilds: the guild map of every KI skill by guild and lead, where a session
   starts in a repository, and the rule for joining Keystone. Use to find which guild and lead skill own a piece of
-  work, or to audit a skill collection's guild tree; `ki-skills` owns the guild rules and skill shape.
-argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
+  work, to audit a skill collection's guild tree, or for `bootstrap`: first-time KI setup and activation through the
+  `ki` CLI, or setup and audit-activation problems. `ki-skills` owns the guild rules and skill shape.
+argument-hint: 'audit <repo> | bootstrap | conform <repo> | educate <repo> | help | refresh'
 ---
 
 # Keystone
@@ -24,6 +25,8 @@ A session in a repository starts with three skills:
 - **`ki-repo`** for the repository itself: its `.ki.toml`, its shape and the skills it declares.
 - **`ki-authoring`** for anything written down: formats, READMEs, decisions and knowledge placement.
 - **`ki-agentic-systems`** for the words: what an agent, a session, a subagent or a skill is.
+
+On a machine not yet set up, or when a skill will not activate, start with this skill's BOOTSTRAP mode below.
 
 ## The guilds
 
@@ -48,7 +51,7 @@ Generated from every skill's frontmatter, the guild it declares and the guild it
 
 | Guild | Lead | Members |
 | --- | --- | --- |
-| Keystone | `ki-keystone` | `ki-acquire`, `ki-agentic-systems`, `ki-authoring`, `ki-bootstrap`, `ki-design`, `ki-env`, `ki-knowledge-graph`, `ki-repo`, `ki-skills`, `ki-work` |
+| Keystone | `ki-keystone` | `ki-acquire`, `ki-agentic-systems`, `ki-authoring`, `ki-design`, `ki-env`, `ki-knowledge-graph`, `ki-repo`, `ki-skills`, `ki-work` |
 | Acquire | `ki-acquire` | `ki-acquire-chatgpt`, `ki-acquire-granola`, `ki-dodecakrisis`, `ki-exchange-dynamics` |
 | Agentic systems | `ki-agentic-systems` | `ki-agentic-radar`, `ki-delegation`, `ki-delegation-orca`, `ki-model-radar`, `ki-subagents`, `ki-subagents-chatgpt`, `ki-subagents-claude` |
 | Authoring | `ki-authoring` | `ki-decision-records`, `ki-diagrams`, `ki-guides`, `ki-specs` |
@@ -77,6 +80,10 @@ For `help`, `-h`, `?` or no recognised mode, explain Keystone, where to start, t
 
 Run `ki repo audit --skill ki-keystone --repo <repo>`. In a repository with no skill collection, every criterion is not applicable. In a harness, the audit checks that each skill declares its guild, that each guild has one lead in Keystone, and that the guild map is current; then review the joining rule and each lead's disclosure against [the standard](references/standard-keystone.md).
 
+### Mode BOOTSTRAP
+
+`bootstrap` explains first-time Knowledge Islands activation through the `ki` CLI: `ki bootstrap`, installed harnesses, user and repository skill activation, native repository operations, machine readiness for coordinating work, and local harness development. Read [the bootstrap reference](references/mode-bootstrap.md) and follow it; it loads [the bootstrap standard](references/standard-bootstrap.md) and [the exemplars](references/exemplars.md) as needed. It changes no user or repository state. Route exact command and option questions to `ki --help`, and `.ki.toml` coverage to `ki-repo`.
+
 ### Mode CONFORM
 
 Run AUDIT, then `ki repo conform --skill ki-keystone --repo <repo> --dry-run`. The host may regenerate the rubric publication; regenerate the guild map with `ki dev skill generate ki-keystone`. This mode never moves a skill between guilds; that is decided, then declared in the skill's frontmatter.
@@ -87,4 +94,4 @@ Name the guild and the lead for the work in hand, from the guild map, and say wh
 
 ### Mode REFRESH
 
-REFRESH writes only in the canonical `ki-agentic-harness` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the guild purposes and the joining rule with the decisions they come from, then make and verify the smallest correction and regenerate the guild map.
+REFRESH writes only in the canonical `ki-agentic-harness` repository; from an installed copy, stop and redirect there. Read [the sources](references/sources.md), compare the guild purposes and the joining rule with the decisions they come from, then make and verify the smallest correction and regenerate the guild map. For the bootstrap guidance, follow the refresh steps at the end of [the bootstrap reference](references/mode-bootstrap.md).

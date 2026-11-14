@@ -36,7 +36,7 @@ import { scenarios as websiteContentScenarios } from './scenarios/ki-repo-websit
 import { scenarios as agentsScenarios } from './scenarios/ki-subagents.ts'
 import { scenarios as delegationScenarios } from './scenarios/ki-delegation.ts'
 import { scenarios as authoringScenarios } from './scenarios/ki-authoring.ts'
-import { scenarios as bootstrapScenarios } from './scenarios/ki-bootstrap.ts'
+import { scenarios as bootstrapScenarios } from './scenarios/ki-keystone-bootstrap.ts'
 import { scenarios as hostingScenarios } from './scenarios/ki-repo-website-cloudflare.ts'
 import { scenarios as engineeringScenarios } from './scenarios/ki-engineering.ts'
 import { scenarios as kbScenarios } from './scenarios/ki-repo-kb.ts'

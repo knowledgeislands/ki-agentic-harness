@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "26dd45f59a8f35f1e282490ea109f8a1fd90ac84"
+      "revision": "2f7ada1639f343e64e88c443b4dfbe4443dc428b"
     },
     "legend": {
       "mode": "auto",
@@ -113,26 +113,6 @@
       ]
     },
     {
-      "id": "ki-bootstrap",
-      "type": "frontend",
-      "label": "ki-bootstrap",
-      "sublabel": "keystone · command",
-      "sources": [
-        {
-          "path": "skills/keystone/ki-bootstrap/SKILL.md"
-        }
-      ],
-      "tag": "R– · C0 · F3",
-      "pos": [
-        844,
-        268
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
       "id": "ki-design",
       "type": "database",
       "label": "ki-design",
@@ -222,7 +202,7 @@
           "path": "skills/keystone/ki-keystone/SKILL.md"
         }
       ],
-      "tag": "R6 · CM · F3",
+      "tag": "R6 · CM · F6",
       "pos": [
         588,
         268
@@ -448,7 +428,6 @@
       "label": "Guilds",
       "wraps": [
         "ki-keystone",
-        "ki-bootstrap",
         "ki-design",
         "ki-env"
       ],
@@ -456,7 +435,7 @@
     },
     {
       "kind": "region",
-      "label": "Fundamentals · 12 skills",
+      "label": "Fundamentals · 11 skills",
       "wraps": [
         "ki-repo",
         "ki-authoring",
@@ -467,7 +446,6 @@
         "ki-knowledge-graph",
         "ki-agentic-systems",
         "ki-keystone",
-        "ki-bootstrap",
         "ki-design",
         "ki-env"
       ],
@@ -545,7 +523,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "12 skills, 3 outside prerequisites, 2 outside dependents, 8 composition and 1 optional edges, read from SKILL.md frontmatter.",
+        "11 skills, 3 outside prerequisites, 2 outside dependents, 8 composition and 1 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-backpack; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

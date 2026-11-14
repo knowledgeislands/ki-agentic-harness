@@ -10,7 +10,7 @@ ki doctor
 ki diag --full
 ```
 
-The first command detects supported agent runtimes, establishes the user configuration, installs the canonical harness, and activates the seven core user skills. `ki-delegation` remains an opt-in standard for durable delegation packets. `ki doctor` checks the resulting environment; `ki diag --full` reports the effective configuration, harness inventory, repository, and XDG paths.
+The first command detects supported agent runtimes, establishes the user configuration, installs the canonical harness, and activates the core user skills, `ki-keystone` and `ki-work`. `ki-delegation` remains an opt-in standard for durable delegation packets. `ki doctor` checks the resulting environment; `ki diag --full` reports the effective configuration, harness inventory, repository, and XDG paths.
 
 Running `ki bootstrap` again leaves correctly managed state in place. Use the refresh form after adding or removing a supported agent runtime or after reconciling installed state:
 

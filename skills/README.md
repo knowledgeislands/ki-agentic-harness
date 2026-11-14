@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-backpack:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 72 skills: 60 governance skills, 11 process skills and 1 knowledge skill. The entries below are generated from canonical `SKILL.md` frontmatter, grouped by each skill's declared guild; edit the source skill, then run `ki repo conform --skill ki-repo-backpack` to republish this section.
+This source harness publishes 71 skills: 60 governance skills, 10 process skills and 1 knowledge skill. The entries below are generated from canonical `SKILL.md` frontmatter, grouped by each skill's declared guild; edit the source skill, then run `ki repo conform --skill ki-repo-backpack` to republish this section.
 
 ### Acquire
 
@@ -336,16 +336,6 @@ Govern KI document formats, Markdown, TOML, README composition, industry white p
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-bootstrap`
-
-Explain first-time KI activation through the `ki` CLI: user bootstrap, verified harness selection, skills, and repository governance. Use for setup or audit-activation problems; `ki --help` owns command mechanics and `ki-repo` repository coverage.
-
-- **Kind:** Process
-- **Applicability:** Invocation Only
-- **Arguments:** `help | refresh`
-- **Dependencies:** None
-- **Runtime:** Portable
-
 #### `ki-design`
 
 Lead the Design guild: how any design, technical or visual, is shaped before it is written down, from a brief through options and review, and each kind's levels. Use to start or review a design, or to find the design skill for it; `ki-design-system` owns interface design, `ki-work-design` shaping a Project, and Authoring's skills the records a design leaves.
@@ -370,12 +360,12 @@ Lead the Environment guild: where agents run, the tools and access bound to them
 
 #### `ki-keystone`
 
-Lead the Keystone guild, the guild of guilds: the guild map of every KI skill by guild and lead, where a session starts in a repository, and the rule for joining Keystone. Use to find which guild and lead skill own a piece of work, or to audit a skill collection's guild tree; `ki-skills` owns the guild rules and skill shape.
+Lead the Keystone guild, the guild of guilds: the guild map of every KI skill by guild and lead, where a session starts in a repository, and the rule for joining Keystone. Use to find which guild and lead skill own a piece of work, to audit a skill collection's guild tree, or for `bootstrap`: first-time KI setup and activation through the `ki` CLI, or setup and audit-activation problems. `ki-skills` owns the guild rules and skill shape.
 
 - **Kind:** Governance
 - **Leads:** Keystone
 - **Applicability:** Baseline
-- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
+- **Arguments:** `audit <repo> | bootstrap | conform <repo> | educate <repo> | help | refresh`
 - **Dependencies:** None
 - **Runtime:** Portable
 

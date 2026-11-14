@@ -53,7 +53,7 @@ Primary main is clean at ede90d68bc1facc5d1dcc6185f0e39e317170de7 and equals fet
 - `skills/work/ki-work-package/scripts/rubric/contexts/work-package.test.ts`
 - `skills/work/ki-work-package/scripts/rubric/items/records.ts`
 - `skills/work/ki-work-package/references/rubric.md`
-- `skills/keystone/ki-bootstrap/references/standards-bootstrap.md`
+- `skills/keystone/ki-keystone/references/standard-bootstrap.md`
 - `hooks/coordinator-reminder.sh`
 - `hooks/coordinator-reminder.test.ts`
 - `output-styles/ki-coordinator.md`

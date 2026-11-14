@@ -31,7 +31,7 @@ status: in force
 
 This standard implements the architecture in [ADR-KI-HARNESS-012](../../../../docs/decisions/ADR-KI-HARNESS-012-compatible-harness-publication-and-governed-rubric-boundary.md). The decisions behind its rules are in [the sources file](sources.md#3-decisions).
 
-`ki-bootstrap` is guidance for the delivered user setup and capability-activation model. It does not publish a rubric, register a native repository operation, or own public command grammar.
+`ki-keystone bootstrap` is guidance for the delivered user setup and capability-activation model. It does not publish a rubric, register a native repository operation, or own public command grammar.
 
 `tools-ki` owns the executable, harness acquisition and inventory, activation, repository resolution, governed-rubric host, transactions, reporting, and diagnostics. Compatible harnesses own their published capability content and domain semantics.
 
@@ -151,7 +151,7 @@ The host never executes `scripts/govern.ts`, `.ki/bin` wrappers, copied checkers
 - detect supported local agent runtimes;
 - create the KI user configuration when absent;
 - install or restore the verified canonical harness; and
-- activate the core `ki-bootstrap`, `ki-next`, `ki-plan`, `ki-implement`, `ki-accept`, and `ki-recap` skills for each detected runtime.
+- activate the core user skills, `ki-keystone` and `ki-work`, for each detected runtime; `ki-keystone` carries this bootstrap guidance and `ki-work` the work subcommands that were once skills of their own.
 
 Repeated bootstrap is idempotent over correctly managed state. `ki bootstrap --refresh` redetects runtimes and rebuilds the recorded installed-harness and managed user-skill inventory from current state.
 

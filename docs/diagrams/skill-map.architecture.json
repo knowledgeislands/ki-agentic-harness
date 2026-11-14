@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "833826d5d7875d9bbeb9589aaafb8716d384fea3"
+      "revision": "2f7ada1639f343e64e88c443b4dfbe4443dc428b"
     },
     "legend": {
       "mode": "auto",
@@ -185,25 +185,6 @@
       ]
     },
     {
-      "id": "ki-bootstrap",
-      "type": "frontend",
-      "label": "ki-bootstrap",
-      "sublabel": "fundamentals · command",
-      "sources": [
-        {
-          "path": "skills/keystone/ki-bootstrap/SKILL.md"
-        }
-      ],
-      "pos": [
-        32,
-        568
-      ],
-      "size": [
-        200,
-        60
-      ]
-    },
-    {
       "id": "ki-work",
       "type": "database",
       "label": "ki-work",
@@ -215,7 +196,7 @@
       ],
       "pos": [
         32,
-        708
+        624
       ],
       "size": [
         200,
@@ -234,7 +215,7 @@
       ],
       "pos": [
         32,
-        848
+        764
       ],
       "size": [
         200,
@@ -614,7 +595,7 @@
       ],
       "pos": [
         32,
-        1020
+        936
       ],
       "size": [
         200,
@@ -633,7 +614,7 @@
       ],
       "pos": [
         240,
-        1020
+        936
       ],
       "size": [
         200,
@@ -652,7 +633,7 @@
       ],
       "pos": [
         448,
-        1020
+        936
       ],
       "size": [
         200,
@@ -671,7 +652,7 @@
       ],
       "pos": [
         32,
-        1104
+        1020
       ],
       "size": [
         200,
@@ -690,7 +671,7 @@
       ],
       "pos": [
         32,
-        1244
+        1160
       ],
       "size": [
         200,
@@ -709,7 +690,7 @@
       ],
       "pos": [
         240,
-        1244
+        1160
       ],
       "size": [
         200,
@@ -728,7 +709,7 @@
       ],
       "pos": [
         32,
-        1384
+        1300
       ],
       "size": [
         200,
@@ -747,7 +728,7 @@
       ],
       "pos": [
         240,
-        1384
+        1300
       ],
       "size": [
         200,
@@ -766,7 +747,7 @@
       ],
       "pos": [
         448,
-        1384
+        1300
       ],
       "size": [
         200,
@@ -785,7 +766,7 @@
       ],
       "pos": [
         32,
-        1468
+        1384
       ],
       "size": [
         200,
@@ -804,7 +785,7 @@
       ],
       "pos": [
         32,
-        1608
+        1524
       ],
       "size": [
         200,
@@ -823,7 +804,7 @@
       ],
       "pos": [
         240,
-        1608
+        1524
       ],
       "size": [
         200,
@@ -842,7 +823,7 @@
       ],
       "pos": [
         448,
-        1608
+        1524
       ],
       "size": [
         200,
@@ -861,7 +842,7 @@
       ],
       "pos": [
         32,
-        1692
+        1608
       ],
       "size": [
         200,
@@ -880,7 +861,7 @@
       ],
       "pos": [
         240,
-        1692
+        1608
       ],
       "size": [
         200,
@@ -1032,7 +1013,7 @@
       ],
       "pos": [
         32,
-        1864
+        1780
       ],
       "size": [
         200,
@@ -1051,7 +1032,7 @@
       ],
       "pos": [
         240,
-        1864
+        1780
       ],
       "size": [
         200,
@@ -1070,7 +1051,7 @@
       ],
       "pos": [
         448,
-        1864
+        1780
       ],
       "size": [
         200,
@@ -1089,7 +1070,7 @@
       ],
       "pos": [
         32,
-        1948
+        1864
       ],
       "size": [
         200,
@@ -1298,7 +1279,7 @@
       ],
       "pos": [
         32,
-        2120
+        2036
       ],
       "size": [
         200,
@@ -1317,7 +1298,7 @@
       ],
       "pos": [
         240,
-        2120
+        2036
       ],
       "size": [
         200,
@@ -1336,7 +1317,7 @@
       ],
       "pos": [
         32,
-        2292
+        2208
       ],
       "size": [
         200,
@@ -1355,7 +1336,7 @@
       ],
       "pos": [
         32,
-        2432
+        2348
       ],
       "size": [
         200,
@@ -1374,7 +1355,7 @@
       ],
       "pos": [
         240,
-        2432
+        2348
       ],
       "size": [
         200,
@@ -1393,7 +1374,7 @@
       ],
       "pos": [
         448,
-        2432
+        2348
       ],
       "size": [
         200,
@@ -1434,8 +1415,7 @@
       "wraps": [
         "ki-keystone",
         "ki-design",
-        "ki-env",
-        "ki-bootstrap"
+        "ki-env"
       ],
       "pad": 10
     },
@@ -1457,7 +1437,7 @@
     },
     {
       "kind": "region",
-      "label": "Keystone · 11 skills",
+      "label": "Keystone · 10 skills",
       "wraps": [
         "ki-authoring",
         "ki-repo",
@@ -1467,7 +1447,6 @@
         "ki-keystone",
         "ki-design",
         "ki-env",
-        "ki-bootstrap",
         "ki-work",
         "ki-acquire"
       ],
@@ -1788,7 +1767,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "72 skills in 8 concerns and 10 functional areas: 3 always on, 19 automatic, 38 opt-in, 12 commands.",
+        "71 skills in 8 concerns and 10 functional areas: 3 always on, 19 automatic, 38 opt-in, 11 commands.",
         "Regenerate with ki repo conform --skill ki-repo-backpack; ki-skills owns the kind and applicability fields it reads."
       ]
     }

@@ -68,13 +68,13 @@ Replaced by BOOT-016. Native repository operations preserve unowned state rather
 
 ### BOOT-011 — First-time bootstrap establishes the minimum user environment
 
-`ki bootstrap` MUST detect supported local agent runtimes, create the KI user configuration when absent, install or restore the canonical `knowledgeislands/ki-agentic-harness`, and activate the six core user skills — `ki-bootstrap`, `ki-next`, `ki-plan`, `ki-implement`, `ki-accept`, and `ki-recap` — for every detected runtime. `ki-delegation` is opt-in and augments runtime subagent delegation only when active in the same scope.
+`ki bootstrap` MUST detect supported local agent runtimes, create the KI user configuration when absent, install or restore the canonical `knowledgeislands/ki-agentic-harness`, and activate the core user skills — `ki-keystone`, which carries `ki-keystone bootstrap`, and `ki-work`, which carries the work subcommands — for every detected runtime. `ki-delegation` is opt-in and augments runtime subagent delegation only when active in the same scope.
 
-_Conformance:_ divergent
+_Conformance:_ conforming
 
-_Verify:_ run `ki bootstrap` against isolated empty XDG and runtime homes, then inspect `config.toml`, the canonical harness installation, and the six managed user-skill links in each detected runtime.
+_Verify:_ run `ki bootstrap` against isolated empty XDG and runtime homes, then inspect `config.toml`, the canonical harness installation, and the two managed user-skill links in each detected runtime.
 
-_Evidence:_ tools-ki's `minimumBootstrapUserSkills` still requires and links `ki-batch`, which Kris retired under BATCH-RETIRE a) on 7 November 2026, and also requires `ki-work-design`.
+_Evidence:_ tools-ki 0.16.0's `minimumBootstrapUserSkills` requires and links `ki-keystone` and `ki-work`, and accepts the retired set, `ki-bootstrap`, `ki-next`, `ki-plan`, `ki-implement`, `ki-accept`, `ki-batch`, `ki-recap` and `ki-work-design`, for one release from a harness that does not yet provide the current set; the harness provides the current set from 14 November 2026.
 
 ### BOOT-012 — Refresh reconciles detected user state
 

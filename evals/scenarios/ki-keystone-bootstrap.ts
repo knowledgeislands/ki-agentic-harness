@@ -1,5 +1,5 @@
 /**
- * Eval scenarios for the `ki-bootstrap` guidance skill.
+ * Eval scenarios for the `ki-keystone bootstrap` guidance mode.
  *
  * These target house-specific scope and trust boundaries a baseline cannot derive:
  * what first-time bootstrap installs, how harness installation differs from skill
@@ -9,7 +9,7 @@ import type { Scenario } from '../harness.ts'
 
 export const scenarios: Scenario[] = [
   {
-    skill: 'ki-bootstrap',
+    skill: 'ki-keystone',
     id: 'boot-first-time-user',
     prompt:
       'What exactly does `ki bootstrap` establish for a first-time user, and what repository state does it deliberately leave alone?',
@@ -26,10 +26,10 @@ export const scenarios: Scenario[] = [
       }
     ],
     rubric:
-      'House contract: `ki bootstrap` detects supported local agent runtimes, creates the KI XDG configuration, installs the verified canonical `knowledgeislands/ki-agentic-harness`, and activates the six core user skills: `ki-bootstrap`, `ki-next`, `ki-plan`, `ki-implement`, `ki-accept`, and `ki-recap`. `ki-delegation` is opt-in. It does not edit a repository or declare repository governance. A correct answer names both the user-environment work and the repository boundary.'
+      'House contract: `ki bootstrap` detects supported local agent runtimes, creates the KI XDG configuration, installs the verified canonical `knowledgeislands/ki-agentic-harness`, and activates the core user skills, `ki-keystone` and `ki-work`. `ki-delegation` is opt-in. It does not edit a repository or declare repository governance. A correct answer names both the user-environment work and the repository boundary.'
   },
   {
-    skill: 'ki-bootstrap',
+    skill: 'ki-keystone',
     id: 'boot-activation-scopes',
     prompt:
       'After `ki harness install example/operations`, are its skills active automatically? Explain the user-scope and repository-scope commands and what each changes.',
@@ -43,7 +43,7 @@ export const scenarios: Scenario[] = [
       "House contract: installing a compatible harness only makes its registered capabilities available. `ki skill add <skill>` creates managed user-runtime links and records the selected provider. `ki repo skill add <skill>` updates one repository's `.ki.toml` and its managed repository-runtime links. Neither scope implies the other."
   },
   {
-    skill: 'ki-bootstrap',
+    skill: 'ki-keystone',
     id: 'boot-native-operation-trust',
     prompt:
       'A repository declares a governance skill that is missing from the verified installed harness set, but it still has an old local runner and a nearby harness checkout. What should `ki repo audit` do?',

@@ -67,7 +67,7 @@ Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated H
 | --- | --- | --- |
 | AUDIT | "audit my streams" | [mode-audit.md](references/mode-audit.md) |
 | CONFORM | "conform my streams / bring them into line" | [mode-conform.md](references/mode-conform.md) |
-| EDUCATE | "bootstrap streams governance" (via the `ki-bootstrap` chain) | the EDUCATE sentence above — no procedure file |
+| EDUCATE | "bootstrap streams governance" (via `ki-keystone bootstrap`) | the EDUCATE sentence above — no procedure file |
 | REFRESH | "is the Streams model still current" (on its declared cadence) | [mode-refresh.md](references/mode-refresh.md) |
 
 The Working rules apply on every fire, before any mode procedure loads.

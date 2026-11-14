@@ -1,0 +1,53 @@
+# Bootstrap
+
+`ki-keystone bootstrap` explains first-time Knowledge Islands activation through the `ki` CLI: user bootstrap, verified harness selection, skills, and repository governance. It was the `ki-bootstrap` skill until Keystone folded it into its lead (BOOTSTRAP-FOLD). It changes no user or repository state.
+
+The `ki` CLI owns installation, activation, and repository operations. `ki-keystone bootstrap` explains that command surface; it has no executable catalogue, checker, or alternative executor.
+
+Read [the bootstrap standard](standard-bootstrap.md) when the installation, activation, or trust boundary matters. Use [the exemplars](exemplars.md) for concrete command sequences.
+
+When delegating work into another repository, name each governance skill it needs with a readable source path, because a recipient invokes only its user-scope skills and its start repository's projection; see [skill access in delegated work](standard-bootstrap.md#44-skill-access-in-delegated-work).
+
+## First-time user setup
+
+Run `ki bootstrap`.
+
+KI detects supported local agent runtimes, creates its XDG configuration if absent, installs the canonical `knowledgeislands/ki-agentic-harness`, and links the core user skills into each detected agent's user skill directory.
+
+Run `ki bootstrap --refresh` to redetect agents and reconcile the recorded harness and managed user-skill inventory with installed state.
+
+The user configuration and installed harness payloads are separate from a repository's `.ki.toml`.
+
+## Harnesses and skills
+
+`ki harness list`, `ki harness info <id>`, `ki harness install <id>`, and `ki harness uninstall <id>` manage compatible installed harnesses. The canonical harness is always retained.
+
+`ki skill add <skill>` and `ki skill remove <skill>` manage a skill in configured user agent spaces.
+
+`ki repo skill add <skill>` and `ki repo skill remove <skill>` manage a skill's repository declaration and runtime link. They affect only the selected repository; they never alter user activation.
+
+Managed activation is fail-closed. If a link, installed payload, or development projection is unfamiliar, altered, escaping, or otherwise unsafe, use the owning `ki` diagnostic and repair command; do not copy or delete files across source, installed, and runtime-discovery surfaces. Start a new agent session after changing activation or the selected development source so the runtime re-scans its discovery directories.
+
+## Repository operations
+
+`.ki.toml` declares the skills that govern a repository. `ki repo educate`, `ki repo audit`, and `ki repo conform` resolve only those declarations and their explicit dependencies from installed harnesses.
+
+Missing, incompatible, undeclared, or ambiguous skills fail before an audit or conform operation runs. The CLI executes native rubric catalogues; it never uses repository-vendored runners or `.ki/bin` wrappers.
+
+## Machine readiness for coordinating work
+
+A coordinating session needs more than the skills `ki bootstrap` activates: the user environment must bind the coordinator hook and the coordinator output style, `output-styles/ki-coordinator.md` in the harness, the Capital must declare its governance skills, and the session must open in the Capital under the work's name. The [machine-readiness checklist](standard-bootstrap.md#47-machine-readiness-for-coordinating-work) is the one path from a fresh machine to a working coordinator. It ends in a **Ready to coordinate** result, given only when every check passes, with observable checks that the hook and the output style actually work; a failing check names the owner that repairs it, never a copy or edit across managed surfaces. `ki-coordination`'s Bootstrap begins at the opener and cites the checklist as its "Before the opener" step. Kris homed the checklist here under BOOT-HOME on 26 October 2026; a `ki doctor` readiness check in `tools-ki` may back it later, and readiness never depends on it before it exists.
+
+## Development boundary
+
+An installed verified payload is the authoritative source of capabilities. Local development is explicit: `ki dev local set <harness-id> <local-harness-path>` validates and records a checkout, `ki dev local on [harness-id]` selects it, and `ki dev local off [harness-id]` restores the verified archive. A selected local checkout is a mutable development source, not a verified installed payload; activation and loaded runtime capability remain separate host evidence.
+
+For command grammar, run `ki --help`. For repository coverage, use `ki-repo`.
+
+## Refreshing this guidance
+
+The keystone REFRESH mode refreshes this guidance, not user or repository state:
+
+1. Read [the sources](sources.md) and re-check the delivered `tools-ki` command surface, the compatible-harness contract, and the repository declaration contract.
+2. Diff them against [the bootstrap standard](standard-bootstrap.md), this reference, and [the exemplars](exemplars.md).
+3. Update only this guidance and the source review record. Record behavioural history in git rather than adding a changelog.

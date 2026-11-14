@@ -383,7 +383,6 @@
     "ki work status --format json",
     "ki-accept",
     "ki-agentic-harness",
-    "ki-bootstrap",
     "ki-coordination",
     "ki-coordinator",
     "ki-delegation",
