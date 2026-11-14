@@ -137,7 +137,7 @@ Each part: what it carries, when it appears and how the structure, the state and
 - **F6 Item list:** one line per live item, `- [<state>] <what> · <holder> · at <time>`, under **Glyph banner** in [the core](standards-coordination.md#banner). It carries no `[awaiting ACK]` items; their count stays in F5. On hold it lists only `[parked]` and `[release]`; Finished lists `[finished]`.
 - **F7 Heading-for line:** `↪️ <draining or finishing> → <target>`, only while the work is heading for a hold or a handoff, under **Heading for a hold or a handoff** in [the core](standards-coordination.md#banner).
 - **F8 Listening line:** `👂 listening` while the [inbox watcher](standards-listening.md#inbox-watch) is armed, and `🔇 not listening` otherwise, by default, including a session the owner has not asked to listen. Left out only when the work is Finished.
-- **F9 Thread line:** `<role glyph> 🔑 <work-id>`, or `🧵 <work-id>`, always last, under **Thread line** in [the core](standards-coordination.md#banner).
+- **F9 Thread line:** `<role glyph> 🔑 <work-id>`, `<role glyph> <work-id>+<role>` for a seat without the keys, or `🧵 <work-id>`, always last, under **Thread line** in [the core](standards-coordination.md#banner).
 
 Sources: REPLY-FORMAT and REPLY-GROUPS in [the decision register](sources.md#decision-register).
 

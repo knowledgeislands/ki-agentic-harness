@@ -83,9 +83,11 @@ const PROJECT_THREAD_LINE = '⚒️ 🔑 ki.prj.ways-of-working'
 const TERRITORY_THREAD_LINE = '🧵 ki.sop.main'
 /**
  * The thread line under STAGE-C-ROLES (Kris, 7 November 2026): `<role glyph> 🔑 <work-id>`, or `🧵 <work-id>` for a
- * session with no role yet and for every run report.
+ * session with no role yet and for every run report; and under SEAT-LINE a (Kris, 14 November 2026),
+ * `<role glyph> <work-id>+<role>` for a seat working in a package without its keys.
  */
-const THREAD_LINE = /^(?:🧵|[^\s!-~]+ 🔑) [a-z0-9-]+(?:\.[a-z0-9-]+){0,2}$/u
+const THREAD_LINE =
+  /^(?:(?:🧵|[^\s!-~]+ 🔑) [a-z0-9-]+(?:\.[a-z0-9-]+){0,2}|[^\s!-~]+ [a-z0-9-]+(?:\.[a-z0-9-]+){1,3}\+[a-z]+(?:-[a-z]+)*)$/u
 /** The heading-for line: what the worker is doing, an arrow and the hold or handoff it is heading for. */
 const HEADING_FOR_LINE =
   /^↪️ (?:draining → (?:⏸️ On hold|💤 Snoozing \(on hold\))|(?:draining|finishing) → 👤 Handoff to supervisor|finishing → 🎯 Handoff to [^·*]+)$/u
@@ -821,7 +823,17 @@ test('regular coordination is explicit, capability-checked and uses its real wor
     expect(`🧵 ${id}`).toMatch(THREAD_LINE)
     expect(`⚖️ 🔑 ${id}`).toMatch(THREAD_LINE)
   }
-  for (const invalid of ['🔑 ki.reg.guilds', '⚖️ ki.reg.guilds', '⚖️ 🔑 KI.reg.guilds', 'guild 🔑 ki.reg.guilds'])
+  for (const seat of ['📐 ki.cairn+architect', '🎨 ki.cairn+illustrator', '🐝 ki.prj.ways-of-working+journeyman'])
+    expect(seat).toMatch(THREAD_LINE)
+  for (const invalid of [
+    '🔑 ki.reg.guilds',
+    '⚖️ ki.reg.guilds',
+    '⚖️ 🔑 KI.reg.guilds',
+    'guild 🔑 ki.reg.guilds',
+    '📐 🔑 ki.cairn+architect',
+    'architect ki.cairn+architect',
+    '📐 ki.cairn+Architect'
+  ])
     expect(invalid).not.toMatch(THREAD_LINE)
   expect(standard).toContain('Reports saved before this change retain their original closing line and remain readable')
   for (const surface of generate(harnessRoot).filter((surface) =>

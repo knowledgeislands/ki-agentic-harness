@@ -3,7 +3,8 @@
 # and warn on anything else unusual. A Summary or a Status, a Bootstrap or a Stop,
 # a reply that already opens a banner, and a reply to an owner's mark, state word
 # or Position phrase must close with a banner: a ### state heading and the thread
-# line, last: <role glyph> 🔑 <work-id>, or 🧵 <work-id> for a session with no role
+# line, last: <role glyph> 🔑 <work-id>, <role glyph> <work-id>+<role> for a seat
+# without the package's keys (SEAT-LINE), or 🧵 <work-id> for a session with no role
 # yet. An unrecognised state heading, a missing or odd counts line, a missing
 # listening line before Finished, ⭐, 🔧 or 🧵 in the role glyph's place, and in a
 # Summary or Status missing art, roadmap or package line pass with a warning, so the owner can confirm the form was intended. The
@@ -123,7 +124,7 @@ footer() {
     /^(```|~~~)/ { fence = !fence; next }
     fence { next }
     /^## Summary$/ || /^## Summary since / || /^\*\*(.* · )?(Summary|Status) at / { print "summary"; exit }
-    /^\*\*(.* · )?(Bootstrap|Stop|Re-bootstrap|Hold report|Finish report) at / || /^### .*(With worker|Handoff to|With supervisor|On hold|Snoozing|Finished)/ || /^(🧵|[^ -~]+ 🔑) [^ ]+ *$/ { other = 1 }
+    /^\*\*(.* · )?(Bootstrap|Stop|Re-bootstrap|Hold report|Finish report) at / || /^### .*(With worker|Handoff to|With supervisor|On hold|Snoozing|Finished)/ || /^(🧵|[^ -~]+ 🔑) [^ ]+ *$/ || /^[^ -~]+ [a-z0-9-]+([.][a-z0-9-]+)+[+][a-z]+(-[a-z]+)* *$/ { other = 1 }
     END { if (other) print "banner" }')
 
   if [ -z "$form" ]; then
@@ -144,7 +145,7 @@ footer() {
         pause | 'done for now' | snooze | drain | hold | resume | finish | send | receive | 'with me' | ack | 'got it' | seen) ;;
       *) return 0 ;;
     esac
-    recent | LC_ALL=C grep -F '"type":"assistant"' | LC_ALL=C grep -Eq '(\\n|")(🧵|[^ -~"\\]+ 🔑) [A-Za-z0-9][A-Za-z0-9._+-]*(\\n|")' || return 0
+    recent | LC_ALL=C grep -F '"type":"assistant"' | LC_ALL=C grep -Eq '(\\n|")((🧵|[^ -~"\\]+ 🔑) [A-Za-z0-9][A-Za-z0-9._+-]*|[^ -~"\\]+ [a-z0-9-]+([.][a-z0-9-]+)+[+][a-z]+(-[a-z]+)*)(\\n|")' || return 0
     form=banner
   fi
 
@@ -178,7 +179,8 @@ footer() {
     {
       last = NR
       key = $0 ~ /^[^ -~]+ 🔑 [^ ]+ *$/
-      is_thread = key || $0 ~ /^🧵 [^ ]+ *$/
+      keyless = $0 ~ /^[^ -~]+ [a-z0-9-]+([.][a-z0-9-]+)+[+][a-z]+(-[a-z]+)* *$/
+      is_thread = key || keyless || $0 ~ /^🧵 [^ ]+ *$/
       # A state heading opens with its glyph or names a state; a query or finding heading opens with its tag.
       state = $0 ~ /^### .*(With worker|Handoff to|With supervisor|On hold|Snoozing|Finished)/
       if (state || $0 ~ /^### [^ -~]/) { heading = NR; known = state; finished = index($0, "Finished") > 0; counts_seen = 0; counts = 0; odd = 0; road = 0; pack = 0; listen = 0; next }
@@ -191,7 +193,7 @@ footer() {
       if (heading && $0 ~ /^(👂 listening|🔇 not listening)/) listen = 1
       if (is_thread) {
         thread = NR
-        glyphs = key ? substr($0, 1, index($0, " 🔑") - 1) : ""
+        glyphs = key ? substr($0, 1, index($0, " 🔑") - 1) : keyless ? substr($0, 1, index($0, " ") - 1) : ""
         marks = index(glyphs, "⭐") || index(glyphs, "🔧")
         spun = index(glyphs, "🧵") > 0
       }

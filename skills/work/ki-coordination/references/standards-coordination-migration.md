@@ -129,7 +129,7 @@ Adjusts [Bootstrap](standards-bootstrap.md#bootstrap). Beside the one-line `Re-b
 
 ## Legacy records at bootstrap
 
-Adjusts [Bootstrap](standards-bootstrap.md#bootstrap), step 3. Where a work has not yet moved to a work package, the coordinator reads its tolerated legacy record in place of the package's five files, `messages.md` first. Delete when the [tolerance window](#thread-model) closes.
+Adjusts [Bootstrap](standards-bootstrap.md#bootstrap), step 4. Where a work has not yet moved to a work package, the coordinator reads its tolerated legacy record in place of the package's five files, `messages.md` first. Delete when the [tolerance window](#thread-model) closes.
 
 ## Old-shape pick-up blocks
 

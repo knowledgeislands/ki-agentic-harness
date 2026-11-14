@@ -17,20 +17,21 @@ This file holds bootstrap, resolving the opener, re-anchoring after compaction, 
 
 A one-line opener brings a new or running session onto this contract, for example `Re-bootstrap as ki.ways-of-working under ki-coordination.` A coordinator also re-bootstraps on request, after a compaction under [Re-anchoring](#re-anchoring-after-compaction), after a model switch, and when [picking work up](#picking-work-up). It then:
 
-1. reads this standard and the Work Process note;
-2. checks through its agent host which of its agents still run and reconciles what is actually running;
-3. [resolves the opener](#resolving-the-opener) to one package, `+/_WORK/<id>/`, reads its five files, `messages.md` first, reconciles it under the work-package standard and checks `method_read`;
-4. acts on each line of [`messages.md`](standards-messages.md#messages-between-work), `IMPORTANT` lines first, `FIRST-STEP` among them, then in queue order, before launching any work;
-5. as a State of play, gathers every record awaiting acceptance across its territory's repositories, or, as a secondary, across the work it covers, and brings them first, ahead of every other query, as one bundle per work under [Acceptance bundles](standards-queries.md#acceptance-bundles);
-6. gives the Bootstrap, trigger T2 in the [coordinator reply format](standards-report-forms.md#triggers), a full Medium [report](standards-reporting.md#owner-report) under the [report heading](standards-report-forms.md#banner-detail), form line `**Bootstrap at <local time> · last mark <local time>**`:
-   - `## Done` gives its coordinator role and where the work stands, ending with `Rename thread: /rename <thread line>`, the thread line being `<role glyph> 🔑 <work-id>`, or `🧵 <work-id>` with no role yet, under [Opening work](standards-opening.md#opening-work);
+1. where the opener starts a new session, renames the session to the thread line the opener names, as its first act, before any read, by its agent host's rename (runtime-specific: `/rename <thread line>` in Claude Code), under [Opening work](standards-opening.md#opening-work);
+2. reads this standard and the Work Process note;
+3. checks through its agent host which of its agents still run and reconciles what is actually running;
+4. [resolves the opener](#resolving-the-opener) to one package, `+/_WORK/<id>/`, reads its five files, `messages.md` first, reconciles it under the work-package standard and checks `method_read`;
+5. acts on each line of [`messages.md`](standards-messages.md#messages-between-work), `IMPORTANT` lines first, `FIRST-STEP` among them, then in queue order, before launching any work;
+6. as a State of play, gathers every record awaiting acceptance across its territory's repositories, or, as a secondary, across the work it covers, and brings them first, ahead of every other query, as one bundle per work under [Acceptance bundles](standards-queries.md#acceptance-bundles);
+7. gives the Bootstrap, trigger T2 in the [coordinator reply format](standards-report-forms.md#triggers), a full Medium [report](standards-reporting.md#owner-report) under the [report heading](standards-report-forms.md#banner-detail), form line `**Bootstrap at <local time> · last mark <local time>**`:
+   - `## Done` gives its coordinator role and where the work stands, ending with `Rename thread: /rename <thread line>`, the thread line being `<role glyph> 🔑 <work-id>`, or `🧵 <work-id>` with no role yet, the same line the opener named, under [Opening work](standards-opening.md#opening-work);
    - `## In Progress` gives what is running;
    - `## Queries` gives every open query in full;
    - the [banner](standards-coordination.md#banner) and thread line close it, rendered as every banner is, without the roadmap and package lines, the thread line last.
 
 Work opened, bootstrapped or restarted in a new session with no mark strikes one at its start, writing `mark` in `state.md`, so every work carries a mark. [Re-anchoring](#re-anchoring-after-compaction) in the same session moves none.
 
-Sources: BOOT-HOME, REBOOT-SHAPE and WORK-REVIEW-RETIRE in [the decision register](sources.md#decision-register).
+Sources: BOOT-HOME, REBOOT-SHAPE, WORK-REVIEW-RETIRE and OPENER-NAME in [the decision register](sources.md#decision-register).
 
 ## Resolving the opener
 

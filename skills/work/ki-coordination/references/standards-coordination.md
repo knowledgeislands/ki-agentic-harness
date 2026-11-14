@@ -91,7 +91,7 @@ The Work Process note's Words table owns the model's words: work, work item, the
 | banner | F2 to F9: the state, counts, items, modes and thread line | `ki-coordination` |
 | holder | Who an item is with: 👤 the owner, 🤖 a worker or run, 🧵 another session, 🌐 the outside world | `ki-coordination` |
 | time | The owner's local time, as a friendly time naming the day where it is not today, or an ISO 8601 timestamp with its offset where a friendly time does not fit | `ki-coordination` |
-| thread line | The closing line of every banner, `<role glyph> 🔑 <work-id>`, or `🧵 <work-id>` for a session with no role yet, under [Banner](#banner); its grammar and the role glyphs are the [role standard](../../ki-work-package/references/standard-roles.md#46-thread-line)'s | `ki-work-package` |
+| thread line | The closing line of every banner and the session's name, `<role glyph> 🔑 <work-id>`, `<role glyph> <work-id>+<role>` for a seat without the package's keys, or `🧵 <work-id>` for a session with no role yet, under [Banner](#banner); its grammar and the role glyphs are the [role standard](../../ki-work-package/references/standard-roles.md#46-thread-line)'s | `ki-work-package` |
 | query, tag | An open decision and its stable mnemonic | `ki-coordination` |
 | decision | One entry in `decisions.md` | `ki-coordination` |
 | record | A roadmap work record | `ki-work-roadmap` |
@@ -283,12 +283,14 @@ The report heading, rendered glyphs, roadmap and package lines, mode lines, rest
 **Thread line.** Every banner closes with one plain Markdown line, after a blank line following its listening line, or its list in a run report: the session's [thread line](../../ki-work-package/references/standard-roles.md#46-thread-line).
 
 - `<role glyph> 🔑 <work-id>` for every explicitly coordinating package whose seat has a role, main or secondary State of play, Project, regular or ad hoc work; `🧵 <work-id>` for a session with no role yet. Use the authoritative work id from `_index.md` and the glyph of the seat's one catalogue role.
+- A seat working in the package without its keys, such as a maker in a meeting, closes with `<role glyph> <work-id>+<role>`, with no key, under the role standard's [thread line](../../ki-work-package/references/standard-roles.md#46-thread-line); only the keyholder carries 🔑.
 - A run report closes with `🧵 <work-id>` of the work it reports to, without its run name, because a run takes no seat.
+- The opener that starts a session names this line, and the session renames itself to it first, under [Opening work](standards-opening.md#opening-work).
 - It closes every state, handoff, On hold and Finished included. Rich report headings, work labels, banner counts and states are unchanged by it.
 - It replaces all copyable send and resume lines: no banner, handoff or Stop emits either prompt or a paste instruction, beyond the [restart suggestion](standards-report-forms.md#banner-detail) when a trigger holds. The owner gets each opener from [Opening work](standards-opening.md#opening-work), never from a report.
 - Reports saved before this change retain their original closing line and remain readable; never rewrite them solely for the new footer.
 
-Sources: BANNER-GLYPH, REPLY-BLOCK, TARGET-GLYPH, GLYPH-OWNER, BANNER-ON-STATE, DRAIN-TARGET, FOOTER-LAYOUT, SNOOZE-STATE, BANNER-TRIM, NO-LINK-MARK, PUSH-STATE-OUT, HOLD-CLEAN, BARE-ID-FOOTER and REPLY-FORMAT in [the decision register](sources.md#decision-register).
+Sources: BANNER-GLYPH, REPLY-BLOCK, TARGET-GLYPH, GLYPH-OWNER, BANNER-ON-STATE, DRAIN-TARGET, FOOTER-LAYOUT, SNOOZE-STATE, BANNER-TRIM, NO-LINK-MARK, PUSH-STATE-OUT, HOLD-CLEAN, BARE-ID-FOOTER, REPLY-FORMAT, SEAT-LINE and OPENER-NAME in [the decision register](sources.md#decision-register).
 
 ## Generated surfaces
 

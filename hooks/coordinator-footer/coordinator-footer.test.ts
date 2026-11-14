@@ -372,6 +372,21 @@ test('a key-form Summary and banner pass, in the session name form of the role s
   expect(run(stop(rebootstrap(heading, counts, items, listening, '🏛️ 🔑 ki.sop.main'), plain))).toEqual(silent)
 })
 
+// Kris, 14 November 2026, under SEAT-LINE a: a seat working in a package without its keys closes
+// `<role glyph> <work-id>+<role>`, its catalogue glyph, no key and its seat address.
+test('a keyless seat-address thread line passes as the thread line', () => {
+  expect(run(stop(rebootstrap(heading, counts, items, listening, '📐 ki.cairn+architect'), plain))).toEqual(silent)
+  expect(run(stop(summary(art, heading, counts, roadmap, pkg, items, listening, '🎨 ki.cairn+illustrator'), plain))).toEqual(silent)
+  expect(run(stop(`${rebootstrap(heading, counts, items, listening, '📐 ki.cairn+architect')}\n\nAnything else?`, plain)).reason).toContain(
+    'the thread line as the very last line'
+  )
+  const seated = transcript([
+    { owner: 'Join the meeting', reply: rebootstrap(heading, counts, items, listening, '📐 ki.cairn+architect') },
+    { owner: 'mark' }
+  ])
+  expect(run(stop('Mark struck.', seated)).reason).toContain('the thread line, <role glyph> 🔑 <work-id> or 🧵 <work-id>')
+})
+
 test('a key-form thread line that is not last is held back', () => {
   expect(run(stop(`${keySummary}\n\nAnything else?`, plain)).reason).toStartWith(
     "This Summary's footer lacks the thread line as the very last line, "
