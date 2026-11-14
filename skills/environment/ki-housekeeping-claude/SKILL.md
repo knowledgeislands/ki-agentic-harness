@@ -3,7 +3,7 @@ name: ki-housekeeping-claude
 ki-kind: governance
 ki-applicability: declaration-only
 ki-guild: environment
-ki-depends-on: []
+ki-depends-on: [ki-env-housekeeping]
 ki-runtime-binding: true
 ki-supported-runtimes: [claude-code]
 ki-shared-dependencies: [ki-skills:rubric]
@@ -17,6 +17,8 @@ argument-hint: 'audit | conform | help | educate | refresh'
 # ki-housekeeping-claude
 
 **Standard:** the hygiene of accumulated Claude state across the surfaces where it collects — the areas and the skill↔server pairing in [the Claude-state standard](references/standards-claude-state.md); the memory area's file format in [the auto-memory standard](references/standards-auto-memory.md); line-by-line criteria in [the rubric](references/rubric.md); tracked provenance in [sources](references/sources.md). The standards embed the two exact canonical shapes (directory/index and frontmatter), so this skill intentionally needs no separate exemplars file.
+
+This skill composes `ki-env-housekeeping`, the family's lead, which holds the rules every agent host shares, and adds Claude's own surfaces and controls.
 
 ## What this skill owns
 
@@ -37,7 +39,7 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**. Invoked as `he
 
 | Mode | What it does |
 | --- | --- |
-| AUDIT | Run `ki repo audit --skill ki-housekeeping-claude` for selected native-memory evidence and its bounded store. Report non-memory server state unavailable unless registration, access exposure, and an executed server audit are separately evidenced; then apply the judgment criteria in [rubric.md](references/rubric.md). Procedure in [mode-audit.md](references/mode-audit.md). |
+| AUDIT | Composes `ki-env-housekeeping` first. Run `ki repo audit --skill ki-housekeeping-claude` for selected native-memory evidence and its bounded store. Report non-memory server state unavailable unless registration, access exposure, and an executed server audit are separately evidenced; then apply the judgment criteria in [rubric.md](references/rubric.md). Procedure in [mode-audit.md](references/mode-audit.md). |
 | CONFORM | Run `ki repo conform --skill ki-housekeeping-claude`; it proposes only safe transactional repairs in an already selected bounded memory directory. Any non-memory cleanup requires independently established server access and authority. Re-AUDIT until the local evidence is clean. Procedure in [mode-conform.md](references/mode-conform.md). |
 | EDUCATE | Run `ki repo educate --skill ki-housekeeping-claude` to declare the repository's bounded user-home evidence; add it with `ki skill add ki-housekeeping-claude` when it should also be installed for every supported Claude Code agent. User activation installs a skill only — it does not audit or conform it. |
 | REFRESH | Re-check the standard against its sources: Headroom's memory-feature behavior for the memory format, and the `mcp-housekeeping-claude` server's tool surface for the other areas, per [mode-refresh.md](references/mode-refresh.md). |

@@ -248,7 +248,13 @@ test('fails closed when guild membership drifts', () => {
   expect(parseCapabilitySource(withGuild(source('ki-example'), 'Not A Guild'))).toEqual({
     issue: 'skills/governance/ki-example/SKILL.md has an invalid ki-guild'
   })
-  const guilded = estate([]).map((candidate) => withGuild(candidate, 'keystone'))
+  const guilded = estate([]).map((candidate) =>
+    withGuild(candidate, 'keystone', candidate.path.includes('/ki-keystone/') ? 'keystone' : undefined)
+  )
+  expect(prepareCapabilityPublication(undefined, guilded).issues).toEqual([])
+  expect(prepareCapabilityPublication(undefined, [...guilded, withGuild(source('ki-member'), 'craft')]).issues).toEqual(
+    ['guild craft has no lead']
+  )
   expect(prepareCapabilityPublication(undefined, [...guilded, source('ki-loose')]).issues).toEqual([
     'skills/governance/ki-loose/SKILL.md declares no ki-guild'
   ])

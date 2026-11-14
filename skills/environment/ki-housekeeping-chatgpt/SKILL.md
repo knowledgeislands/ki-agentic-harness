@@ -3,7 +3,7 @@ name: ki-housekeeping-chatgpt
 ki-kind: governance
 ki-applicability: declaration-only
 ki-guild: environment
-ki-depends-on: []
+ki-depends-on: [ki-env-housekeeping]
 ki-runtime-binding: true
 ki-supported-runtimes: [chatgpt-codex]
 ki-shared-dependencies: [ki-skills:rubric]
@@ -17,6 +17,8 @@ argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 # ChatGPT-family state housekeeping
 
 This skill is the ChatGPT-family home for distinct ChatGPT and Codex state surfaces. Their stores and controls remain separate. [The Codex memory standard](references/standards-codex-memory.md) governs the repository-first memory decision; [the Codex state standard](references/standards-codex-state.md) governs exact physical-repository session selection and permanent-deletion safeguards.
+
+This skill composes `ki-env-housekeeping`, the family's lead, which holds the rules every agent host shares, and adds the ChatGPT and Codex surfaces and controls.
 
 Use the provider-neutral lifecycle: **acquire → stage → harvest → durable knowledge → archive/delete source**.
 
@@ -40,7 +42,7 @@ Explain this boundary and stop without reading or changing any source session.
 
 ### Mode AUDIT
 
-Run `ki repo audit --skill ki-housekeeping-chatgpt` for the explicit Codex memory policy and bounded local-store evidence. Missing, unreadable, or unsafe evidence is unavailable or failing evidence, never a fallback to arbitrary paths. Codex session inventory is a separate explicit operation described in the Codex AUDIT procedure.
+Composes `ki-env-housekeeping` first. Run `ki repo audit --skill ki-housekeeping-chatgpt` for the explicit Codex memory policy and bounded local-store evidence. Missing, unreadable, or unsafe evidence is unavailable or failing evidence, never a fallback to arbitrary paths. Codex session inventory is a separate explicit operation described in the Codex AUDIT procedure.
 
 ### Mode CONFORM
 

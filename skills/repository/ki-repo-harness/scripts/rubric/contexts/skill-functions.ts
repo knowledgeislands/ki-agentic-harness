@@ -32,7 +32,7 @@ export const FUNCTIONAL_AREAS: readonly FunctionalArea[] = [
       { title: 'Repository and writing', skills: ['ki-repo', 'ki-authoring', 'ki-diagrams', 'ki-git'] },
       { title: 'Skills and harness', skills: ['ki-skills', 'ki-repo-harness'] },
       { title: 'Knowledge', skills: ['ki-knowledge-graph', 'ki-agentic-systems'] },
-      { skills: ['ki-keystone', 'ki-bootstrap'] }
+      { title: 'Guilds', skills: ['ki-keystone', 'ki-bootstrap', 'ki-design', 'ki-env'] }
     ]
   },
   {
@@ -126,7 +126,7 @@ export const FUNCTIONAL_AREAS: readonly FunctionalArea[] = [
     groups: [
       { title: 'MCP binding', skills: ['ki-binding', 'ki-binding-claude', 'ki-binding-chatgpt', 'ki-binding-chezmoi'] },
       { title: 'Tokenomics', skills: ['ki-tokenomics', 'ki-tokenomics-claude', 'ki-tokenomics-chatgpt'] },
-      { title: 'Housekeeping', skills: ['ki-housekeeping-claude', 'ki-housekeeping-chatgpt'] }
+      { title: 'Housekeeping', skills: ['ki-env-housekeeping', 'ki-housekeeping-claude', 'ki-housekeeping-chatgpt'] }
     ]
   },
   {
@@ -159,7 +159,7 @@ export const FUNCTIONAL_AREAS: readonly FunctionalArea[] = [
     title: 'Design',
     short: 'design',
     purpose: 'shape how products look and feel',
-    groups: [{ skills: ['ki-design-system', 'ki-design-inspiration'] }]
+    groups: [{ skills: ['ki-design', 'ki-design-system', 'ki-design-inspiration'] }]
   }
 ]
 

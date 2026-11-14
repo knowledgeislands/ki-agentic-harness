@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 71 skills: 57 governance skills, 13 process skills and 1 knowledge skill. The entries below are generated from canonical `SKILL.md` frontmatter, grouped by each skill's declared guild; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 74 skills: 60 governance skills, 13 process skills and 1 knowledge skill. The entries below are generated from canonical `SKILL.md` frontmatter, grouped by each skill's declared guild; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -251,6 +251,16 @@ Audit or safely conform Claude-native MCP configuration across Claude Code, Clau
 - **Dependencies:** `ki-binding`
 - **Runtime:** Runtime-bound: `claude-code`
 
+#### `ki-env-housekeeping`
+
+Hold the housekeeping rules every agent host shares: an explicit native-memory policy, durable learning routed into reviewed guidance, read-only session sources, bounded evidence and separately authorised deletion. Use for portable housekeeping policy; `ki-housekeeping-claude` and `ki-housekeeping-chatgpt` own each host's state and `ki-acquire` session capture.
+
+- **Kind:** Governance
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
 #### `ki-housekeeping-chatgpt`
 
 Audit ChatGPT opaque local-store evidence and Codex local memory or repository-scoped sessions. Use for ChatGPT store change detection, Codex memory reconciliation, or reviewed Codex thread cleanup; `ki-acquire-chatgpt` owns readable ChatGPT conversation acquisition.
@@ -258,7 +268,7 @@ Audit ChatGPT opaque local-store evidence and Codex local memory or repository-s
 - **Kind:** Governance
 - **Applicability:** Declaration Only
 - **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
-- **Dependencies:** None
+- **Dependencies:** `ki-env-housekeeping`
 - **Runtime:** Runtime-bound: `chatgpt-codex`
 
 #### `ki-housekeeping-claude`
@@ -268,7 +278,7 @@ Audit Claude Desktop, Cowork, Claude Code and VSCode state: memory, storage hygi
 - **Kind:** Governance
 - **Applicability:** Declaration Only
 - **Arguments:** `audit | conform | help | educate | refresh`
-- **Dependencies:** None
+- **Dependencies:** `ki-env-housekeeping`
 - **Runtime:** Runtime-bound: `claude-code`
 
 #### `ki-tokenomics`
@@ -343,6 +353,28 @@ Explain first-time KI activation through the `ki` CLI: user bootstrap, verified 
 - **Kind:** Process
 - **Applicability:** Invocation Only
 - **Arguments:** `help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-design`
+
+Lead the Design guild: how any design, technical or visual, is shaped before it is written down, from a brief through options and review, and each kind's levels. Use to start or review a design, or to find the design skill for it; `ki-design-system` owns interface design, `ki-work-design` shaping a Project, and Authoring's skills the records a design leaves.
+
+- **Kind:** Governance
+- **Leads:** Design
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-env`
+
+Lead the Environment guild: where agents run, the tools and access bound to them, the limits on their context, and the state agent hosts leave on a machine. Use to find the environment skill for MCP binding, context budgets or local housekeeping; each family's lead owns its portable rules and its runtime skills each agent host's delta.
+
+- **Kind:** Governance
+- **Leads:** Environment
+- **Applicability:** Declaration Only
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
 - **Dependencies:** None
 - **Runtime:** Portable
 

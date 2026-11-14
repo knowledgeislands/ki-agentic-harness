@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "44978c02c7ac844f8da80ffd43bafc89c5fa671e"
+      "revision": "f2dad23580f08ae497b76c2d16a71d5317ea320a"
     },
     "legend": {
       "mode": "auto",
@@ -113,6 +113,26 @@
       ]
     },
     {
+      "id": "ki-env-housekeeping",
+      "type": "database",
+      "label": "ki-env-housekeeping",
+      "sublabel": "environment · opt-in",
+      "sources": [
+        {
+          "path": "skills/environment/ki-env-housekeeping/SKILL.md"
+        }
+      ],
+      "tag": "R5 · CM · F3",
+      "pos": [
+        876,
+        64
+      ],
+      "size": [
+        208,
+        76
+      ]
+    },
+    {
       "id": "ki-housekeeping-chatgpt",
       "type": "database",
       "label": "ki-housekeeping-chatgpt",
@@ -125,7 +145,7 @@
       "tag": "R8 · CM · F7",
       "pos": [
         876,
-        64
+        188
       ],
       "size": [
         208,
@@ -145,7 +165,7 @@
       "tag": "R22 · CM · F7",
       "pos": [
         876,
-        188
+        312
       ],
       "size": [
         208,
@@ -267,6 +287,7 @@
       "kind": "region",
       "label": "Housekeeping",
       "wraps": [
+        "ki-env-housekeeping",
         "ki-housekeeping-claude",
         "ki-housekeeping-chatgpt"
       ],
@@ -274,7 +295,7 @@
     },
     {
       "kind": "region",
-      "label": "Environment · 9 skills",
+      "label": "Environment · 10 skills",
       "wraps": [
         "ki-binding",
         "ki-binding-claude",
@@ -283,6 +304,7 @@
         "ki-tokenomics",
         "ki-tokenomics-claude",
         "ki-tokenomics-chatgpt",
+        "ki-env-housekeeping",
         "ki-housekeeping-claude",
         "ki-housekeeping-chatgpt"
       ],
@@ -315,6 +337,18 @@
       "variant": "default"
     },
     {
+      "id": "ki-housekeeping-chatgpt--ki-env-housekeeping",
+      "from": "ki-housekeeping-chatgpt",
+      "to": "ki-env-housekeeping",
+      "variant": "default"
+    },
+    {
+      "id": "ki-housekeeping-claude--ki-env-housekeeping",
+      "from": "ki-housekeeping-claude",
+      "to": "ki-env-housekeeping",
+      "variant": "default"
+    },
+    {
       "id": "ki-tokenomics-chatgpt--ki-tokenomics",
       "from": "ki-tokenomics-chatgpt",
       "to": "ki-tokenomics",
@@ -342,7 +376,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "9 skills, 1 outside prerequisite, 0 outside dependents, 6 composition and 0 optional edges, read from SKILL.md frontmatter.",
+        "10 skills, 1 outside prerequisite, 0 outside dependents, 8 composition and 0 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

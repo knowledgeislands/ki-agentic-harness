@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "44978c02c7ac844f8da80ffd43bafc89c5fa671e"
+      "revision": "f2dad23580f08ae497b76c2d16a71d5317ea320a"
     },
     "legend": {
       "mode": "auto",
@@ -33,6 +33,26 @@
   },
   "components": [
     {
+      "id": "ki-design",
+      "type": "database",
+      "label": "ki-design",
+      "sublabel": "keystone · opt-in",
+      "sources": [
+        {
+          "path": "skills/keystone/ki-design/SKILL.md"
+        }
+      ],
+      "tag": "R6 · CM · F3",
+      "pos": [
+        32,
+        64
+      ],
+      "size": [
+        208,
+        76
+      ]
+    },
+    {
       "id": "ki-design-inspiration",
       "type": "frontend",
       "label": "ki-design-inspiration",
@@ -45,7 +65,7 @@
       "tag": "R– · C0 · F1",
       "pos": [
         288,
-        64
+        188
       ],
       "size": [
         208,
@@ -65,7 +85,7 @@
       "tag": "R9 · CM · F9",
       "pos": [
         32,
-        64
+        188
       ],
       "size": [
         208,
@@ -76,8 +96,9 @@
   "boundaries": [
     {
       "kind": "region",
-      "label": "Design · 2 skills",
+      "label": "Design · 3 skills",
       "wraps": [
+        "ki-design",
         "ki-design-system",
         "ki-design-inspiration"
       ],
@@ -100,7 +121,8 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "2 skills, 0 outside prerequisites, 0 outside dependents, 0 composition and 0 optional edges, read from SKILL.md frontmatter.",
+        "3 skills, 0 outside prerequisites, 0 outside dependents, 0 composition and 0 optional edges, read from SKILL.md frontmatter.",
+        "Home in another area: ki-design; only edges within this area are drawn for them here, and their home area's diagram draws the rest.",
         "Regenerate with ki repo conform --skill ki-repo-harness; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

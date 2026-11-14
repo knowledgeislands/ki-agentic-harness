@@ -222,6 +222,8 @@ const guildIssues = (entries: readonly CapabilityEntry[]): string[] => {
     if (entry.leads !== undefined) leadsByGuild.set(entry.leads, [...(leadsByGuild.get(entry.leads) ?? []), entry.name])
   for (const [guild, leads] of leadsByGuild)
     if (leads.length > 1) issues.push(`guild ${guild} has more than one lead: ${leads.sort().join(', ')}`)
+  const guilds = new Set(entries.flatMap((entry) => (entry.guild === undefined ? [] : [entry.guild])))
+  for (const guild of [...guilds].sort()) if (!leadsByGuild.has(guild)) issues.push(`guild ${guild} has no lead`)
   return issues
 }
 
