@@ -1,6 +1,6 @@
 ---
 type: standard@2026-11-09T21:36:32Z
-revised: 2026-11-09T22:09:53Z
+revised: 2026-11-14T05:40:00Z
 status: in force
 ---
 
@@ -21,7 +21,7 @@ status: in force
 
 The **judgment-layer** presentation rules for the TOML written in Knowledge Islands repositories. TOML is a distinct standard because it has no mechanical house formatter and governs configuration readability rather than Markdown documents. Nothing in the house toolchain formats TOML (Biome owns TS/JSON, rumdl owns Markdown), so unlike Markdown there is no mechanical pass to fall back on: these conventions are applied by a person or model, and `ki-repo` checks the mechanical part of the `.ki.toml` layout. The decisions behind these rules are in [the sources file](sources.md#3-decisions).
 
-This file owns only **presentation** (how existing values and comments read). The identity and topology of `.ki.toml` — including keys, tables, the compliance marker, the one-table-per-skill model, validation, declared divergences, and scaffolding — are semantic contract questions owned by `ki-repo`. Do not rename or create keys or tables to satisfy this style.
+This file owns only **presentation** (how existing values and comments read). The identity and topology of `.ki.toml` — including keys, tables, the compliance marker, the one-table-per-skill model, validation, declared divergences, and scaffolding — are semantic contract questions owned by `ki-repo`.
 
 [Back to contents](#contents)
 
@@ -75,7 +75,7 @@ supported_runtimes = [
 
 ### 4.2 Configuration structure
 
-In `.ki.toml`, the exact conformance header, skill-root declarations, semantic neighbourhoods, and owner boundaries belong to the `ki-repo` contract. Presentation makes those boundaries legible without changing the parsed data. Every `.ki.toml` follows six layout rules:
+In `.ki.toml`, the exact conformance header, skill-root declarations, semantic neighbourhoods, and owner boundaries belong to the `ki-repo` contract. Presentation makes those boundaries legible without changing the parsed data. Do not rename or create keys or tables to satisfy this style. Every `.ki.toml` follows six layout rules:
 
 1. **Header, then banners.** The exact two-line conformance header comes first, then the neighbourhood banners in a fixed order: Foundation, Repository shape, Governance and runtime, Change management, Relationships. Omit an empty neighbourhood. No other decorative rule precedes, wraps or separates them.
 2. **One blank line.** Exactly one blank line precedes every table heading and every banner. A comment above a heading belongs to it, so the blank line comes before the comment.

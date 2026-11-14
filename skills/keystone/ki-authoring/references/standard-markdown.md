@@ -1,6 +1,6 @@
 ---
 type: standard@2026-11-09T21:36:32Z
-revised: 2026-11-12T19:48:48Z
+revised: 2026-11-14T05:40:00Z
 status: in force
 ---
 
@@ -30,7 +30,7 @@ status: in force
 
 ## 1. Introduction
 
-The **judgment-layer** rules for the Markdown written across Knowledge Islands repositories and bases — the choices a formatter cannot make. Markdown is a distinct standard because its mechanical formatter/linter boundary and its human table, link, callout, and code-block decisions do not apply to the TOML configuration format. Everything mechanical (prose wrapping, bullet and quote characters, heading hierarchy, single H1, list spacing) is owned by **rumdl**; run `ki repo conform --skill ki-authoring` at the repository root and let that hosted rubric settle those. This file only covers what remains for a person or model. The decisions behind these rules are in [the sources file](sources.md#3-decisions).
+The **judgment-layer** rules for the Markdown written across Knowledge Islands repositories and bases — the choices a formatter cannot make. Markdown is a distinct standard because its mechanical formatter/linter boundary and its human table, link, callout, and code-block decisions do not apply to the TOML configuration format. Everything mechanical (prose wrapping, bullet and quote characters, heading hierarchy, single H1, list spacing) is owned by **rumdl**. This file only covers what remains for a person or model. The decisions behind these rules are in [the sources file](sources.md#3-decisions).
 
 [Back to contents](#contents)
 
@@ -75,6 +75,8 @@ Don't hand-apply or document any of these — the toolchain owns them, and resta
 - **Bullet, emphasis, and quote characters; trailing commas; blank-line spacing** — rumdl normalises these.
 - **Heading hierarchy, single H1, duplicate-heading and list rules** — rumdl flags these.
 
+Run `ki repo conform --skill ki-authoring` at the repository root and let that hosted rubric settle those.
+
 The one place column width _is_ your job is **tables**, and it is now wholly your job. The former formatter padded table columns only when the padded result fit within its print width, leaving wider tables compact; rumdl's `MD060` styles are unconditional, so the house configuration leaves the opt-in `MD060` off and enforces neither shape. Nothing mechanical will align a table for you — that makes the width conventions below load-bearing rather than advisory.
 
 [Back to contents](#contents)
@@ -113,7 +115,7 @@ A **two-column table is almost always a list in disguise** — a term and its ex
 - it reads cleanly in a terminal and in print, with no column padding to blow out;
 - it diffs one line per entry, so edits and reviews stay legible.
 
-Rule of thumb: **table for parallel data across several dimensions; list for term → description pairs**, and for anything whose cells would be full sentences. If a table has exactly two columns, or any cell runs to a sentence or more, it wants to be a list.
+Rule of thumb: **table for parallel data across several dimensions; list for term → description pairs**, and for anything whose cells would be full sentences. If a table has exactly two columns, or any cell runs to a sentence or more, it wants to be a list. The one exception is a standard's Terms and definitions table, which the [standard format](standard-formats-standard.md#42-shape) sets as two columns: it is a glossary, each definition read with its **Standard:** line.
 
 [Back to contents](#contents)
 

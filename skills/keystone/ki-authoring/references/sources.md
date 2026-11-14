@@ -1,6 +1,6 @@
 ---
 type: sources@2026-11-09T21:36:32Z
-revised: 2026-11-09T21:36:32Z
+revised: 2026-11-14T05:45:00Z
 refresh: external-spec · monthly
 ---
 
@@ -72,6 +72,8 @@ Advisory sources inform local judgment conventions but are not specifications, m
 | FORMATS-SOURCES | A skill's sources file records its outside sources and its decisions, each decision given an id when it lands and kept when superseded. | 2026-11-09 | [sources format](standard-formats-sources.md) | In force |
 | LINK-ROOT | Kris's word, relayed by the Cairn summit's guardian: a relative link never leaves its repository's root; another repository is linked by its web address on the default branch. | 2026-11-12 | [links](standard-markdown.md#46-links) | In force |
 | TREE-WORKING | Kris's word, relayed by the Cairn summit's guardian: a change's questions carry three weights, benefit, cascade and confidence, and what they wait on, and each step what it waits on, from the Cairn summit's [change 04](https://github.com/krisb/ki-cairn-store/blob/8e4746657458d41bc47aeba994cde9412e08a535/work/cairn/cairn.summit/04-weighing-open-points.change.md) | 2026-11-11 | [change format](standard-formats-change.md#43-shape) | In force |
+| TERMS-TABLE | A standard's Terms and definitions table is the one exception to the two-column-table rule: a glossary, each definition read with its **Standard:** line. Taken overnight by the Cairn summit's guardian under REMIT-HIGH, for Kris's review. | 2026-11-14 | [Markdown](standard-markdown.md#441-table-or-list) | In force |
+| INTRO-RULES | The rules left in the Markdown and TOML standards' Introductions move, unreworded, into their Rules: the Markdown standard's into its 4.1 and the TOML standard's into its 4.2. Taken overnight by the Cairn summit's guardian under REMIT-HIGH, for Kris's review. | 2026-11-14 | [Markdown](standard-markdown.md#41-what-to-leave-to-the-linter), [TOML](standard-toml.md#42-configuration-structure) | In force |
 
 [Back to contents](#contents)
 
