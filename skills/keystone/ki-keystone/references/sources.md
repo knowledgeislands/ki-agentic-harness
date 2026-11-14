@@ -1,6 +1,6 @@
 ---
 type: sources@2026-11-14T03:22:59Z
-revised: 2026-11-14T03:22:59Z
+revised: 2026-11-14T13:51:34Z
 refresh: canonical · on-change
 ---
 
@@ -43,11 +43,15 @@ Keystone's guild rules have none: Keystone is Knowledge Islands' own, and the in
 | KEYSTONE-SKILL | The owner's decision, in change 25: `ki-keystone` holds the guild map, each guild's purpose in a line and its lead, generated from frontmatter; where a session starts in a repository, `ki-repo`, `ki-authoring` and `ki-agentic-systems`; and the rule for joining Keystone, pointing to `ki-skills` for the rest. | 2026-11-13 | [4.3](standard-keystone.md#43-the-guild-map), [4.4](standard-keystone.md#44-where-a-session-starts) | In force; the harness's catalogue stays with `ki-repo-backpack` for now, grouped by the same guilds |
 | BOOT-HOME | Kris's decision: this skill owns the one machine-readiness checklist from a fresh machine to a working coordinator, ending in "Ready to coordinate" with observable hook and output-style checks, and `ki-coordination`'s Bootstrap cites it as its "Before the opener" step. | 2026-10-26 | [bootstrap standard](standard-bootstrap.md#47-machine-readiness-for-coordinating-work) | In force |
 | BOOTSTRAP-FOLD | The owner's decision, in change 25: `ki-bootstrap` becomes `ki-keystone bootstrap`, its body a reference loaded only when the mode is called. | 2026-11-13 | [mode-bootstrap.md](mode-bootstrap.md) | In force |
+| OPENER-NAME | Kris's decision in conversation, option a: every opener that starts a new agent session names its thread line and tells the session to rename itself to it as its first act. | 2026-11-14 | [bootstrap standard](standard-bootstrap.md#47-machine-readiness-for-coordinating-work) | In force |
+| SEAT-LINE | Kris's decision in conversation, option a: a seat working in a package without its keys is named `<role glyph> <work-id>+<role>`, under `ki-work-package`'s thread line. | 2026-11-14 | [bootstrap standard](standard-bootstrap.md#47-machine-readiness-for-coordinating-work) | In force |
 | GUILD-TREE | The owner's decision, in change 25, option a: the guild tree, with each guild's one-line purpose as its working label. | 2026-11-14 | [SKILL.md](../SKILL.md#the-guilds) | In force |
 
 [Back to contents](#contents)
 
 ## 4. Last review
+
+On 14 November 2026 Kris took OPENER-NAME a and SEAT-LINE a in conversation: the checklist's opener step now has the opener name the session's thread line and the session rename itself to it first, and names the keyless form for a seat without its package's keys. No external source refreshed.
 
 On 14 November 2026 the skill was written from the Cairn summit's change 25, guilds, under GUILDS-REMIT. The guild purposes are change 25's working labels for the guild tree. The same day, under BOOTSTRAP-FOLD and RENAME-NOW, the `ki-bootstrap` skill folded in as the BOOTSTRAP mode, with its standard, exemplars and sources; the core user skills `ki bootstrap` activates were brought into line with tools-ki 0.16.0, `ki-keystone` and `ki-work`.
 
