@@ -95,11 +95,18 @@ A card's wording is settled first in the Cairn summit's knowledge-skills change,
 
 Another skill that uses an agentic term links to its industry card here rather than defining the term again: a standard's Terms table names the term and points to the card. Where a skill needs a narrower sense, it states the narrowing and still links the card. A vendor's word is linked at its vendor card only where the vendor's own usage is the point.
 
+## The Agentic systems guild
+
+This skill leads the Agentic systems guild: its words, and agents at work. It says what a thing is; its members say how agents work:
+
+- **`ki-subagents`** for subagent roles, and how to run subagents in a given agent host, with `ki-subagents-claude` and `ki-subagents-chatgpt` for each host's projection: the practice, not the vocabulary.
+- **`ki-delegation`** for delegating work to background agents, with `ki-delegation-orca` for Orca's supervised workers.
+- **`ki-agentic-radar`** for how mature a subject is, who has adopted it and the house stance, naming its card in the subject's `card` field.
+- **`ki-model-radar`** for models and the routes between models and agents.
+
 ## Boundaries
 
 - **This skill says what a thing is.**
-- **`ki-agentic-radar`** says how mature a subject is, who has adopted it and the house stance, and names its card in the subject's `card` field.
-- **`ki-subagents`** and its runtime bindings say how to run subagents in a given agent host: the practice, not the vocabulary.
 - **`ki-knowledge-graph`** owns the card format, root definitions, subgraphs and link vocabularies, and how cards are curated and tended; it sits beside this skill in the Keystone guild.
 - **`ki-skills`** owns the knowledge kind and how a skill holds its graph.
 

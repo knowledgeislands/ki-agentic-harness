@@ -26,6 +26,15 @@ Load [the exemplars](references/exemplars.md) when onboarding a repo or when a s
 
 This skill governs a repo's **configuration and Knowledge Islands compliance** — how a repo is set up, not its source code. REVIEW is the deliberate exception: it may inspect architecture and implementation as evidence, but it creates no compliance criterion or automatic verdict. The skill owns the shared shape and direction of required repository `+` / `-` working areas and reserves the ignored, disposable `tmp/` area; `ki-trades` owns any declared cross-repository `_TRADES` subdirectories and lifecycle, while `ki-repo-kb` applies the same generic directionality within its fixed base working-area model. It is a **standard, base-agnostic governance skill**: it hard-codes no single repo or org and discovers its targets at runtime (a local tree, or a whole org via `gh`). How it sits alongside the other skills in this repo (where they complement and where they must not overlap) is documented once in the ki-agent-backpack `README.md`, not repeated here.
 
+## The Repository guild
+
+This skill leads the Repository guild: the repository contract and each kind of repository's structure. Its members:
+
+- **`ki-git`** for commits and shared-tree safety, and **`ki-engineering`** for TypeScript and Bun engineering and its toolchain.
+- **`ki-repo-project`** for a Project repository's baseline, and the overlay for each kind: `ki-repo-tools` for a CLI, `ki-repo-mcp` for an MCP server, `ki-repo-packages` for vendored packages, `ki-repo-homebrew-tap` for a tap, `ki-repo-specifications` for a specifications repository, `ki-repo-backpack` for a harness and `ki-repo-dotfiles-chezmoi` for a chezmoi source.
+- **`ki-repo-website`** for a website's generator-neutral seam, with `ki-repo-website-content`, `ki-repo-website-app` and `ki-repo-website-cloudflare` for its content, application and hosting.
+- **`ki-repo-kb`** for a knowledge base, with `ki-repo-kb-streams`, `ki-repo-kb-activities`, `ki-repo-kb-live-artifacts` and `ki-repo-kb-principal` for its parts.
+
 ## The standard at a glance
 
 Every repository explicitly declares `repo_type` (`project` or `kb`) and `primary_shape` under `[skills.ki-repo]`. A Project names a declared core shape, using `ki-repo-project` for the general baseline; a Knowledge Base names `ki-repo-kb`. Neither field has an inferred default. The [kind and shape rules](references/standard-repository.md#42-repository-kind-and-knowledge-base-stores) own validation, while `ki-skills` owns required dependency composition.

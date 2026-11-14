@@ -21,6 +21,15 @@ You are applying the **Knowledge Islands authoring conventions** — the foundat
 
 This is a **standard, base-agnostic governance skill** — it hard-codes no single base and assumes no knowledge-base structure. Install it anywhere the conventions should apply. How it sits alongside the other skills in this repository, and where it must not overlap them, is documented once in the ki-agent-backpack `README.md`, not repeated here.
 
+## The Authoring guild
+
+This skill leads the Authoring guild: documents and writing things down. It holds the formats and how things are written; each member owns one kind of record a repository keeps:
+
+- **`ki-decision-records`** for the why: typed decision records, their rationale and authority.
+- **`ki-specs`** for accepted behaviour: specifications with their conformance state, verification plans and evidence.
+- **`ki-guides`** for the practical how: guides to using, operating, contributing to or maintaining a system.
+- **`ki-diagrams`** for living diagrams that explain a system, kept fresh beside their sources.
+
 ## Document formats come first
 
 Every standard, change document and sources file follows the format standard for its type, and every format standard follows the [format format](references/standard-formats-format.md): the [standard](references/standard-formats-standard.md), [change document](references/standard-formats-change.md) and [sources file](references/standard-formats-sources.md) formats. These formats are the baseline the other conventions build on; a document is written to its format before anything else here applies. AUDIT reports a document that does not follow its format, or follows an older version of it, and CONFORM brings it into line when it is next changed.
