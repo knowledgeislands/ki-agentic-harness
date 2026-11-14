@@ -1,0 +1,69 @@
+# Next
+
+`ki-work next` is a subcommand of the Work guild's lead. It was the `ki-next` process skill until the guild folded it into `ki-work` (PROCESS-SUBCOMMANDS), and keeps that skill's procedure and boundaries.
+
+Selects and prepares forward work through the configured local adapter's canonical record. GitHub Issues and Linear remain configuration and safety guidance only, so this process stops without writes when either is selected.
+
+The full procedure is in [the next-work standard](standards-next-work.md).
+
+Capture is gated by the burn-down focus and CAPTURE-GATE: a background run never creates a record, and only a blocker, a defect seen failing or an owner-requested item is captured, by the owning coordinator in coordinating work. A handoff or rollout to another repository is a `messages.md` line, never a record there, under HANDOFF-AS-MESSAGE; only deferred work the receiver owns may become the receiver's record. Within that gate, substantive prospective work is captured without further approval only after deduplication, only when it passes the graduation test, and only as `status: triage` with no horizon; an idea that does not yet graduate waits in its Project note's Notes section or `_IDEAS.md`. Adoption to `draft` with a horizon and `kind` requires explicit human approval. Cancelling intake requires exact human approval and routes to `ki-work accept`; capture never grants delivery authority.
+
+## What this subcommand does
+
+1. **Ground** the configured local adapter's canonical records and issue ledger, active `ki-work-recurring` templates, and inbound records validated by declared `ki-trades` governance.
+2. **Triage** incoming submissions through an exact human-confirmed receiver disposition, including the proportionate direct-application gate for a work trade, without treating adoption as roadmap authority.
+3. **Review and capture** relevance: capture substantive, non-duplicate prospective work that passes the graduation test as triage automatically; require confirmation to change adopted work.
+4. **Screen for synergy** across dependency-ready candidates: propose a delivery wave only when the items share a bounded delivery advantage and remain independently executable. A shared Project or component alone is not enough.
+5. **Select or spawn** one dependency-ready immediate record, or a small, explicitly confirmed synergistic group to plan independently before it can join a frozen wave in a coordinating package's unattended window.
+6. **Defer, hold, or release** an explicitly named record only after presenting its exact destination horizon, hold condition, wording, and affected lifecycle state.
+7. **Hand off for planning** selected Now or Next drafts to `ki-work plan`; its adapter creates the right in-place execution detail.
+8. **Recommend** eligible roadmap cleanup without deleting roadmap records.
+
+`ki-work next` owns intake review and adoption. It does not cancel records; after exact human confirmation it hands a cancellation, with its resolution, to `ki-work accept`.
+
+## Relationship map
+
+```text
+ki-work recap (optional current-session context)
+  └─> ki-work next (capture, adoption, selection, promotion, and deferral)
+        ├─> ki-work accept (human-approved cancellation with resolution)
+        └─> ki-work plan (shape each selected repository item through Ready)
+              ├─> ki-work implement (one Ready item through Awaiting review)
+              │     └─> ki-work accept (Awaiting review through Done)
+              └─> ki-coordination (a frozen wave of confirmed independent, synergistic Ready records)
+                    └─> one window grant in the decisions log
+                          └─> ki-work implement (each named Ready item through Awaiting review)
+
+The base selector governs adapter choice; `ki-work-roadmap` governs the local record model and `ki-repo-kb-streams` its KB Streams container.
+```
+
+`ki-work recap` is optional.
+
+`ki-work next` works without it and never mines historical transcripts.
+
+When a recap precedes it, `ki-work next` begins only after its bounded handoff is complete. It re-grounds repository facts rather than trusting carry-forward context as current state. Runtime context management remains outside this process contract.
+
+`ki-coordination` delivers a confirmed, independent Ready set as a frozen wave within an unattended window's recorded grant. It does not change `ki-work next` ownership of selection, priority, or an individual item's lifecycle.
+
+A wave covers one repository and is frozen before delivery starts. It retains the same selection, readiness, acceptance, pruning, push, release, and repository-boundary stops.
+
+`ki-trade` prepares, submits, receives, releases, and prunes local trade records. It hands a validated received record to `ki-work next`; it never chooses the receiver's disposition.
+
+The subcommands are invocation surfaces, not separate `.ki.toml` governance roots.
+
+## Invocation
+
+`help` / `-h` / `?` explains this subcommand and stops, taking no action.
+
+With no argument or `next`, run the full procedure.
+
+`--review` asks for the optional relevance pass before selection; it does not grant permission to change roadmap or Streams content.
+
+`defer <item> <horizon>` identifies an exact proposed deferral; it still requires confirmation unless the governing promotion rule declares the move automatic.
+
+## Notes
+
+- A housekeeping template may create a due run only under its declared spawning policy. Bounded triage capture is automatic; adoption, selection, and every other queue transition follow the applicable confirmed rule.
+- `ki-work next` does not start or authorise a wave from similarity alone. A confirmed candidate group proceeds only to a frozen wave under a recorded window grant; implementation still requires that skill's reviewed authorisation.
+- Resolve `[skills.ki-work].adapter` and require its matching declared owner table before reading any local root. The base audit remains the authority for semantic selection validation; this process makes no shape fallback. `roadmap` uses `docs/roadmap/`; `kb-streams` uses `Streams/Roadmap/`; `github-issues` and `linear` stop without writes until their remote execution is separately implemented.
+- `ki-work next` may recommend `status: done` records for pruning, but it never deletes them. `ki-work accept` owns explicit path or glob selection; `ki repo roadmap prune` is the separate deterministic selected-repository sweep, which commits its deletions by default under the standardised prune message unless run with `--no-commit`.

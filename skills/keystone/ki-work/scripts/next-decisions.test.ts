@@ -10,7 +10,7 @@ import {
   releaseDecision,
   resolveSelectedAdapter,
   tradeDisposition
-} from './internal/decisions.ts'
+} from './internal/next-decisions.ts'
 
 const local = (adapter: 'roadmap' | 'kb-streams') => ({
   skills: {

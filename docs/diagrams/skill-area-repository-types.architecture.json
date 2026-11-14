@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "26dd45f59a8f35f1e282490ea109f8a1fd90ac84"
+      "revision": "6f02570f53e6ec7dc249debb4b69593a29e9b2f9"
     },
     "legend": {
       "mode": "auto",
@@ -484,7 +484,7 @@
     },
     {
       "kind": "region",
-      "label": "Work and delivery · Work items",
+      "label": "Work and delivery · 1 skill",
       "wraps": [
         "ki-work-recurring"
       ],

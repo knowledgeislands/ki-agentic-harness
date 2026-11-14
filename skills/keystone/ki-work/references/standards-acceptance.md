@@ -1,8 +1,8 @@
 # Review closure and pruning procedure
 
-This is the on-demand procedure for `ki-accept`.
+This is the on-demand procedure for `ki-work accept`.
 
-The kind, authority boundary, and relationship map live in [the skill](../SKILL.md).
+The kind, authority boundary, and relationship map live in [the skill](mode-accept.md).
 
 ## 1. Resolve the record and closure evidence
 
@@ -24,9 +24,9 @@ When the owner must decide, use the runtime's structured ask-user-questions inte
 
 Require explicit human approval before writing `done` or `cancelled`. A standing human grant counts only when quoted with its source and it covers the exact record.
 
-An acceptance bundle is such a grant. Kris adopted ACCEPT-BUNDLE on 2026-10-20, "from Knowledge Islands perspective, I think we need to accept them ... happier for us to go through that ... definitely something that should happen as the first point of call in the state of play", so a coordinating work brings its `awaiting-review` records as one `ACCEPT` query, oldest first, each line naming the record, its outcome and any concern, under the `ki-coordination` [acceptance bundles](../../ki-coordination/references/standards-queries.md#acceptance-bundles) rule. The owner's one-word answer, `ACCEPT` or `ACCEPT` with exceptions named, quoted in the work's decisions log with its source and the exact list of records it covers, approves delivery closure for each listed record that is not an exception. It never approves a cancellation, a record outside the list or a record whose review packet has changed since the list was written; those still need their own approval.
+An acceptance bundle is such a grant. Kris adopted ACCEPT-BUNDLE on 2026-10-20, "from Knowledge Islands perspective, I think we need to accept them ... happier for us to go through that ... definitely something that should happen as the first point of call in the state of play", so a coordinating work brings its `awaiting-review` records as one `ACCEPT` query, oldest first, each line naming the record, its outcome and any concern, under the `ki-coordination` [acceptance bundles](../../../work/ki-coordination/references/standards-queries.md#acceptance-bundles) rule. The owner's one-word answer, `ACCEPT` or `ACCEPT` with exceptions named, quoted in the work's decisions log with its source and the exact list of records it covers, approves delivery closure for each listed record that is not an exception. It never approves a cancellation, a record outside the list or a record whose review packet has changed since the list was written; those still need their own approval.
 
-A recorded grant is the other source of delivery closure. An unattended window's grant, quoted in the work's decisions log, approves delivery closure only where it names closure for a frozen wave under `ki-coordination`'s [unattended window](../../ki-coordination/references/standards-unattended.md#unattended-windows) rule, and only for a record of that wave whose membership is unchanged since it was frozen and whose current review packet and evidence are rechecked first. A grant never cancels or prunes a record, and a grant that merely permits planning, delivery, delegation or reporting, or that names a different record, is not closure authority.
+A recorded grant is the other source of delivery closure. An unattended window's grant, quoted in the work's decisions log, approves delivery closure only where it names closure for a frozen wave under `ki-coordination`'s [unattended window](../../../work/ki-coordination/references/standards-unattended.md#unattended-windows) rule, and only for a record of that wave whose membership is unchanged since it was frozen and whose current review packet and evidence are rechecked first. A grant never cancels or prunes a record, and a grant that merely permits planning, delivery, delegation or reporting, or that names a different record, is not closure authority.
 
 ## 3. Record, retain, and reconcile completion
 
@@ -44,7 +44,7 @@ For a linked housekeeping run, verify that the template's `active-run` names thi
 
 Resolve the definition by its stable identity under the placement owned by `ki-work-recurring`. In a KB this is the Activity note: write only `housekeeping.last_run`, `housekeeping.last_run_ref`, and `housekeeping.active_run` for successful closure, preserving all other Activity metadata and narrative. The base's canonical-change authority must cover these bounded evidence updates. Project definitions retain their flat hyphenated fields. The same field mapping applies to explicit non-success dispositions below; an external task's completion is not KI acceptance.
 
-Failed, abandoned, and superseded runs do not advance successful-run evidence and retain their `active-run` link until a separate explicit template disposition or replacement. A disposition clears the old link without changing `last-run` or `last-run-ref`. A replacement atomically substitutes the already-created, verified new linked identity without changing `last-run` or `last-run-ref`; `ki-next` alone creates that new linked draft. Never infer a disposition or replacement from a failed gate, missing evidence, or silence.
+Failed, abandoned, and superseded runs do not advance successful-run evidence and retain their `active-run` link until a separate explicit template disposition or replacement. A disposition clears the old link without changing `last-run` or `last-run-ref`. A replacement atomically substitutes the already-created, verified new linked identity without changing `last-run` or `last-run-ref`; `ki-work next` alone creates that new linked draft. Never infer a disposition or replacement from a failed gate, missing evidence, or silence.
 
 When recording local acceptance, preserve `created_at` and advance `updated_at` to the later of the current UTC second or one second after its observed value. Compare the observed source revision immediately before publication and stop on source drift, a absent or malformed timestamps. Review and prune-only reads do not advance timestamps; remote adapters project provider-native values.
 

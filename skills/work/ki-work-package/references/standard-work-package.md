@@ -88,14 +88,14 @@ The rules, part by part.
 
 The capability is optional. A repository declares `ki-work-package` in `.ki.toml`; the declaration is an empty capability marker. The audit reads the packages under `work/` in a repository that declares it. Git supplies any recovery history.
 
-This standard is the one specification of the work package, as Kris answered WORK-FOLDER-OWNER on 18 October 2026, read back as "the work-folder skill is the canonical specification; ki-coordination timing and judgement; ki-delegation run side only; ki-work-design graduation; others check in on the four-point contract". It owns the package's shape, its entry file, who writes it and the tidy, at every level, coordinated or not. The other owners keep only their side and link here for the rest:
+This standard is the one specification of the work package, as Kris answered WORK-FOLDER-OWNER on 18 October 2026, read back as "the work-folder skill is the canonical specification; ki-coordination timing and judgement; ki-delegation run side only; ki-work design graduation; others check in on the four-point contract". It owns the package's shape, its entry file, who writes it and the tidy, at every level, coordinated or not. The other owners keep only their side and link here for the rest:
 
 | Concern | Owner |
 | --- | --- |
 | When a package is tidied, at send, mark, hold and finish; whether an outcome has a durable home; the report forms; acting on messages and route receipt | `ki-coordination` |
 | The run packet, with run briefs and reports, and how a session delegates to its agent host's subagents | `ki-delegation` |
 | The format of a change document | `ki-authoring` |
-| A change document's review and graduation | `ki-work-design` |
+| A change document's review and graduation | `ki-work design` |
 | Messages and presence between work | The Cairn store and its MCP |
 
 [Back to contents](#contents)
@@ -237,7 +237,7 @@ The state lives in `_index.md`: its state fields, at most five Now lines, Held a
 The holder the work lies with now and its role are derived from `state`, `target`, `worker` and `supervisor`, never stored. Timestamps use UTC RFC 3339 second precision; quote `label` in YAML where it contains `>`. There is no `title` field: a package's id and its place in the tree name it, and a view works out its words from them (TITLE-DROP and TITLE-WORDS, Kris, 13 November 2026). The four capability fields record the thread capabilities under `ki-coordination`'s [Thread capabilities](../../ki-coordination/references/standards-listening.md#thread-capabilities), as Kris set under FOOTER-CAPABILITY-STATUS-2, relayed on 1 November 2026: each thread carries `listening_enabled`, `listening_status`, `syncing_enabled` and `syncing_status`, and if `syncing_enabled` is true, `listening_enabled` must be true, because a syncing thread is always a listening thread. `_enabled` says whether the thread has the capability; `_status` says whether it is on now, and the banner's mode lines read both. These are the fields the Work Process note's Observatory fields read through `ki work status`. `method_read` replaces the body line a coordinator once wrote under its refresh rule; setting it is the confirmation that a `REFRESH` message has been acted on, under `ki-coordination`'s [Refreshing this guidance](../../ki-coordination/references/standards-coordination.md#refreshing-this-guidance).
 
 - **Now** - at most five lines: what is running, what lies with whom, since when. It holds the present only.
-- **Held** - work waiting on a named decision or event, one line each with its release condition. Deferred deliverable work becomes an unadopted triage record in its home repository under `ki-next`'s [capture rule](../../ki-next/references/standards-next-work.md#capture-substantive-prospective-work), as Kris took HELD-VS-RECORD a) on 7 November 2026, and ideas go to the Project note's Notes or to a record through `ki-next`; neither stays here.
+- **Held** - work waiting on a named decision or event, one line each with its release condition. Deferred deliverable work becomes an unadopted triage record in its home repository under `ki-work next`'s [capture rule](../../../keystone/ki-work/references/standards-next-work.md#capture-substantive-prospective-work), as Kris took HELD-VS-RECORD a) on 7 November 2026, and ideas go to the Project note's Notes or to a record through `ki-work next`; neither stays here.
 - **Workers** - the live seats, one entry each; a seat that has ended leaves the list.
 
 History stays out, as Kris answered STATE-HISTORY: the recap since the mark reads the package's Git log, so nothing needs a dated log in Now or Held. Evidence, such as commit identifiers, test counts and artefact hashes, lives in the run report and the commit; the state may link one, not copy it.
@@ -248,7 +248,7 @@ History stays out, as Kris answered STATE-HISTORY: the recap since the mark read
 
 - **Change documents carry the work.** Each is `NN-<slug>.change.md`, under `ki-authoring`'s [change format](../../../keystone/ki-authoring/references/standard-formats-change.md), its slug lower-case kebab case.
 - **They are numbered** in tens by group, in the order they are taken, with gaps for new ones.
-- **Decisions live in the change document they belong to.** When the change closes, each goes to its durable home, a standard, `AGENTS.md` or a record, and the change is deleted. Review and graduation are `ki-work-design`'s.
+- **Decisions live in the change document they belong to.** When the change closes, each goes to its durable home, a standard, `AGENTS.md` or a record, and the change is deleted. Review and graduation are `ki-work design`'s.
 - **Open points live in a change document's Open section,** in full, and nothing already answered stays there.
 
 [Back to contents](#contents)
@@ -283,7 +283,7 @@ Every writer is named, and every other party only reads. This standing contract 
 | Writer | Writes | Never |
 | --- | --- | --- |
 | The package's own steward† | `_index.md`, its change documents and sub-packages, and tidy deletions | Another package |
-| A background run, design runs and `ki-work-design` included | A change document in the package its brief names | Any other kind, its report included |
+| A background run, design runs and `ki-work design` included | A change document in the package its brief names | Any other kind, its report included |
 
 † The work's own steward is its keyholder, and includes its explicitly assigned State of play. Other work and State of play write nothing in a package: they send a message.
 
@@ -347,7 +347,7 @@ A runtime-specific reminder consumer is separately opt-in. It may act only when 
 3. The adapter receives one exact, human-selected work id from that explicit runtime configuration. It resolves only `work/<territory>/<id>/_index.md` in the Cairn store; directory scans, newest-record selection, runtime-derived names, and archived or nested fallback are forbidden.
 4. The resolved record is a regular file that satisfies this standard's identity and closed-schema requirements.
 
-The only first-delivery action is a compact reminder that the already-selected package may need an explicit update. The consumer does not create, update, remove, select, or reword a package file; infer work state or completion; invoke `ki-recap`; read a transcript or vendor session; or expose a session identifier. Repeated, interrupted, malformed, unknown, absent, or otherwise unsafe input is a quiet no-op. The native runtime adapter owns its event semantics, registration, timeout, exit behaviour, and any actionable failure text; the portable contract supplies no shared hook or fallback.
+The only first-delivery action is a compact reminder that the already-selected package may need an explicit update. The consumer does not create, update, remove, select, or reword a package file; infer work state or completion; invoke `ki-work recap`; read a transcript or vendor session; or expose a session identifier. Repeated, interrupted, malformed, unknown, absent, or otherwise unsafe input is a quiet no-op. The native runtime adapter owns its event semantics, registration, timeout, exit behaviour, and any actionable failure text; the portable contract supplies no shared hook or fallback.
 
 [Back to contents](#contents)
 
@@ -359,7 +359,7 @@ An update replaces the current state in place. It never appends a moves list, ti
 
 Write durable decisions, accepted work state, or reusable knowledge to their proper owners before referring to them from the package. The package may name those canonical artifacts; it must not become their only copy.
 
-An update that hands work to a fresh agent follows this lifecycle and nothing else. `ki-recap` supplies no package update and has no checkpoint composition, as Kris took RECAP-NARROW a) on 7 November 2026; the update procedure refuses any repository mismatch, stale baseline, ambiguous work, interrupted update or incomplete work state. The hand-off names the physical repository identity, immutable committed baseline or one complete portable patch against that baseline, scoped authority, result destination, and expected verification. A transcript, runtime session, shared filesystem, or provider snapshot may be available but is never required evidence and cannot replace those portable inputs. The package records concise current state and references to durable owners; it does not embed the patch, become the result store, or take ownership of the delegated work.
+An update that hands work to a fresh agent follows this lifecycle and nothing else. `ki-work recap` supplies no package update and has no checkpoint composition, as Kris took RECAP-NARROW a) on 7 November 2026; the update procedure refuses any repository mismatch, stale baseline, ambiguous work, interrupted update or incomplete work state. The hand-off names the physical repository identity, immutable committed baseline or one complete portable patch against that baseline, scoped authority, result destination, and expected verification. A transcript, runtime session, shared filesystem, or provider snapshot may be available but is never required evidence and cannot replace those portable inputs. The package records concise current state and references to durable owners; it does not embed the patch, become the result store, or take ownership of the delegated work.
 
 [Back to contents](#contents)
 
@@ -388,7 +388,7 @@ No retired copy is kept. Git is the recovery mechanism, so `_RETIRED`, archive, 
 
 A package contains its definition, its current state and its change documents, not a transcript. It has no vendor-session field, conversation URL, runtime identifier or chat log. A session's host seat, where it runs or will resume, stays out of packages, holds and reports. A host or category required by the work may appear on a message, brief, record or package label. Names resolve through the territory's machine inventory, with concrete hosts distinguished from categories; bootstrap and re-anchoring map the local machine to that inventory rather than trusting a raw hostname. Unknown, renamed or ambiguous names block device-dependent execution until resolved. Prose must not claim that a future agent can access or reopen the session that last held the work.
 
-It is also not a completion signal, roadmap, decision record, knowledge store, or session recap. Project notes and theme pages ([the Project registry standard](../../../keystone/ki-work/references/standards-project-registry.md)) are the durable home of standing outcome and status, and the entry file names its Project while the Project note does not link down. `ki-recap` owns the user-facing judgment-led recap; the relevant governance skill owns each durable artifact. An optional runtime reminder consumer may use only an already-selected valid record under [its explicit contract](#412-optional-runtime-reminder-consumers). It does not grant write authority, choose work, invoke recap, read session material, or turn a portable procedure into a native host operation.
+It is also not a completion signal, roadmap, decision record, knowledge store, or session recap. Project notes and theme pages ([the Project registry standard](../../../keystone/ki-work/references/standards-project-registry.md)) are the durable home of standing outcome and status, and the entry file names its Project while the Project note does not link down. `ki-work recap` owns the user-facing judgment-led recap; the relevant governance skill owns each durable artifact. An optional runtime reminder consumer may use only an already-selected valid record under [its explicit contract](#412-optional-runtime-reminder-consumers). It does not grant write authority, choose work, invoke recap, read session material, or turn a portable procedure into a native host operation.
 
 [Back to contents](#contents)
 

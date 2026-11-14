@@ -2,7 +2,7 @@
  * Renders the runtime surfaces that carry the owner-report shape from the marked source blocks of the `ki-coordination`
  * standard's reference files, so the standard is their one source: the coordinator hook's `line` and `pointer`, the whole
  * `ki-coordinator` output style, the run-prompt skeleton's Report paragraph and each authority footer's report rule, and
- * the review-independence line of the run-prompt skeleton and the `ki-work-design` brief template.
+ * the review-independence line of the run-prompt skeleton and the `ki-work design` brief template.
  *
  * Boundary: reads the standard's reference files and the current surfaces under the harness root and returns each surface's rendered
  * bytes; it never writes. `ki dev skill generate ki-coordination` compares or publishes them, and the banner test checks the
@@ -25,7 +25,7 @@ const HOOK = 'hooks/coordinator-reminder/coordinator-reminder.sh'
 const OUTPUT_STYLE = 'output-styles/ki-coordinator.md'
 const DELEGATION_ASSETS = 'skills/agentic-systems/ki-delegation/assets'
 const RUN_PROMPT = `${DELEGATION_ASSETS}/run-prompt.md`
-const DESIGN_BRIEF = 'skills/work/ki-work-design/assets/brief.md'
+const DESIGN_BRIEF = 'skills/keystone/ki-work/assets/design/brief.md'
 const FOOTERS = ['none', 'push', 'prune', 'release'].map((tier) => `${DELEGATION_ASSETS}/rules-${tier}.md`)
 /** The Banner examples the output style source names by token, each written once in the standard. */
 const BANNER_BLOCKS = [

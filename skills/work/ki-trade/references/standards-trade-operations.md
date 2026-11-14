@@ -70,7 +70,7 @@ Show the committed diff only when the cursor and current commit share comparable
 
 `ki trade receive --all` is a convenience operation over independent asynchronous receipts. Its preview lists the identities receivable at that point; with confirmation, the host attempts each listed identity sequentially. A later failure does not retract an earlier receipt, and a preview neither promises that every outbound file was evaluated nor grants receiver authority. Report the actual local results; use one explicit identity when an operator needs a single-record boundary.
 
-Receipt begins at `unconsidered`. It is not acceptance, retention, adoption, priority, or completion. Hand the inbound record to `ki-next` for receiver disposition.
+Receipt begins at `unconsidered`. It is not acceptance, retention, adoption, priority, or completion. Hand the inbound record to `ki-work next` for receiver disposition.
 
 ## 6. List and show
 
@@ -90,4 +90,4 @@ A completion-observation trade retains the linked adopted local work record unti
 
 Run the local `ki-trades` audit after every mutation. Report the operation, exact local paths changed or removed, observation policy and next observable condition, pending reciprocity where relevant, and audit result. Do not report atomicity or pre/post-audit enforcement unless the host produced that evidence.
 
-For a received record, name `ki-next` as the next decision step. For an adopted work item that reached done, name sender release observation before either side prunes the remaining evidence.
+For a received record, name `ki-work next` as the next decision step. For an adopted work item that reached done, name sender release observation before either side prunes the remaining evidence.

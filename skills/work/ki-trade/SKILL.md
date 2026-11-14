@@ -7,7 +7,7 @@ ki-depends-on: [ki-trades]
 description: >
   Operate one repository's side of a declared cross-repository trade: prepare, inspect, submit, receive,
   release, or prune a work or knowledge record. Use for one concrete trade action; `ki-trades` owns record and
-  route governance, while `ki-next` owns receiver disposition.
+  route governance, while `ki-work next` owns receiver disposition.
 argument-hint: 'prepare <receiver> | observe <TRD> | submit <TRD> | abandon <TRD> | receive <TRD> | release <TRD> | prune <TRD> | routes <list|check> | standing <list|check|capture> | list | show <TRD> | help'
 ---
 
@@ -26,7 +26,7 @@ preparing (mutable and committed)
   ├─ abandon → removed before submission
   └─ submit → submitted (immutable, awaiting receipt)
                  └─ receive → received / unconsidered
-                                  └─ ki-next records the receiver decision
+                                  └─ ki-work next records the receiver decision
 
 sender observation policy: unattended | receipt | decision | completion
 ```
@@ -45,7 +45,7 @@ Preparation, delivery, receiver decision, and sender observation are separate fa
 
 ## Responsibility boundary
 
-`ki-trade` never sets a receiver disposition. It hands a validated inbound record to `ki-next`, which records the exact human-confirmed decision and chooses between a direct local application and a separately confirmed roadmap proposal.
+`ki-trade` never sets a receiver disposition. It hands a validated inbound record to `ki-work next`, which records the exact human-confirmed decision and chooses between a direct local application and a separately confirmed roadmap proposal.
 
 It never creates or prioritises roadmap work, retains knowledge, claims local completion, writes another repository, transmits an observation, or keeps a dialogue or revision log. Git history is the only preparation history.
 
@@ -55,7 +55,7 @@ It never creates or prioritises roadmap work, retains knowledge, claims local co
 
 The remaining invocations map one-to-one to the local `ki trade` surface. Before any mutation, resolve the physical repository root, run the `ki-trades` audit, inspect the host's exact local write or deletion preview, and obtain any confirmation required by [the procedure](references/standards-trade-operations.md). Re-audit afterward. Do not add an all-or-nothing interpretation to the asynchronous `receive --all` convenience operation, or treat this guidance as proof of any separate host capability.
 
-With no recognised operation, show the lifecycle, observation policies, available operations, and the `ki-next` disposition off-ramp, then stop.
+With no recognised operation, show the lifecycle, observation policies, available operations, and the `ki-work next` disposition off-ramp, then stop.
 
 ## Notes
 

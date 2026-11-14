@@ -41,7 +41,7 @@ The shaping of a design, technical or visual, from its brief to the choices it s
 ### 2.2 Out of scope
 
 - How a repository keeps its interface design, the three visual levels and the component library: `ki-design-system`.
-- Shaping a Project, theme or model before any work exists: `ki-work-design`.
+- Shaping a Project, theme or model before any work exists: `ki-work design`.
 - The forms of decision records, specifications and diagrams: Authoring's skills.
 
 [Back to contents](#contents)
@@ -91,6 +91,6 @@ Rubric **DESIGN-4** reviews it.
 
 ### 4.4 Where a design is written down
 
-Design shapes; Authoring writes down (DESIGN-AUTHORING). Each choice a design settles becomes a decision record under `ki-decision-records`; an accepted design becomes a specification under `ki-specs`; an architecture is drawn under `ki-diagrams`. `ki-design-system` already keeps its design specifications and decision records in Authoring's forms. A Project's shape, before any work exists, is `ki-work-design`'s. Rubric **DESIGN-5** reviews it.
+Design shapes; Authoring writes down (DESIGN-AUTHORING). Each choice a design settles becomes a decision record under `ki-decision-records`; an accepted design becomes a specification under `ki-specs`; an architecture is drawn under `ki-diagrams`. `ki-design-system` already keeps its design specifications and decision records in Authoring's forms. A Project's shape, before any work exists, is `ki-work design`'s. Rubric **DESIGN-5** reviews it.
 
 [Back to contents](#contents)

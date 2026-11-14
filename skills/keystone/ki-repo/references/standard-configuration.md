@@ -227,7 +227,7 @@ So **what an absent table means is per-skill**, and that is exactly what _Covera
 | any other marker skill's table | not opted into that standard — a coverage WARN _if_ the repo shows that skill's artifacts |
 | `ki-authoring` | a bare `[skills.ki-authoring]` marker — declared like any coverage, not assumed (FAIL if missing) |
 
-Every declared governance root also commits the repository to a complete **resolvable native capability**: `ki repo audit` and `ki repo conform` must resolve its compatible registered operations only from the verified active installed collection before any operation runs. A declaration is not a request to vendor a manifest or payload into the repository. Process skills (`ki-next`, `ki-plan`, `ki-implement`, `ki-accept`, and `ki-recap`) remain global process tooling, not target-local governance contracts, and must not be declared in `.ki.toml`. Human-led repository review is a mode of the declared `ki-repo` capability, not a separate configuration table.
+Every declared governance root also commits the repository to a complete **resolvable native capability**: `ki repo audit` and `ki repo conform` must resolve its compatible registered operations only from the verified active installed collection before any operation runs. A declaration is not a request to vendor a manifest or payload into the repository. Process skills (`ki-work next`, `ki-work plan`, `ki-work implement`, `ki-work accept`, and `ki-work recap`) remain global process tooling, not target-local governance contracts, and must not be declared in `.ki.toml`. Human-led repository review is a mode of the declared `ki-repo` capability, not a separate configuration table.
 
 [Back to contents](#contents)
 

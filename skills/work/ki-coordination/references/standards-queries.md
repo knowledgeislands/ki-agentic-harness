@@ -105,7 +105,7 @@ Records awaiting acceptance reach the owner as one bundle per work, and the Stat
 
 - **When:** at bootstrap and resume, the State of play's first call on the owner, before any other query, is the territory's `awaiting-review` records. Project work brings its own at each handoff to the owner.
 - **Shape:** one `ACCEPT` query per work, tagged with the work's name, listing each record oldest first, linked under [Linking records](standards-reporting.md#linking-records), with its outcome and any concern in one line. The owner answers `ACCEPT`, or `ACCEPT` with the exceptions named.
-- **Grant:** the coordinator quotes the answer in `decisions.md` with its source and lists the exact records it covers. That is the standing human grant the `ki-accept` [closure authority](../../ki-accept/references/standards-acceptance.md#2-obtain-closure-authority) recognises. A named exception stays `awaiting-review` and keeps its own query.
-- **Closure:** one `ki-accept` run per repository closes the accepted records from that quotation and prunes them in the next prune-only commit. The coordinator never accepts a record in its own turn.
+- **Grant:** the coordinator quotes the answer in `decisions.md` with its source and lists the exact records it covers. That is the standing human grant the `ki-work accept` [closure authority](../../../keystone/ki-work/references/standards-acceptance.md#2-obtain-closure-authority) recognises. A named exception stays `awaiting-review` and keeps its own query.
+- **Closure:** one `ki-work accept` run per repository closes the accepted records from that quotation and prunes them in the next prune-only commit. The coordinator never accepts a record in its own turn.
 
 Sources: ACCEPT-BUNDLE in [the decision register](sources.md#decision-register).

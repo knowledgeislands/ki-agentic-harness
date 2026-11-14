@@ -16,7 +16,7 @@ argument-hint: "audit | conform | educate | help | refresh"
 
 This governance skill maintains a portable, reviewable snapshot of models, executable routes, benchmark applicability, and evidence. Read [the model-radar standard](references/standards-model-radar.md) before assessing or changing the snapshot. [The generated rubric](references/rubric.md) publishes its criteria, [the radar snapshot](references/radar.toml) holds current structured state, and [the tracked sources](references/sources.md) govern refresh inputs.
 
-The radar informs decisions; it does not rank models automatically, install agents, change runtime defaults, buy access, provision infrastructure, or transmit private material. `ki-acquire pulse` discovers public signals, `ki-env-tokenomics` owns portable model-purpose categories, runtime adapters own effective configuration, `ki-work-recurring` owns recurring review templates, `ki-next` captures approved downstream work, and `ki-skills` assesses the skill artifact itself.
+The radar informs decisions; it does not rank models automatically, install agents, change runtime defaults, buy access, provision infrastructure, or transmit private material. `ki-acquire pulse` discovers public signals, `ki-env-tokenomics` owns portable model-purpose categories, runtime adapters own effective configuration, `ki-work-recurring` owns recurring review templates, `ki-work next` captures approved downstream work, and `ki-skills` assesses the skill artifact itself.
 
 ## Operating modes
 
@@ -38,7 +38,7 @@ Run `ki repo educate --skill ki-model-radar --repo <repo>` to render the catalog
 
 REFRESH writes only this skill's canonical files in `ki-agentic-harness`. When invoked from an installed copy, stop and redirect to that Harness. Read [the tracked sources](references/sources.md), gather bounded current evidence, reconcile it with [the snapshot](references/radar.toml), and propose reviewed changes. If the last review is still within cadence and no material release or deprecation triggered the run, confirm before forcing an early refresh.
 
-Movement inward requires current identity and lifecycle evidence, materially independent evaluation where available, and local-fit evidence proportional to the recommendation. Preserve counter-evidence and uncertainty. Route any approved consumer change through `ki-next`; do not mutate a consumer from this mode.
+Movement inward requires current identity and lifecycle evidence, materially independent evaluation where available, and local-fit evidence proportional to the recommendation. Preserve counter-evidence and uncertainty. Route any approved consumer change through `ki-work next`; do not mutate a consumer from this mode.
 
 ## Notes
 

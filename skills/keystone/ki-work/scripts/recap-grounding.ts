@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
 /**
- * Purpose: Ground a ki-recap from current repository and eligible runtime transcripts.
+ * Purpose: Ground a ki-work recap from current repository and eligible runtime transcripts.
  * Run: bun scripts/recap-grounding.ts --help
  * Boundary: Read-only; it reads the selected repository's Git state and eligible Claude
  * or Codex transcript files, then emits evidence for the recap procedure to interpret.
@@ -409,7 +409,7 @@ const chooseTranscript = ({
 const printHelp = (): void => {
   console.log(`Usage: recap-grounding.ts [repo-path] [--json] [--runtime detect|claude|codex] [--transcripts-dir <dir>] [--transcript <session-file>]
 
-Ground a live ki-recap with current repository and Claude or Codex transcript data.
+Ground a live ki-work recap with current repository and Claude or Codex transcript data.
 
 Arguments:
   repo-path                  Repository to inspect (default: current directory)

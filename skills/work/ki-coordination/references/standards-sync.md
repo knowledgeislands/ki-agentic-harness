@@ -13,7 +13,7 @@ Work starts from change documents the owner and the session work through togethe
 - **Record:** the session that did the work writes its record as it lands, one for each unattended run or batch that lands real work and none for a session spent deciding, in the Cairn store's `record/`. While the record is a pilot, its shape is the one the Cairn store's [change 07](https://github.com/krisb/ki-cairn-store/blob/main/work/cairn/cairn.summit/07-record.change.md#42-the-record) sets; this standard does not restate it. A record holds nothing for the owner to do, and its links go only to what has landed. For a background run, the `ki-delegation` [landing rule](../../../agentic-systems/ki-delegation/references/standards-background-runs.md#landing-then-review) says who writes it.
 - **Review:** the owner reviews a whole record, marking its `review:` field `approved` or naming what to undo, which is then done as more work. An approved record stays a week, then the Cairn summit's guardian removes it at the next review; any other removal is the owner's choice.
 
-Landing is not acceptance: a roadmap record still closes only under `ki-accept`.
+Landing is not acceptance: a roadmap record still closes only under `ki-work accept`.
 
 Sources: WORK-MODES, LAND-THEN-REVIEW, NO-PR-UNLESS-MAJOR, RECORD-WHO, RECORD-GRAIN, RECORD-REVIEW, RECORD-KEEP and RECORD-HARNESS in [the decision register](sources.md#decision-register).
 

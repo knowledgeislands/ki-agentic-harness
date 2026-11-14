@@ -1,10 +1,10 @@
 # Readiness procedure
 
-`ki-plan` resolves only an already-published identifier. It never allocates or reserves a new one. Re-resolve the named record and its source revision immediately before mutation; stop and reload if either changed after inspection.
+`ki-work plan` resolves only an already-published identifier. It never allocates or reserves a new one. Re-resolve the named record and its source revision immediately before mutation; stop and reload if either changed after inspection.
 
 For every shaped local record, preserve `created_at` and advance `updated_at` to the later of the current UTC second or one second after its observed value. Compare the observed source revision immediately before publication and refuse absent or malformed timestamps or any source drift. Read-only planning does not advance timestamps; remote adapters project provider-native values.
 
-`ki-plan <work>...` operates only records that `ki-next` has selected into `now` or `next`.
+`ki-work plan <work>...` operates only records that `ki-work next` has selected into `now` or `next`.
 
 1. Run the base selection audit, then read the configured adapter literal and its required owner table. `roadmap` uses a fresh record in `docs/roadmap/`; `kb-streams` uses a fresh flat record in `Streams/Roadmap/`. Do not infer either from repository shape. `github-issues` and `linear` fail closed before reads or writes because remote process execution is not implemented.
 2. Require a `draft` status, confirmed delivery boundary, understood dependencies, and a checkable verification method. Refuse `status: triage`: capture is not adoption, and only adopted Now or Next work may become Ready. A held record is shaped only after release.
@@ -14,4 +14,4 @@ For every shaped local record, preserve `created_at` and advance `updated_at` to
 
 At the Ready decision, use the runtime's structured ask-user-questions interface when available. Include the canonical item link, the planned outcome and verification, any unresolved concern, and the consequence of approval in the question. Put an evidence-backed recommendation first among selectable responses and briefly explain it; recommend keeping the item in draft when readiness is uncertain. If the interface cannot render the item link, give a clickable link in adjacent prose; if it has no question tool, ask in prose with the same context. A preselected response never counts as approval.
 
-`ki-plan` never captures a new record, changes queue position, begins delivery, or records closure. `ki-next` owns capture and adoption; `ki-implement` owns `ready` → `in-progress` → `awaiting-review`; `ki-accept` owns delivery `awaiting-review` → `done`, cancellation, and explicit pruning.
+`ki-work plan` never captures a new record, changes queue position, begins delivery, or records closure. `ki-work next` owns capture and adoption; `ki-work implement` owns `ready` → `in-progress` → `awaiting-review`; `ki-work accept` owns delivery `awaiting-review` → `done`, cancellation, and explicit pruning.

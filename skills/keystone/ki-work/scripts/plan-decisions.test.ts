@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test'
-import { delegationDecision, readinessDecision, resolveSelectedAdapter } from './internal/decisions.ts'
+import { delegationDecision, readinessDecision, resolveSelectedAdapter } from './internal/plan-decisions.ts'
 
 const selected = (adapter: 'roadmap' | 'kb-streams') => ({
   skills: {

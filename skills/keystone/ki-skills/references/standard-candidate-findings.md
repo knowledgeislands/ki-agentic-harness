@@ -38,7 +38,7 @@ The findings REVIEW and EXTRACT produce, and how they are reconciled and routed.
 ### 2.2 Out of scope
 
 - Making a roadmap change: the repository's ordinary roadmap process.
-- Selecting, promoting and planning work: `ki-next` and `ki-plan`.
+- Selecting, promoting and planning work: `ki-work next` and `ki-work plan`.
 
 [Back to contents](#contents)
 
@@ -96,7 +96,7 @@ Use this readable report shape:
 1. Read the target repository's canonical roadmap and run its read-only `ki-work-roadmap` audit before proposing a durable route.
 2. Compare each candidate against existing items by concern, scope, and evidence; treat a similar title as a review prompt, not proof of duplication.
 3. Present only the deduplicated candidate set, including whether each is a new item, an amendment, or no roadmap work. Stop for the user's explicit decision.
-4. After the user confirms a roadmap change, use the repository's ordinary roadmap process to make it. Let `ki-next` select and promote eligible work; let `ki-plan` create and progress a plan only when the user requests planned execution.
+4. After the user confirms a roadmap change, use the repository's ordinary roadmap process to make it. Let `ki-work next` select and promote eligible work; let `ki-work plan` create and progress a plan only when the user requests planned execution.
 
 Neither REVIEW nor EXTRACT writes a roadmap, plan, skill, script, agent, hook, or transcript-derived memory. Historical material is read only when the user names its path or otherwise selects its exact scope.
 

@@ -10,7 +10,7 @@ owns: ["+/_TRADES/README.md", "-/_TRADES/README.md"]
 description: >
   Govern directional work and knowledge trades between KI repositories: routes, records, authority, receipt,
   decisions, release, and pruning. Use to design or audit the system; `ki-trade` performs one side and
-  `ki-next` owns receiver disposition.
+  `ki-work next` owns receiver disposition.
 argument-hint: "audit <repo> | conform <repo> | educate <repo> | help | refresh"
 ---
 
@@ -56,7 +56,7 @@ While the hold notice above stands, REFRESH reports that the hold is reviewed wh
 
 ## Notes
 
-- `ki-next` may present an inbound record for exact human-confirmed disposition, but cannot infer a disposition or roadmap transition.
+- `ki-work next` may present an inbound record for exact human-confirmed disposition, but cannot infer a disposition or roadmap transition.
 - `ki-work-roadmap` supplies read-only structural and review guidance; it does not write trade records or gain cross-repository priority authority.
 - The checker reads only registered repository roots and their public `ki-repo` identity and `ki-trades` declarations, the Capital policy, and records. It never scans for repositories or writes a peer checkout.
 - The `ki` host owns execution, findings, publication, and post-conform verification; judgment aspects remain explicitly unevaluated until reviewed.

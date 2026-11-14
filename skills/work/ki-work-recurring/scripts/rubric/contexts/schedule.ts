@@ -95,7 +95,7 @@ const commitEvidence = (
   }
 }
 
-/** Read-only schedule capability shared by the hosted diagnostic and ki-next's process caller. */
+/** Read-only schedule capability shared by the hosted diagnostic and ki-work next's process caller. */
 export const evaluateHousekeepingSchedule = ({
   repository,
   schedule,

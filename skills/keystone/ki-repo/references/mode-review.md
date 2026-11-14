@@ -142,13 +142,13 @@ Produce the Assessment output sections from the checklist in their stated order.
 
 Number findings within a review as `REV-<NNN>-F<NNN>`. Each finding contains its evidence, consequence, confidence, classification, and one explicit route:
 
-- **Plan** - bounded delivery work that belongs to a canonical roadmap item and, when substantial, a `ki-plan` plan.
+- **Plan** - bounded delivery work that belongs to a canonical roadmap item and, when substantial, a `ki-work plan` plan.
 - **Decision Record** - a durable why that remains useful after the delivery work and review evidence are gone.
 - **Feature definition** - a durable behavioural what.
 - **Guide** - durable operational how.
 - **No action** - retain the observation in the review result only, with its rationale.
 
-Plans may cite finding identifiers; findings may cite their delivery plan. A review never opens, readies, or executes a plan without the user's separate explicit approval under `ki-plan`.
+Plans may cite finding identifiers; findings may cite their delivery plan. A review never opens, readies, or executes a plan without the user's separate explicit approval under `ki-work plan`.
 
 ## Assessment output
 
@@ -249,7 +249,7 @@ Apply these lenses in order, moving from the repository's widest ecosystem respo
 - [ ] Specifications state observable behaviour, constraints, and acceptance evidence precisely enough for implementation and review.
 - [ ] Skill definitions make their triggers, ownership, dependencies, boundaries, and operating modes understandable to a human reviewer.
 - [ ] Every cross-reference resolves, and cites the record that is actually current.
-- [ ] Roadmap pruning preserves surviving references from accessible peers, including identified archived or deregistered repositories, under `ki-accept`'s cross-repository reference preflight; review its coverage and retained blockers without assuming peer-edit authority.
+- [ ] Roadmap pruning preserves surviving references from accessible peers, including identified archived or deregistered repositories, under `ki-work accept`'s cross-repository reference preflight; review its coverage and retained blockers without assuming peer-edit authority.
 - [ ] The README positions the repository within the estate.
 - [ ] Anything that could be a skill has been made one.
 
@@ -419,7 +419,7 @@ Create a review record only when the user asks to retain working evidence beyond
 
 Review records are working evidence, not permanent documentation. Before closing an owning delivery item, move every independently durable conclusion to its route. When no concrete artefact remains in `retained-by`, show the exact review record and its dependent state, then require explicit confirmation before pruning it. Preserve identifiers in Git history; never reuse them.
 
-`review close <REV-NNN>` is a review-evidence decision, not `ki-accept prune`: it must not remove a plan, roadmap item, Decision Record, or guide.
+`review close <REV-NNN>` is a review-evidence decision, not `ki-work accept prune`: it must not remove a plan, roadmap item, Decision Record, or guide.
 
 At minimum, a finished review identifies the scope and evidence examined, material uncertainties and the user's answers, findings with identifiers and routes, proposed delivery order and dependencies, and evidence retention or pruning state. Ask for confirmation before creating any durable route. A completed review with no retained record still states where its durable decisions, plans, guides, or feature definitions landed.
 
@@ -427,4 +427,4 @@ At minimum, a finished review identifies the scope and evidence examined, materi
 
 This checklist is a living review contract, not an accumulation log. A new concept belongs here only when it is likely to improve future repository assessments, is not already covered by an existing question, and can be placed without breaking the broad-to-narrow progression defined in Reference structure.
 
-When a session discovers a new reusable repository-review concept that this reference does not cover, `ki-recap` must raise it as a repository-review checklist candidate and offer to update this canonical reference. The recap does not update it automatically: the user confirms the durable route first. When accepted, place the concept in the narrowest fitting section, revise the invocation, prompt, method, or output only if their contract changes, and reconcile any lower-layer copy or pointer.
+When a session discovers a new reusable repository-review concept that this reference does not cover, `ki-work recap` must raise it as a repository-review checklist candidate and offer to update this canonical reference. The recap does not update it automatically: the user confirms the durable route first. When accepted, place the concept in the narrowest fitting section, revise the invocation, prompt, method, or output only if their contract changes, and reconcile any lower-layer copy or pointer.

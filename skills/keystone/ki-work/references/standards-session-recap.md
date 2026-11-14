@@ -1,6 +1,6 @@
 # Recap procedure
 
-_On-demand procedure for `ki-recap`. The kind, scope, and leg summary live in [`SKILL.md`](../SKILL.md) and are already loaded; this file is the full procedure._
+_On-demand procedure for `ki-work recap`. The kind, scope, and leg summary live in [`SKILL.md`](mode-recap.md) and are already loaded; this file is the full procedure._
 
 ## Contents
 
@@ -12,7 +12,7 @@ _On-demand procedure for `ki-recap`. The kind, scope, and leg summary live in [`
   - [4. Harvest the learnings, and route each](#4-harvest-the-learnings-and-route-each)
   - [5. Discussion coverage](#5-discussion-coverage)
   - [6. Actions](#6-actions)
-  - [7. Route future-work selection to `ki-next`](#7-route-future-work-selection-to-ki-next)
+  - [7. Route future-work selection to `ki-work next`](#7-route-future-work-selection-to-ki-work-next)
   - [8. Preserve the handoff and compact at the boundary](#8-preserve-the-handoff-and-compact-at-the-boundary)
 
 **Ground every claim in reality, not memory.** Warm in-session context, compaction summaries, and recalled memory entries are hypotheses about state, not evidence of it — concurrent sessions, background processes, and elapsed time all make them stale. Before the recap asserts a checkable fact — a commit landed, a gate passed, a file contains something, a plan is open — check it now (`git log`, re-run the read-only gate, read the file). What cannot be cheaply re-checked, state as recollection ("as of when it ran"), not as fact.
@@ -24,15 +24,15 @@ Treat user messages arriving during work as steering unless they expressly repla
 ## 1. Run the grounding helper
 
 ```bash
-bun skills/work/ki-recap/scripts/recap-grounding.ts --json --runtime detect
+bun skills/keystone/ki-work/scripts/recap-grounding.ts --json --runtime detect
 ```
 
-(From another repo, use the harness-absolute path, per the "Audit script paths" convention: `bun /path/to/ki-agentic-harness/skills/work/ki-recap/scripts/recap-grounding.ts --json`.) Run it separately with each repository path touched by this thread, not only the invocation's working directory. Record which repository each result grounds.
+(From another repo, use the harness-absolute path, per the "Audit script paths" convention: `bun /path/to/ki-agentic-harness/skills/keystone/ki-work/scripts/recap-grounding.ts --json`.) Run it separately with each repository path touched by this thread, not only the invocation's working directory. Record which repository each result grounds.
 
 When the runtime does not identify the live session and more than one eligible Claude or Codex session is active for the repository, choose the session explicitly instead of relying on newest modification time:
 
 ```bash
-bun skills/work/ki-recap/scripts/recap-grounding.ts --json --transcript <session-file>.jsonl
+bun skills/keystone/ki-work/scripts/recap-grounding.ts --json --transcript <session-file>.jsonl
 ```
 
 `detect` is the default. Inside an identified Claude Code session, where the documented `CLAUDE_CODE_SESSION_ID` is set, it selects that session's own `<session-id>.jsonl` from any project directory under the Claude projects root (`CLAUDE_CONFIG_DIR/projects` or `~/.claude/projects`), whichever repository is being grounded. When that transcript is missing, duplicated, or the identity is malformed, it declines transcript evidence with a `transcriptSelection.reason` and never substitutes another session or runtime. A Claude Code runtime without an identity (`CLAUDECODE=1`) searches only the target's Claude project directory. Only when no runtime is identified does `detect` compare the newest repository-matching transcript of both runtimes. Use `--runtime claude` or `--runtime codex` to force one; `--runtime codex` and `--transcript` bypass the live-session locator, and under `detect` a `--transcript` selector searches both runtimes even inside Claude Code. Claude repository candidates live in the target's derived project directory, named by replacing every non-alphanumeric character of its path with `-`. Codex candidates are found recursively below `~/.codex/sessions/` and qualify only when their `session_meta.payload.cwd` resolves to the target repository. Those are helper selection rules, not a definition of the live thread: a thread may operate across repositories without changing its initial `cwd`.
@@ -55,12 +55,12 @@ Omit routine push state and other sessions' stacked commits from the recap, unde
 
 **Always check whether everything is committed in every touched repository** — even if the session felt "done", verify the working tree for the files this thread touched (staged, unstaged, and untracked) in each one. If any required `repository.status` is `unavailable`, say which Git evidence is unavailable and do not claim clean, committed, or no-actions status for the whole thread. Uncommitted session work is the most common silently-dropped outstanding item. Files dirty from _other_ threads of work are out of scope (per the stay-scoped rule) — note their existence in one line at most, never enumerate or adopt them.
 
-Then look only for work still open in this thread: uncommitted edits, a failing gate, a decision still open, or an explicitly deferred fix this thread still owns without a durable home. Do not use a recap to inventory repository backlog, peer-repository state, or plausible future work; those are outside the thread and `ki-next` owns future-work selection. **Ground every "uncommitted" or "still dirty" claim in the `filesTouched` from the grounding helper run at the start of _this_ recap, never in a `git status`/`git diff` seen earlier in the conversation** — commits (yours or a concurrent process's) can land between that earlier look and the recap itself, and stale context reads as a false outstanding item. If `transcriptEvidence.status` is `changed` or `unavailable`, describe transcript-derived tool tallies only as historical or omit their recommendation. If meaningful time has passed since step 1 ran, re-run it before finalizing this section.
+Then look only for work still open in this thread: uncommitted edits, a failing gate, a decision still open, or an explicitly deferred fix this thread still owns without a durable home. Do not use a recap to inventory repository backlog, peer-repository state, or plausible future work; those are outside the thread and `ki-work next` owns future-work selection. **Ground every "uncommitted" or "still dirty" claim in the `filesTouched` from the grounding helper run at the start of _this_ recap, never in a `git status`/`git diff` seen earlier in the conversation** — commits (yours or a concurrent process's) can land between that earlier look and the recap itself, and stale context reads as a false outstanding item. If `transcriptEvidence.status` is `changed` or `unavailable`, describe transcript-derived tool tallies only as historical or omit their recommendation. If meaningful time has passed since step 1 ran, re-run it before finalizing this section.
 
-For each substantive follow-up agreed in the thread, identify the owning repository and its configured local work adapter. Inspect the current canonical roadmap or Stream records for an existing item covering that exact work; verify its ID, path, and lifecycle state rather than trusting a link or recalled identifier. If none exists, use `ki-next`'s bounded triage capture in that owner, including its audit, deduplication, and issue-ledger rules; capture is not adoption, planning, or implementation. If the owner uses a remote adapter, cannot be accessed, or fails the capture gate, state the exact impediment and leave a `PRESERVE-SESSION-DEFERRAL` Action. Do not create a substitute record in the invocation repository. An explicit user decision that no follow-up is intended, including an external concern they deliberately decline to track, needs no item; merely assigning another owner does not make an agreed follow-up disappear. Apply the house rule:
+For each substantive follow-up agreed in the thread, identify the owning repository and its configured local work adapter. Inspect the current canonical roadmap or Stream records for an existing item covering that exact work; verify its ID, path, and lifecycle state rather than trusting a link or recalled identifier. If none exists, use `ki-work next`'s bounded triage capture in that owner, including its audit, deduplication, and issue-ledger rules; capture is not adoption, planning, or implementation. If the owner uses a remote adapter, cannot be accessed, or fails the capture gate, state the exact impediment and leave a `PRESERVE-SESSION-DEFERRAL` Action. Do not create a substitute record in the invocation repository. An explicit user decision that no follow-up is intended, including an external concern they deliberately decline to track, needs no item; merely assigning another owner does not make an agreed follow-up disappear. Apply the house rule:
 
 - Work captured in a roadmap item or Stream, whether newly created or routed to an existing record in this or another repository, is a **recorded deferral**. Name its canonical home and current lifecycle state under what happened or deferred work, not under outstanding or Actions. Unchecked Steps, pending review, and future acceptance belong to that record's lifecycle; they do not keep this thread open. Check current Git and verification evidence separately for an unfinished implementation unit in this thread.
-- If this thread agreed to preserve a deferred fix but has not given it a durable home, capture it through `ki-next` where its owner permits local intake. If capture cannot complete, name the blocker and exact owner route; do not manufacture a record for work merely noticed during the recap or explicitly declined by the user.
+- If this thread agreed to preserve a deferred fix but has not given it a durable home, capture it through `ki-work next` where its owner permits local intake. If capture cannot complete, name the blocker and exact owner route; do not manufacture a record for work merely noticed during the recap or explicitly declined by the user.
 
 ## 4. Harvest the learnings, and route each
 
@@ -75,7 +75,7 @@ The standard owns the placement ladder, promotion evidence, and duplicate-reconc
 | New reusable repository-review concept | The `ki-repo` REVIEW procedure — raise it as a repository-review checklist candidate and offer the canonical update |
 | A bounded procedure | An existing appropriate guide, rather than new standing orientation |
 | Durable personal fact or user preference | Runtime memory or synchronised personal configuration, according to its scope |
-| Deferred work with no home yet | Non-KB: `ROADMAP.md`, or a `ki-plan` if it is multi-step. KB: `Streams/Roadmap/`, or a `ki-plan` if it is multi-step. |
+| Deferred work with no home yet | Non-KB: `ROADMAP.md`, or a `ki-work plan` if it is multi-step. KB: `Streams/Roadmap/`, or a `ki-work plan` if it is multi-step. |
 
 Use `highCostCandidates` from the grounding helper as a starting list, not the full set — warm context surfaces things the helper cannot see (a design dead-end, a rejected approach).
 
@@ -83,7 +83,7 @@ For a repository-review checklist candidate, name the concept and the gap it wou
 
 ### Per-record review mini recap
 
-When `ki-accept` requests a record-scoped recap, do not run or imply a full-session recap. Ground only the record's delivered outputs and verification evidence, then record these H3 parts in a roadmap item's `## Review` section or the equivalent proposal review evidence: **Delivered**, **Change Summary**, **Verification**, **Outstanding concerns**, and **Mini recap**. The summary names the material changes and useful primary paths; verification records concrete commands, outcomes, and the checked evidence revision; concerns hold open questions and further review analysis. The mini recap may name a learning and its proposed route, but it must say that the route is unapproved. User closure of the record sets it Done only; it does not approve a guide, rubric, agent, hook, memory, or other durable learning write.
+When `ki-work accept` requests a record-scoped recap, do not run or imply a full-session recap. Ground only the record's delivered outputs and verification evidence, then record these H3 parts in a roadmap item's `## Review` section or the equivalent proposal review evidence: **Delivered**, **Change Summary**, **Verification**, **Outstanding concerns**, and **Mini recap**. The summary names the material changes and useful primary paths; verification records concrete commands, outcomes, and the checked evidence revision; concerns hold open questions and further review analysis. The mini recap may name a learning and its proposed route, but it must say that the route is unapproved. User closure of the record sets it Done only; it does not approve a guide, rubric, agent, hook, memory, or other durable learning write.
 
 ## 5. Discussion coverage
 
@@ -120,7 +120,7 @@ Apply these scenario checks before presenting the matrix:
 
 ## 6. Actions
 
-Close the recap with an **Actions** section: a short, concrete, imperative list of only the unfinished work that emerged from this session's steps 3–5 — each item something that could be done right now, with the exact command, file, or artefact named. Do not add generic backlog, peer-repository state, a proposed feature, or a future-work choice merely because it is actionable; those are `ki-next` concerns, not recap actions. Prefix each item with a short, unique, uppercase hyphenated label that names the work (usually two to four words), so the user can respond in chat by label ("do `COMMIT-DOCS` and `FIX-AUTHORING-AUDIT`") instead of restating the action. Do not use arbitrary sequence labels such as `A1`, `A2`, or `A3`; labels are ephemeral recap handles, not roadmap identifiers. Typical entries:
+Close the recap with an **Actions** section: a short, concrete, imperative list of only the unfinished work that emerged from this session's steps 3–5 — each item something that could be done right now, with the exact command, file, or artefact named. Do not add generic backlog, peer-repository state, a proposed feature, or a future-work choice merely because it is actionable; those are `ki-work next` concerns, not recap actions. Prefix each item with a short, unique, uppercase hyphenated label that names the work (usually two to four words), so the user can respond in chat by label ("do `COMMIT-DOCS` and `FIX-AUTHORING-AUDIT`") instead of restating the action. Do not use arbitrary sequence labels such as `A1`, `A2`, or `A3`; labels are ephemeral recap handles, not roadmap identifiers. Typical entries:
 
 - `COMMIT-SESSION-CHANGES` — Commit (or explicitly discard) the session's uncommitted files — name the paths and suggest the commit message.
 - `PRESERVE-SESSION-DEFERRAL` — Create the offered roadmap record or plan for a thread explicitly deferred during this session that has no home.
@@ -151,7 +151,7 @@ When every condition passes, render this five-line frame literally and without c
 
 Each framed line is exactly 52 terminal display columns. Measure terminal display width by Unicode code point width, not byte length. Keep the frame byte-identical so transcript archives can find completed sessions by searching for `█▄▄▀ █▄▄█ █  █ █▄▄▄`.
 
-This frame closes an ordinary session recap only; a coordinating thread reports in `ki-coordination`'s forms instead. Their closing [banner](../../ki-coordination/references/standards-coordination.md#banner) uses the same glyphs and 52-column frame for REST and BUSY and, once only at Project close, a DONE frame whose side lines read `project closed`, `decisions promoted` and `thread tidied away`, so the two DONE frames share their block word and are told apart by their side lines.
+This frame closes an ordinary session recap only; a coordinating thread reports in `ki-coordination`'s forms instead. Their closing [banner](../../../work/ki-coordination/references/standards-coordination.md#banner) uses the same glyphs and 52-column frame for REST and BUSY and, once only at Project close, a DONE frame whose side lines read `project closed`, `decisions promoted` and `thread tidied away`, so the two DONE frames share their block word and are told apart by their side lines.
 
 Immediately below the frame, render the variable evidence line with three leading spaces:
 
@@ -161,32 +161,32 @@ Immediately below the frame, render the variable evidence line with three leadin
 
 Use the invocation repository's physical Git root basename, the seven-character abbreviation of its full `HEAD` observed by the same grounding pass, and the recap date. When the thread touched other repositories, follow this line with one plain evidence line per additional repository (`<repository-basename> · <seven-character-HEAD>`); the fixed frame remains unchanged. Evidence lines stay outside the frame and are not padded to 52 columns.
 
-If the Actions list is empty but any banner condition fails, retain a truthful one-line no-actions state that names the numbered condition which blocked the banner, and any material evidence gap behind it; never render a partial or weakened banner. A bare “none” hides the difference between a finished session and one whose completion check did not pass, and leaves the reader no way to tell that the banner was owed. Do **not** perform checklist Actions unprompted; the exception is `ki-next`'s already-authorised, bounded Triage capture for an agreed substantive follow-up. Durable learning writes still require step-4 confirmation.
+If the Actions list is empty but any banner condition fails, retain a truthful one-line no-actions state that names the numbered condition which blocked the banner, and any material evidence gap behind it; never render a partial or weakened banner. A bare “none” hides the difference between a finished session and one whose completion check did not pass, and leaves the reader no way to tell that the banner was owed. Do **not** perform checklist Actions unprompted; the exception is `ki-work next`'s already-authorised, bounded Triage capture for an agreed substantive follow-up. Durable learning writes still require step-4 confirmation.
 
-## 7. Route future-work selection to `ki-next`
+## 7. Route future-work selection to `ki-work next`
 
-Future-work selection is separate from recap. Route to `ki-next` only when the user asks to choose, rank, or defer future work; it is not a Specific action, a standing recap requirement, or an automatic handoff:
+Future-work selection is separate from recap. Route to `ki-work next` only when the user asks to choose, rank, or defer future work; it is not a Specific action, a standing recap requirement, or an automatic handoff:
 
-1. State the boundary: `ki-next` re-runs the current roadmap audit and treats any recap context as a lead rather than fact.
-2. Do not turn candidate work into a recap action, promote an item, create a plan, or write a learning route merely by naming the route. `ki-next` capture is used only for substantive follow-up already agreed in this thread; other selection waits for the user.
+1. State the boundary: `ki-work next` re-runs the current roadmap audit and treats any recap context as a lead rather than fact.
+2. Do not turn candidate work into a recap action, promote an item, create a plan, or write a learning route merely by naming the route. `ki-work next` capture is used only for substantive follow-up already agreed in this thread; other selection waits for the user.
 
 Apply these scenario checks when offering it:
 
 | Situation | Required result |
 | --- | --- |
-| Clean recap | Say “No actions”; do not manufacture a `ki-next` handoff. |
+| Clean recap | Say “No actions”; do not manufacture a `ki-work next` handoff. |
 | Future work is merely visible in the repository | Omit it from the recap; it is neither an outstanding thread nor a Specific action. |
-| User asks to choose future work | Route to `ki-next`, which re-grounds the roadmap before selection. |
+| User asks to choose future work | Route to `ki-work next`, which re-grounds the roadmap before selection. |
 | Work was already deferred or held on the roadmap | Record it as what happened, not outstanding. |
-| Learning route is unapproved | Label it as a proposal; neither recap nor `ki-next` writes it. |
+| Learning route is unapproved | Label it as a proposal; neither recap nor `ki-work next` writes it. |
 
 ## 8. Preserve the handoff and compact at the boundary
 
 The end of a recap is a compaction boundary, not a place to measure headroom. Compaction is the default action there — the recap has just recorded the durable outcome, so the span it summarised is the material the next cycle no longer needs. Do not gate the decision on a context-use percentage or a remaining-headroom figure: no runtime adapter is required to expose one, and a threshold that cannot be read is a rule that never fires.
 
-Identify the next work cycle's scope first. The goal is to reduce active context to the information that cycle needs, not merely to preserve a record of the finished session. Preserve only the scoped digest below, then invoke the documented runtime- or vendor-specific compaction mechanism before beginning `ki-next`, planning, or implementation work. The applicable `ki-env-tokenomics` runtime adapter owns the mechanism's documented evidence boundary.
+Identify the next work cycle's scope first. The goal is to reduce active context to the information that cycle needs, not merely to preserve a record of the finished session. Preserve only the scoped digest below, then invoke the documented runtime- or vendor-specific compaction mechanism before beginning `ki-work next`, planning, or implementation work. The applicable `ki-env-tokenomics` runtime adapter owns the mechanism's documented evidence boundary.
 
-Two conditions withhold the default. **Safety:** do not compact in the middle of an active implementation unit, a pending user decision, an unfinished tool operation, or uncommitted work whose recovery information is not yet recorded. **Minimum footprint:** do not compact when no substantive work has entered context since the last compaction. Judge that by work done, not by tokens counted — a recap that runs immediately after a compaction, or a recap followed straight into `ki-next`, compacts once at the later boundary rather than twice across an unchanged span. This floor exists to stop thrashing; it is not licence to defer compaction across real work.
+Two conditions withhold the default. **Safety:** do not compact in the middle of an active implementation unit, a pending user decision, an unfinished tool operation, or uncommitted work whose recovery information is not yet recorded. **Minimum footprint:** do not compact when no substantive work has entered context since the last compaction. Judge that by work done, not by tokens counted — a recap that runs immediately after a compaction, or a recap followed straight into `ki-work next`, compacts once at the later boundary rather than twice across an unchanged span. This floor exists to stop thrashing; it is not licence to defer compaction across real work.
 
 Runtimes differ in what they expose and permit. Current Claude Code and Codex documentation each expose a user-invocable `/compact` command as well as automatic compaction/hook events. A documented user command is not standing agent authority: offer it or obtain the applicable runtime/user approval; do not invoke it autonomously. Where no mechanism can be invoked or authority is unavailable, say so plainly and continue with the digest as the bounded handoff; it is not a substitute for reducing the live context.
 

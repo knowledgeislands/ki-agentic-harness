@@ -1,28 +1,14 @@
----
-name: ki-implement
-ki-kind: process
-ki-applicability: invocation-only
-ki-guild: work
-ki-depends-on: []
-ki-optional-depends-on: [ki-delegation]
-description: >
-  Deliver one approved Ready local work record from immutable baseline through verification and Awaiting
-  review. Use to implement planned work; it never selects, replans, self-accepts, prunes, pushes, releases, or
-  expands authority.
-argument-hint: 'implement <work-item> | help'
----
+# Implement
 
-# ki-implement
-
-**Kind:** process.
+`ki-work implement` is a subcommand of the Work guild's lead. It was the `ki-implement` process skill until the guild folded it into `ki-work` (PROCESS-SUBCOMMANDS), and keeps that skill's procedure and boundaries.
 
 Delivers one approved, ready work record to an evidence-backed awaiting-review boundary.
 
-Read [the implementation procedure](references/standards-implementation.md) and [the local authority notes](references/sources.md) before acting.
+Read [the implementation procedure](standards-implementation.md) and [the local authority notes](sources.md) before acting.
 
-## What this skill does
+## What this subcommand does
 
-`ki-implement` owns one work record's delivery path from `ready` to `in-progress` to `awaiting-review`.
+`ki-work implement` owns one work record's delivery path from `ready` to `in-progress` to `awaiting-review`.
 
 It does not choose work, create or reshape a plan, close a lifecycle, or delete a record.
 
@@ -33,15 +19,15 @@ It does not choose work, create or reshape a plan, close a lifecycle, or delete 
 5. Review and integrate bounded results, run the required verification, and record the evidence.
 6. Create the roadmap-owned required review packet—`Delivered`, `Change Summary`, `Verification`, `Outstanding concerns`, `Post-change review`, then `Mini recap`—transition the record to `awaiting-review`, and stop.
 
-The caller or `ki-accept` owns the next decision.
+The caller or `ki-work accept` owns the next decision.
 
 ## Relationship boundary
 
-`ki-recap` may surface unfinished work and learning routes, but it does not start or close implementation.
+`ki-work recap` may surface unfinished work and learning routes, but it does not start or close implementation.
 
-`ki-next` selects and prepares forward work; it does not authorise its execution.
+`ki-work next` selects and prepares forward work; it does not authorise its execution.
 
-`ki-plan` owns plan shape and readiness material; it does not replace this delivery procedure.
+`ki-work plan` owns plan shape and readiness material; it does not replace this delivery procedure.
 
 Kris's coordinating-work rule requires detached background runs for every unit; an in-session subagent is not such a run. Conversational bounded work may proceed directly, and a background run may use bounded subagents within its approved plan. `ki-delegation`, when active, owns run and durable-packet contracts. The delivering agent retains authority boundaries, dependency ordering, integration, verification and the final account of its unit; the coordinator retains the owner's conversation.
 
@@ -51,7 +37,7 @@ It does not bypass readiness, baseline, scope, verification, or human-review gat
 
 ## Invocation
 
-`help` / `-h` / `?` explains this skill and stops, taking no action.
+`help` / `-h` / `?` explains this subcommand and stops, taking no action.
 
 `implement <work>` resolves the selected adapter, then one canonical work record. It may use a roadmap item, including one under `Streams/Roadmap/`, only when the selected local adapter resolves to that record shape. Remote execution stops.
 
@@ -59,7 +45,6 @@ With no item, identify that an explicit approved ready item is required and stop
 
 ## Notes
 
-- This is a process skill, not a universal AUDIT / CONFORM / EDUCATE / REFRESH checker.
 - Implementation is not autonomous authority. Stop for a missing approval, an ambiguous plan, a failed required gate, material scope expansion, an external coordination need, an irreversible action, or any decision outside the item's stated authority.
 - No KI CLI command, wrapper script, runtime-specific spawning mechanism, push, release, or deletion belongs here.
 - `awaiting-review` is evidence for review, never inferred approval.

@@ -79,7 +79,7 @@ The Knowledge acquisition Project closed on 20 October 2026, and this record car
 
 ### Captured - 2026-10-17
 
-Captured under `ki-next` on Kris Brown's SUCCESSOR-RECORD decision, directly at Next with status draft because the owner named the horizon. No planning has been done.
+Captured under `ki-work next` on Kris Brown's SUCCESSOR-RECORD decision, directly at Next with status draft because the owner named the horizon. No planning has been done.
 
 ### Split - 2026-10-20
 

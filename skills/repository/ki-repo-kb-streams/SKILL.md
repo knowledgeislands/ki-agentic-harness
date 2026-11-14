@@ -7,8 +7,8 @@ ki-shared-dependencies: [ki-skills:rubric, ki-work-roadmap:work-identifiers, ki-
 ki-depends-on: []
 description: >
   Govern the KI knowledge-base Streams container and flat Roadmap records. Use for KB
-  forward-work structure or migration; lifecycle actions belong to `ki-next`, `ki-plan`, `ki-implement`, and
-  `ki-accept`, while `ki-repo-kb` owns zones.
+  forward-work structure or migration; lifecycle actions belong to `ki-work next`, `ki-work plan`, `ki-work implement`, and
+  `ki-work accept`, while `ki-repo-kb` owns zones.
 argument-hint: 'audit | conform | help | educate | refresh'
 ---
 
@@ -61,7 +61,7 @@ Almost everything is fixed above. Only these come from the host base — take de
 
 ## Operating modes
 
-Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The shared model above — the operational areas, lifecycle, bindings, Step 1, and Working rules — is what every mode needs and stays loaded; each mode's _procedure_ lives in its own on-demand file, so read only the one the request selects. This carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**. EDUCATE explains the canonical Streams model and routes creation of the parent zone to `ki-repo-kb`; it ships no standalone scaffold or runner. Lifecycle actions are not modes here: capture belongs to `ki-next`, shaping and the Ready move to `ki-plan`, delivery to `ki-implement`, and review and closure to `ki-accept`. Modes are named and alphabetical.
+Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The shared model above — the operational areas, lifecycle, bindings, Step 1, and Working rules — is what every mode needs and stays loaded; each mode's _procedure_ lives in its own on-demand file, so read only the one the request selects. This carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**. EDUCATE explains the canonical Streams model and routes creation of the parent zone to `ki-repo-kb`; it ships no standalone scaffold or runner. Lifecycle actions are not modes here: capture belongs to `ki-work next`, shaping and the Ready move to `ki-work plan`, delivery to `ki-work implement`, and review and closure to `ki-work accept`. Modes are named and alphabetical.
 
 | Mode | Fires on | Read before acting |
 | --- | --- | --- |
@@ -77,7 +77,7 @@ The Working rules apply on every fire, before any mode procedure loads.
 These apply to every change (the discipline that keeps the workspace trustworthy):
 
 - **Capture before adoption.** Deduplicate substantive prospective work, then capture it automatically as a flat `status: triage` roadmap record with no horizon, using the canonical issue ledger, once it passes the roadmap graduation test. Report the new title, path, and ID; creation does not adopt or prioritise the work.
-- **Approval at disposition.** Require explicit human approval before a record leaves triage or is renamed, rejected, or merged. Apply adoption through `ki-next`; route a cancellation with its resolution to `ki-accept` for retained `cancelled` closure before any later prune. Never infer adoption or disposal from silence or surrounding discussion, and never delete open intake directly.
+- **Approval at disposition.** Require explicit human approval before a record leaves triage or is renamed, rejected, or merged. Apply adoption through `ki-work next`; route a cancellation with its resolution to `ki-work accept` for retained `cancelled` closure before any later prune. Never infer adoption or disposal from silence or surrounding discussion, and never delete open intake directly.
 - **Keep the owned record current.** Update immediately on a decision or status change; the canonical state must never lag.
 - **Load before editing.** Reload the work item or template and its ledger before resuming work.
 - **No `ready` while a prerequisite is below `done`.** No rollout without explicit authorisation.

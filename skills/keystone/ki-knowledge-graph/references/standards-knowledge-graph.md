@@ -164,6 +164,6 @@ Evidential material kept word for word travels as it is and is never edited. Cur
 | Folders, zones and zone aliases of any knowledge base, the staging base's included | The `ki-repo-kb` skill |
 | How a skill holds a graph, and the knowledge kind of skill | The `ki-skills` skill |
 | Prose style of a card | The `ki-authoring` skill |
-| A receiving island's disposition of what it was sent | The `ki-next` skill |
+| A receiving island's disposition of what it was sent | The `ki-work next` skill |
 | Rules for evidential material | The future legal evidential skill |
 | Running imports and repository-local checks | The repository that runs them |

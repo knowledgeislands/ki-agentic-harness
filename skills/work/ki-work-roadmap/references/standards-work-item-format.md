@@ -81,7 +81,7 @@ updated_at: 2026-08-12T09:30:00Z
 
 `horizon` is one of `now`, `next`, `soon`, `future`, or `hold`, constrained by status as the [status and horizon table](standards-repository-roadmaps.md#status-and-horizon) states. Triage, done, and cancelled records omit it.
 
-`blocks` and `blocked_by` are arrays of item identifiers and use `[]` when empty. They name records in this repository only. Describe work another repository must deliver in `## Dependencies / blocks`: name that repository, state the need in plain terms and link only durable documentation, never its roadmap record or identifier, because records are pruned and such links break. Hand that need over as a line in the receiving work's `messages.md`, never as a record written into the receiver's roadmap or triage, as Kris set under HANDOFF-AS-MESSAGE on 2026-10-20: "Handoffs are not roadmap items ... we push the need to roll things out into other projects triage folders, and that's not what this is for." The receiver captures a record only for work genuinely deferred that it owns, under the `ki-next` [capture rule](../../ki-next/references/standards-next-work.md#capture-substantive-prospective-work).
+`blocks` and `blocked_by` are arrays of item identifiers and use `[]` when empty. They name records in this repository only. Describe work another repository must deliver in `## Dependencies / blocks`: name that repository, state the need in plain terms and link only durable documentation, never its roadmap record or identifier, because records are pruned and such links break. Hand that need over as a line in the receiving work's `messages.md`, never as a record written into the receiver's roadmap or triage, as Kris set under HANDOFF-AS-MESSAGE on 2026-10-20: "Handoffs are not roadmap items ... we push the need to roll things out into other projects triage folders, and that's not what this is for." The receiver captures a record only for work genuinely deferred that it owns, under the `ki-work next` [capture rule](../../../keystone/ki-work/references/standards-next-work.md#capture-substantive-prospective-work).
 
 `blocked_by` states **build order**: this item cannot be executed because something it must build on does not exist yet. It is discharged when that thing exists, not when the record that produced it reaches a particular lifecycle state. An item is therefore not blocked merely because a related record is unreviewed, unaccepted, or unpruned; a blocker whose work has landed is cleared even while its own record is still open. Recording a lifecycle wait as `blocked_by` stalls executable work behind an approval queue and misreports the reason. Where the real constraint is sequencing preference rather than build order, say so in `## Dependencies / blocks` and leave the field empty.
 
@@ -114,7 +114,7 @@ Reports and messages display a size as a T-shirt label, 👕 and the letter in c
 
 A size set at capture is provisional, set by judgement, and is revisited before the record becomes Ready; a record whose size is uncertain warrants investigation rather than an invented estimate. A `ready` record with `size: xl` fails. During the [migration window](standards-repository-roadmaps.md#migration-tolerance) the checker warns on an open record without `size`; once the window closes it fails. A closed record, done or cancelled, never needs a retrospective `size` or `kind`. A value outside either vocabulary fails at once.
 
-Selection orders work in one sequence, which [`ki-next`](../../ki-next/references/standards-next-work.md#4-select-candidates) applies: adoption, holds and dependencies first, then horizon, then priority, then the nearer target date within that horizon and priority, then size, smallest first. An absent target has no date urgency. Priority never crosses horizons: a `high` record at a later horizon does not overtake a `medium` one at an earlier horizon, but prompts a proposal to move its horizon.
+Selection orders work in one sequence, which [`ki-work next`](../../../keystone/ki-work/references/standards-next-work.md#4-select-candidates) applies: adoption, holds and dependencies first, then horizon, then priority, then the nearer target date within that horizon and priority, then size, smallest first. An absent target has no date urgency. Priority never crosses horizons: a `high` record at a later horizon does not overtake a `medium` one at an earlier horizon, but prompts a proposal to move its horizon.
 
 ### Assignee
 
@@ -128,7 +128,7 @@ Selection orders work in one sequence, which [`ki-next`](../../ki-next/reference
 
 Every open record carries one from capture, whatever its status or horizon; a closed record, done or cancelled, never needs a retrospective one. Kris asked for it on 5 November 2026 under ROADMAP-ASSIGNEE: "good to give it an assignee. We can always change the assignee if we run out of work, but it's good that someone has it." A value outside the vocabulary fails at once; during the [assignee window](standards-repository-roadmaps.md#migration-tolerance) an open record without one warns.
 
-Until work starts the assignee changes freely: whoever runs out of work may take a record, and a handover is an assignee change, with no other ceremony. Once a record is `in-progress`, which `ki-implement` sets together with `baseline_ref`, its assignee is fixed: marking work in progress is what locks who holds it, as Kris set under ASSIGNEE-LOCK the same morning. The lock takes the assignee named in the earliest committed version of the record's current in-progress run, so a record that started with none may have one filled in once. The audit reads the record's Git history and fails an in-progress record whose assignee differs from that; where the history is unavailable it cannot check, and says nothing. The assignee grants no authority: delivery still follows the record's lifecycle and the repository's gates.
+Until work starts the assignee changes freely: whoever runs out of work may take a record, and a handover is an assignee change, with no other ceremony. Once a record is `in-progress`, which `ki-work implement` sets together with `baseline_ref`, its assignee is fixed: marking work in progress is what locks who holds it, as Kris set under ASSIGNEE-LOCK the same morning. The lock takes the assignee named in the earliest committed version of the record's current in-progress run, so a record that started with none may have one filled in once. The audit reads the record's Git history and fails an in-progress record whose assignee differs from that; where the history is unavailable it cannot check, and says nothing. The assignee grants no authority: delivery still follows the record's lifecycle and the repository's gates.
 
 ### Retired fields and values
 
@@ -348,7 +348,7 @@ When delegated work is planned, add `## Delegation` after `## Dependencies / blo
 
 It names bounded worker deliverables and file boundaries, the gate between rounds, and the orchestrator’s final review and verification responsibility.
 
-An immediate item may remain `status: draft` while `ki-plan` shapes these sections.
+An immediate item may remain `status: draft` while `ki-work plan` shapes these sections.
 
 It becomes `status: ready` only after the sections are concrete, dependencies are satisfied, verification is checkable, and the user approves the plan.
 
@@ -373,7 +373,7 @@ Before setting `status: awaiting-review`, insert `## Review` immediately before 
 
 Later process skills reuse these producer/consumer semantics; they do not reinterpret heading names or insert parallel review sections.
 
-This is the required evidence and review packet for an explicit acceptance decision. `ki-accept` records the interactive review outcome here before closure.
+This is the required evidence and review packet for an explicit acceptance decision. `ki-work accept` records the interactive review outcome here before closure.
 
 ### Done
 

@@ -84,7 +84,7 @@ Choose the narrowest durable home that reaches the people and agents who need th
 A durable document has a type, and each type has its format standard, all following the [format format](standard-formats-format.md):
 
 - **Standard:** the rule itself, in the owning skill's `references/`, as the placement ladder above routes it; its format is the [standard format](standard-formats-standard.md).
-- **Change document:** a proposed change to one or more standards, kept in the work package of the work that proposes it, carrying the design outline and a planning section; its format is the [change format](standard-formats-change.md). There is no separate design type: a design note is a change document. `ki-work-design` owns its life cycle, from draft to graduation and deletion.
+- **Change document:** a proposed change to one or more standards, kept in the work package of the work that proposes it, carrying the design outline and a planning section; its format is the [change format](standard-formats-change.md). There is no separate design type: a design note is a change document. `ki-work design` owns its life cycle, from draft to graduation and deletion.
 - **Sources file:** a skill's record of the outside specifications and decisions its standards rest on; its format is the [sources format](standard-formats-sources.md).
 
 Run briefs, run reports and the work package's own files keep the shapes their owning skills set.

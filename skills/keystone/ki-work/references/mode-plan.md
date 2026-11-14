@@ -1,50 +1,37 @@
----
-name: ki-plan
-ki-kind: process
-ki-applicability: invocation-only
-ki-guild: work
-ki-depends-on: []
-ki-optional-depends-on: [ki-delegation]
-description: >
-  Shape selected Now or Next draft work in the local roadmap or KB Streams adapter until it is Ready. Use to
-  plan or prepare implementation; it does not capture, select, implement, close, or prune work.
-argument-hint: 'plan <work>... | help'
----
+# Plan
 
-# ki-plan
-
-**Kind:** process.
+`ki-work plan` is a subcommand of the Work guild's lead. It was the `ki-plan` process skill until the guild folded it into `ki-work` (PROCESS-SUBCOMMANDS), and keeps that skill's procedure and boundaries.
 
 Shapes one or more selected Now or Next drafts through Ready.
 
-The class-level standard—horizons, identity, and file shape—is owned by `ki-work-roadmap`; read [the lifecycle procedure](references/standards-plan-lifecycle.md) for the complete operation.
+The class-level standard—horizons, identity, and file shape—is owned by `ki-work-roadmap`; read [the lifecycle procedure](standards-plan-lifecycle.md) for the complete operation.
 
-## What this skill does
+## What this subcommand does
 
-`ki-plan` resolves the selected record through the repository adapter and enriches it in place. `ki-next` captures unadopted triage records and separately adopts or promotes them; this skill accepts only selected Now or Next drafts and never creates a duplicate plan record.
+`ki-work plan` resolves the selected record through the repository adapter and enriches it in place. `ki-work next` captures unadopted triage records and separately adopts or promotes them; this subcommand accepts only selected Now or Next drafts and never creates a duplicate plan record.
 
 For the selected `roadmap` adapter it adds the work-item execution sections; for selected `kb-streams` it applies the same record model inside the Streams container. Readiness is explicit and all-or-nothing: validate every named record before publishing any `ready` transition. Commit the resulting state with its coherent planning unit; the transition does not require a standalone commit, and an item may first land as `ready` when capture, shaping, and approval occur together. GitHub Issues and Linear selections stop without writes until their remote process execution exists.
 
 ## Responsibility boundary
 
 ```text
-ki-next
+ki-work next
   selection and horizon placement
-    └─> ki-plan
+    └─> ki-work plan
           create, shape, and mark Ready
-            └─> ki-implement
+            └─> ki-work implement
                   Ready → In progress → Awaiting review
-                    └─> ki-accept
+                    └─> ki-work accept
                           Awaiting review → Done and explicit prune selection
 ```
 
-`ki-plan` does not implement work, assemble a review packet, close delivery, mark an item Done, or prune retained records.
+`ki-work plan` does not implement work, assemble a review packet, close delivery, mark an item Done, or prune retained records.
 
-Those responsibilities move cleanly to the dedicated process skills; `ki-plan` carries no compatibility verbs or fallback path for them.
+Those responsibilities belong to the other subcommands; `ki-work plan` carries no compatibility verbs or fallback path for them.
 
 ## Planning is repo-first
 
-In a KI code repository the canonical record is `docs/roadmap/<REPO>-<NNN>-<slug>.md`, or `docs/roadmap/<REPO>-<AREA>-<NNN>-<slug>.md` where the repository declares fixed issuing areas, authored through this skill—not a runtime-native Plan Mode scratch file.
+In a KI code repository the canonical record is `docs/roadmap/<REPO>-<NNN>-<slug>.md`, or `docs/roadmap/<REPO>-<AREA>-<NNN>-<slug>.md` where the repository declares fixed issuing areas, authored through this subcommand—not a runtime-native Plan Mode scratch file.
 
 `ki-work-roadmap` owns the stable `<REPO>` code and any fixed `<AREA>` namespace in `.ki.toml`; grouping lives in the classification fields `kind`, `purpose`, `project`, `initiative`, and `component`.
 
@@ -56,7 +43,7 @@ When referring to a specific work item in prose, link its canonical document usi
 
 ## Invocation
 
-`help` / `-h` / `?` explains this skill and stops, taking no action. `plan <work>...` resolves one or more explicit selected records; with no target, identify that `ki-next` must first adopt and select a Now or Next draft and stop.
+`help` / `-h` / `?` explains this subcommand and stops, taking no action. `plan <work>...` resolves one or more explicit selected records; with no target, identify that `ki-work next` must first adopt and select a Now or Next draft and stop.
 
 ## Preflight
 
@@ -67,6 +54,4 @@ When referring to a specific work item in prose, link its canonical document usi
 
 ## Notes
 
-- This is a process skill, not a universal AUDIT / CONFORM / EDUCATE / REFRESH checker.
-- Installed as a core user skill by `ki bootstrap`; it is not a repository-governance root.
-- This skill has no capture, status, import, or runtime scratch-plan verb. `ki-next` owns queue changes and capture; an adapter may preserve a native scratch record only as a pointer to its governed record.
+- This subcommand has no capture, status, import, or runtime scratch-plan verb. `ki-work next` owns queue changes and capture; an adapter may preserve a native scratch record only as a pointer to its governed record.

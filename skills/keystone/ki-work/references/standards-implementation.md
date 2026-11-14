@@ -1,8 +1,8 @@
 # Implementation procedure
 
-This is the on-demand procedure for `ki-implement`.
+This is the on-demand procedure for `ki-work implement`.
 
-The kind, boundary, and relationship map live in [the skill](../SKILL.md).
+The kind, boundary, and relationship map live in [the skill](mode-implement.md).
 
 ## 1. Preflight
 
@@ -20,7 +20,7 @@ Do not select another candidate, promote a horizon, invent plan detail, or treat
 ## 2. Start one delivery
 
 1. Record the full current `HEAD` commit ID as the immutable baseline.
-2. Transition only the approved item to `in-progress`, moving it to `horizon: now` in the same change if it was at Next. A held ready or in-progress record resumes only after `ki-next` releases it.
+2. Transition only the approved item to `in-progress`, moving it to `horizon: now` in the same change if it was at Next. A held ready or in-progress record resumes only after `ki-work next` releases it.
 3. Begin implementation without requiring a standalone lifecycle-start commit. The `in-progress` update may land with the first coherent implementation change, or the completed delivery may land directly from the previously committed `ready` state to `awaiting-review` when every review gate is satisfied.
 
 The baseline describes the starting evidence; it is not a substitute for verification.
@@ -60,13 +60,13 @@ Set the record to `awaiting-review` only when all required steps are marked comp
 
 Then stop.
 
-`ki-accept` owns human review, terminal closure, retention, and explicit pruning.
+`ki-work accept` owns human review, terminal closure, retention, and explicit pruning.
 
 ## Window authority
 
 An unattended window's recorded grant, under `ki-coordination`, may authorise a named record of a frozen wave to enter this procedure only when it expressly grants that delivery.
 
-It never makes a vague plan executable, and it does not make closure automatic unless the grant names closure for that wave, under `ki-accept`.
+It never makes a vague plan executable, and it does not make closure automatic unless the grant names closure for that wave, under `ki-work accept`.
 
 ## Controlled preflight model
 

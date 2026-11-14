@@ -4,7 +4,7 @@ This standard defines the portable evidence and lifecycle contract for reviewing
 
 ## Authority boundary
 
-The committed `radar.toml` snapshot is reviewed local state. External sources support individual claims but do not override local judgment. `ki-acquire pulse` owns bounded discovery, capability REFRESH modes own capability-specific policy, Decision Records own durable choices, and `ki-next` owns downstream work.
+The committed `radar.toml` snapshot is reviewed local state. External sources support individual claims but do not override local judgment. `ki-acquire pulse` owns bounded discovery, capability REFRESH modes own capability-specific policy, Decision Records own durable choices, and `ki-work next` owns downstream work.
 
 AUDIT is read-only. CONFORM may regenerate only the derived rubric publication. Every authored radar correction is diagnostic or guarded because changing a record can alter classification, maturity, stance, movement, or ownership.
 

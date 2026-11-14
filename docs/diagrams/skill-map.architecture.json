@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "2f7ada1639f343e64e88c443b4dfbe4443dc428b"
+      "revision": "6f02570f53e6ec7dc249debb4b69593a29e9b2f9"
     },
     "legend": {
       "mode": "auto",
@@ -641,25 +641,6 @@
       ]
     },
     {
-      "id": "ki-work-design",
-      "type": "frontend",
-      "label": "ki-work-design",
-      "sublabel": "coordination · command",
-      "sources": [
-        {
-          "path": "skills/work/ki-work-design/SKILL.md"
-        }
-      ],
-      "pos": [
-        32,
-        1020
-      ],
-      "size": [
-        200,
-        60
-      ]
-    },
-    {
       "id": "ki-trades",
       "type": "database",
       "label": "ki-trades",
@@ -671,7 +652,7 @@
       ],
       "pos": [
         32,
-        1160
+        1076
       ],
       "size": [
         200,
@@ -690,7 +671,7 @@
       ],
       "pos": [
         240,
-        1160
+        1076
       ],
       "size": [
         200,
@@ -709,7 +690,7 @@
       ],
       "pos": [
         32,
-        1300
+        1216
       ],
       "size": [
         200,
@@ -728,7 +709,7 @@
       ],
       "pos": [
         240,
-        1300
+        1216
       ],
       "size": [
         200,
@@ -747,7 +728,7 @@
       ],
       "pos": [
         448,
-        1300
+        1216
       ],
       "size": [
         200,
@@ -766,102 +747,7 @@
       ],
       "pos": [
         32,
-        1384
-      ],
-      "size": [
-        200,
-        60
-      ]
-    },
-    {
-      "id": "ki-accept",
-      "type": "frontend",
-      "label": "ki-accept",
-      "sublabel": "work · command",
-      "sources": [
-        {
-          "path": "skills/work/ki-accept/SKILL.md"
-        }
-      ],
-      "pos": [
-        32,
-        1524
-      ],
-      "size": [
-        200,
-        60
-      ]
-    },
-    {
-      "id": "ki-implement",
-      "type": "frontend",
-      "label": "ki-implement",
-      "sublabel": "work · command",
-      "sources": [
-        {
-          "path": "skills/work/ki-implement/SKILL.md"
-        }
-      ],
-      "pos": [
-        240,
-        1524
-      ],
-      "size": [
-        200,
-        60
-      ]
-    },
-    {
-      "id": "ki-next",
-      "type": "frontend",
-      "label": "ki-next",
-      "sublabel": "work · command",
-      "sources": [
-        {
-          "path": "skills/work/ki-next/SKILL.md"
-        }
-      ],
-      "pos": [
-        448,
-        1524
-      ],
-      "size": [
-        200,
-        60
-      ]
-    },
-    {
-      "id": "ki-plan",
-      "type": "frontend",
-      "label": "ki-plan",
-      "sublabel": "work · command",
-      "sources": [
-        {
-          "path": "skills/work/ki-plan/SKILL.md"
-        }
-      ],
-      "pos": [
-        32,
-        1608
-      ],
-      "size": [
-        200,
-        60
-      ]
-    },
-    {
-      "id": "ki-recap",
-      "type": "frontend",
-      "label": "ki-recap",
-      "sublabel": "work · command",
-      "sources": [
-        {
-          "path": "skills/work/ki-recap/SKILL.md"
-        }
-      ],
-      "pos": [
-        240,
-        1608
+        1300
       ],
       "size": [
         200,
@@ -1013,7 +899,7 @@
       ],
       "pos": [
         32,
-        1780
+        1472
       ],
       "size": [
         200,
@@ -1032,7 +918,7 @@
       ],
       "pos": [
         240,
-        1780
+        1472
       ],
       "size": [
         200,
@@ -1051,7 +937,7 @@
       ],
       "pos": [
         448,
-        1780
+        1472
       ],
       "size": [
         200,
@@ -1070,7 +956,7 @@
       ],
       "pos": [
         32,
-        1864
+        1556
       ],
       "size": [
         200,
@@ -1088,8 +974,8 @@
         }
       ],
       "pos": [
-        712,
-        1864
+        32,
+        1728
       ],
       "size": [
         200,
@@ -1107,8 +993,8 @@
         }
       ],
       "pos": [
-        920,
-        1864
+        240,
+        1728
       ],
       "size": [
         200,
@@ -1126,8 +1012,8 @@
         }
       ],
       "pos": [
-        1128,
-        1864
+        448,
+        1728
       ],
       "size": [
         200,
@@ -1145,8 +1031,8 @@
         }
       ],
       "pos": [
-        712,
-        1948
+        32,
+        1812
       ],
       "size": [
         200,
@@ -1164,8 +1050,8 @@
         }
       ],
       "pos": [
-        712,
-        2088
+        32,
+        1952
       ],
       "size": [
         200,
@@ -1183,8 +1069,8 @@
         }
       ],
       "pos": [
-        920,
-        2088
+        240,
+        1952
       ],
       "size": [
         200,
@@ -1202,8 +1088,8 @@
         }
       ],
       "pos": [
-        1128,
-        2088
+        448,
+        1952
       ],
       "size": [
         200,
@@ -1221,8 +1107,8 @@
         }
       ],
       "pos": [
-        712,
-        2228
+        32,
+        2092
       ],
       "size": [
         200,
@@ -1240,8 +1126,8 @@
         }
       ],
       "pos": [
-        920,
-        2228
+        240,
+        2092
       ],
       "size": [
         200,
@@ -1259,8 +1145,8 @@
         }
       ],
       "pos": [
-        1128,
-        2228
+        448,
+        2092
       ],
       "size": [
         200,
@@ -1278,8 +1164,8 @@
         }
       ],
       "pos": [
-        32,
-        2036
+        712,
+        1864
       ],
       "size": [
         200,
@@ -1297,8 +1183,8 @@
         }
       ],
       "pos": [
-        240,
-        2036
+        920,
+        1864
       ],
       "size": [
         200,
@@ -1316,8 +1202,8 @@
         }
       ],
       "pos": [
-        32,
-        2208
+        712,
+        2036
       ],
       "size": [
         200,
@@ -1335,8 +1221,8 @@
         }
       ],
       "pos": [
-        32,
-        2348
+        712,
+        2176
       ],
       "size": [
         200,
@@ -1354,8 +1240,8 @@
         }
       ],
       "pos": [
-        240,
-        2348
+        920,
+        2176
       ],
       "size": [
         200,
@@ -1373,8 +1259,8 @@
         }
       ],
       "pos": [
-        448,
-        2348
+        1128,
+        2176
       ],
       "size": [
         200,
@@ -1552,8 +1438,7 @@
       "wraps": [
         "ki-work-package",
         "ki-coordination",
-        "ki-meeting",
-        "ki-work-design"
+        "ki-meeting"
       ],
       "pad": 10
     },
@@ -1579,35 +1464,17 @@
     },
     {
       "kind": "region",
-      "label": "Work and delivery · Delivery cycle",
-      "wraps": [
-        "ki-accept",
-        "ki-implement",
-        "ki-next",
-        "ki-plan",
-        "ki-recap"
-      ],
-      "pad": 10
-    },
-    {
-      "kind": "region",
-      "label": "Work · 15 skills",
+      "label": "Work · 9 skills",
       "wraps": [
         "ki-work-package",
         "ki-coordination",
         "ki-meeting",
-        "ki-work-design",
         "ki-trades",
         "ki-trade",
         "ki-work-github-issues",
         "ki-work-linear",
         "ki-work-recurring",
-        "ki-work-roadmap",
-        "ki-accept",
-        "ki-implement",
-        "ki-next",
-        "ki-plan",
-        "ki-recap"
+        "ki-work-roadmap"
       ],
       "pad": 24
     },
@@ -1767,7 +1634,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "71 skills in 8 concerns and 10 functional areas: 3 always on, 19 automatic, 38 opt-in, 11 commands.",
+        "65 skills in 8 concerns and 10 functional areas: 3 always on, 19 automatic, 38 opt-in, 5 commands.",
         "Regenerate with ki repo conform --skill ki-repo-backpack; ki-skills owns the kind and applicability fields it reads."
       ]
     }

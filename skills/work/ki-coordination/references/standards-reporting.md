@@ -30,7 +30,7 @@ Every reply to the owner takes one of three forms.
 | Coordinator forms | Every reply while explicitly coordinating a valid package, and a run's final report to it | The [coordinator reply format](standards-report-forms.md#coordinator-reply-format): each reply's [trigger](standards-report-forms.md#triggers) sets its structure, the [Summary](standards-report-forms.md#the-summary), Status, Bootstrap, Stop, Position, Update or Answer, and its layout, Full, Medium, Short or Minimal, with the package and mark that go with them; a run writes its run report in Medium |
 
 - While coordinating, the report at the end of a unit is the Summary.
-- In a conversational session, a request for a "summary", "full summary", "mark" or "status" gets a conversational reply, and a "recap" gets the ordinary `ki-recap` session recap in its own form; neither borrows a coordinator form.
+- In a conversational session, a request for a "summary", "full summary", "mark" or "status" gets a conversational reply, and a "recap" gets the ordinary `ki-work recap` session recap in its own form; neither borrows a coordinator form.
 - **Suggestions carry a confidence.** In every reply form and every session, a suggestion is a recommendation carrying a confidence, `high`, `medium` or `low`: a query's options under the [owner report](#owner-report), a suggestion in a conversational reply, a plan proposed for agreement and a run report alike.
 
 Sources: REPORTING-FORMS, RECOMMEND-CONFIDENCE and REPLY-FORMAT in [the decision register](sources.md#decision-register).

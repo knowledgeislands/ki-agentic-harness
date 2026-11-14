@@ -1,8 +1,8 @@
 # Run a work design loop
 
-Use the `ki-work-design` skill to shape a Project, an Initiative or a cross-cutting model before any work record exists. The skill's standard, `references/standards-work-design.md`, owns the stage contracts; this guide explains when and how to start it.
+Use the `ki-work design` skill to shape a Project, an Initiative or a cross-cutting model before any work record exists. The skill's standard, `references/standards-work-design.md`, owns the stage contracts; this guide explains when and how to start it.
 
-The skill was called `ki-design-loop` until 14 October 2026; `/ki-work-design` is the current command.
+The loop was the `ki-design-loop` skill until 14 October 2026 and the `ki-work-design` skill until 14 November 2026; `/ki-work design` is the current command.
 
 ## When to use it
 
@@ -12,17 +12,17 @@ Start a design loop when you have a proposal whose shape is still open and a wro
 - a model several skills or repositories must share, such as the roadmap model of 7 October 2026;
 - a migration across the estate.
 
-Skip it when the work already has a clear goal. Capture that with `ki-next` and ready it with `ki-plan`.
+Skip it when the work already has a clear goal. Capture that with `ki-work next` and ready it with `ki-work plan`.
 
 ## Start it
 
 Invoke the skill by name with the subject's slug:
 
 ```text
-/ki-work-design start techne
+/ki-work design start techne
 ```
 
-The agent asks for anything missing - the owning repository and your proposal - and then writes and commits the brief. To pick up a design in a later session, run `/ki-work-design resume techne`; it reads the committed artefacts and continues at the first missing stage. `/ki-work-design help` explains the loop without writing anything.
+The agent asks for anything missing - the owning repository and your proposal - and then writes and commits the brief. To pick up a design in a later session, run `/ki-work design resume techne`; it reads the committed artefacts and continues at the first missing stage. `/ki-work design help` explains the loop without writing anything.
 
 ## What happens
 
@@ -47,8 +47,8 @@ Local state keeps only runtime material such as agent prompts and status files.
 
 The loop ends when the rollout is captured. From there:
 
-- `ki-next` captures each record with the relevant decisions in its Context, and selects the pilot;
-- `ki-plan` readies each record against the decisions;
-- `ki-implement` delivers each Ready record; while you are away the coordinator delivers independent ones in frozen waves under your unattended-window grant, and `ki-accept` closes a wave's records only where that grant names closure.
+- `ki-work next` captures each record with the relevant decisions in its Context, and selects the pilot;
+- `ki-work plan` readies each record against the decisions;
+- `ki-work implement` delivers each Ready record; while you are away the coordinator delivers independent ones in frozen waves under your unattended-window grant, and `ki-work accept` closes a wave's records only where that grant names closure.
 
 The loop never decides for you, and never pushes, prunes or accepts beyond the grant your decisions file quotes.

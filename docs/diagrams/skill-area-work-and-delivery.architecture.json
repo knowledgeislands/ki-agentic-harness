@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "956a01faaab54a7f2038867d699c4f59746b8bbb"
+      "revision": "6f02570f53e6ec7dc249debb4b69593a29e9b2f9"
     },
     "legend": {
       "mode": "auto",
@@ -44,7 +44,7 @@
       ],
       "tag": "R19 · CM · F8",
       "pos": [
-        44,
+        32,
         64
       ],
       "size": [
@@ -64,108 +64,8 @@
       ],
       "tag": "R27 · CL · F4",
       "pos": [
-        364,
+        352,
         64
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
-      "id": "ki-accept",
-      "type": "frontend",
-      "label": "ki-accept",
-      "sublabel": "work · command",
-      "sources": [
-        {
-          "path": "skills/work/ki-accept/SKILL.md"
-        }
-      ],
-      "tag": "R– · CM · F2",
-      "pos": [
-        44,
-        580
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
-      "id": "ki-implement",
-      "type": "frontend",
-      "label": "ki-implement",
-      "sublabel": "work · command",
-      "sources": [
-        {
-          "path": "skills/work/ki-implement/SKILL.md"
-        }
-      ],
-      "tag": "R– · CS · F2",
-      "pos": [
-        44,
-        704
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
-      "id": "ki-next",
-      "type": "frontend",
-      "label": "ki-next",
-      "sublabel": "work · command",
-      "sources": [
-        {
-          "path": "skills/work/ki-next/SKILL.md"
-        }
-      ],
-      "tag": "R– · CM · F1",
-      "pos": [
-        300,
-        580
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
-      "id": "ki-plan",
-      "type": "frontend",
-      "label": "ki-plan",
-      "sublabel": "work · command",
-      "sources": [
-        {
-          "path": "skills/work/ki-plan/SKILL.md"
-        }
-      ],
-      "tag": "R– · CS · F1",
-      "pos": [
-        300,
-        704
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
-      "id": "ki-recap",
-      "type": "frontend",
-      "label": "ki-recap",
-      "sublabel": "work · command",
-      "sources": [
-        {
-          "path": "skills/work/ki-recap/SKILL.md"
-        }
-      ],
-      "tag": "R– · CM · F2",
-      "pos": [
-        556,
-        580
       ],
       "size": [
         208,
@@ -182,9 +82,9 @@
           "path": "skills/keystone/ki-work/SKILL.md"
         }
       ],
-      "tag": "R1 · CM · F5",
+      "tag": "R1 · CL · F17",
       "pos": [
-        44,
+        32,
         392
       ],
       "size": [
@@ -204,7 +104,7 @@
       ],
       "tag": "R2 · CM · F3",
       "pos": [
-        300,
+        288,
         392
       ],
       "size": [
@@ -224,7 +124,7 @@
       ],
       "tag": "R2 · CM · F3",
       "pos": [
-        556,
+        544,
         268
       ],
       "size": [
@@ -244,7 +144,7 @@
       ],
       "tag": "R2 · CM · F3",
       "pos": [
-        44,
+        32,
         268
       ],
       "size": [
@@ -264,28 +164,8 @@
       ],
       "tag": "R24 · CL · F4",
       "pos": [
-        300,
+        288,
         268
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
-      "id": "ki-delegation",
-      "type": "database",
-      "label": "ki-delegation",
-      "sublabel": "agentic systems · opt-in",
-      "sources": [
-        {
-          "path": "skills/agentic-systems/ki-delegation/SKILL.md"
-        }
-      ],
-      "tag": "R6 · CM · F4",
-      "pos": [
-        44,
-        908
       ],
       "size": [
         208,
@@ -304,8 +184,48 @@
       ],
       "tag": "R4 · CM · F13",
       "pos": [
-        364,
-        908
+        32,
+        596
+      ],
+      "size": [
+        208,
+        76
+      ]
+    },
+    {
+      "id": "ki-decision-records",
+      "type": "backend",
+      "label": "ki-decision-records",
+      "sublabel": "authoring · automatic",
+      "sources": [
+        {
+          "path": "skills/authoring/ki-decision-records/SKILL.md"
+        }
+      ],
+      "tag": "R37 · CL · F9",
+      "pos": [
+        352,
+        596
+      ],
+      "size": [
+        208,
+        76
+      ]
+    },
+    {
+      "id": "ki-delegation",
+      "type": "database",
+      "label": "ki-delegation",
+      "sublabel": "agentic systems · opt-in",
+      "sources": [
+        {
+          "path": "skills/agentic-systems/ki-delegation/SKILL.md"
+        }
+      ],
+      "tag": "R6 · CM · F4",
+      "pos": [
+        672,
+        596
       ],
       "size": [
         208,
@@ -332,14 +252,6 @@
     },
     {
       "kind": "region",
-      "label": "Coordination · Delegation and programme",
-      "wraps": [
-        "ki-delegation"
-      ],
-      "pad": 32
-    },
-    {
-      "kind": "region",
       "label": "Fundamentals · Repository and writing",
       "wraps": [
         "ki-authoring"
@@ -348,7 +260,23 @@
     },
     {
       "kind": "region",
-      "label": "Work items",
+      "label": "Records and code · Records",
+      "wraps": [
+        "ki-decision-records"
+      ],
+      "pad": 32
+    },
+    {
+      "kind": "region",
+      "label": "Coordination · Delegation and programme",
+      "wraps": [
+        "ki-delegation"
+      ],
+      "pad": 32
+    },
+    {
+      "kind": "region",
+      "label": "Work and delivery · 5 skills",
       "wraps": [
         "ki-work",
         "ki-work-roadmap",
@@ -356,57 +284,10 @@
         "ki-work-linear",
         "ki-work-recurring"
       ],
-      "pad": 28
-    },
-    {
-      "kind": "region",
-      "label": "Delivery cycle",
-      "wraps": [
-        "ki-next",
-        "ki-plan",
-        "ki-implement",
-        "ki-accept",
-        "ki-recap"
-      ],
-      "pad": 28
-    },
-    {
-      "kind": "region",
-      "label": "Work and delivery · 10 skills",
-      "wraps": [
-        "ki-work",
-        "ki-work-roadmap",
-        "ki-work-github-issues",
-        "ki-work-linear",
-        "ki-work-recurring",
-        "ki-next",
-        "ki-plan",
-        "ki-implement",
-        "ki-accept",
-        "ki-recap"
-      ],
-      "pad": 44
+      "pad": 32
     }
   ],
   "connections": [
-    {
-      "id": "ki-implement--ki-delegation",
-      "from": "ki-implement",
-      "to": "ki-delegation",
-      "variant": "dashed"
-    },
-    {
-      "id": "ki-plan--ki-delegation",
-      "from": "ki-plan",
-      "to": "ki-delegation",
-      "variant": "dashed"
-    },
-    {
-      "id": "ki-recap--ki-authoring",
-      "from": "ki-recap",
-      "to": "ki-authoring",
-      "variant": "default"
-    },
     {
       "id": "ki-repo-backpack--ki-work-roadmap",
       "from": "ki-repo-backpack",
@@ -418,6 +299,24 @@
       "from": "ki-repo-kb-activities",
       "to": "ki-work-recurring",
       "variant": "dashed"
+    },
+    {
+      "id": "ki-work--ki-authoring",
+      "from": "ki-work",
+      "to": "ki-authoring",
+      "variant": "dashed"
+    },
+    {
+      "id": "ki-work--ki-decision-records",
+      "from": "ki-work",
+      "to": "ki-decision-records",
+      "variant": "dashed"
+    },
+    {
+      "id": "ki-work--ki-delegation",
+      "from": "ki-work",
+      "to": "ki-delegation",
+      "variant": "dashed"
     }
   ],
   "cards": [
@@ -425,7 +324,7 @@
       "dot": "cyan",
       "title": "Reading the diagram",
       "items": [
-        "The middle region holds the skills that record work and move it from capture to acceptance, nested by the capability each brings; each sublabel names the source concern the skill lives in.",
+        "The middle region holds the skills that record work and move it from capture to acceptance; each sublabel names the source concern the skill lives in.",
         "Regions below hold the outside skills these rely on, and regions above the outside skills that rely on these, each titled by its home functional area.",
         "Stats: R = unique published rubric criteria (– = no publication); C = script-source bytes including tests/shared code: 0, S <10 KiB, M <100 KiB, L ≥100 KiB; F = reference files, including rubric. Recursive physical files only.",
         "An arrow runs from a skill to the skill it relies on, downward between regions: solid is ki-depends-on composition, dashed is ki-optional-depends-on augmentation."
@@ -435,7 +334,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "10 skills, 2 outside prerequisites, 2 outside dependents, 2 composition and 3 optional edges, read from SKILL.md frontmatter.",
+        "5 skills, 3 outside prerequisites, 2 outside dependents, 1 composition and 4 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-backpack; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

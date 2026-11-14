@@ -375,7 +375,7 @@ The verbs, which the same plain words in chat also do:
 - `/ki-coordination receive`: take the owner's receive under [States and moves](standards-coordination.md#states-and-moves), as `with me` does, and commit it with the next send.
 - Every reply that sends is followed by [committing and pushing the package](standards-coordination.md#committing-the-work-folder).
 
-`ki-recap` keeps only the ordinary session recap; every summary while coordinating is the Summary.
+`ki-work recap` keeps only the ordinary session recap; every summary while coordinating is the Summary.
 
 Sources: SUMMARY-MODEL, SUMMARY-NOW, STATUS-FORM, STATUS-FORM-2, STATUS-FORM-3, MARK-STATUS, MARK-DURABLE, STATUS-DESIGN, HOLD-VERBS, REPORT-FORMS-TIDY, COORD-COMMANDS, GOAL-SETTING, RECAP-OWNER and REPLY-FORMAT in [the decision register](sources.md#decision-register).
 

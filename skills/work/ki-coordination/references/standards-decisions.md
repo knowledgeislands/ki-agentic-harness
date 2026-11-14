@@ -53,7 +53,7 @@ At each mark, check each entry against its durable home, under the Work Process 
 
 Who homes each class:
 
-- operational: the work it drove, through `ki-accept` or the commit;
+- operational: the work it drove, through `ki-work accept` or the commit;
 - rule: the delivery that changes the standard;
 - standalone: the Decision Record's author;
 - held: whoever homes the class it resolves into;
@@ -63,9 +63,9 @@ The work's `decisions.md` is its one decisions list for its whole life: successi
 
 ### Change documents
 
-<a id="design-notes"></a>A design is written as a change document, under the `ki-authoring` [change format](../../../keystone/ki-authoring/references/standard-formats-change.md); there is no separate design note. Change documents and the working material beside them, options papers, mocks, loop reports and their stage decisions, live in the package of the work whose concern they design: in the folder of the focus area they serve, `+/_WORK/<id>/<focus-id>/`, or in `+/_WORK/<id>/design/` where the package declares no focus areas, under the `ki-work-design` standard and the `ki-work-package` [closed list](../../ki-work-package/references/standard-work-package.md#43-the-shape). No `design/` folder sits under `Streams/`, which holds only definitions and records. Design work with no coordinating work of its own takes an ad hoc package.
+<a id="design-notes"></a>A design is written as a change document, under the `ki-authoring` [change format](../../../keystone/ki-authoring/references/standard-formats-change.md); there is no separate design note. Change documents and the working material beside them, options papers, mocks, loop reports and their stage decisions, live in the package of the work whose concern they design: in the folder of the focus area they serve, `+/_WORK/<id>/<focus-id>/`, or in `+/_WORK/<id>/design/` where the package declares no focus areas, under the `ki-work design` standard and the `ki-work-package` [closed list](../../ki-work-package/references/standard-work-package.md#43-the-shape). No `design/` folder sits under `Streams/`, which holds only definitions and records. Design work with no coordinating work of its own takes an ad hoc package.
 
-- The `ki-work-design` [artefact home](../../ki-work-design/references/standards-work-design.md#artefact-home) owns a change document's life cycle, draft, under review, graduated or deleted, its graduation, and the rule that nothing cites a deleted document.
+- The `ki-work design` [artefact home](../../../keystone/ki-work/references/standards-work-design.md#artefact-home) owns a change document's life cycle, draft, under review, graduated or deleted, its graduation, and the rule that nothing cites a deleted document.
 - The `ki-work-package` [closed list](../../ki-work-package/references/standard-work-package.md#43-the-shape) sets which file kinds a focus folder or `design/` may hold.
 - This standard reviews the change documents at each mark, under [Pruning the work folder](standards-mark.md#pruning-the-work-folder), and resolves them before Project work finishes.
 

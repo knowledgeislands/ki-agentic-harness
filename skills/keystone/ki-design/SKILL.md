@@ -9,7 +9,7 @@ ki-shared-dependencies: [ki-skills:rubric]
 description: >
   Lead the Design guild: how any design, technical or visual, is shaped before it is written down, from a brief
   through options and review, and each kind's levels. Use to start or review a design, or to find the design skill
-  for it; `ki-design-system` owns interface design, `ki-work-design` shaping a Project, and Authoring's skills the
+  for it; `ki-design-system` owns interface design, `ki-work design` shaping a Project, and Authoring's skills the
   records a design leaves.
 argument-hint: 'audit <repo> | conform <repo> | educate <repo> | help | refresh'
 ---
@@ -27,7 +27,7 @@ Design shapes; Authoring writes down. Once a choice is made, Authoring's skills 
 
 ## Neighbours
 
-- **`ki-work-design`** shapes a Project, theme or model before any work record exists.
+- **`ki-work design`** shapes a Project, theme or model before any work record exists.
 - **`ki-decision-records`**, **`ki-specs`** and **`ki-diagrams`** write down the decisions, specifications and diagrams a design leaves.
 
 Technical design stays in this skill until it needs a member of its own.
@@ -46,7 +46,7 @@ Run AUDIT, then `ki repo conform --skill ki-design --repo <repo> --dry-run`. The
 
 ### Mode EDUCATE
 
-Start a design: write the brief, name the kind and the level it starts at, and route visual design to `ki-design-system` and a Project's shape to `ki-work-design`.
+Start a design: write the brief, name the kind and the level it starts at, and route visual design to `ki-design-system` and a Project's shape to `ki-work design`.
 
 ### Mode REFRESH
 

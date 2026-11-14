@@ -61,10 +61,10 @@ export const scenarios: Scenario[] = [
       },
       {
         name: 'routes implementation through normal work',
-        re: /ki-next|roadmap|owning repository|owner.local/i
+        re: /ki-work next|roadmap|owning repository|owner.local/i
       }
     ],
     rubric:
-      'House contract: provider performance claims are corroborating evidence, not sufficient movement evidence. Inward movement needs current primary identity evidence, materially independent evaluation evidence where available, and local-fit evidence proportional to the ring; Trial requires controlled real use. The radar informs consumers but never changes defaults, installs routes, or retires support. Approved consequences become owner-local work through `ki-next`.'
+      'House contract: provider performance claims are corroborating evidence, not sufficient movement evidence. Inward movement needs current primary identity evidence, materially independent evaluation evidence where available, and local-fit evidence proportional to the ring; Trial requires controlled real use. The radar informs consumers but never changes defaults, installs routes, or retires support. Approved consequences become owner-local work through `ki-work next`.'
   }
 ]

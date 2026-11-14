@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "26dd45f59a8f35f1e282490ea109f8a1fd90ac84"
+      "revision": "6f02570f53e6ec7dc249debb4b69593a29e9b2f9"
     },
     "legend": {
       "mode": "auto",
@@ -53,16 +53,16 @@
       ]
     },
     {
-      "id": "ki-work-design",
-      "type": "frontend",
-      "label": "ki-work-design",
-      "sublabel": "work · command",
+      "id": "ki-work",
+      "type": "database",
+      "label": "ki-work",
+      "sublabel": "keystone · opt-in",
       "sources": [
         {
-          "path": "skills/work/ki-work-design/SKILL.md"
+          "path": "skills/keystone/ki-work/SKILL.md"
         }
       ],
-      "tag": "R– · C0 · F2",
+      "tag": "R1 · CL · F17",
       "pos": [
         364,
         64
@@ -244,9 +244,9 @@
     },
     {
       "kind": "region",
-      "label": "Coordination · Delegation and programme",
+      "label": "Work and delivery · 1 skill",
       "wraps": [
-        "ki-work-design"
+        "ki-work"
       ],
       "pad": 32
     },
@@ -327,8 +327,8 @@
       "variant": "default"
     },
     {
-      "id": "ki-work-design--ki-decision-records",
-      "from": "ki-work-design",
+      "id": "ki-work--ki-decision-records",
+      "from": "ki-work",
       "to": "ki-decision-records",
       "variant": "dashed"
     }

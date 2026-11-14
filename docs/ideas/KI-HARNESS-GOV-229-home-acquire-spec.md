@@ -51,7 +51,7 @@ No profile file is needed: WORK-PROFILE asked for one only for `work`. HOMING-RE
 
 ### Review route
 
-HOMING-REVIEW a) sets the route. After SPEC-TEXT, the record is adopted, planned to Ready and delivered to Awaiting review with its review packet. One blind Codex review of the candidate, with `bun run test`, `bunx tsc --noEmit` and the focused audits the home plan's Verification section names, replaces the Steward gate for this coordinator route. Kris accepts under `ki-accept`. When the three homings run in parallel, each uses its own worktree and integration is serialised.
+HOMING-REVIEW a) sets the route. After SPEC-TEXT, the record is adopted, planned to Ready and delivered to Awaiting review with its review packet. One blind Codex review of the candidate, with `bun run test`, `bunx tsc --noEmit` and the focused audits the home plan's Verification section names, replaces the Steward gate for this coordinator route. Kris accepts under `ki-work accept`. When the three homings run in parallel, each uses its own worktree and integration is serialised.
 
 ### Verification
 

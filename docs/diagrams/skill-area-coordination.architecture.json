@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "956a01faaab54a7f2038867d699c4f59746b8bbb"
+      "revision": "6f02570f53e6ec7dc249debb4b69593a29e9b2f9"
     },
     "legend": {
       "mode": "auto",
@@ -33,46 +33,6 @@
   },
   "components": [
     {
-      "id": "ki-implement",
-      "type": "frontend",
-      "label": "ki-implement",
-      "sublabel": "work · command",
-      "sources": [
-        {
-          "path": "skills/work/ki-implement/SKILL.md"
-        }
-      ],
-      "tag": "R– · CS · F2",
-      "pos": [
-        44,
-        64
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
-      "id": "ki-plan",
-      "type": "frontend",
-      "label": "ki-plan",
-      "sublabel": "work · command",
-      "sources": [
-        {
-          "path": "skills/work/ki-plan/SKILL.md"
-        }
-      ],
-      "tag": "R– · CS · F1",
-      "pos": [
-        300,
-        64
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
       "id": "ki-delegation-orca",
       "type": "frontend",
       "label": "ki-delegation-orca",
@@ -84,7 +44,27 @@
       ],
       "tag": "R– · C0 · F3",
       "pos": [
-        620,
+        44,
+        64
+      ],
+      "size": [
+        208,
+        76
+      ]
+    },
+    {
+      "id": "ki-work",
+      "type": "database",
+      "label": "ki-work",
+      "sublabel": "keystone · opt-in",
+      "sources": [
+        {
+          "path": "skills/keystone/ki-work/SKILL.md"
+        }
+      ],
+      "tag": "R1 · CL · F17",
+      "pos": [
+        364,
         64
       ],
       "size": [
@@ -104,7 +84,7 @@
       ],
       "tag": "R13 · CL · F17",
       "pos": [
-        300,
+        44,
         268
       ],
       "size": [
@@ -124,7 +104,7 @@
       ],
       "tag": "R6 · CM · F4",
       "pos": [
-        44,
+        300,
         268
       ],
       "size": [
@@ -144,8 +124,8 @@
       ],
       "tag": "R– · C0 · F5",
       "pos": [
-        556,
-        268
+        300,
+        392
       ],
       "size": [
         208,
@@ -164,7 +144,7 @@
       ],
       "tag": "R– · C0 · F1",
       "pos": [
-        844,
+        588,
         392
       ],
       "size": [
@@ -184,28 +164,8 @@
       ],
       "tag": "R16 · CL · F3",
       "pos": [
-        844,
+        588,
         268
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
-      "id": "ki-work-design",
-      "type": "frontend",
-      "label": "ki-work-design",
-      "sublabel": "work · command",
-      "sources": [
-        {
-          "path": "skills/work/ki-work-design/SKILL.md"
-        }
-      ],
-      "tag": "R– · C0 · F2",
-      "pos": [
-        44,
-        392
       ],
       "size": [
         208,
@@ -224,28 +184,8 @@
       ],
       "tag": "R13 · CL · F5",
       "pos": [
-        300,
-        392
-      ],
-      "size": [
-        208,
-        76
-      ]
-    },
-    {
-      "id": "ki-decision-records",
-      "type": "backend",
-      "label": "ki-decision-records",
-      "sublabel": "authoring · automatic",
-      "sources": [
-        {
-          "path": "skills/authoring/ki-decision-records/SKILL.md"
-        }
-      ],
-      "tag": "R37 · CL · F9",
-      "pos": [
         44,
-        596
+        392
       ],
       "size": [
         208,
@@ -256,15 +196,6 @@
   "boundaries": [
     {
       "kind": "region",
-      "label": "Work and delivery · Delivery cycle",
-      "wraps": [
-        "ki-implement",
-        "ki-plan"
-      ],
-      "pad": 32
-    },
-    {
-      "kind": "region",
       "label": "Agentic systems · 1 skill",
       "wraps": [
         "ki-delegation-orca"
@@ -273,9 +204,9 @@
     },
     {
       "kind": "region",
-      "label": "Records and code · Records",
+      "label": "Work and delivery · 1 skill",
       "wraps": [
-        "ki-decision-records"
+        "ki-work"
       ],
       "pad": 32
     },
@@ -286,7 +217,6 @@
         "ki-delegation",
         "ki-work-package",
         "ki-coordination",
-        "ki-work-design",
         "ki-meeting"
       ],
       "pad": 28
@@ -302,12 +232,11 @@
     },
     {
       "kind": "region",
-      "label": "Coordination · 7 skills",
+      "label": "Coordination · 6 skills",
       "wraps": [
         "ki-delegation",
         "ki-work-package",
         "ki-coordination",
-        "ki-work-design",
         "ki-meeting",
         "ki-trades",
         "ki-trade"
@@ -341,32 +270,14 @@
       "variant": "default"
     },
     {
-      "id": "ki-implement--ki-delegation",
-      "from": "ki-implement",
-      "to": "ki-delegation",
-      "variant": "dashed"
-    },
-    {
-      "id": "ki-plan--ki-delegation",
-      "from": "ki-plan",
-      "to": "ki-delegation",
-      "variant": "dashed"
-    },
-    {
       "id": "ki-trade--ki-trades",
       "from": "ki-trade",
       "to": "ki-trades",
       "variant": "default"
     },
     {
-      "id": "ki-work-design--ki-decision-records",
-      "from": "ki-work-design",
-      "to": "ki-decision-records",
-      "variant": "dashed"
-    },
-    {
-      "id": "ki-work-design--ki-delegation",
-      "from": "ki-work-design",
+      "id": "ki-work--ki-delegation",
+      "from": "ki-work",
       "to": "ki-delegation",
       "variant": "dashed"
     }
@@ -386,7 +297,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "7 skills, 1 outside prerequisite, 3 outside dependents, 5 composition and 4 optional edges, read from SKILL.md frontmatter.",
+        "6 skills, 0 outside prerequisites, 2 outside dependents, 5 composition and 1 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-backpack; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

@@ -33,7 +33,7 @@ Assess whether this knowledge base remains coherent, useful and directed towards
 
 ## Successful-run evidence
 
-The linked run in `Streams/Roadmap/` identifies the reviewed revision, comparison baseline, scope, commands and results, material findings and proposed routes, evidence locator and unresolved gaps. A no-change conclusion needs the same bounded evidence. Retain any separate review record through `ki-repo`'s review-retention contract; durable conclusions belong in their normal repository homes. Only approved `ki-accept` closure updates this Activity's successful-run profile and clears its reservation; scheduler completion alone does neither.
+The linked run in `Streams/Roadmap/` identifies the reviewed revision, comparison baseline, scope, commands and results, material findings and proposed routes, evidence locator and unresolved gaps. A no-change conclusion needs the same bounded evidence. Retain any separate review record through `ki-repo`'s review-retention contract; durable conclusions belong in their normal repository homes. Only approved `ki-work accept` closure updates this Activity's successful-run profile and clears its reservation; scheduler completion alone does neither.
 
 ## Obsolescence
 

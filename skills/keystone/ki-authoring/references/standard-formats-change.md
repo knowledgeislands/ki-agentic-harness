@@ -42,7 +42,7 @@ The format of a change document, from its front matter to its last section, and 
 ### 2.2 Out of scope
 
 - What every type of document shares: the [format format](standard-formats-format.md).
-- A change document's life cycle, from draft to deletion: `ki-work-design`.
+- A change document's life cycle, from draft to deletion: `ki-work design`.
 - Where a change document is kept: whoever keeps it says.
 
 [Back to contents](#contents)

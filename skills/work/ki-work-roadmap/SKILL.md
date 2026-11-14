@@ -9,18 +9,18 @@ ki-shared-dependencies: [ki-skills:rubric]
 owns: ['ROADMAP.md']
 description: >
   Govern flat local work items, roadmap horizons, lifecycle detail, dependencies, root orientation, and
-  done-before-prune commit boundaries. Use to audit or shape roadmap records; `ki-next`, `ki-plan`,
-  `ki-implement`, and `ki-accept` apply the lifecycle, while Decision Records own durable rationale.
+  done-before-prune commit boundaries. Use to audit or shape roadmap records; `ki-work next`, `ki-work plan`,
+  `ki-work implement`, and `ki-work accept` apply the lifecycle, while Decision Records own durable rationale.
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 
 # Knowledge Islands repository roadmap standard
 
-This governance skill owns the shared flat forward-work model. A project repository keeps canonical work items directly under `docs/roadmap/` and one concise root orientation file; a Knowledge Base keeps the same record model directly under `Streams/Roadmap/`, with `ki-repo-kb-streams` owning that container. A repository either issues one repository-wide sequence or declares fixed area namespaces; a work item's `project` or `theme` gives its territory grouping. `ki-next` is the separate process skill that applies this skill's user-confirmed transition rules to select the next work; this governance skill has no process-skill dependency.
+This governance skill owns the shared flat forward-work model. A project repository keeps canonical work items directly under `docs/roadmap/` and one concise root orientation file; a Knowledge Base keeps the same record model directly under `Streams/Roadmap/`, with `ki-repo-kb-streams` owning that container. A repository either issues one repository-wide sequence or declares fixed area namespaces; a work item's `project` or `theme` gives its territory grouping. `ki-work next` is the separate process skill that applies this skill's user-confirmed transition rules to select the next work; this governance skill has no process-skill dependency.
 
 Read [the repository-roadmap standard](references/standards-repository-roadmaps.md) before changing a roadmap shape or lifecycle. Read [the generated rubric](references/rubric.md) for the mechanical and judgment criteria. Work-item details live in [the work-item-format standard](references/standards-work-item-format.md). Tracked methodology sources and the REFRESH cadence live in [the source list](references/sources.md).
 
-A `status: triage` record captures substantive prospective work without adopting it; ideas that do not yet pass the graduation test start as `Idea:` bullets in the owning Project note or theme page, or wait in `_IDEAS.md` when neither owns them. The `ki-next` process skill owns capture, human-approved adoption, and later selection transitions.
+A `status: triage` record captures substantive prospective work without adopting it; ideas that do not yet pass the graduation test start as `Idea:` bullets in the owning Project note or theme page, or wait in `_IDEAS.md` when neither owns them. The `ki-work next` process skill owns capture, human-approved adoption, and later selection transitions.
 
 ## Shared model
 
@@ -59,9 +59,9 @@ On the cadence in [the source list](references/sources.md), compare actual repos
 - Not every change needs a plan. A focused single-file or one-step fix can execute directly.
 - Exploration needs no plan; multi-file or multi-step implementation enriches its item before execution.
 - A plan answers “how”; a Decision Record answers “why”. Use `ki-decision-records` for the latter.
-- The `ki-next` process skill selects and promotes work through the readiness contract defined here.
-- The `ki-plan` process skill shapes an immediate draft through Ready.
-- `ki-implement` owns Ready → In progress → Awaiting review; `ki-accept` owns Awaiting review → Done and pruning by explicit work-record path or glob.
+- The `ki-work next` process skill selects and promotes work through the readiness contract defined here.
+- The `ki-work plan` process skill shapes an immediate draft through Ready.
+- `ki-work implement` owns Ready → In progress → Awaiting review; `ki-work accept` owns Awaiting review → Done and pruning by explicit work-record path or glob.
 - Lifecycle transitions may share a coherent planning, implementation, or closure commit; only pruning requires its own later commit after the `done` record has landed.
-- `ki-recap` and `ki-next` may recommend pruning; they never delete canonical work-item records.
+- `ki-work recap` and `ki-work next` may recommend pruning; they never delete canonical work-item records.
 - The local `scripts/shared/rubric.ts` is the materialised compile-time contract from `ki-skills`; generic execution, findings, progress, transaction safety, rollback, and reporting belong to `ki`.

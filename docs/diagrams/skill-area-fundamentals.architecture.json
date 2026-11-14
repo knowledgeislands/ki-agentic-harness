@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "2f7ada1639f343e64e88c443b4dfbe4443dc428b"
+      "revision": "6f02570f53e6ec7dc249debb4b69593a29e9b2f9"
     },
     "legend": {
       "mode": "auto",
@@ -33,16 +33,16 @@
   },
   "components": [
     {
-      "id": "ki-recap",
-      "type": "frontend",
-      "label": "ki-recap",
-      "sublabel": "work · command",
+      "id": "ki-work",
+      "type": "database",
+      "label": "ki-work",
+      "sublabel": "keystone · opt-in",
       "sources": [
         {
-          "path": "skills/work/ki-recap/SKILL.md"
+          "path": "skills/keystone/ki-work/SKILL.md"
         }
       ],
-      "tag": "R– · CM · F2",
+      "tag": "R1 · CL · F17",
       "pos": [
         44,
         64
@@ -356,9 +356,9 @@
   "boundaries": [
     {
       "kind": "region",
-      "label": "Work and delivery · Delivery cycle",
+      "label": "Work and delivery · 1 skill",
       "wraps": [
-        "ki-recap"
+        "ki-work"
       ],
       "pad": 32
     },
@@ -380,7 +380,7 @@
     },
     {
       "kind": "region",
-      "label": "Work and delivery · Work items",
+      "label": "Work and delivery · 1 skill",
       "wraps": [
         "ki-work-roadmap"
       ],
@@ -454,12 +454,6 @@
   ],
   "connections": [
     {
-      "id": "ki-recap--ki-authoring",
-      "from": "ki-recap",
-      "to": "ki-authoring",
-      "variant": "default"
-    },
-    {
       "id": "ki-repo--ki-authoring",
       "from": "ki-repo",
       "to": "ki-authoring",
@@ -506,6 +500,12 @@
       "from": "ki-repo-dotfiles-chezmoi",
       "to": "ki-authoring",
       "variant": "default"
+    },
+    {
+      "id": "ki-work--ki-authoring",
+      "from": "ki-work",
+      "to": "ki-authoring",
+      "variant": "dashed"
     }
   ],
   "cards": [
@@ -523,7 +523,7 @@
       "dot": "slate",
       "title": "Generated, not drawn",
       "items": [
-        "11 skills, 3 outside prerequisites, 2 outside dependents, 8 composition and 1 optional edges, read from SKILL.md frontmatter.",
+        "11 skills, 3 outside prerequisites, 2 outside dependents, 7 composition and 2 optional edges, read from SKILL.md frontmatter.",
         "Regenerate with ki repo conform --skill ki-repo-backpack; ki-skills KI-SHAPE-20 keeps the edges resolvable and acyclic."
       ]
     }

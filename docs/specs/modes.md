@@ -76,9 +76,9 @@ A process skill (one that drives a lifecycle rather than holding a standard) MUS
 
 _Conformance:_ conforming
 
-_Verify:_ `lint-skills.ts` SHAPE-5 / SHAPE-11 pass a process skill (e.g. `ki-recap`, `ki-plan`) that carries only its own lifecycle modes.
+_Verify:_ `lint-skills.ts` SHAPE-5 / SHAPE-11 pass a process skill (e.g. `ki-trade`, `ki-meeting`) that carries only its own lifecycle modes.
 
-_Evidence:_ `lint-skills.ts` SHAPE-5 / SHAPE-11 pass a process skill (e.g. `ki-recap`, `ki-plan`) that carries only its own lifecycle modes.
+_Evidence:_ `lint-skills.ts` SHAPE-5 / SHAPE-11 pass a process skill (e.g. `ki-trade`, `ki-meeting`) that carries only its own lifecycle modes.
 
 ## Core-optional modes
 

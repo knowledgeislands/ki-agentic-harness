@@ -119,7 +119,7 @@ Continuous practices belong in a standard or orientation file, not among finite 
 
 ### Triage
 
-A substantive prospective outcome, concern, dependency, or decision that passes the [graduation test](#ideas-and-graduation) may be captured as `status: triage` without prior approval after checking for an existing owner, within the capture gate the `ki-next` [capture rule](../../ki-next/references/standards-next-work.md#capture-substantive-prospective-work) sets: only a blocker, a defect seen failing or an owner-requested item, and never by a background run. Creating one does not adopt, prioritise, plan, implement, or accept the work. A human must explicitly approve every exit from triage: adoption to `draft`, or cancellation. Approval does not bypass the terminal-before-prune rule, and triage has no direct discard path.
+A substantive prospective outcome, concern, dependency, or decision that passes the [graduation test](#ideas-and-graduation) may be captured as `status: triage` without prior approval after checking for an existing owner, within the capture gate the `ki-work next` [capture rule](../../../keystone/ki-work/references/standards-next-work.md#capture-substantive-prospective-work) sets: only a blocker, a defect seen failing or an owner-requested item, and never by a background run. Creating one does not adopt, prioritise, plan, implement, or accept the work. A human must explicitly approve every exit from triage: adoption to `draft`, or cancellation. Approval does not bypass the terminal-before-prune rule, and triage has no direct discard path.
 
 ## Lifecycle moves
 
@@ -127,16 +127,16 @@ Moves are authored, judgment-led decisions. CONFORM never chooses a move; it onl
 
 | Move | Rule | Owner |
 | --- | --- | --- |
-| Adopt | `triage` -> `draft`, setting a horizon and `kind`, with explicit human approval | `ki-next` |
-| Defer | change horizon and keep status | `ki-next` |
-| Hold | horizon -> `hold` with a reason, a named release condition, and a review date where release cannot be observed; status, `baseline_ref`, completed Steps, and review evidence are kept | `ki-next` |
-| Release | evidence that the hold condition changed; choose a horizon afresh and revalidate scope and dependencies | `ki-next` |
-| Replan | `ready` -> `draft`; replanning in-progress work keeps its baseline and delivered evidence and replaces only the remaining plan, under renewed approval | `ki-plan` |
-| Start | `ready` -> `in-progress`, moving the record to Now in the same change | `ki-implement` |
-| Accept | `awaiting-review` -> `done`, removing the horizon in the closure change | `ki-accept` |
-| Failed review | `awaiting-review` -> `in-progress` | `ki-accept` |
-| Cancel | any open record, including triage, -> `cancelled` with a `resolution` and a `## Cancelled` section, with explicit human approval; the horizon is removed | `ki-accept` |
-| Duplicate across repositories | cancel with `resolution: duplicate` or `merged` and no `resolution_target`, naming the other repository and its work in plain words in `## Cancelled`; only the owning repository closes its own record | `ki-accept` |
+| Adopt | `triage` -> `draft`, setting a horizon and `kind`, with explicit human approval | `ki-work next` |
+| Defer | change horizon and keep status | `ki-work next` |
+| Hold | horizon -> `hold` with a reason, a named release condition, and a review date where release cannot be observed; status, `baseline_ref`, completed Steps, and review evidence are kept | `ki-work next` |
+| Release | evidence that the hold condition changed; choose a horizon afresh and revalidate scope and dependencies | `ki-work next` |
+| Replan | `ready` -> `draft`; replanning in-progress work keeps its baseline and delivered evidence and replaces only the remaining plan, under renewed approval | `ki-work plan` |
+| Start | `ready` -> `in-progress`, moving the record to Now in the same change | `ki-work implement` |
+| Accept | `awaiting-review` -> `done`, removing the horizon in the closure change | `ki-work accept` |
+| Failed review | `awaiting-review` -> `in-progress` | `ki-work accept` |
+| Cancel | any open record, including triage, -> `cancelled` with a `resolution` and a `## Cancelled` section, with explicit human approval; the horizon is removed | `ki-work accept` |
+| Duplicate across repositories | cancel with `resolution: duplicate` or `merged` and no `resolution_target`, naming the other repository and its work in plain words in `## Cancelled`; only the owning repository closes its own record | `ki-work accept` |
 
 A defer keeps status, so its destination must admit that status: ready work moves only among Now, Next, and Hold, and in-progress or awaiting-review work leaves Now only for Hold. Moving lifecycle work to an earlier horizon than the table admits is a replan or a cancellation, not a defer.
 
@@ -150,11 +150,11 @@ A defer keeps status, so its destination must admit that status: ready work move
 
 An item may be expanded with executable steps only after it reaches one of those horizons and the user confirms the work.
 
-An immediate item may remain `status: draft` while `ki-plan` shapes it.
+An immediate item may remain `status: draft` while `ki-work plan` shapes it.
 
 It becomes `status: ready` only after its execution detail and verification are reviewable, its dependencies are satisfied, and the user approves it for implementation. A held ready or in-progress record keeps its plan and resumes only after release.
 
-When no immediate work is eligible, `ki-next` evaluates Now and Next first, then Soon, then Future. Held records are excluded from selection until released. Triage review is a separate intake activity and never makes a record selection-eligible without explicit adoption.
+When no immediate work is eligible, `ki-work next` evaluates Now and Next first, then Soon, then Future. Held records are excluded from selection until released. Triage review is a separate intake activity and never makes a record selection-eligible without explicit adoption.
 
 Every confirmed move is re-evaluated at its destination.
 
@@ -179,7 +179,7 @@ Goal, Context, and Boundary alone are not enough to make a record. After checkin
 - (b) it is a **decision** with an owner and a needed-by date, adopted as `kind: decide`; or
 - (c) it must **survive the session**: it is deferred, delegated, multi-step, or reviewed by someone else.
 
-Unknown implementation is fine for an investigation or decision, and a missing prerequisite alone does not make capture premature. `ki-next` places an idea that does not yet graduate as an `Idea:` bullet in its Project note's or theme page's Notes section when either is known, and in `_IDEAS.md` otherwise. This test governs record capture only; it does not change any repository's Enactment threshold. Where coordinating work runs under `ki-coordination`, that standard's record threshold decides first whether a record is due at all: a record opens only for a product or standard change that needs the owner's acceptance, and operational work, however many steps or agents it takes, runs on the work folder's decisions log, the brief, the report and Git without one. Kris set the threshold on 2026-10-14, as received: "RECORD-THRESHOLD / agree: a record only for a product or standard change needing acceptance; operational work runs on the decisions log, brief and report; add it to the ki-coordination standard".
+Unknown implementation is fine for an investigation or decision, and a missing prerequisite alone does not make capture premature. `ki-work next` places an idea that does not yet graduate as an `Idea:` bullet in its Project note's or theme page's Notes section when either is known, and in `_IDEAS.md` otherwise. This test governs record capture only; it does not change any repository's Enactment threshold. Where coordinating work runs under `ki-coordination`, that standard's record threshold decides first whether a record is due at all: a record opens only for a product or standard change that needs the owner's acceptance, and operational work, however many steps or agents it takes, runs on the work folder's decisions log, the brief, the report and Git without one. Kris set the threshold on 2026-10-14, as received: "RECORD-THRESHOLD / agree: a record only for a product or standard change needing acceptance; operational work runs on the decisions log, brief and report; add it to the ki-coordination standard".
 
 ## Migration tolerance
 
@@ -213,7 +213,7 @@ An item begins with a mandatory plain-language Goal, then its outcome evidence, 
 
 At Soon, shaping records the intended approach, known dependencies, open decisions, and promotion conditions.
 
-When multi-file or multi-step execution is selected for immediate work, `ki-plan` enriches that same file in place with current state, steps, files, verification, dependencies, and delegation where appropriate.
+When multi-file or multi-step execution is selected for immediate work, `ki-work plan` enriches that same file in place with current state, steps, files, verification, dependencies, and delegation where appropriate.
 
 It never creates a duplicate plan file.
 
@@ -223,13 +223,13 @@ This adapter owns the concrete local record lifecycle independently of `horizon`
 
 `triage` is unadopted intake; `draft` covers adopted work that is captured or actively shaped. The [status and horizon table](#status-and-horizon) governs where each state may sit.
 
-`ki-implement` owns `ready` → `in-progress` → `awaiting-review`.
+`ki-work implement` owns `ready` → `in-progress` → `awaiting-review`.
 
 Its start transition records the immutable full `HEAD` commit in `baseline_ref`; its completion writes the required review packet.
 
-`ki-accept` owns explicit `awaiting-review` → `done`, human-approved cancellation of any open record, including triage, and pruning selected by an explicit work-record path or glob. Cancelling triage intake does not adopt or implement the work.
+`ki-work accept` owns explicit `awaiting-review` → `done`, human-approved cancellation of any open record, including triage, and pruning selected by an explicit work-record path or glob. Cancelling triage intake does not adopt or implement the work.
 
-`ki-recap` and `ki-next` may identify or recommend eligible pruning, but they never delete a work-item record.
+`ki-work recap` and `ki-work next` may identify or recommend eligible pruning, but they never delete a work-item record.
 
 `blocks` and `blocked_by` use work-item identifiers, must be reverse-consistent and acyclic, and cannot permit execution while a blocker is not done. Because that check gates execution on the blocker's lifecycle, only genuine build order belongs in the field: declare it when the work cannot be built without something that does not exist yet, and withdraw it once that thing exists. A declaration standing on a related record's approval state, rather than on missing work, makes the audit fail for a reason that is not true and holds executable work behind a review queue.
 
