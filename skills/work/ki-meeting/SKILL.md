@@ -17,7 +17,7 @@ argument-hint: 'adjourn <meeting> | call <node id> <slug> | close <meeting> | he
 
 **Kind:** process. Runs one meeting from its call to its close, held by hand in a folder of plain files that every participant reaches by its own route.
 
-Read [the meeting standard](references/standard-meeting.md) before calling, joining or keeping a meeting, and the standard for the meeting's type: [workshop](references/standard-workshop.md), which makes something together; [review](references/standard-review.md), which gives a verdict on each part of something made; or [retrospective](references/standard-retrospective.md), which looks back for what to keep and what to change. [The sources](references/sources.md) record the decisions behind them, the two points still proposed (MEET-CHAIR, MEET-BUSY) and the open questions.
+Read [the meeting standard](references/standard-meeting.md) before calling, joining or keeping a meeting, and the standard for the meeting's type: [workshop](references/standard-workshop.md), which makes something together; [review](references/standard-review.md), which gives a verdict on each part of something made; or [retrospective](references/standard-retrospective.md), which looks back for what to keep and what to change. [The sources](references/sources.md) record the decisions behind them, the ten taken overnight on 14 November for the owner's review, and the open questions.
 
 ## When to use it
 
@@ -28,7 +28,7 @@ Use a meeting when sessions that cannot reach each other through their own agent
 - **Routes, the first that works:** the agent host's own messaging; a meeting folder, reached on the file system or through the participant's own connector to the repository's host; exchange mode, the owner carrying prompts both ways, only as the exception.
 - **One caller** calls, keeps and closes the meeting, and is the only session of its agent host in the room; the owner owns it, and the owner's word decides.
 - **The folder** is `meetings/<node id>/<date>-<slug>/` in the store that holds the work tree, today the Cairn store: `_index.md` (summary, brief, agenda, boundaries, open asks, minutes), `messages/`, `brief/`, an output folder named for the work, and `notes/`.
-- **Sittings,** A, B, C and on, each opened by a roll call, kept by listening and 15-minute check-ins, and adjourned with minutes and a resume note.
+- **Sittings,** A, B, C and on, each with a stated end and a closing call before it, opened by a roll call, kept by listening and 15-minute check-ins, and adjourned with minutes and a resume note.
 - **The meeting holds the conversation, never the decision.** Each decision the owner takes goes into its change document as it is taken; each choice left to the owner goes into that document's open questions.
 
 ## Relationship boundary
@@ -45,7 +45,7 @@ A repository that cannot work without this skill, such as the Cairn store, carri
 
 - `help`, `-h`, or `?` explains the meeting shape and these verbs without reading or writing anything.
 - `call <node id> <slug>` checks the caller may call at that node and that no simpler route serves, chooses the type, makes the folder, writes `_index.md` with its summary, brief, agenda and boundaries, commits it, and opens sitting A.
-- `sit <meeting>` opens the next sitting: the roll call, the join check in the first sitting, listening at the agenda's intervals and the check-ins.
+- `sit <meeting>` opens the next sitting: its stated end, the roll call with each participant's route to Git, the join check in the first sitting, listening at the agenda's intervals and the check-ins.
 - `join <meeting>` takes part as a participant: read `_index.md` and the brief, answer the roll call by its own route, say what it needs, and listen at the interval the agenda gives it.
 - `adjourn <meeting>` ends the current sitting with its minutes and a resume note.
 - `close <meeting>` writes the closing message naming each outcome and the change document holding it, stops listening, and leaves the folder for removal once the owner has reviewed the work's record.
