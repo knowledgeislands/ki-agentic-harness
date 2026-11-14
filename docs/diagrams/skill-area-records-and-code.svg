@@ -554,7 +554,7 @@ rect.c-bg-rect { fill: var(--bg); }
         <!-- Boundaries (behind everything) -->
         <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" data-composition-frame-label="Fundamentals · Skills and harness" x="12" y="32" width="272" height="128" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="1" data-composition-frame-label="Coordination · Delegation and programme" x="332" y="32" width="272" height="128" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="1" data-composition-frame-label="Work and delivery · 1 skill" x="332" y="32" width="272" height="128" rx="12" class="c-region" stroke-width="1"/>
 
         <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="2" data-composition-frame-label="Repository types · Knowledge bases" x="652" y="32" width="272" height="128" rx="12" class="c-region" stroke-width="1"/>
 
@@ -571,7 +571,7 @@ rect.c-bg-rect { fill: var(--bg); }
         <!-- Connection paths (before components for correct z-order) -->
         <g data-graph-role="automatic-crossover" style="--step:0">
           <path data-graph-role="automatic-crossover-underlay" d="M 134 140 L 134 268" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-repo-harness" data-edge-to="ki-decision-records" data-edge-key="0" data-edge-id="ki-repo-harness--ki-decision-records" data-composition-points="134,140;134,268" data-composition-crossover="halo" data-composition-independent="true" d="M 134 140 L 134 268" class="a-default" data-animate="edge" style="--step: 0;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-edge-from="ki-repo-backpack" data-edge-to="ki-decision-records" data-edge-key="0" data-edge-id="ki-repo-backpack--ki-decision-records" data-composition-points="134,140;134,268" data-composition-crossover="halo" data-composition-independent="true" d="M 134 140 L 134 268" class="a-default" data-animate="edge" style="--step: 0;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:1">
           <path data-graph-role="automatic-crossover-underlay" d="M 788 140 L 788 236 Q 788 244 780 244 L 170 244 Q 162 244 162 252 L 162 268" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
@@ -583,36 +583,34 @@ rect.c-bg-rect { fill: var(--bg); }
         </g>
         <g data-graph-role="automatic-crossover" style="--step:3">
           <path data-graph-role="automatic-crossover-underlay" d="M 468 140 L 468 196 Q 468 204 460 204 L 156 204 Q 148 204 148 212 L 148 268" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-work-design" data-edge-to="ki-decision-records" data-edge-key="3" data-edge-id="ki-work-design--ki-decision-records" data-composition-points="468,140;468,204;148,204;148,268" data-composition-crossover="halo" data-composition-independent="true" d="M 468 140 L 468 196 Q 468 204 460 204 L 156 204 Q 148 204 148 212 L 148 268" class="a-dashed" data-animate="edge" style="--step: 3;" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+          <path data-edge-from="ki-work" data-edge-to="ki-decision-records" data-edge-key="3" data-edge-id="ki-work--ki-decision-records" data-composition-points="468,140;468,204;148,204;148,268" data-composition-crossover="halo" data-composition-independent="true" d="M 468 140 L 468 196 Q 468 204 460 204 L 156 204 Q 148 204 148 212 L 148 268" class="a-dashed" data-animate="edge" style="--step: 3;" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         </g>
 
         <!-- Components -->
-        <g id="node-ki-repo-harness" data-node-id="ki-repo-harness" data-node-label="ki-repo-harness" tabindex="0" role="button" aria-label="Focus ki-repo-harness, repository · opt-in, Fundamentals · Skills and harness" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository · opt-in" data-node-tag="R27 · CL · F4" data-node-context="Fundamentals · Skills and harness">
-          <title>ki-repo-harness · repository · opt-in · Fundamentals · Skills and harness · R27 · CL · F4</title>
+        <g id="node-ki-repo-backpack" data-node-id="ki-repo-backpack" data-node-label="ki-repo-backpack" tabindex="0" role="button" aria-label="Focus ki-repo-backpack, repository · opt-in, Fundamentals · Skills and harness" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository · opt-in" data-node-tag="R27 · CL · F4" data-node-context="Fundamentals · Skills and harness">
+          <title>ki-repo-backpack · repository · opt-in · Fundamentals · Skills and harness · R27 · CL · F4</title>
           <rect x="44" y="64" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="44" y="64" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 0; --flow-node-name: archify-relay-node-0;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(50 70) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="148" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo-harness</text>
+          <text data-node-label="" x="148" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo-backpack</text>
         <text x="148" y="116" class="t-muted" font-size="9" text-anchor="middle">repository · opt-in</text>
         <text x="148" y="132" class="t-database" font-size="7" text-anchor="middle">R27 · CL · F4</text>
         </g>
 
-        <g id="node-ki-work-design" data-node-id="ki-work-design" data-node-label="ki-work-design" tabindex="0" role="button" aria-label="Focus ki-work-design, work · command, Coordination · Delegation and programme" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="work · command" data-node-tag="R– · C0 · F2" data-node-context="Coordination · Delegation and programme">
-          <title>ki-work-design · work · command · Coordination · Delegation and programme · R– · C0 · F2</title>
+        <g id="node-ki-work" data-node-id="ki-work" data-node-label="ki-work" tabindex="0" role="button" aria-label="Focus ki-work, keystone · opt-in, Work and delivery · 1 skill" aria-pressed="false" data-node-kind="database" data-node-sublabel="keystone · opt-in" data-node-tag="R1 · CL · F17" data-node-context="Work and delivery · 1 skill">
+          <title>ki-work · keystone · opt-in · Work and delivery · 1 skill · R1 · CL · F17</title>
           <rect x="364" y="64" width="208" height="76" rx="8" class="c-mask"/>
-          <rect x="364" y="64" width="208" height="76" rx="8" class="c-frontend" data-animate="node" style="--step: 3; --flow-node-name: archify-relay-node-3;" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(370 70) scale(0.6875)">
-            <rect x="2" y="3" width="12" height="10" rx="2"/>
-            <path d="M2 6.5h12"/>
-            <circle cx="4.1" cy="4.8" r=".7" class="sigil-fill"/>
-            <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
+          <rect x="364" y="64" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 3; --flow-node-name: archify-relay-node-3;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(370 70) scale(0.6875)">
+            <ellipse cx="8" cy="4" rx="5" ry="2"/>
+            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="468" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-work-design</text>
-        <text x="468" y="116" class="t-muted" font-size="9" text-anchor="middle">work · command</text>
-        <text x="468" y="132" class="t-frontend" font-size="7" text-anchor="middle">R– · C0 · F2</text>
+          <text data-node-label="" x="468" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-work</text>
+        <text x="468" y="116" class="t-muted" font-size="9" text-anchor="middle">keystone · opt-in</text>
+        <text x="468" y="132" class="t-database" font-size="7" text-anchor="middle">R1 · CL · F17</text>
         </g>
 
         <g id="node-ki-repo-kb-principal" data-node-id="ki-repo-kb-principal" data-node-label="ki-repo-kb-principal" tabindex="0" role="button" aria-label="Focus ki-repo-kb-principal, repository · opt-in, Repository types · Knowledge bases" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository · opt-in" data-node-tag="R6 · CM · F3" data-node-context="Repository types · Knowledge bases">
@@ -726,9 +724,9 @@ rect.c-bg-rect { fill: var(--bg); }
           <text data-boundary-label="" x="20" y="57" class="t-cloud" font-size="9" font-weight="600">Fundamentals · Skills and harness</text>
         </g>
 
-        <g data-graph-role="structural-frame-label" data-composition-frame-id="1" data-composition-frame-kind="region" data-composition-frame-label="Coordination · Delegation and programme">
-          <rect data-graph-role="structural-frame-label-mask" x="336" y="44" width="220.6" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="340" y="57" class="t-cloud" font-size="9" font-weight="600">Coordination · Delegation and programme</text>
+        <g data-graph-role="structural-frame-label" data-composition-frame-id="1" data-composition-frame-kind="region" data-composition-frame-label="Work and delivery · 1 skill">
+          <rect data-graph-role="structural-frame-label-mask" x="336" y="44" width="155.79999999999998" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="340" y="57" class="t-cloud" font-size="9" font-weight="600">Work and delivery · 1 skill</text>
         </g>
 
         <g data-graph-role="structural-frame-label" data-composition-frame-id="2" data-composition-frame-kind="region" data-composition-frame-label="Repository types · Knowledge bases">
@@ -764,21 +762,17 @@ rect.c-bg-rect { fill: var(--bg); }
         <!-- Legend -->
         <g data-legend="">
           <text x="40" y="520" class="t-primary" font-size="12" font-weight="650">Legend</text>
-          <g data-legend-semantic-kind="frontend" data-legend-x="40" data-legend-baseline="540" data-legend-width="149">
-            <rect x="40" y="531" width="16" height="10" rx="2.5" class="c-frontend" stroke-width="1"/>
-            <text x="62" y="540" class="t-muted" font-size="10" font-weight="500">Process · command</text>
+          <g data-legend-semantic-kind="backend" data-legend-x="40" data-legend-baseline="540" data-legend-width="180">
+            <rect x="40" y="531" width="16" height="10" rx="2.5" class="c-backend" stroke-width="1"/>
+            <text x="62" y="540" class="t-muted" font-size="10" font-weight="500">Governance · automatic</text>
           </g>
-          <g data-legend-semantic-kind="backend" data-legend-x="211" data-legend-baseline="540" data-legend-width="180">
-            <rect x="211" y="531" width="16" height="10" rx="2.5" class="c-backend" stroke-width="1"/>
-            <text x="233" y="540" class="t-muted" font-size="10" font-weight="500">Governance · automatic</text>
+          <g data-legend-semantic-kind="database" data-legend-x="242" data-legend-baseline="540" data-legend-width="161">
+            <rect x="242" y="531" width="16" height="10" rx="2.5" class="c-database" stroke-width="1"/>
+            <text x="264" y="540" class="t-muted" font-size="10" font-weight="500">Governance · opt-in</text>
           </g>
-          <g data-legend-semantic-kind="database" data-legend-x="413" data-legend-baseline="540" data-legend-width="161">
-            <rect x="413" y="531" width="16" height="10" rx="2.5" class="c-database" stroke-width="1"/>
-            <text x="435" y="540" class="t-muted" font-size="10" font-weight="500">Governance · opt-in</text>
-          </g>
-          <g data-legend-semantic-kind="security" data-legend-x="596" data-legend-baseline="540" data-legend-width="180">
-            <rect x="596" y="531" width="16" height="10" rx="2.5" class="c-security" stroke-width="1"/>
-            <text x="618" y="540" class="t-muted" font-size="10" font-weight="500">Governance · always on</text>
+          <g data-legend-semantic-kind="security" data-legend-x="425" data-legend-baseline="540" data-legend-width="180">
+            <rect x="425" y="531" width="16" height="10" rx="2.5" class="c-security" stroke-width="1"/>
+            <text x="447" y="540" class="t-muted" font-size="10" font-weight="500">Governance · always on</text>
           </g>
         </g>
       </svg>

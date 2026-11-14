@@ -586,7 +586,7 @@ rect.c-bg-rect { fill: var(--bg); }
         </g>
         <g data-graph-role="automatic-crossover" style="--step:2">
           <path data-graph-role="automatic-crossover-underlay" d="M 136 140 L 136 268" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-repo-harness" data-edge-to="ki-subagents" data-edge-key="2" data-edge-id="ki-repo-harness--ki-subagents" data-composition-points="136,140;136,268" data-composition-crossover="halo" data-composition-independent="true" d="M 136 140 L 136 268" class="a-default" data-animate="edge" style="--step: 2;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-edge-from="ki-repo-backpack" data-edge-to="ki-subagents" data-edge-key="2" data-edge-id="ki-repo-backpack--ki-subagents" data-composition-points="136,140;136,268" data-composition-crossover="halo" data-composition-independent="true" d="M 136 140 L 136 268" class="a-default" data-animate="edge" style="--step: 2;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:3">
           <path data-graph-role="automatic-crossover-underlay" d="M 288 430 L 272 430 Q 264 430 264 422 L 264 321 Q 264 313 256 313 L 240 313" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
@@ -598,15 +598,15 @@ rect.c-bg-rect { fill: var(--bg); }
         </g>
 
         <!-- Components -->
-        <g id="node-ki-repo-harness" data-node-id="ki-repo-harness" data-node-label="ki-repo-harness" tabindex="0" role="button" aria-label="Focus ki-repo-harness, repository · opt-in, Fundamentals · Skills and harness" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository · opt-in" data-node-tag="R27 · CL · F4" data-node-context="Fundamentals · Skills and harness">
-          <title>ki-repo-harness · repository · opt-in · Fundamentals · Skills and harness · R27 · CL · F4</title>
+        <g id="node-ki-repo-backpack" data-node-id="ki-repo-backpack" data-node-label="ki-repo-backpack" tabindex="0" role="button" aria-label="Focus ki-repo-backpack, repository · opt-in, Fundamentals · Skills and harness" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository · opt-in" data-node-tag="R27 · CL · F4" data-node-context="Fundamentals · Skills and harness">
+          <title>ki-repo-backpack · repository · opt-in · Fundamentals · Skills and harness · R27 · CL · F4</title>
           <rect x="32" y="64" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="32" y="64" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 2; --flow-node-name: archify-relay-node-1;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(38 70) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="136" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo-harness</text>
+          <text data-node-label="" x="136" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo-backpack</text>
         <text x="136" y="116" class="t-muted" font-size="9" text-anchor="middle">repository · opt-in</text>
         <text x="136" y="132" class="t-database" font-size="7" text-anchor="middle">R27 · CL · F4</text>
         </g>

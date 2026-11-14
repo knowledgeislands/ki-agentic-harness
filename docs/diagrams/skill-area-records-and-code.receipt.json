@@ -4,13 +4,13 @@
   "type": "architecture",
   "source": {
     "file": "skill-area-records-and-code.architecture.json",
-    "sha256": "fb58e6ed0ad28428a80f1f1eaf4deb35cb50211cb490188a8a8b19e4eaa20c63",
-    "bytes": 8188
+    "sha256": "a966677503133b5cf75662a4e5089b179fa09b1cc6c619a44418b65e4d03f320",
+    "bytes": 8147
   },
   "html": {
     "file": "skill-area-records-and-code.html",
-    "sha256": "370bca398f353635c289116bc05d16155b793ae8c40313888b2e132b57884ef2",
-    "bytes": 830752
+    "sha256": "b7de89e49f14418d52868762a1bce6ecd42f1079c3e8fe41c894dca4717900ca",
+    "bytes": 830138
   },
   "renderer": {
     "name": "archify",

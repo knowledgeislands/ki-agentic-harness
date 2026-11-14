@@ -702,7 +702,7 @@ rect.c-bg-rect { fill: var(--bg); }
         <!-- Boundaries (behind everything) -->
         <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" data-composition-frame-label="Environment · MCP binding" x="12" y="32" width="272" height="128" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="1" data-composition-frame-label="Work and delivery · Work items" x="12" y="1372" width="272" height="128" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="1" data-composition-frame-label="Work and delivery · 1 skill" x="12" y="1372" width="272" height="128" rx="12" class="c-region" stroke-width="1"/>
 
         <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="2" data-composition-frame-label="Records and code · Records" x="332" y="1372" width="272" height="128" rx="12" class="c-region" stroke-width="1"/>
 
@@ -723,7 +723,7 @@ rect.c-bg-rect { fill: var(--bg); }
         <!-- Connection paths (before components for correct z-order) -->
         <g data-graph-role="automatic-crossover" style="--step:0">
           <path data-graph-role="automatic-crossover-underlay" d="M 252 124 L 852 124 Q 860 124 860 132 L 860 580" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-binding-chezmoi" data-edge-to="ki-repo-dotfiles-chezmoi" data-edge-key="0" data-edge-id="ki-binding-chezmoi--ki-repo-dotfiles-chezmoi" data-composition-points="252,124;860,124;860,580" data-composition-crossover="halo" data-composition-independent="true" d="M 252 124 L 852 124 Q 860 124 860 132 L 860 580" class="a-default" data-animate="edge" style="--step: 0;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-edge-from="ki-env-binding-chezmoi" data-edge-to="ki-repo-dotfiles-chezmoi" data-edge-key="0" data-edge-id="ki-env-binding-chezmoi--ki-repo-dotfiles-chezmoi" data-composition-points="252,124;860,124;860,580" data-composition-crossover="halo" data-composition-independent="true" d="M 252 124 L 852 124 Q 860 124 860 132 L 860 580" class="a-default" data-animate="edge" style="--step: 0;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:1">
           <path data-graph-role="automatic-crossover-underlay" d="M 1020 656 L 1020 1404" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
@@ -771,17 +771,30 @@ rect.c-bg-rect { fill: var(--bg); }
         </g>
 
         <!-- Components -->
-        <g id="node-ki-binding-chezmoi" data-node-id="ki-binding-chezmoi" data-node-label="ki-binding-chezmoi" tabindex="0" role="button" aria-label="Focus ki-binding-chezmoi, environment · opt-in, Environment · MCP binding" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R8 · CM · F3" data-node-context="Environment · MCP binding">
-          <title>ki-binding-chezmoi · environment · opt-in · Environment · MCP binding · R8 · CM · F3</title>
+        <g id="node-ki-env-binding-chezmoi" data-node-id="ki-env-binding-chezmoi" data-node-label="ki-env-binding-chezmoi" tabindex="0" role="button" aria-label="Focus ki-env-binding-chezmoi, environment · opt-in, Environment · MCP binding" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R8 · CM · F3" data-node-context="Environment · MCP binding">
+          <title>ki-env-binding-chezmoi · environment · opt-in · Environment · MCP binding · R8 · CM · F3</title>
           <rect x="44" y="64" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="44" y="64" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 0; --flow-node-name: archify-relay-node-0;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(50 70) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="148" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-binding-chezmoi</text>
+          <text data-node-label="" x="148" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-env-binding-chezmoi</text>
         <text x="148" y="116" class="t-muted" font-size="9" text-anchor="middle">environment · opt-in</text>
         <text x="148" y="132" class="t-database" font-size="7" text-anchor="middle">R8 · CM · F3</text>
+        </g>
+
+        <g id="node-ki-repo-backpack" data-node-id="ki-repo-backpack" data-node-label="ki-repo-backpack" tabindex="0" role="button" aria-label="Focus ki-repo-backpack, repository · opt-in, Repository types · 17 skills › Single-type repositories" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository · opt-in" data-node-tag="R27 · CL · F4" data-node-context="Repository types · 17 skills › Single-type repositories">
+          <title>ki-repo-backpack · repository · opt-in · Repository types · 17 skills › Single-type repositories · R27 · CL · F4</title>
+          <rect x="588" y="952" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="588" y="952" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 1;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(594 958) scale(0.6875)">
+            <ellipse cx="8" cy="4" rx="5" ry="2"/>
+            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
+          </g>
+          <text data-node-label="" x="692" y="988" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo-backpack</text>
+        <text x="692" y="1004" class="t-muted" font-size="9" text-anchor="middle">repository · opt-in</text>
+        <text x="692" y="1020" class="t-database" font-size="7" text-anchor="middle">R27 · CL · F4</text>
         </g>
 
         <g id="node-ki-repo-dotfiles-chezmoi" data-node-id="ki-repo-dotfiles-chezmoi" data-node-label="ki-repo-dotfiles-chezmoi" tabindex="0" role="button" aria-label="Focus ki-repo-dotfiles-chezmoi, repository · opt-in, Repository types · 17 skills › Single-type repositories" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository · opt-in" data-node-tag="R9 · CM · F3" data-node-context="Repository types · 17 skills › Single-type repositories">
@@ -795,19 +808,6 @@ rect.c-bg-rect { fill: var(--bg); }
           <text data-node-label="" x="948" y="616" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo-dotfiles-chezmoi</text>
         <text x="948" y="632" class="t-muted" font-size="9" text-anchor="middle">repository · opt-in</text>
         <text x="948" y="648" class="t-database" font-size="7" text-anchor="middle">R9 · CM · F3</text>
-        </g>
-
-        <g id="node-ki-repo-harness" data-node-id="ki-repo-harness" data-node-label="ki-repo-harness" tabindex="0" role="button" aria-label="Focus ki-repo-harness, repository · opt-in, Repository types · 17 skills › Single-type repositories" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository · opt-in" data-node-tag="R27 · CL · F4" data-node-context="Repository types · 17 skills › Single-type repositories">
-          <title>ki-repo-harness · repository · opt-in · Repository types · 17 skills › Single-type repositories · R27 · CL · F4</title>
-          <rect x="588" y="952" width="208" height="76" rx="8" class="c-mask"/>
-          <rect x="588" y="952" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 2;" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(594 958) scale(0.6875)">
-            <ellipse cx="8" cy="4" rx="5" ry="2"/>
-            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
-          </g>
-          <text data-node-label="" x="692" y="988" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo-harness</text>
-        <text x="692" y="1004" class="t-muted" font-size="9" text-anchor="middle">repository · opt-in</text>
-        <text x="692" y="1020" class="t-database" font-size="7" text-anchor="middle">R27 · CL · F4</text>
         </g>
 
         <g id="node-ki-repo-homebrew-tap" data-node-id="ki-repo-homebrew-tap" data-node-label="ki-repo-homebrew-tap" tabindex="0" role="button" aria-label="Focus ki-repo-homebrew-tap, repository · automatic, Repository types · 17 skills › Single-type repositories" aria-pressed="false" data-node-kind="backend" data-node-sublabel="repository · automatic" data-node-tag="R10 · CM · F7" data-node-context="Repository types · 17 skills › Single-type repositories">
@@ -995,8 +995,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="404" y="336" class="t-backend" font-size="7" text-anchor="middle">R43 · CM · F8</text>
         </g>
 
-        <g id="node-ki-work-recurring" data-node-id="ki-work-recurring" data-node-label="ki-work-recurring" tabindex="0" role="button" aria-label="Focus ki-work-recurring, work · opt-in, Work and delivery · Work items" aria-pressed="false" data-node-kind="database" data-node-sublabel="work · opt-in" data-node-tag="R2 · CM · F3" data-node-context="Work and delivery · Work items">
-          <title>ki-work-recurring · work · opt-in · Work and delivery · Work items · R2 · CM · F3</title>
+        <g id="node-ki-work-recurring" data-node-id="ki-work-recurring" data-node-label="ki-work-recurring" tabindex="0" role="button" aria-label="Focus ki-work-recurring, work · opt-in, Work and delivery · 1 skill" aria-pressed="false" data-node-kind="database" data-node-sublabel="work · opt-in" data-node-tag="R2 · CM · F3" data-node-context="Work and delivery · 1 skill">
+          <title>ki-work-recurring · work · opt-in · Work and delivery · 1 skill · R2 · CM · F3</title>
           <rect x="44" y="1404" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="44" y="1404" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 6; --flow-node-name: archify-relay-node-15;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(50 1410) scale(0.6875)">
@@ -1065,9 +1065,9 @@ rect.c-bg-rect { fill: var(--bg); }
           <text data-boundary-label="" x="20" y="57" class="t-cloud" font-size="9" font-weight="600">Environment · MCP binding</text>
         </g>
 
-        <g data-graph-role="structural-frame-label" data-composition-frame-id="1" data-composition-frame-kind="region" data-composition-frame-label="Work and delivery · Work items">
-          <rect data-graph-role="structural-frame-label-mask" x="16" y="1384" width="172" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="20" y="1397" class="t-cloud" font-size="9" font-weight="600">Work and delivery · Work items</text>
+        <g data-graph-role="structural-frame-label" data-composition-frame-id="1" data-composition-frame-kind="region" data-composition-frame-label="Work and delivery · 1 skill">
+          <rect data-graph-role="structural-frame-label-mask" x="16" y="1384" width="155.79999999999998" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="20" y="1397" class="t-cloud" font-size="9" font-weight="600">Work and delivery · 1 skill</text>
         </g>
 
         <g data-graph-role="structural-frame-label" data-composition-frame-id="2" data-composition-frame-kind="region" data-composition-frame-label="Records and code · Records">

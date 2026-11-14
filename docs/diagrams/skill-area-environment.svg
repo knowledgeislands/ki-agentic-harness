@@ -467,6 +467,28 @@ svg[data-preset="editorial"] { --flow-halo-peak: 0.07; --flow-glow-peak: 0.28; -
   28.767% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
   53.767%, 100% { stroke-dashoffset: 0px; opacity: 0; }
 }
+@keyframes archify-relay-comet-6 { 
+  0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  2.333% { opacity: var(--flow-peak, 0.9); }
+  11.667% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  16.111%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+}
+@keyframes archify-relay-wake-6 { 
+  0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  11.667% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  36.667%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+}
+@keyframes archify-relay-comet-7 { 
+  0% { stroke-dashoffset: calc(var(--flow-len, 0px) + var(--flow-shift, 0px)); opacity: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  3.333% { opacity: var(--flow-peak, 0.9); }
+  28.767% { stroke-dashoffset: var(--flow-shift, 0px); opacity: var(--flow-peak, 0.9); }
+  33.211%, 100% { stroke-dashoffset: var(--flow-shift, 0px); opacity: 0; }
+}
+@keyframes archify-relay-wake-7 { 
+  0% { stroke-dashoffset: var(--flow-len, 0px); opacity: var(--flow-peak, 0.3); animation-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1); }
+  28.767% { stroke-dashoffset: 0px; opacity: var(--flow-peak, 0.3); }
+  53.767%, 100% { stroke-dashoffset: 0px; opacity: 0; }
+}
 @keyframes archify-relay-node-0 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
   0% { filter: var(--ambient-node-base-filter, none); }
@@ -499,17 +521,35 @@ svg[data-preset="editorial"] { --flow-halo-peak: 0.07; --flow-glow-peak: 0.28; -
 }
 @keyframes archify-relay-node-5 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
+  0% { filter: var(--ambient-node-base-filter, none); }
+  3.333%, 11.667% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  33.333% { filter: var(--ambient-node-base-filter, none); }
+}
+@keyframes archify-relay-node-6 { 
+  0%, 100% { filter: var(--ambient-node-base-filter, none); }
+  0% { filter: var(--ambient-node-base-filter, none); }
+  3.333%, 11.667% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  33.333% { filter: var(--ambient-node-base-filter, none); }
+}
+@keyframes archify-relay-node-7 { 
+  0%, 100% { filter: var(--ambient-node-base-filter, none); }
   11.667% { filter: var(--ambient-node-base-filter, none); }
   15%, 23.333% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
   45% { filter: var(--ambient-node-base-filter, none); }
 }
-@keyframes archify-relay-node-6 { 
+@keyframes archify-relay-node-8 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
   25% { filter: var(--ambient-node-base-filter, none); }
   28.333%, 36.667% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
   58.333% { filter: var(--ambient-node-base-filter, none); }
 }
-@keyframes archify-relay-node-7 { 
+@keyframes archify-relay-node-9 { 
+  0%, 100% { filter: var(--ambient-node-base-filter, none); }
+  11.667% { filter: var(--ambient-node-base-filter, none); }
+  15%, 23.333% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
+  45% { filter: var(--ambient-node-base-filter, none); }
+}
+@keyframes archify-relay-node-10 { 
   0%, 100% { filter: var(--ambient-node-base-filter, none); }
   11.667% { filter: var(--ambient-node-base-filter, none); }
   15%, 23.333% { filter: var(--ambient-node-base-filter,) drop-shadow(0 0 10px var(--arrow-emphasis)); }
@@ -592,150 +632,171 @@ rect.c-bg-rect { fill: var(--bg); }
 
         <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="2" data-composition-frame-label="Tokenomics" x="560" y="36" width="264" height="372" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="3" data-composition-frame-label="Housekeeping" x="848" y="36" width="264" height="248" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="3" data-composition-frame-label="Housekeeping" x="848" y="36" width="264" height="372" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="4" data-composition-frame-label="Environment · 9 skills" x="0" y="20" width="1128" height="388" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="4" data-composition-frame-label="Environment · 10 skills" x="0" y="20" width="1128" height="388" rx="12" class="c-region" stroke-width="1"/>
 
         <!-- Connection paths (before components for correct z-order) -->
         <g data-graph-role="automatic-crossover" style="--step:0">
           <path data-graph-role="automatic-crossover-underlay" d="M 300 226 L 284 226 Q 276 226 276 218 L 276 117 Q 276 109 268 109 L 252 109" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-binding-chatgpt" data-edge-to="ki-binding" data-edge-key="0" data-edge-id="ki-binding-chatgpt--ki-binding" data-composition-points="300,226;276,226;276,109;252,109" data-composition-crossover="halo" data-composition-independent="true" d="M 300 226 L 284 226 Q 276 226 276 218 L 276 117 Q 276 109 268 109 L 252 109" class="a-default" data-animate="edge" style="--step: 0;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-edge-from="ki-env-binding-chatgpt" data-edge-to="ki-env-binding" data-edge-key="0" data-edge-id="ki-env-binding-chatgpt--ki-env-binding" data-composition-points="300,226;276,226;276,109;252,109" data-composition-crossover="halo" data-composition-independent="true" d="M 300 226 L 284 226 Q 276 226 276 218 L 276 117 Q 276 109 268 109 L 252 109" class="a-default" data-animate="edge" style="--step: 0;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:1">
           <path data-graph-role="automatic-crossover-underlay" d="M 148 188 L 148 140" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-binding-chezmoi" data-edge-to="ki-binding" data-edge-key="1" data-edge-id="ki-binding-chezmoi--ki-binding" data-composition-points="148,188;148,140" data-composition-crossover="halo" data-composition-independent="true" d="M 148 188 L 148 140" class="a-default" data-animate="edge" style="--step: 1;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-edge-from="ki-env-binding-chezmoi" data-edge-to="ki-env-binding" data-edge-key="1" data-edge-id="ki-env-binding-chezmoi--ki-env-binding" data-composition-points="148,188;148,140" data-composition-crossover="halo" data-composition-independent="true" d="M 148 188 L 148 140" class="a-default" data-animate="edge" style="--step: 1;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:2">
           <path data-graph-role="automatic-crossover-underlay" d="M 148 264 L 148 516" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-binding-chezmoi" data-edge-to="ki-repo-dotfiles-chezmoi" data-edge-key="2" data-edge-id="ki-binding-chezmoi--ki-repo-dotfiles-chezmoi" data-composition-points="148,264;148,516" data-composition-crossover="halo" data-composition-independent="true" d="M 148 264 L 148 516" class="a-default" data-animate="edge" style="--step: 2;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-edge-from="ki-env-binding-chezmoi" data-edge-to="ki-repo-dotfiles-chezmoi" data-edge-key="2" data-edge-id="ki-env-binding-chezmoi--ki-repo-dotfiles-chezmoi" data-composition-points="148,264;148,516" data-composition-crossover="halo" data-composition-independent="true" d="M 148 264 L 148 516" class="a-default" data-animate="edge" style="--step: 2;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:3">
           <path data-graph-role="automatic-crossover-underlay" d="M 300 95 L 252 95" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-binding-claude" data-edge-to="ki-binding" data-edge-key="3" data-edge-id="ki-binding-claude--ki-binding" data-composition-points="300,95;252,95" data-composition-crossover="halo" data-composition-independent="true" d="M 300 95 L 252 95" class="a-default" data-animate="edge" style="--step: 3;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-edge-from="ki-env-binding-claude" data-edge-to="ki-env-binding" data-edge-key="3" data-edge-id="ki-env-binding-claude--ki-env-binding" data-composition-points="300,95;252,95" data-composition-crossover="halo" data-composition-independent="true" d="M 300 95 L 252 95" class="a-default" data-animate="edge" style="--step: 3;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:4">
-          <path data-graph-role="automatic-crossover-underlay" d="M 685 188 L 685 140" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-tokenomics-chatgpt" data-edge-to="ki-tokenomics" data-edge-key="4" data-edge-id="ki-tokenomics-chatgpt--ki-tokenomics" data-composition-points="685,188;685,140" data-composition-crossover="halo" data-composition-independent="true" d="M 685 188 L 685 140" class="a-default" data-animate="edge" style="--step: 4;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 973 188 L 973 140" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ki-env-housekeeping-chatgpt" data-edge-to="ki-env-housekeeping" data-edge-key="4" data-edge-id="ki-env-housekeeping-chatgpt--ki-env-housekeeping" data-composition-points="973,188;973,140" data-composition-crossover="halo" data-composition-independent="true" d="M 973 188 L 973 140" class="a-default" data-animate="edge" style="--step: 4;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:5">
+          <path data-graph-role="automatic-crossover-underlay" d="M 1084 350 L 1100 350 Q 1108 350 1108 342 L 1108 110 Q 1108 102 1100 102 L 1084 102" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ki-env-housekeeping-claude" data-edge-to="ki-env-housekeeping" data-edge-key="5" data-edge-id="ki-env-housekeeping-claude--ki-env-housekeeping" data-composition-points="1084,350;1108,350;1108,102;1084,102" data-composition-crossover="halo" data-composition-independent="true" d="M 1084 350 L 1100 350 Q 1108 350 1108 342 L 1108 110 Q 1108 102 1100 102 L 1084 102" class="a-default" data-animate="edge" style="--step: 5;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        </g>
+        <g data-graph-role="automatic-crossover" style="--step:6">
+          <path data-graph-role="automatic-crossover-underlay" d="M 685 188 L 685 140" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ki-env-tokenomics-chatgpt" data-edge-to="ki-env-tokenomics" data-edge-key="6" data-edge-id="ki-env-tokenomics-chatgpt--ki-env-tokenomics" data-composition-points="685,188;685,140" data-composition-crossover="halo" data-composition-independent="true" d="M 685 188 L 685 140" class="a-default" data-animate="edge" style="--step: 6;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        </g>
+        <g data-graph-role="automatic-crossover" style="--step:7">
           <path data-graph-role="automatic-crossover-underlay" d="M 796 350 L 812 350 Q 820 350 820 342 L 820 110 Q 820 102 812 102 L 796 102" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="ki-tokenomics-claude" data-edge-to="ki-tokenomics" data-edge-key="5" data-edge-id="ki-tokenomics-claude--ki-tokenomics" data-composition-points="796,350;820,350;820,102;796,102" data-composition-crossover="halo" data-composition-independent="true" d="M 796 350 L 812 350 Q 820 350 820 342 L 820 110 Q 820 102 812 102 L 796 102" class="a-default" data-animate="edge" style="--step: 5;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-edge-from="ki-env-tokenomics-claude" data-edge-to="ki-env-tokenomics" data-edge-key="7" data-edge-id="ki-env-tokenomics-claude--ki-env-tokenomics" data-composition-points="796,350;820,350;820,102;796,102" data-composition-crossover="halo" data-composition-independent="true" d="M 796 350 L 812 350 Q 820 350 820 342 L 820 110 Q 820 102 812 102 L 796 102" class="a-default" data-animate="edge" style="--step: 7;" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
 
         <!-- Components -->
-        <g id="node-ki-binding" data-node-id="ki-binding" data-node-label="ki-binding" tabindex="0" role="button" aria-label="Focus ki-binding, environment · opt-in, Environment · 9 skills › MCP binding" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R3 · CM · F3" data-node-context="Environment · 9 skills › MCP binding">
-          <title>ki-binding · environment · opt-in · Environment · 9 skills › MCP binding · R3 · CM · F3</title>
+        <g id="node-ki-env-binding" data-node-id="ki-env-binding" data-node-label="ki-env-binding" tabindex="0" role="button" aria-label="Focus ki-env-binding, environment · opt-in, Environment · 10 skills › MCP binding" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R3 · CM · F3" data-node-context="Environment · 10 skills › MCP binding">
+          <title>ki-env-binding · environment · opt-in · Environment · 10 skills › MCP binding · R3 · CM · F3</title>
           <rect x="44" y="64" width="208" height="76" rx="8" class="c-mask"/>
-          <rect x="44" y="64" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 1; --flow-node-name: archify-relay-node-5;" stroke-width="1.5"/>
+          <rect x="44" y="64" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 1; --flow-node-name: archify-relay-node-7;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(50 70) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="148" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-binding</text>
+          <text data-node-label="" x="148" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-env-binding</text>
         <text x="148" y="116" class="t-muted" font-size="9" text-anchor="middle">environment · opt-in</text>
         <text x="148" y="132" class="t-database" font-size="7" text-anchor="middle">R3 · CM · F3</text>
         </g>
 
-        <g id="node-ki-binding-chatgpt" data-node-id="ki-binding-chatgpt" data-node-label="ki-binding-chatgpt" tabindex="0" role="button" aria-label="Focus ki-binding-chatgpt, environment · opt-in, Environment · 9 skills › MCP binding" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R2 · CM · F3" data-node-context="Environment · 9 skills › MCP binding">
-          <title>ki-binding-chatgpt · environment · opt-in · Environment · 9 skills › MCP binding · R2 · CM · F3</title>
+        <g id="node-ki-env-binding-chatgpt" data-node-id="ki-env-binding-chatgpt" data-node-label="ki-env-binding-chatgpt" tabindex="0" role="button" aria-label="Focus ki-env-binding-chatgpt, environment · opt-in, Environment · 10 skills › MCP binding" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R2 · CM · F3" data-node-context="Environment · 10 skills › MCP binding">
+          <title>ki-env-binding-chatgpt · environment · opt-in · Environment · 10 skills › MCP binding · R2 · CM · F3</title>
           <rect x="300" y="188" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="300" y="188" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 0; --flow-node-name: archify-relay-node-0;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(306 194) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="404" y="224" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-binding-chatgpt</text>
+          <text data-node-label="" x="404" y="224" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-env-binding-chatgpt</text>
         <text x="404" y="240" class="t-muted" font-size="9" text-anchor="middle">environment · opt-in</text>
         <text x="404" y="256" class="t-database" font-size="7" text-anchor="middle">R2 · CM · F3</text>
         </g>
 
-        <g id="node-ki-binding-chezmoi" data-node-id="ki-binding-chezmoi" data-node-label="ki-binding-chezmoi" tabindex="0" role="button" aria-label="Focus ki-binding-chezmoi, environment · opt-in, Environment · 9 skills › MCP binding" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R8 · CM · F3" data-node-context="Environment · 9 skills › MCP binding">
-          <title>ki-binding-chezmoi · environment · opt-in · Environment · 9 skills › MCP binding · R8 · CM · F3</title>
+        <g id="node-ki-env-binding-chezmoi" data-node-id="ki-env-binding-chezmoi" data-node-label="ki-env-binding-chezmoi" tabindex="0" role="button" aria-label="Focus ki-env-binding-chezmoi, environment · opt-in, Environment · 10 skills › MCP binding" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R8 · CM · F3" data-node-context="Environment · 10 skills › MCP binding">
+          <title>ki-env-binding-chezmoi · environment · opt-in · Environment · 10 skills › MCP binding · R8 · CM · F3</title>
           <rect x="44" y="188" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="44" y="188" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 1; --flow-node-name: archify-relay-node-1;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(50 194) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="148" y="224" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-binding-chezmoi</text>
+          <text data-node-label="" x="148" y="224" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-env-binding-chezmoi</text>
         <text x="148" y="240" class="t-muted" font-size="9" text-anchor="middle">environment · opt-in</text>
         <text x="148" y="256" class="t-database" font-size="7" text-anchor="middle">R8 · CM · F3</text>
         </g>
 
-        <g id="node-ki-binding-claude" data-node-id="ki-binding-claude" data-node-label="ki-binding-claude" tabindex="0" role="button" aria-label="Focus ki-binding-claude, environment · opt-in, Environment · 9 skills › MCP binding" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R2 · CM · F3" data-node-context="Environment · 9 skills › MCP binding">
-          <title>ki-binding-claude · environment · opt-in · Environment · 9 skills › MCP binding · R2 · CM · F3</title>
+        <g id="node-ki-env-binding-claude" data-node-id="ki-env-binding-claude" data-node-label="ki-env-binding-claude" tabindex="0" role="button" aria-label="Focus ki-env-binding-claude, environment · opt-in, Environment · 10 skills › MCP binding" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R2 · CM · F3" data-node-context="Environment · 10 skills › MCP binding">
+          <title>ki-env-binding-claude · environment · opt-in · Environment · 10 skills › MCP binding · R2 · CM · F3</title>
           <rect x="300" y="64" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="300" y="64" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 3; --flow-node-name: archify-relay-node-2;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(306 70) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="404" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-binding-claude</text>
+          <text data-node-label="" x="404" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-env-binding-claude</text>
         <text x="404" y="116" class="t-muted" font-size="9" text-anchor="middle">environment · opt-in</text>
         <text x="404" y="132" class="t-database" font-size="7" text-anchor="middle">R2 · CM · F3</text>
         </g>
 
-        <g id="node-ki-housekeeping-chatgpt" data-node-id="ki-housekeeping-chatgpt" data-node-label="ki-housekeeping-chatgpt" tabindex="0" role="button" aria-label="Focus ki-housekeeping-chatgpt, environment · opt-in, Environment · 9 skills › Housekeeping" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R8 · CM · F7" data-node-context="Environment · 9 skills › Housekeeping">
-          <title>ki-housekeeping-chatgpt · environment · opt-in · Environment · 9 skills › Housekeeping · R8 · CM · F7</title>
+        <g id="node-ki-env-housekeeping" data-node-id="ki-env-housekeeping" data-node-label="ki-env-housekeeping" tabindex="0" role="button" aria-label="Focus ki-env-housekeeping, environment · opt-in, Environment · 10 skills › Housekeeping" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R5 · CM · F3" data-node-context="Environment · 10 skills › Housekeeping">
+          <title>ki-env-housekeeping · environment · opt-in · Environment · 10 skills › Housekeeping · R5 · CM · F3</title>
           <rect x="876" y="64" width="208" height="76" rx="8" class="c-mask"/>
-          <rect x="876" y="64" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 4;" stroke-width="1.5"/>
+          <rect x="876" y="64" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 5; --flow-node-name: archify-relay-node-9;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(882 70) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="980" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-housekeeping-chatgpt</text>
+          <text data-node-label="" x="980" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-env-housekeeping</text>
         <text x="980" y="116" class="t-muted" font-size="9" text-anchor="middle">environment · opt-in</text>
-        <text x="980" y="132" class="t-database" font-size="7" text-anchor="middle">R8 · CM · F7</text>
+        <text x="980" y="132" class="t-database" font-size="7" text-anchor="middle">R5 · CM · F3</text>
         </g>
 
-        <g id="node-ki-housekeeping-claude" data-node-id="ki-housekeeping-claude" data-node-label="ki-housekeeping-claude" tabindex="0" role="button" aria-label="Focus ki-housekeeping-claude, environment · opt-in, Environment · 9 skills › Housekeeping" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R22 · CM · F7" data-node-context="Environment · 9 skills › Housekeeping">
-          <title>ki-housekeeping-claude · environment · opt-in · Environment · 9 skills › Housekeeping · R22 · CM · F7</title>
+        <g id="node-ki-env-housekeeping-chatgpt" data-node-id="ki-env-housekeeping-chatgpt" data-node-label="ki-env-housekeeping-chatgpt" tabindex="0" role="button" aria-label="Focus ki-env-housekeeping-chatgpt, environment · opt-in, Environment · 10 skills › Housekeeping" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R8 · CM · F7" data-node-context="Environment · 10 skills › Housekeeping">
+          <title>ki-env-housekeeping-chatgpt · environment · opt-in · Environment · 10 skills › Housekeeping · R8 · CM · F7</title>
           <rect x="876" y="188" width="208" height="76" rx="8" class="c-mask"/>
-          <rect x="876" y="188" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 5;" stroke-width="1.5"/>
+          <rect x="876" y="188" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 4; --flow-node-name: archify-relay-node-3;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(882 194) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="980" y="224" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-housekeeping-claude</text>
+          <text data-node-label="" x="980" y="224" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-env-housekeeping-chatgpt</text>
         <text x="980" y="240" class="t-muted" font-size="9" text-anchor="middle">environment · opt-in</text>
-        <text x="980" y="256" class="t-database" font-size="7" text-anchor="middle">R22 · CM · F7</text>
+        <text x="980" y="256" class="t-database" font-size="7" text-anchor="middle">R8 · CM · F7</text>
         </g>
 
-        <g id="node-ki-tokenomics" data-node-id="ki-tokenomics" data-node-label="ki-tokenomics" tabindex="0" role="button" aria-label="Focus ki-tokenomics, environment · opt-in, Environment · 9 skills › Tokenomics" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R5 · CM · F8" data-node-context="Environment · 9 skills › Tokenomics">
-          <title>ki-tokenomics · environment · opt-in · Environment · 9 skills › Tokenomics · R5 · CM · F8</title>
+        <g id="node-ki-env-housekeeping-claude" data-node-id="ki-env-housekeeping-claude" data-node-label="ki-env-housekeeping-claude" tabindex="0" role="button" aria-label="Focus ki-env-housekeeping-claude, environment · opt-in, Environment · 10 skills › Housekeeping" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R22 · CM · F7" data-node-context="Environment · 10 skills › Housekeeping">
+          <title>ki-env-housekeeping-claude · environment · opt-in · Environment · 10 skills › Housekeeping · R22 · CM · F7</title>
+          <rect x="876" y="312" width="208" height="76" rx="8" class="c-mask"/>
+          <rect x="876" y="312" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 5; --flow-node-name: archify-relay-node-4;" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(882 318) scale(0.6875)">
+            <ellipse cx="8" cy="4" rx="5" ry="2"/>
+            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
+          </g>
+          <text data-node-label="" x="980" y="348" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-env-housekeeping-claude</text>
+        <text x="980" y="364" class="t-muted" font-size="9" text-anchor="middle">environment · opt-in</text>
+        <text x="980" y="380" class="t-database" font-size="7" text-anchor="middle">R22 · CM · F7</text>
+        </g>
+
+        <g id="node-ki-env-tokenomics" data-node-id="ki-env-tokenomics" data-node-label="ki-env-tokenomics" tabindex="0" role="button" aria-label="Focus ki-env-tokenomics, environment · opt-in, Environment · 10 skills › Tokenomics" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R5 · CM · F8" data-node-context="Environment · 10 skills › Tokenomics">
+          <title>ki-env-tokenomics · environment · opt-in · Environment · 10 skills › Tokenomics · R5 · CM · F8</title>
           <rect x="588" y="64" width="208" height="76" rx="8" class="c-mask"/>
-          <rect x="588" y="64" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 5; --flow-node-name: archify-relay-node-7;" stroke-width="1.5"/>
+          <rect x="588" y="64" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 7; --flow-node-name: archify-relay-node-10;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(594 70) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="692" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-tokenomics</text>
+          <text data-node-label="" x="692" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-env-tokenomics</text>
         <text x="692" y="116" class="t-muted" font-size="9" text-anchor="middle">environment · opt-in</text>
         <text x="692" y="132" class="t-database" font-size="7" text-anchor="middle">R5 · CM · F8</text>
         </g>
 
-        <g id="node-ki-tokenomics-chatgpt" data-node-id="ki-tokenomics-chatgpt" data-node-label="ki-tokenomics-chatgpt" tabindex="0" role="button" aria-label="Focus ki-tokenomics-chatgpt, environment · opt-in, Environment · 9 skills › Tokenomics" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R3 · CM · F7" data-node-context="Environment · 9 skills › Tokenomics">
-          <title>ki-tokenomics-chatgpt · environment · opt-in · Environment · 9 skills › Tokenomics · R3 · CM · F7</title>
+        <g id="node-ki-env-tokenomics-chatgpt" data-node-id="ki-env-tokenomics-chatgpt" data-node-label="ki-env-tokenomics-chatgpt" tabindex="0" role="button" aria-label="Focus ki-env-tokenomics-chatgpt, environment · opt-in, Environment · 10 skills › Tokenomics" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R3 · CM · F7" data-node-context="Environment · 10 skills › Tokenomics">
+          <title>ki-env-tokenomics-chatgpt · environment · opt-in · Environment · 10 skills › Tokenomics · R3 · CM · F7</title>
           <rect x="588" y="188" width="208" height="76" rx="8" class="c-mask"/>
-          <rect x="588" y="188" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 4; --flow-node-name: archify-relay-node-3;" stroke-width="1.5"/>
+          <rect x="588" y="188" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 6; --flow-node-name: archify-relay-node-5;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(594 194) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="692" y="224" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-tokenomics-chatgpt</text>
+          <text data-node-label="" x="692" y="224" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-env-tokenomics-chatgpt</text>
         <text x="692" y="240" class="t-muted" font-size="9" text-anchor="middle">environment · opt-in</text>
         <text x="692" y="256" class="t-database" font-size="7" text-anchor="middle">R3 · CM · F7</text>
         </g>
 
-        <g id="node-ki-tokenomics-claude" data-node-id="ki-tokenomics-claude" data-node-label="ki-tokenomics-claude" tabindex="0" role="button" aria-label="Focus ki-tokenomics-claude, environment · opt-in, Environment · 9 skills › Tokenomics" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R3 · CM · F7" data-node-context="Environment · 9 skills › Tokenomics">
-          <title>ki-tokenomics-claude · environment · opt-in · Environment · 9 skills › Tokenomics · R3 · CM · F7</title>
+        <g id="node-ki-env-tokenomics-claude" data-node-id="ki-env-tokenomics-claude" data-node-label="ki-env-tokenomics-claude" tabindex="0" role="button" aria-label="Focus ki-env-tokenomics-claude, environment · opt-in, Environment · 10 skills › Tokenomics" aria-pressed="false" data-node-kind="database" data-node-sublabel="environment · opt-in" data-node-tag="R3 · CM · F7" data-node-context="Environment · 10 skills › Tokenomics">
+          <title>ki-env-tokenomics-claude · environment · opt-in · Environment · 10 skills › Tokenomics · R3 · CM · F7</title>
           <rect x="588" y="312" width="208" height="76" rx="8" class="c-mask"/>
-          <rect x="588" y="312" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 5; --flow-node-name: archify-relay-node-4;" stroke-width="1.5"/>
+          <rect x="588" y="312" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 7; --flow-node-name: archify-relay-node-6;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(594 318) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" x="692" y="348" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-tokenomics-claude</text>
+          <text data-node-label="" x="692" y="348" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-env-tokenomics-claude</text>
         <text x="692" y="364" class="t-muted" font-size="9" text-anchor="middle">environment · opt-in</text>
         <text x="692" y="380" class="t-database" font-size="7" text-anchor="middle">R3 · CM · F7</text>
         </g>
@@ -743,7 +804,7 @@ rect.c-bg-rect { fill: var(--bg); }
         <g id="node-ki-repo-dotfiles-chezmoi" data-node-id="ki-repo-dotfiles-chezmoi" data-node-label="ki-repo-dotfiles-chezmoi" tabindex="0" role="button" aria-label="Focus ki-repo-dotfiles-chezmoi, repository · opt-in, Repository types · Single-type repositories" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository · opt-in" data-node-tag="R9 · CM · F3" data-node-context="Repository types · Single-type repositories">
           <title>ki-repo-dotfiles-chezmoi · repository · opt-in · Repository types · Single-type repositories · R9 · CM · F3</title>
           <rect x="44" y="516" width="208" height="76" rx="8" class="c-mask"/>
-          <rect x="44" y="516" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 3; --flow-node-name: archify-relay-node-6;" stroke-width="1.5"/>
+          <rect x="44" y="516" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 3; --flow-node-name: archify-relay-node-8;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(50 522) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
@@ -754,6 +815,8 @@ rect.c-bg-rect { fill: var(--bg); }
         </g>
 
         <!-- Connection labels -->
+
+
 
 
 
@@ -782,9 +845,9 @@ rect.c-bg-rect { fill: var(--bg); }
           <text data-boundary-label="" x="856" y="57" class="t-cloud" font-size="9" font-weight="600">Housekeeping</text>
         </g>
 
-        <g data-graph-role="structural-frame-label" data-composition-frame-id="4" data-composition-frame-kind="region" data-composition-frame-label="Environment · 9 skills">
-          <rect data-graph-role="structural-frame-label-mask" x="4" y="26" width="128.8" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="8" y="39" class="t-cloud" font-size="9" font-weight="600">Environment · 9 skills</text>
+        <g data-graph-role="structural-frame-label" data-composition-frame-id="4" data-composition-frame-kind="region" data-composition-frame-label="Environment · 10 skills">
+          <rect data-graph-role="structural-frame-label-mask" x="4" y="26" width="134.2" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="8" y="39" class="t-cloud" font-size="9" font-weight="600">Environment · 10 skills</text>
         </g>
 
         <!-- Legend -->
