@@ -1,6 +1,6 @@
 ---
 type: standard@2026-11-14T03:12:34Z
-revised: 2026-11-14T03:12:34Z
+revised: 2026-11-14T03:16:02Z
 status: in force
 ---
 
@@ -54,7 +54,7 @@ What a guild is, how one is led, named and joined, and how a session finds its w
 
 | Term | Definition |
 | --- | --- |
-| **Guild** | A set of skills that belong together and work together, with one purpose a reader can name, led by one lead skill. **Standard:** this one, [4.1](#41-what-a-guild-is) |
+| **Guild** | A set of skills that belong together and work together, with one purpose a reader can name, led by one lead skill; `ki-agentic-systems`' [guild card](../../ki-agentic-systems/knowledge/system/system.guild.md) says what it is. **Standard:** this one, [4.1](#41-what-a-guild-is) |
 | **Lead skill** | The skill that leads a guild: it says what the guild is for and discloses its other skills as they are needed. Named after its guild. **Standard:** this one, [4.1](#41-what-a-guild-is), [4.5](#45-how-a-lead-discloses-its-guild) |
 | **Member** | A skill that declares a guild in its `ki-guild` key. **Standard:** this one, [4.4](#44-membership) |
 | **Keystone** | The guild of guilds: what every other guild rests on, and each guild's lead skill. Led by `ki-keystone`. **Standard:** this one, [4.2](#42-keystone) |

@@ -1,6 +1,6 @@
 ---
 type: sources@2026-11-09T21:36:32Z
-revised: 2026-11-12T20:10:00Z
+revised: 2026-11-14T03:16:02Z
 refresh: external-spec · monthly
 ---
 
@@ -165,6 +165,7 @@ The vendors' own documentation and the specifications the cards follow, checked 
 | GRAPH-FOLDERS | The owner's word, relayed by the Cairn summit's guardian, option a: inside `knowledge/` there is one folder for each subgraph, and files keep their id names; ids and front-matter `links:` do not change, and only path-based Markdown links follow a card. | 2026-11-12 | [SKILL.md](../SKILL.md#the-cards), [the root definition](../knowledge/_graph.md#subgraphs) | In force |
 | OWNER-UNNAMED | The owner's word, relayed by the Cairn summit's guardian: nothing in this skill or its graph names the owner. A decision is the owner's, and the system's own words are Knowledge Islands' own: a rig is a machine Knowledge Islands manages through Rig | 2026-11-13 | [SKILL.md](../SKILL.md), [the root definition](../knowledge/_graph.md) | In force |
 | NAMES, HARNESS-NAME | The owner's word, relayed by the Cairn summit's guardian: a rig is Knowledge Islands' word for a machine, the same idea; actor and work package are kept; title, seat and worker go; plugin gets an industry card; and the KI harness's own name is backpack, mapped onto plugin. The naming proposal moved to the Cairn summit's change 23, where what is still open is decided | 2026-11-13 | [SKILL.md](../SKILL.md#the-cards), [the root definition](../knowledge/_graph.md) | In force |
+| GUILD-TERM, GUILD-LEAD, KEYSTONE-HUB | The owner's decisions, 13 November 2026, in the Cairn summit's change 25: a guild is a set of skills that belong together and work together, led by one lead skill named after it; Keystone is the guild of guilds. The card is the first in the `system/` subgraph change 23 proposes. | 2026-11-13 | [guild](../knowledge/system/system.guild.md) | In force |
 
 [Back to contents](#contents)
 

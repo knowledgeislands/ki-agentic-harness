@@ -52,7 +52,7 @@ Pending, in this order and not yet defined here:
 1. Channel, drafted as a [proposal](knowledge/industry/industry.channel.md) under CARD-CHANNEL's option A, the industry's words; then integration and session-to-session messaging, under a card for the ways into a session.
 2. The agent kinds beside the subagent, drafted as proposals: the [peer agent](knowledge/industry/industry.peer-agent.md) and the [remote agent](knowledge/industry/industry.remote-agent.md).
 3. Agent team, tool, instruction file and plugin.
-4. The system's own terms (NAMES): rig, actor, work package and role, and backpack, the KI harness's own name, mapped onto plugin. Title, seat and worker go. What is still open is decided in the Cairn summit's change 23.
+4. The system's own terms (NAMES): rig, actor, work package and role, and backpack, the KI harness's own name, mapped onto plugin. Title, seat and worker go. What is still open is decided in the Cairn summit's change 23. Guild, the first of them, is written below.
 
 ### Specification cards
 
@@ -64,6 +64,12 @@ Proposals, drafted for the owner's decision in the Cairn summit's change 22 and 
 - [The Agent Client Protocol](knowledge/specs/acp/spec.acp.md), with its [client](knowledge/specs/acp/spec.acp.client.md), [agent](knowledge/specs/acp/spec.acp.agent.md) and [session](knowledge/specs/acp/spec.acp.session.md).
 - [The Agent Host Protocol](knowledge/specs/ahp/spec.ahp.md), with its [agent host](knowledge/specs/ahp/spec.ahp.agent-host.md), [client](knowledge/specs/ahp/spec.ahp.client.md), [session](knowledge/specs/ahp/spec.ahp.session.md) and [channels](knowledge/specs/ahp/spec.ahp.channels.md).
 - [Agent2Agent](knowledge/specs/a2a/spec.a2a.md), with its [client](knowledge/specs/a2a/spec.a2a.client.md), [remote agent](knowledge/specs/a2a/spec.a2a.remote-agent.md), [Agent Card](knowledge/specs/a2a/spec.a2a.agent-card.md) and [task](knowledge/specs/a2a/spec.a2a.task.md).
+
+### System cards
+
+Knowledge Islands' own words, in the `system/` subgraph, each mapped onto the industry's terms:
+
+- [Guild](knowledge/system/system.guild.md): a set of skills that belong together and work together, led by one lead skill; Keystone is the guild of guilds.
 
 ### Vendor subgraphs
 
