@@ -37,7 +37,7 @@ The [assigned-package cascade](references/standards-territory.md#coordinating-as
 
 ## Operating modes
 
-Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** modes and the operational **DRAIN · HOLD · MARK · RECEIVE · RESUME · SEND · SUMMARY** modes a coordinator gives the owner.
+Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** modes and the operational **DRAIN · HOLD · MARK · RECEIVE · RESUME · SEND · STATUS · SUMMARY** modes a coordinator gives the owner.
 
 Invoked as `help` / `-h` / `?`, it explains this boundary and stops.
 
@@ -93,9 +93,13 @@ While coordinating, `/ki-coordination resume` releases held work under [Putting 
 
 While coordinating, `/ki-coordination send` commits and syncs the work package and gives the Summary for the handoff under [States and moves](references/standards-coordination.md#states-and-moves).
 
+### Mode STATUS
+
+While coordinating, `/ki-coordination status` gives the Status: [the Summary](references/standards-report-forms.md#the-summary) without `## Summary`, its form line reading `Status at <local time> · last mark <local time>`; `no art` leaves the art out of its footer. It never moves the mark.
+
 ### Mode SUMMARY
 
-While coordinating, `/ki-coordination summary` gives [the Summary](references/standards-report-forms.md#the-summary) since the last mark, or the session's start where there is none, and `/ki-coordination summary since <time>` gives it from any point the owner names; `no art` leaves the art out of its footer. It is the one summary form, replacing the recap and the full summary: the heading block, its form line reading `Summary at <local time> · last mark <local time>`, then the Answer where there is one, `## Summary` with a bold headline and what changed, `## Status` with the two-column focus table, its lines opening with their holder's glyph, `## Queries` with every open query in full and the reply block, then the footer, the Knowledge Islands art and the glyph banner with its thread line. It never moves the mark. `/ki-coordination status` gives the Status, the same without `## Summary`, its form line reading `Status at <local time> · last mark <local time>`; it never moves the mark either. `/ki-coordination goals` takes a [goal-setting pass](references/standards-queries.md#goal-setting-pass) over the Focus list. A coordinator gives it unasked where a trigger sets it: after every `mark`, when the last dispatched run finishes, at every send, and as the gap Summary when the owner's message comes 30 minutes or more after their previous one while queries are with the owner, or after 120 minutes without a Full reply, its Answer first in the body. `recap` and `full summary` are read as `summary` and a summary since the work began for the tolerance window.
+While coordinating, `/ki-coordination summary` gives [the Summary](references/standards-report-forms.md#the-summary) since the last mark, or the session's start where there is none, and `/ki-coordination summary since <time>` gives it from any point the owner names; `no art` leaves the art out of its footer. It is the one summary form, replacing the recap and the full summary: the heading block, its form line reading `Summary at <local time> · last mark <local time>`, then the Answer where there is one, `## Summary` with a bold headline and what changed, `## Status` with the two-column focus table, its lines opening with their holder's glyph, `## Queries` with every open query in full and the reply block, then the footer, the Knowledge Islands art and the glyph banner with its thread line. It never moves the mark. `/ki-coordination goals` takes a [goal-setting pass](references/standards-queries.md#goal-setting-pass) over the Focus list. A coordinator gives it unasked where a trigger sets it: after every `mark`, when the last dispatched run finishes, at every send, and as the gap Summary when the owner's message comes 30 minutes or more after their previous one while queries are with the owner, or after 120 minutes without a Full reply, its Answer first in the body. `recap` and `full summary` are read as `summary` and a summary since the work began for the tolerance window.
 
 ## Notes
 
