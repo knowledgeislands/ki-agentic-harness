@@ -68,7 +68,7 @@ Read [the sources](references/sources.md), compare delegation practice and its s
 
 ### Mode HELP
 
-Explain the two contracts and when a packet is added to a run, delegating to the agent host's own subagents, coordinating work and its bootstrap in `ki-coordination`, the work package in `ki-work-package`, Orca delegation in `ki-delegation-orca`, subagent roles in `ki-subagents`, model-purpose policy in `ki-tokenomics`, and cross-repository transfer in `ki-trades`.
+Explain the two contracts and when a packet is added to a run, delegating to the agent host's own subagents, coordinating work and its bootstrap in `ki-coordination`, the work package in `ki-work-package`, Orca delegation in `ki-delegation-orca`, subagent roles in `ki-subagents`, model-purpose policy in `ki-env-tokenomics`, and cross-repository transfer in `ki-trades`.
 
 ## Notes
 

@@ -64,8 +64,8 @@ The Environment guild keeps what Knowledge Islands sets up where agents run, in 
 
 | Concern | Family lead | What it keeps |
 | --- | --- | --- |
-| Tools and access | `ki-binding` | The portable MCP inventory and each surface it is rendered to |
-| Limits | `ki-tokenomics` | Context budgets, standing-surface attribution and model-purpose policy |
+| Tools and access | `ki-env-binding` | The portable MCP inventory and each surface it is rendered to |
+| Limits | `ki-env-tokenomics` | Context budgets, standing-surface attribution and model-purpose policy |
 | State agent hosts leave | `ki-env-housekeeping` | Native memory, sessions, caches and storage on a machine |
 
 Rubric **ENV-1** reviews it.

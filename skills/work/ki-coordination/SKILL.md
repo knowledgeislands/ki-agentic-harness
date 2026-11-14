@@ -63,7 +63,7 @@ While coordinating, `/ki-coordination drain` stops new launches while the work s
 
 ### Mode HELP
 
-Explain the work levels and forms, the coordinator and its three rules, territory work and Project work with their openers and bootstrap, the seven states and the receive words, the coordinator reply format, the closing glyph banner and its thread line, re-anchoring after compaction, the decision classes and their life cycle and Finishing Project work, and the mark, the ki-coordinator output style and the reminder hook, and the off-ramps: the Work Process note for the model itself, background runs and the run report in `ki-delegation`, the work package in `ki-work-package`, single-session recaps in `ki-recap`, the coordination model purpose in `ki-tokenomics` and the theme and Project registry in `ki-work`.
+Explain the work levels and forms, the coordinator and its three rules, territory work and Project work with their openers and bootstrap, the seven states and the receive words, the coordinator reply format, the closing glyph banner and its thread line, re-anchoring after compaction, the decision classes and their life cycle and Finishing Project work, and the mark, the ki-coordinator output style and the reminder hook, and the off-ramps: the Work Process note for the model itself, background runs and the run report in `ki-delegation`, the work package in `ki-work-package`, single-session recaps in `ki-recap`, the coordination model purpose in `ki-env-tokenomics` and the theme and Project registry in `ki-work`.
 
 ### Mode HOLD
 

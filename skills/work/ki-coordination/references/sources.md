@@ -7,7 +7,7 @@
 | Knowledge Islands coordinating-thread practice | 2026-10-15 | The responsive coordinator and its three rules, the counted turn budget and self-check, coordinating-thread practices, the closing banner with its one live frame, its REST and BUSY list beneath, the DRAINED frame with its list and the drain resume line, the DONE frame and the resume line, draining a thread and the drain report, the Summary, recap since the mark and full summary, the three thread types, the state-of-play thread and coordination threads with their openers and bootstrap, directions from the state-of-play thread, re-anchoring after compaction, the surfaces rule and red-x recovery, the decision classes, the one list, the design-note home and Project close, parking tangents, linking records, committing the thread folder, keeping primary checkouts current and the refresh rule |
 | `ki-delegation` | 2026-10-15 | The background-run contract the thread launches under, the decisions log and its tracked thread folder, and the owner report with its Needs tags, adopted here by reference |
 | `ki-work-folder` | 2026-10-14 | The checkpoint record a thread resumes from and keeps current: naming, label, record form and lifecycle |
-| `ki-tokenomics` | 2026-10-14 | The coordination model purpose a coordinating thread runs on |
+| `ki-env-tokenomics` | 2026-10-14 | The coordination model purpose a coordinating thread runs on |
 | `ki-work` | 2026-10-14 | The Project registry the state-of-play thread manages and labels resolve against |
 
 ## Contents

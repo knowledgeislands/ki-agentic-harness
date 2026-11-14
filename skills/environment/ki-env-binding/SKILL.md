@@ -1,0 +1,48 @@
+---
+name: ki-env-binding
+ki-kind: governance
+ki-applicability: declaration-only
+ki-guild: environment
+ki-depends-on: []
+ki-shared-modules: [binding]
+ki-shared-dependencies: [ki-skills:rubric]
+description: >
+  Govern the portable KI MCP inventory in XDG `mcp-servers.yaml`: schema, client targeting, and mcporter
+  drift. Use runtime binding skills for Claude or Codex surfaces and `ki-env-binding-chezmoi` for chezmoi
+  rendering.
+argument-hint: 'audit [project] | conform [project] | help | educate [project] | refresh'
+---
+
+# Knowledge Islands MCP binding
+
+`ki-env-binding` owns the portable canonical MCP declaration, not any vendor's configuration files. The one source resolves explicit `$KI_MCP_SOURCE` first, then `$XDG_CONFIG_HOME/ki/mcp-servers.yaml` (default `~/.config/ki/mcp-servers.yaml`). Each `mcpServers` entry has a unique `name`, non-empty `clients:`, and one closed stdio or URL definition. URL entries may declare `auth: oauth` for mcporter and typed literal or 1Password-reference headers, every URL entry declares one supported transport for each targeted client, and either definition may select the bounded `ephemeral` or `keep-alive` lifecycle.
+
+The source has client tokens because it serves several clients, but a client adapter owns that client's native configuration and safe writer. This root itself audits only the vendor-neutral mcporter projection. Host-bound runtimes reach these servers through their own host's mcporter bridge, while claude.ai connectors belong to cloud sessions; the standard's [host surface selection](references/standards-cross-surface-binding.md#host-surface-selection) owns that rule. Read [the standard](references/standards-cross-surface-binding.md), [generated rubric](references/rubric.md), and [sources](references/sources.md) for the contract.
+
+## Operating modes
+
+### Mode AUDIT
+
+Run `ki repo audit --skill ki-env-binding --repo <project>`. It checks source validity (`BIND-2`) and, only when `MCPORTER_CONFIG` selects a readable target, compares full non-secret mcporter definitions (`BIND-1`). Missing target evidence is unavailable, never a clean or health result. Judge whether each target set is intentional (`BIND-J1`).
+
+### Mode CONFORM
+
+Run AUDIT first. Edit the canonical source, then use the renderer or client adapter that owns the target. This root never hand-edits a rendered target and proposes no writes.
+
+### Mode EDUCATE
+
+Explain the canonical source and target separation with `ki repo educate --skill ki-env-binding --repo <project>`; it scaffolds no duplicate source.
+
+### Mode REFRESH
+
+Refresh this root only in `ki-agentic-harness` when the portable source/schema or mcporter contract changes. From an installed copy, stop and redirect to the canonical harness. Runtime-specific configuration changes are refreshed by their adapter.
+
+### Mode HELP
+
+Explain this portable boundary and stop without changing anything.
+
+## Runtime bindings and renderer composition
+
+- `ki-env-binding-claude` owns Claude Code, Desktop, and the web convention.
+- `ki-env-binding-chatgpt` owns Codex TOML comparison and the merge-safe native renderer.
+- `ki-env-binding-chezmoi` composes this root with `ki-repo-dotfiles-chezmoi` for a renderer-specific source-repository path.

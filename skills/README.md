@@ -107,7 +107,7 @@ Start, wait on, steer, stop and close Orca supervised workers as a KI delegation
 
 #### `ki-model-radar`
 
-Maintain an evidence-backed radar for models and model-agent routes. Use for model comparisons, benchmark relevance, recommendations, or retirements. Use `ki-agentic-radar` for broader agentic standards, `ki-pulse` for signal discovery, and `ki-tokenomics` for model purpose.
+Maintain an evidence-backed radar for models and model-agent routes. Use for model comparisons, benchmark relevance, recommendations, or retirements. Use `ki-agentic-radar` for broader agentic standards, `ki-pulse` for signal discovery, and `ki-env-tokenomics` for model purpose.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -211,9 +211,9 @@ Create, audit or refresh how a repository keeps its user-interface design: the t
 
 ### Environment
 
-#### `ki-binding`
+#### `ki-env-binding`
 
-Govern the portable KI MCP inventory in XDG `mcp-servers.yaml`: schema, client targeting, and mcporter drift. Use runtime binding skills for Claude or Codex surfaces and `ki-binding-chezmoi` for chezmoi rendering.
+Govern the portable KI MCP inventory in XDG `mcp-servers.yaml`: schema, client targeting, and mcporter drift. Use runtime binding skills for Claude or Codex surfaces and `ki-env-binding-chezmoi` for chezmoi rendering.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -221,39 +221,39 @@ Govern the portable KI MCP inventory in XDG `mcp-servers.yaml`: schema, client t
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-binding-chatgpt`
+#### `ki-env-binding-chatgpt`
 
-Audit or safely render KI-targeted MCP servers into Codex native `[mcp_servers]` without taking over unrelated configuration. Use for Codex MCP drift or rendering; `ki-binding` owns portable source and `ki-binding-claude` owns Claude surfaces.
+Audit or safely render KI-targeted MCP servers into Codex native `[mcp_servers]` without taking over unrelated configuration. Use for Codex MCP drift or rendering; `ki-env-binding` owns portable source and `ki-env-binding-claude` owns Claude surfaces.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
 - **Arguments:** `audit [project] | conform [project] | help | educate [project] | refresh`
-- **Dependencies:** `ki-binding`
+- **Dependencies:** `ki-env-binding`
 - **Runtime:** Runtime-bound: `chatgpt-codex`
 
-#### `ki-binding-chezmoi`
+#### `ki-env-binding-chezmoi`
 
-Audit or conform the chezmoi rendering path from canonical KI `mcp-servers.yaml` through a renderer partial and `chezmoi apply`. Use for that portable-source-to-dotfiles pipeline; `ki-binding` owns the source contract and `ki-repo-dotfiles-chezmoi` owns general chezmoi structure.
+Audit or conform the chezmoi rendering path from canonical KI `mcp-servers.yaml` through a renderer partial and `chezmoi apply`. Use for that portable-source-to-dotfiles pipeline; `ki-env-binding` owns the source contract and `ki-repo-dotfiles-chezmoi` owns general chezmoi structure.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
 - **Arguments:** `audit <target> | conform <target> | help | educate <target> | refresh`
-- **Dependencies:** `ki-binding`, `ki-repo-dotfiles-chezmoi`
+- **Dependencies:** `ki-env-binding`, `ki-repo-dotfiles-chezmoi`
 - **Runtime:** Portable
 
-#### `ki-binding-claude`
+#### `ki-env-binding-claude`
 
-Audit or safely conform Claude-native MCP configuration across Claude Code, Claude Desktop, and the claude.ai web convention. Use when Claude MCP surfaces drift; `ki-binding` owns portable source and `ki-binding-chatgpt` owns Codex.
+Audit or safely conform Claude-native MCP configuration across Claude Code, Claude Desktop, and the claude.ai web convention. Use when Claude MCP surfaces drift; `ki-env-binding` owns portable source and `ki-env-binding-chatgpt` owns Codex.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
 - **Arguments:** `audit [project] | conform [project] | help | educate [project] | refresh`
-- **Dependencies:** `ki-binding`
+- **Dependencies:** `ki-env-binding`
 - **Runtime:** Runtime-bound: `claude-code`
 
 #### `ki-env-housekeeping`
 
-Hold the housekeeping rules every agent host shares: an explicit native-memory policy, durable learning routed into reviewed guidance, read-only session sources, bounded evidence and separately authorised deletion. Use for portable housekeeping policy; `ki-housekeeping-claude` and `ki-housekeeping-chatgpt` own each host's state and `ki-acquire` session capture.
+Hold the housekeeping rules every agent host shares: an explicit native-memory policy, durable learning routed into reviewed guidance, read-only session sources, bounded evidence and separately authorised deletion. Use for portable housekeeping policy; `ki-env-housekeeping-claude` and `ki-env-housekeeping-chatgpt` own each host's state and `ki-acquire` session capture.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -261,7 +261,7 @@ Hold the housekeeping rules every agent host shares: an explicit native-memory p
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-housekeeping-chatgpt`
+#### `ki-env-housekeeping-chatgpt`
 
 Audit ChatGPT opaque local-store evidence and Codex local memory or repository-scoped sessions. Use for ChatGPT store change detection, Codex memory reconciliation, or reviewed Codex thread cleanup; `ki-acquire-chatgpt` owns readable ChatGPT conversation acquisition.
 
@@ -271,9 +271,9 @@ Audit ChatGPT opaque local-store evidence and Codex local memory or repository-s
 - **Dependencies:** `ki-env-housekeeping`
 - **Runtime:** Runtime-bound: `chatgpt-codex`
 
-#### `ki-housekeeping-claude`
+#### `ki-env-housekeeping-claude`
 
-Audit Claude Desktop, Cowork, Claude Code and VSCode state: memory, storage hygiene, plugins, caches and backups. Use for local Claude housekeeping; `ki-acquire` owns exception-based agent-session capture, `ki-repo-kb` KB structure and `ki-tokenomics` context budgets.
+Audit Claude Desktop, Cowork, Claude Code and VSCode state: memory, storage hygiene, plugins, caches and backups. Use for local Claude housekeeping; `ki-acquire` owns exception-based agent-session capture, `ki-repo-kb` KB structure and `ki-env-tokenomics` context budgets.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -281,7 +281,7 @@ Audit Claude Desktop, Cowork, Claude Code and VSCode state: memory, storage hygi
 - **Dependencies:** `ki-env-housekeeping`
 - **Runtime:** Runtime-bound: `claude-code`
 
-#### `ki-tokenomics`
+#### `ki-env-tokenomics`
 
 Govern portable agent-context budgets, standing-surface attribution, and model-purpose policy. Use runtime adapters for observed Claude or Codex evidence and `ki-skills` for description quality.
 
@@ -291,24 +291,24 @@ Govern portable agent-context budgets, standing-surface attribution, and model-p
 - **Dependencies:** None
 - **Runtime:** Portable
 
-#### `ki-tokenomics-chatgpt`
+#### `ki-env-tokenomics-chatgpt`
 
-Audit non-secret Codex repository evidence—configuration, AGENTS.md, skills, and custom agents—for portable tokenomics. Use `ki-tokenomics` for policy and `ki-tokenomics-claude` for Claude evidence; effective session state is outside this filesystem audit.
+Audit non-secret Codex repository evidence—configuration, AGENTS.md, skills, and custom agents—for portable tokenomics. Use `ki-env-tokenomics` for policy and `ki-env-tokenomics-claude` for Claude evidence; effective session state is outside this filesystem audit.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
 - **Arguments:** `audit | conform | educate | refresh | help`
-- **Dependencies:** `ki-tokenomics`
+- **Dependencies:** `ki-env-tokenomics`
 - **Runtime:** Runtime-bound: `chatgpt-codex`
 
-#### `ki-tokenomics-claude`
+#### `ki-env-tokenomics-claude`
 
-Audit non-secret Claude Code repository evidence—instructions, rules, settings, imports, and MCP declarations—for portable tokenomics. Use `ki-tokenomics` for policy and `ki-tokenomics-chatgpt` for Codex evidence; effective session state is outside this filesystem audit.
+Audit non-secret Claude Code repository evidence—instructions, rules, settings, imports, and MCP declarations—for portable tokenomics. Use `ki-env-tokenomics` for policy and `ki-env-tokenomics-chatgpt` for Codex evidence; effective session state is outside this filesystem audit.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
 - **Arguments:** `audit | conform | educate | refresh | help`
-- **Dependencies:** `ki-tokenomics`
+- **Dependencies:** `ki-env-tokenomics`
 - **Runtime:** Runtime-bound: `claude-code`
 
 ### Keystone

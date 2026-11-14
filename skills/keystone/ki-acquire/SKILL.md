@@ -20,7 +20,7 @@ Read [the common acquisition standard](references/standards-acquisition.md), the
 
 This skill owns the common capture contract; provider skills add source completeness and capability rules. Repository guides supply local paths, publication authority and environment steps. Knowledge Islands owns the durable lifecycle and rationale. Executable importers live outside the harness: the Inbox's `ki-muninn` (krisb/inbox, `packages/ki-muninn/`) runs the acquisition the `ki-acquire-granola` and `ki-acquire-chatgpt` provider skills govern, which `ki acquire` in tools-ki ran until 5 November 2026, and will run as `ki muninn` once tools-ki's `ki-<name>` extension mechanism, KI-TOOL-KI-CLI-176, lands. The [generated rubric](references/rubric.md) holds the review criteria. This skill accepts no repository configuration properties.
 
-For owner-selected Claude or Codex full-session capture, read [the agent-session acquisition guidance](references/standards-agent-session-acquisition.md). It owns exception-based session import; `ki-housekeeping-claude` and `ki-housekeeping-chatgpt` retain inventory, memory and cleanup.
+For owner-selected Claude or Codex full-session capture, read [the agent-session acquisition guidance](references/standards-agent-session-acquisition.md). It owns exception-based session import; `ki-env-housekeeping-claude` and `ki-env-housekeeping-chatgpt` retain inventory, memory and cleanup.
 
 ## Operating modes
 

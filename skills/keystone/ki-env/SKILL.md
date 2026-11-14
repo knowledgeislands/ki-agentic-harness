@@ -22,9 +22,9 @@ An environment is where an agent's work runs: the files, tools, access and limit
 
 Start from a family's lead; it names its runtime skills.
 
-- **`ki-binding`** for tools and access: the portable MCP inventory and its drift, with `ki-binding-claude`, `ki-binding-chatgpt` and `ki-binding-chezmoi` for each surface.
-- **`ki-tokenomics`** for limits: context budgets, standing-surface attribution and model-purpose policy, with `ki-tokenomics-claude` and `ki-tokenomics-chatgpt`.
-- **`ki-env-housekeeping`** for the state agent hosts leave: native memory, sessions, caches and storage, with `ki-housekeeping-claude` and `ki-housekeeping-chatgpt`.
+- **`ki-env-binding`** for tools and access: the portable MCP inventory and its drift, with `ki-env-binding-claude`, `ki-env-binding-chatgpt` and `ki-env-binding-chezmoi` for each surface.
+- **`ki-env-tokenomics`** for limits: context budgets, standing-surface attribution and model-purpose policy, with `ki-env-tokenomics-claude` and `ki-env-tokenomics-chatgpt`.
+- **`ki-env-housekeeping`** for the state agent hosts leave: native memory, sessions, caches and storage, with `ki-env-housekeeping-claude` and `ki-env-housekeeping-chatgpt`.
 
 ## Boundaries
 

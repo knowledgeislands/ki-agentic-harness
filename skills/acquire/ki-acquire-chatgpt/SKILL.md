@@ -43,5 +43,5 @@ Run only in the canonical `ki-agentic-harness`; from an installed copy, stop and
 ## Off-ramps
 
 - The Inbox's `ki-muninn` owns execution.
-- `ki-housekeeping-chatgpt` owns opaque local-store evidence, which is never conversation content.
+- `ki-env-housekeeping-chatgpt` owns opaque local-store evidence, which is never conversation content.
 - ChatGPT account administration, project renaming, archiving and deletion stay outside acquisition authority.

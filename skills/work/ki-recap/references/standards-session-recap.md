@@ -184,7 +184,7 @@ Apply these scenario checks when offering it:
 
 The end of a recap is a compaction boundary, not a place to measure headroom. Compaction is the default action there — the recap has just recorded the durable outcome, so the span it summarised is the material the next cycle no longer needs. Do not gate the decision on a context-use percentage or a remaining-headroom figure: no runtime adapter is required to expose one, and a threshold that cannot be read is a rule that never fires.
 
-Identify the next work cycle's scope first. The goal is to reduce active context to the information that cycle needs, not merely to preserve a record of the finished session. Preserve only the scoped digest below, then invoke the documented runtime- or vendor-specific compaction mechanism before beginning `ki-next`, planning, or implementation work. The applicable `ki-tokenomics` runtime adapter owns the mechanism's documented evidence boundary.
+Identify the next work cycle's scope first. The goal is to reduce active context to the information that cycle needs, not merely to preserve a record of the finished session. Preserve only the scoped digest below, then invoke the documented runtime- or vendor-specific compaction mechanism before beginning `ki-next`, planning, or implementation work. The applicable `ki-env-tokenomics` runtime adapter owns the mechanism's documented evidence boundary.
 
 Two conditions withhold the default. **Safety:** do not compact in the middle of an active implementation unit, a pending user decision, an unfinished tool operation, or uncommitted work whose recovery information is not yet recorded. **Minimum footprint:** do not compact when no substantive work has entered context since the last compaction. Judge that by work done, not by tokens counted — a recap that runs immediately after a compaction, or a recap followed straight into `ki-next`, compacts once at the later boundary rather than twice across an unchanged span. This floor exists to stop thrashing; it is not licence to defer compaction across real work.
 
@@ -222,4 +222,4 @@ Write a carry-forward digest of the recapped span:
 <comma-separated terms for future retrieval>
 ```
 
-State plainly that this digest is a **carry-forward artefact**, not a context-window reduction. Runtime- or vendor-specific compaction remains the applicable `ki-tokenomics` adapter's boundary; this procedure offers the documented mechanism at the safe recap-to-new-work boundary, with the aim of retaining only the next cycle's scope.
+State plainly that this digest is a **carry-forward artefact**, not a context-window reduction. Runtime- or vendor-specific compaction remains the applicable `ki-env-tokenomics` adapter's boundary; this procedure offers the documented mechanism at the safe recap-to-new-work boundary, with the aim of retaining only the next cycle's scope.

@@ -4,7 +4,7 @@
 
 Knowledge Islands MCP servers are distributed as governed, versioned Git source. A server does not need to publish its package to npm, the official MCP Registry, Homebrew, or another package registry to be installable.
 
-This standard defines the evidence a server repository supplies to an installer. `tools-ki` owns installation paths, command syntax, staging, activation, rollback, update, uninstall, and receipt storage. `ki-binding` owns client configuration, and website discovery may advertise a command only after the installer exists.
+This standard defines the evidence a server repository supplies to an installer. `tools-ki` owns installation paths, command syntax, staging, activation, rollback, update, uninstall, and receipt storage. `ki-env-binding` owns client configuration, and website discovery may advertise a command only after the installer exists.
 
 ## Release identity
 

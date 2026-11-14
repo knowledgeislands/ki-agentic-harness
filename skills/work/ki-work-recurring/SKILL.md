@@ -58,4 +58,4 @@ On the cadence in [the sources](references/sources.md), compare observed templat
 
 ## Runtime binding
 
-The portable template model does not inspect runtime state. The `ki-housekeeping-claude` off-ramp is explicitly Claude Code-specific and may be named by a template when its separate safety contract applies.
+The portable template model does not inspect runtime state. The `ki-env-housekeeping-claude` off-ramp is explicitly Claude Code-specific and may be named by a template when its separate safety contract applies.

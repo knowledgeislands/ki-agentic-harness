@@ -21,7 +21,7 @@ status: in force
 
 ## 1. Introduction
 
-The housekeeping rules every agent host shares, held by the family's lead so each runtime skill adds only its own host's surfaces and controls. The rules were drawn from what `ki-housekeeping-claude` and `ki-housekeeping-chatgpt` both already held. The decisions behind them are in [the sources file](sources.md#3-decisions).
+The housekeeping rules every agent host shares, held by the family's lead so each runtime skill adds only its own host's surfaces and controls. The rules were drawn from what `ki-env-housekeeping-claude` and `ki-env-housekeeping-chatgpt` both already held. The decisions behind them are in [the sources file](sources.md#3-decisions).
 
 [Back to contents](#contents)
 
@@ -42,7 +42,7 @@ The state an agent host leaves on a machine, wherever the rule is the same for e
 
 - Each host's surfaces, stores, settings and procedures: its runtime skill.
 - Capturing a session's knowledge: `ki-acquire`.
-- Context budgets: `ki-tokenomics`.
+- Context budgets: `ki-env-tokenomics`.
 
 [Back to contents](#contents)
 

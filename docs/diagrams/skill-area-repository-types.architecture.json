@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "44978c02c7ac844f8da80ffd43bafc89c5fa671e"
+      "revision": "22a71c4bd818bd4ec44764616b1f074a13e19002"
     },
     "legend": {
       "mode": "auto",
@@ -33,13 +33,13 @@
   },
   "components": [
     {
-      "id": "ki-binding-chezmoi",
+      "id": "ki-env-binding-chezmoi",
       "type": "database",
-      "label": "ki-binding-chezmoi",
+      "label": "ki-env-binding-chezmoi",
       "sublabel": "environment · opt-in",
       "sources": [
         {
-          "path": "skills/environment/ki-binding-chezmoi/SKILL.md"
+          "path": "skills/environment/ki-env-binding-chezmoi/SKILL.md"
         }
       ],
       "tag": "R8 · CM · F3",
@@ -478,7 +478,7 @@
       "kind": "region",
       "label": "Environment · MCP binding",
       "wraps": [
-        "ki-binding-chezmoi"
+        "ki-env-binding-chezmoi"
       ],
       "pad": 32
     },
@@ -586,8 +586,8 @@
   ],
   "connections": [
     {
-      "id": "ki-binding-chezmoi--ki-repo-dotfiles-chezmoi",
-      "from": "ki-binding-chezmoi",
+      "id": "ki-env-binding-chezmoi--ki-repo-dotfiles-chezmoi",
+      "from": "ki-env-binding-chezmoi",
       "to": "ki-repo-dotfiles-chezmoi",
       "variant": "default"
     },

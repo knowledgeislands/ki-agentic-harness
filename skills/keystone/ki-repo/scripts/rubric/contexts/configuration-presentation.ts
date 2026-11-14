@@ -195,14 +195,14 @@ const arrayElements = (code: string): number => {
 
 /** Skill subtables whose keys are data: area codes, client names, check names, zones, sites, tiers and states. */
 const DATA_MAPS = new Set([
-  'ki-binding.clients',
+  'ki-env-binding.clients',
   'ki-engineering.checks',
   'ki-repo.checks',
   'ki-repo-kb.templates',
   'ki-repo-kb.zones',
   'ki-repo-website.sites',
-  'ki-tokenomics.budgets',
-  'ki-tokenomics.model_tier_bindings',
+  'ki-env-tokenomics.budgets',
+  'ki-env-tokenomics.model_tier_bindings',
   'ki-work-github-issues.lifecycle',
   'ki-work-linear.lifecycle',
   'ki-work-roadmap.areas'

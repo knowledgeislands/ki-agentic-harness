@@ -90,7 +90,7 @@ The Bun-install / Node-run split, the **`bun test` trap**, and the `process.load
 
 ## Runtime binding — MCP operating surfaces
 
-Server-code governance and surface operation are separate. Two standards remain here because they capture MCP-specific runtime semantics that the server standard must route to, while `ki-binding` owns actual cross-surface agreement and safe file-backed binding:
+Server-code governance and surface operation are separate. Two standards remain here because they capture MCP-specific runtime semantics that the server standard must route to, while `ki-env-binding` owns actual cross-surface agreement and safe file-backed binding:
 
 - [Cross-surface MCP enablement](references/standards-cross-surface-enablement.md) defines the canonical source, per-surface control boundary, Cowork sandbox constraint, and binding sequence.
 - [claude.ai connector control](references/standards-claude-ai-connectors.md) defines the manual account, organization, and managed Claude Code policy layers for connectors with no local conform surface.

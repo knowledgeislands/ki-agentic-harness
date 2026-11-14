@@ -4,7 +4,7 @@ This standard defines a portable evidence and lifecycle contract for reviewing l
 
 ## Authority and boundary
 
-The committed `radar.toml` snapshot is the structured current state. External sources support individual claims but do not override reviewed local judgment. `ki-pulse` owns bounded discovery, `ki-tokenomics` owns portable purpose categories, runtime adapters own runtime configuration, and `ki-next` owns downstream work adoption.
+The committed `radar.toml` snapshot is the structured current state. External sources support individual claims but do not override reviewed local judgment. `ki-pulse` owns bounded discovery, `ki-env-tokenomics` owns portable purpose categories, runtime adapters own runtime configuration, and `ki-next` owns downstream work adoption.
 
 AUDIT is read-only. CONFORM may regenerate only the derived rubric publication. Every change to authored radar state remains diagnostic or guarded because correcting a record can change recommendation, support, or retirement meaning.
 

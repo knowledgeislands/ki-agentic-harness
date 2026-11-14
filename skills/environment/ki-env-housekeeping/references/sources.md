@@ -21,7 +21,7 @@ The decisions behind [the housekeeping standard](standard-housekeeping.md) and i
 
 ## 2. Outside sources
 
-None of its own. Each agent host's documentation is a source of its runtime skill, `ki-housekeeping-claude` or `ki-housekeeping-chatgpt`.
+None of its own. Each agent host's documentation is a source of its runtime skill, `ki-env-housekeeping-claude` or `ki-env-housekeeping-chatgpt`.
 
 [Back to contents](#contents)
 

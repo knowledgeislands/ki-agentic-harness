@@ -1,0 +1,30 @@
+# Sources — ki-env-binding-chezmoi
+
+**Refresh:** external-spec · quarterly
+
+Provenance only: the record of _what changed_ lives in git (the REFRESH commit), not a changelog here. This skill tracks no external spec on a clock — it is re-anchored when the chezmoi render contract changes (the `mcp-servers-json` template shape, the `.chezmoidata` wiring, or the `chezmoi apply` behaviour), or when either composed sibling's contract moves.
+
+## In-house
+
+| Tag | Source | Governs | Last reviewed |
+| --- | --- | --- | --- |
+| [BIND] | `ki-env-binding` skill | The renderer-neutral surface audit this skill composes (surfaces agree with the single source) | 2026-10-19 |
+| [CHEZ] | `ki-repo-dotfiles-chezmoi` skill | The generic chezmoi source-repo standard this skill composes (repo is conventional) | 2026-10-19 |
+| [SRC] | `~/.config/ki/mcp-servers.yaml` (canonical) + either `.chezmoidata/*mcp*` (data-merge pattern) or a plain managed source file applied verbatim to the canonical path (managed-source pattern) | The single source and the chezmoi data the render path reads | 2026-10-19 |
+| [ADR] | `ADR-KI-HARNESS-SKILLS-004` (composition-for-backends corollary) | Why the render path is its own composition skill, not a fork or a `--backend` flag | 2026-10-19 |
+| [CHEZMOI] | [Chezmoi templating](https://www.chezmoi.io/user-guide/templating/) | Template/data/partial semantics | 2026-10-19 |
+| [APPLY] | [Chezmoi usage](https://www.chezmoi.io/user-guide/frequently-asked-questions/usage/) | Explicit preview and apply distinction | 2026-10-19 |
+
+## Open gates & watch-items
+
+- **Render-template shape** — the `mcp-servers-json` partial and the target `.tmpl` files it feeds. Re-anchor when chezmoi's templating contract or the per-surface `mcpServers` config shape changes.
+- **Source location** — the canonical XDG home, a `.chezmoidata/*mcp*` render input, or a managed-source-file pattern (BINDCHEZ-3 recognises both repository shapes). Re-anchor if the resolution order in `ki-env-binding` moves, or if a third source shape emerges.
+- **Composed siblings** — if `ki-env-binding`'s recognised surfaces/`clients` tokens or `ki-repo-dotfiles-chezmoi`'s repo-shape criteria change, confirm the BINDCHEZ delta still sits cleanly on top rather than duplicating a sibling criterion.
+
+## Last review
+
+Initial authoring, **2026-07-13** — drafted alongside the renderer-neutral split of `ki-env-binding` and the `ki-repo-dotfiles-chezmoi` standard.
+
+**REFRESH, 2026-07-14** — BINDCHEZ-3 recognises two source-data shapes: `.chezmoidata/*mcp*` (data-merge), or a plain, non-templated, chezmoi-managed source file applied verbatim to the canonical XDG path and read via chezmoi's `include` from the source tree (managed source). Standard, rubric, and session updated together (BINDCHEZ-7). Verified: BINDCHEZ-3 passes with the managed-source pattern.
+
+**REFRESH, 2026-10-19** — Quarterly date-bump. Re-checked ki-env-binding (canonical · on-change, contract stable since 2026-08-12), ki-repo-dotfiles-chezmoi (external-spec · quarterly), and the chezmoi docs (chezmoi 2.71 and 2.72 released; no changes to `.chezmoitemplates` partial semantics, `.chezmoidata` wiring, or `chezmoi apply` behavior). No render-contract drift found.

@@ -8,7 +8,7 @@
     "repository": {
       "url": "https://github.com/knowledgeislands/ki-agentic-harness",
       "provider": "github",
-      "revision": "f2dad23580f08ae497b76c2d16a71d5317ea320a"
+      "revision": "22a71c4bd818bd4ec44764616b1f074a13e19002"
     },
     "legend": {
       "mode": "auto",
@@ -1135,13 +1135,13 @@
       ]
     },
     {
-      "id": "ki-binding",
+      "id": "ki-env-binding",
       "type": "database",
-      "label": "ki-binding",
+      "label": "ki-env-binding",
       "sublabel": "environment · opt-in",
       "sources": [
         {
-          "path": "skills/environment/ki-binding/SKILL.md"
+          "path": "skills/environment/ki-env-binding/SKILL.md"
         }
       ],
       "pos": [
@@ -1154,13 +1154,13 @@
       ]
     },
     {
-      "id": "ki-binding-chatgpt",
+      "id": "ki-env-binding-chatgpt",
       "type": "database",
-      "label": "ki-binding-chatgpt",
+      "label": "ki-env-binding-chatgpt",
       "sublabel": "environment · opt-in",
       "sources": [
         {
-          "path": "skills/environment/ki-binding-chatgpt/SKILL.md"
+          "path": "skills/environment/ki-env-binding-chatgpt/SKILL.md"
         }
       ],
       "pos": [
@@ -1173,13 +1173,13 @@
       ]
     },
     {
-      "id": "ki-binding-chezmoi",
+      "id": "ki-env-binding-chezmoi",
       "type": "database",
-      "label": "ki-binding-chezmoi",
+      "label": "ki-env-binding-chezmoi",
       "sublabel": "environment · opt-in",
       "sources": [
         {
-          "path": "skills/environment/ki-binding-chezmoi/SKILL.md"
+          "path": "skills/environment/ki-env-binding-chezmoi/SKILL.md"
         }
       ],
       "pos": [
@@ -1192,13 +1192,13 @@
       ]
     },
     {
-      "id": "ki-binding-claude",
+      "id": "ki-env-binding-claude",
       "type": "database",
-      "label": "ki-binding-claude",
+      "label": "ki-env-binding-claude",
       "sublabel": "environment · opt-in",
       "sources": [
         {
-          "path": "skills/environment/ki-binding-claude/SKILL.md"
+          "path": "skills/environment/ki-env-binding-claude/SKILL.md"
         }
       ],
       "pos": [
@@ -1211,13 +1211,13 @@
       ]
     },
     {
-      "id": "ki-tokenomics",
+      "id": "ki-env-tokenomics",
       "type": "database",
-      "label": "ki-tokenomics",
+      "label": "ki-env-tokenomics",
       "sublabel": "environment · opt-in",
       "sources": [
         {
-          "path": "skills/environment/ki-tokenomics/SKILL.md"
+          "path": "skills/environment/ki-env-tokenomics/SKILL.md"
         }
       ],
       "pos": [
@@ -1230,13 +1230,13 @@
       ]
     },
     {
-      "id": "ki-tokenomics-chatgpt",
+      "id": "ki-env-tokenomics-chatgpt",
       "type": "database",
-      "label": "ki-tokenomics-chatgpt",
+      "label": "ki-env-tokenomics-chatgpt",
       "sublabel": "environment · opt-in",
       "sources": [
         {
-          "path": "skills/environment/ki-tokenomics-chatgpt/SKILL.md"
+          "path": "skills/environment/ki-env-tokenomics-chatgpt/SKILL.md"
         }
       ],
       "pos": [
@@ -1249,13 +1249,13 @@
       ]
     },
     {
-      "id": "ki-tokenomics-claude",
+      "id": "ki-env-tokenomics-claude",
       "type": "database",
-      "label": "ki-tokenomics-claude",
+      "label": "ki-env-tokenomics-claude",
       "sublabel": "environment · opt-in",
       "sources": [
         {
-          "path": "skills/environment/ki-tokenomics-claude/SKILL.md"
+          "path": "skills/environment/ki-env-tokenomics-claude/SKILL.md"
         }
       ],
       "pos": [
@@ -1287,13 +1287,13 @@
       ]
     },
     {
-      "id": "ki-housekeeping-chatgpt",
+      "id": "ki-env-housekeeping-chatgpt",
       "type": "database",
-      "label": "ki-housekeeping-chatgpt",
+      "label": "ki-env-housekeeping-chatgpt",
       "sublabel": "environment · opt-in",
       "sources": [
         {
-          "path": "skills/environment/ki-housekeeping-chatgpt/SKILL.md"
+          "path": "skills/environment/ki-env-housekeeping-chatgpt/SKILL.md"
         }
       ],
       "pos": [
@@ -1306,13 +1306,13 @@
       ]
     },
     {
-      "id": "ki-housekeeping-claude",
+      "id": "ki-env-housekeeping-claude",
       "type": "database",
-      "label": "ki-housekeeping-claude",
+      "label": "ki-env-housekeeping-claude",
       "sublabel": "environment · opt-in",
       "sources": [
         {
-          "path": "skills/environment/ki-housekeeping-claude/SKILL.md"
+          "path": "skills/environment/ki-env-housekeeping-claude/SKILL.md"
         }
       ],
       "pos": [
@@ -1749,10 +1749,10 @@
       "kind": "region",
       "label": "Environment · MCP binding",
       "wraps": [
-        "ki-binding",
-        "ki-binding-chatgpt",
-        "ki-binding-chezmoi",
-        "ki-binding-claude"
+        "ki-env-binding",
+        "ki-env-binding-chatgpt",
+        "ki-env-binding-chezmoi",
+        "ki-env-binding-claude"
       ],
       "pad": 10
     },
@@ -1760,9 +1760,9 @@
       "kind": "region",
       "label": "Environment · Tokenomics",
       "wraps": [
-        "ki-tokenomics",
-        "ki-tokenomics-chatgpt",
-        "ki-tokenomics-claude"
+        "ki-env-tokenomics",
+        "ki-env-tokenomics-chatgpt",
+        "ki-env-tokenomics-claude"
       ],
       "pad": 10
     },
@@ -1771,8 +1771,8 @@
       "label": "Environment · Housekeeping",
       "wraps": [
         "ki-env-housekeeping",
-        "ki-housekeeping-chatgpt",
-        "ki-housekeeping-claude"
+        "ki-env-housekeeping-chatgpt",
+        "ki-env-housekeeping-claude"
       ],
       "pad": 10
     },
@@ -1780,16 +1780,16 @@
       "kind": "region",
       "label": "Environment · 10 skills",
       "wraps": [
-        "ki-binding",
-        "ki-binding-chatgpt",
-        "ki-binding-chezmoi",
-        "ki-binding-claude",
-        "ki-tokenomics",
-        "ki-tokenomics-chatgpt",
-        "ki-tokenomics-claude",
+        "ki-env-binding",
+        "ki-env-binding-chatgpt",
+        "ki-env-binding-chezmoi",
+        "ki-env-binding-claude",
+        "ki-env-tokenomics",
+        "ki-env-tokenomics-chatgpt",
+        "ki-env-tokenomics-claude",
         "ki-env-housekeeping",
-        "ki-housekeeping-chatgpt",
-        "ki-housekeeping-claude"
+        "ki-env-housekeeping-chatgpt",
+        "ki-env-housekeeping-claude"
       ],
       "pad": 24
     },

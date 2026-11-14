@@ -300,7 +300,7 @@ yarn-error.log*
     const root = repository()
     writeFileSync(
       join(root, '.ki.toml'),
-      `${KI_CONFIGURATION_HEADER}[repo]\n\n[skills.ki-repo]\n\n[skills.ki-authoring]\n\n[skills.ki-engineering]\n\n[skills.ki-binding]\n\n[skills.ki-work]\n`
+      `${KI_CONFIGURATION_HEADER}[repo]\n\n[skills.ki-repo]\n\n[skills.ki-authoring]\n\n[skills.ki-engineering]\n\n[skills.ki-env-binding]\n\n[skills.ki-work]\n`
     )
 
     expect((await collectAuditFindings([root])).findings).toContainEqual(
@@ -454,7 +454,7 @@ describe('runtime environment coverage', () => {
         level: 'FAIL',
         code: 'RUNTIMES-2',
         message:
-          'supported runtime coverage requires missing table(s): [skills.ki-binding], [skills.ki-binding-chatgpt], [skills.ki-binding-claude], [skills.ki-housekeeping-chatgpt], [skills.ki-housekeeping-claude], [skills.ki-tokenomics], [skills.ki-tokenomics-chatgpt], [skills.ki-tokenomics-claude]',
+          'supported runtime coverage requires missing table(s): [skills.ki-env-binding], [skills.ki-env-binding-chatgpt], [skills.ki-env-binding-claude], [skills.ki-env-housekeeping-chatgpt], [skills.ki-env-housekeeping-claude], [skills.ki-env-tokenomics], [skills.ki-env-tokenomics-chatgpt], [skills.ki-env-tokenomics-claude]',
         subject: expect.any(String)
       }
     ])
@@ -479,14 +479,14 @@ describe('runtime environment coverage', () => {
     runRuntimeCoverageConform(session)
 
     const expected = [
-      'ki-binding',
-      'ki-binding-chatgpt',
-      'ki-binding-claude',
-      'ki-housekeeping-chatgpt',
-      'ki-housekeeping-claude',
-      'ki-tokenomics',
-      'ki-tokenomics-chatgpt',
-      'ki-tokenomics-claude'
+      'ki-env-binding',
+      'ki-env-binding-chatgpt',
+      'ki-env-binding-claude',
+      'ki-env-housekeeping-chatgpt',
+      'ki-env-housekeeping-claude',
+      'ki-env-tokenomics',
+      'ki-env-tokenomics-chatgpt',
+      'ki-env-tokenomics-claude'
     ]
     expect(inspected).toEqual([expected])
     expect(requested).toEqual([expected])
@@ -497,21 +497,21 @@ describe('runtime environment coverage', () => {
     const complete = `[skills.ki-repo]
 supported_runtimes = ["claude-code", "chatgpt-codex"]
 
-[skills.ki-housekeeping-claude]
+[skills.ki-env-housekeeping-claude]
 
-[skills.ki-housekeeping-chatgpt]
+[skills.ki-env-housekeeping-chatgpt]
 
-[skills.ki-binding]
+[skills.ki-env-binding]
 
-[skills.ki-binding-claude]
+[skills.ki-env-binding-claude]
 
-[skills.ki-binding-chatgpt]
+[skills.ki-env-binding-chatgpt]
 
-[skills.ki-tokenomics]
+[skills.ki-env-tokenomics]
 
-[skills.ki-tokenomics-claude]
+[skills.ki-env-tokenomics-claude]
 
-[skills.ki-tokenomics-chatgpt]
+[skills.ki-env-tokenomics-chatgpt]
 `
     const activeRoot = repository()
     const activeRequests: string[][] = []
@@ -573,21 +573,21 @@ supported_runtimes = ["claude-code", "chatgpt-codex"]
       await runtimeFindings(`[skills.ki-repo]
 supported_runtimes = ["claude-code", "claude-desktop", "chatgpt-codex"]
 
-[skills.ki-tokenomics]
+[skills.ki-env-tokenomics]
 
-[skills.ki-binding]
+[skills.ki-env-binding]
 
-[skills.ki-binding-claude]
+[skills.ki-env-binding-claude]
 
-[skills.ki-binding-chatgpt]
+[skills.ki-env-binding-chatgpt]
 
-[skills.ki-housekeeping-claude]
+[skills.ki-env-housekeeping-claude]
 
-[skills.ki-housekeeping-chatgpt]
+[skills.ki-env-housekeeping-chatgpt]
 
-[skills.ki-tokenomics-claude]
+[skills.ki-env-tokenomics-claude]
 
-[skills.ki-tokenomics-chatgpt]
+[skills.ki-env-tokenomics-chatgpt]
 `)
     ).toEqual([])
   })

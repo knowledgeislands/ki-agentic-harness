@@ -4,7 +4,7 @@ This runtime-bound standard explains how one source of truth enables Knowledge I
 
 ## Source and ownership
 
-The canonical source is `~/.config/ki/mcp-servers.yaml`. It declares each server and its target clients without assuming a particular renderer. `ki-binding` audits agreement across surfaces; `ki-binding-chezmoi` owns the maintainer-specific chezmoi rendering. A surface must not become a second authored server registry.
+The canonical source is `~/.config/ki/mcp-servers.yaml`. It declares each server and its target clients without assuming a particular renderer. `ki-env-binding` audits agreement across surfaces; `ki-env-binding-chezmoi` owns the maintainer-specific chezmoi rendering. A surface must not become a second authored server registry.
 
 ## Per-surface targeting
 

@@ -124,9 +124,15 @@ export const FUNCTIONAL_AREAS: readonly FunctionalArea[] = [
     short: 'environment',
     purpose: 'bind, budget and clean the agent runtimes',
     groups: [
-      { title: 'MCP binding', skills: ['ki-binding', 'ki-binding-claude', 'ki-binding-chatgpt', 'ki-binding-chezmoi'] },
-      { title: 'Tokenomics', skills: ['ki-tokenomics', 'ki-tokenomics-claude', 'ki-tokenomics-chatgpt'] },
-      { title: 'Housekeeping', skills: ['ki-env-housekeeping', 'ki-housekeeping-claude', 'ki-housekeeping-chatgpt'] }
+      {
+        title: 'MCP binding',
+        skills: ['ki-env-binding', 'ki-env-binding-claude', 'ki-env-binding-chatgpt', 'ki-env-binding-chezmoi']
+      },
+      { title: 'Tokenomics', skills: ['ki-env-tokenomics', 'ki-env-tokenomics-claude', 'ki-env-tokenomics-chatgpt'] },
+      {
+        title: 'Housekeeping',
+        skills: ['ki-env-housekeeping', 'ki-env-housekeeping-claude', 'ki-env-housekeeping-chatgpt']
+      }
     ]
   },
   {

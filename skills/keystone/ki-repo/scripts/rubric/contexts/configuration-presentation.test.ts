@@ -41,9 +41,9 @@ wiki = false
 
 ${banner('Governance and runtime')}[skills.ki-engineering]
 
-[skills.ki-binding]
+[skills.ki-env-binding]
 
-[skills.ki-binding.clients.codex]
+[skills.ki-env-binding.clients.codex]
 enabled = true
 
 ${banner('Change management')}[skills.ki-work]
@@ -62,7 +62,7 @@ adapter = "roadmap"
 
 [skills.ki-engineering]
 
-[skills.ki-binding]
+[skills.ki-env-binding]
 
 [skills.ki-work]
 `)
@@ -141,7 +141,7 @@ harnesses = [
 [skills.ki-repo]
 
 ${banner('Relationships')}
-[skills.ki-binding]
+[skills.ki-env-binding]
 
 [skills.ki-trades]
 `)
@@ -160,7 +160,7 @@ list = [
 ${banner('Relationships')}
 [skills.ki-trades]
 
-[skills.ki-binding]
+[skills.ki-env-binding]
 `)
     expect(issues).toEqual([
       'line 6: [skills.ki-repo] must follow exactly one blank line',
@@ -246,9 +246,9 @@ GOV = "Governance"
 [skills."ki-engineering".settings]
 enabled = true
 
-[skills.ki-binding]
+[skills.ki-env-binding]
 
-[skills.ki-binding.clients]
+[skills.ki-env-binding.clients]
 example = "example/client"
 
 [skills.ki-trades]
