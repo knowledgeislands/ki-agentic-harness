@@ -694,8 +694,8 @@ rect.c-bg-rect { fill: var(--bg); }
         </g>
 
         <!-- Components -->
-        <g id="node-ki-recap" data-node-id="ki-recap" data-node-label="ki-recap" tabindex="0" role="button" aria-label="Focus ki-recap, change management · command, Work and delivery · Delivery cycle" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="change management · command" data-node-tag="R– · CM · F2" data-node-context="Work and delivery · Delivery cycle">
-          <title>ki-recap · change management · command · Work and delivery · Delivery cycle · R– · CM · F2</title>
+        <g id="node-ki-recap" data-node-id="ki-recap" data-node-label="ki-recap" tabindex="0" role="button" aria-label="Focus ki-recap, work · command, Work and delivery · Delivery cycle" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="work · command" data-node-tag="R– · CM · F2" data-node-context="Work and delivery · Delivery cycle">
+          <title>ki-recap · work · command · Work and delivery · Delivery cycle · R– · CM · F2</title>
           <rect x="44" y="64" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="44" y="64" width="208" height="76" rx="8" class="c-frontend" data-animate="node" style="--step: 0; --flow-node-name: archify-relay-node-0;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(50 70) scale(0.6875)">
@@ -705,12 +705,12 @@ rect.c-bg-rect { fill: var(--bg); }
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
           <text data-node-label="" x="148" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-recap</text>
-        <text x="148" y="116" class="t-muted" font-size="9" text-anchor="middle">change management · command</text>
+        <text x="148" y="116" class="t-muted" font-size="9" text-anchor="middle">work · command</text>
         <text x="148" y="132" class="t-frontend" font-size="7" text-anchor="middle">R– · CM · F2</text>
         </g>
 
-        <g id="node-ki-repo-dotfiles-chezmoi" data-node-id="ki-repo-dotfiles-chezmoi" data-node-label="ki-repo-dotfiles-chezmoi" tabindex="0" role="button" aria-label="Focus ki-repo-dotfiles-chezmoi, repository structure · opt-in, Repository types · Single-type repositories" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository structure · opt-in" data-node-tag="R9 · CM · F3" data-node-context="Repository types · Single-type repositories">
-          <title>ki-repo-dotfiles-chezmoi · repository structure · opt-in · Repository types · Single-type repositories · R9 · CM · F3</title>
+        <g id="node-ki-repo-dotfiles-chezmoi" data-node-id="ki-repo-dotfiles-chezmoi" data-node-label="ki-repo-dotfiles-chezmoi" tabindex="0" role="button" aria-label="Focus ki-repo-dotfiles-chezmoi, repository · opt-in, Repository types · Single-type repositories" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository · opt-in" data-node-tag="R9 · CM · F3" data-node-context="Repository types · Single-type repositories">
+          <title>ki-repo-dotfiles-chezmoi · repository · opt-in · Repository types · Single-type repositories · R9 · CM · F3</title>
           <rect x="364" y="64" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="364" y="64" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 3; --flow-node-name: archify-relay-node-2;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(370 70) scale(0.6875)">
@@ -718,7 +718,7 @@ rect.c-bg-rect { fill: var(--bg); }
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
           <text data-node-label="" x="468" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo-dotfiles-chezmoi</text>
-        <text x="468" y="116" class="t-muted" font-size="9" text-anchor="middle">repository structure · opt-in</text>
+        <text x="468" y="116" class="t-muted" font-size="9" text-anchor="middle">repository · opt-in</text>
         <text x="468" y="132" class="t-database" font-size="7" text-anchor="middle">R9 · CM · F3</text>
         </g>
 
@@ -762,8 +762,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="692" y="648" class="t-frontend" font-size="7" text-anchor="middle">R– · C0 · F3</text>
         </g>
 
-        <g id="node-ki-diagrams" data-node-id="ki-diagrams" data-node-label="ki-diagrams" tabindex="0" role="button" aria-label="Focus ki-diagrams, governance · opt-in, Fundamentals · 9 skills › Repository and writing" aria-pressed="false" data-node-kind="database" data-node-sublabel="governance · opt-in" data-node-tag="R9 · CL · F8" data-node-context="Fundamentals · 9 skills › Repository and writing">
-          <title>ki-diagrams · governance · opt-in · Fundamentals · 9 skills › Repository and writing · R9 · CL · F8</title>
+        <g id="node-ki-diagrams" data-node-id="ki-diagrams" data-node-label="ki-diagrams" tabindex="0" role="button" aria-label="Focus ki-diagrams, authoring · opt-in, Fundamentals · 9 skills › Repository and writing" aria-pressed="false" data-node-kind="database" data-node-sublabel="authoring · opt-in" data-node-tag="R9 · CL · F8" data-node-context="Fundamentals · 9 skills › Repository and writing">
+          <title>ki-diagrams · authoring · opt-in · Fundamentals · 9 skills › Repository and writing · R9 · CL · F8</title>
           <rect x="300" y="268" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="300" y="268" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 6; --flow-node-name: archify-relay-node-7;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(306 274) scale(0.6875)">
@@ -771,12 +771,12 @@ rect.c-bg-rect { fill: var(--bg); }
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
           <text data-node-label="" x="404" y="304" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-diagrams</text>
-        <text x="404" y="320" class="t-muted" font-size="9" text-anchor="middle">governance · opt-in</text>
+        <text x="404" y="320" class="t-muted" font-size="9" text-anchor="middle">authoring · opt-in</text>
         <text x="404" y="336" class="t-database" font-size="7" text-anchor="middle">R9 · CL · F8</text>
         </g>
 
-        <g id="node-ki-git" data-node-id="ki-git" data-node-label="ki-git" tabindex="0" role="button" aria-label="Focus ki-git, governance · opt-in, Fundamentals · 9 skills › Repository and writing" aria-pressed="false" data-node-kind="database" data-node-sublabel="governance · opt-in" data-node-tag="R17 · CM · F3" data-node-context="Fundamentals · 9 skills › Repository and writing">
-          <title>ki-git · governance · opt-in · Fundamentals · 9 skills › Repository and writing · R17 · CM · F3</title>
+        <g id="node-ki-git" data-node-id="ki-git" data-node-label="ki-git" tabindex="0" role="button" aria-label="Focus ki-git, repository · opt-in, Fundamentals · 9 skills › Repository and writing" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository · opt-in" data-node-tag="R17 · CM · F3" data-node-context="Fundamentals · 9 skills › Repository and writing">
+          <title>ki-git · repository · opt-in · Fundamentals · 9 skills › Repository and writing · R17 · CM · F3</title>
           <rect x="300" y="392" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="300" y="392" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 3; --flow-node-name: archify-relay-node-5;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(306 398) scale(0.6875)">
@@ -784,7 +784,7 @@ rect.c-bg-rect { fill: var(--bg); }
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
           <text data-node-label="" x="404" y="428" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-git</text>
-        <text x="404" y="444" class="t-muted" font-size="9" text-anchor="middle">governance · opt-in</text>
+        <text x="404" y="444" class="t-muted" font-size="9" text-anchor="middle">repository · opt-in</text>
         <text x="404" y="460" class="t-database" font-size="7" text-anchor="middle">R17 · CM · F3</text>
         </g>
 
@@ -814,8 +814,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="148" y="460" class="t-security" font-size="7" text-anchor="middle">R51 · CL · F7</text>
         </g>
 
-        <g id="node-ki-repo-harness" data-node-id="ki-repo-harness" data-node-label="ki-repo-harness" tabindex="0" role="button" aria-label="Focus ki-repo-harness, repository structure · opt-in, Fundamentals · 9 skills › Skills and harness" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository structure · opt-in" data-node-tag="R27 · CL · F4" data-node-context="Fundamentals · 9 skills › Skills and harness">
-          <title>ki-repo-harness · repository structure · opt-in · Fundamentals · 9 skills › Skills and harness · R27 · CL · F4</title>
+        <g id="node-ki-repo-harness" data-node-id="ki-repo-harness" data-node-label="ki-repo-harness" tabindex="0" role="button" aria-label="Focus ki-repo-harness, repository · opt-in, Fundamentals · 9 skills › Skills and harness" aria-pressed="false" data-node-kind="database" data-node-sublabel="repository · opt-in" data-node-tag="R27 · CL · F4" data-node-context="Fundamentals · 9 skills › Skills and harness">
+          <title>ki-repo-harness · repository · opt-in · Fundamentals · 9 skills › Skills and harness · R27 · CL · F4</title>
           <rect x="44" y="580" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="44" y="580" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 4; --flow-node-name: archify-relay-node-3;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(50 586) scale(0.6875)">
@@ -823,7 +823,7 @@ rect.c-bg-rect { fill: var(--bg); }
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
           <text data-node-label="" x="148" y="616" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-repo-harness</text>
-        <text x="148" y="632" class="t-muted" font-size="9" text-anchor="middle">repository structure · opt-in</text>
+        <text x="148" y="632" class="t-muted" font-size="9" text-anchor="middle">repository · opt-in</text>
         <text x="148" y="648" class="t-database" font-size="7" text-anchor="middle">R27 · CL · F4</text>
         </g>
 
@@ -839,20 +839,20 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="404" y="648" class="t-backend" font-size="7" text-anchor="middle">R96 · CL · F9</text>
         </g>
 
-        <g id="node-ki-decision-records" data-node-id="ki-decision-records" data-node-label="ki-decision-records" tabindex="0" role="button" aria-label="Focus ki-decision-records, governance · automatic, Records and code · Records" aria-pressed="false" data-node-kind="backend" data-node-sublabel="governance · automatic" data-node-tag="R37 · CL · F9" data-node-context="Records and code · Records">
-          <title>ki-decision-records · governance · automatic · Records and code · Records · R37 · CL · F9</title>
+        <g id="node-ki-decision-records" data-node-id="ki-decision-records" data-node-label="ki-decision-records" tabindex="0" role="button" aria-label="Focus ki-decision-records, authoring · automatic, Records and code · Records" aria-pressed="false" data-node-kind="backend" data-node-sublabel="authoring · automatic" data-node-tag="R37 · CL · F9" data-node-context="Records and code · Records">
+          <title>ki-decision-records · authoring · automatic · Records and code · Records · R37 · CL · F9</title>
           <rect x="44" y="784" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="44" y="784" width="208" height="76" rx="8" class="c-backend" data-animate="node" style="--step: 5; --flow-node-name: archify-relay-node-6;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(50 790) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
           <text data-node-label="" x="148" y="820" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-decision-records</text>
-        <text x="148" y="836" class="t-muted" font-size="9" text-anchor="middle">governance · automatic</text>
+        <text x="148" y="836" class="t-muted" font-size="9" text-anchor="middle">authoring · automatic</text>
         <text x="148" y="852" class="t-backend" font-size="7" text-anchor="middle">R37 · CL · F9</text>
         </g>
 
-        <g id="node-ki-work-roadmap" data-node-id="ki-work-roadmap" data-node-label="ki-work-roadmap" tabindex="0" role="button" aria-label="Focus ki-work-roadmap, change management · opt-in, Work and delivery · Work items" aria-pressed="false" data-node-kind="database" data-node-sublabel="change management · opt-in" data-node-tag="R24 · CL · F4" data-node-context="Work and delivery · Work items">
-          <title>ki-work-roadmap · change management · opt-in · Work and delivery · Work items · R24 · CL · F4</title>
+        <g id="node-ki-work-roadmap" data-node-id="ki-work-roadmap" data-node-label="ki-work-roadmap" tabindex="0" role="button" aria-label="Focus ki-work-roadmap, work · opt-in, Work and delivery · Work items" aria-pressed="false" data-node-kind="database" data-node-sublabel="work · opt-in" data-node-tag="R24 · CL · F4" data-node-context="Work and delivery · Work items">
+          <title>ki-work-roadmap · work · opt-in · Work and delivery · Work items · R24 · CL · F4</title>
           <rect x="364" y="784" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="364" y="784" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 9; --flow-node-name: archify-relay-node-10;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(370 790) scale(0.6875)">
@@ -860,7 +860,7 @@ rect.c-bg-rect { fill: var(--bg); }
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
           <text data-node-label="" x="468" y="820" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-work-roadmap</text>
-        <text x="468" y="836" class="t-muted" font-size="9" text-anchor="middle">change management · opt-in</text>
+        <text x="468" y="836" class="t-muted" font-size="9" text-anchor="middle">work · opt-in</text>
         <text x="468" y="852" class="t-database" font-size="7" text-anchor="middle">R24 · CL · F4</text>
         </g>
 

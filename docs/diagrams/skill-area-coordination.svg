@@ -703,8 +703,8 @@ rect.c-bg-rect { fill: var(--bg); }
         </g>
 
         <!-- Components -->
-        <g id="node-ki-batch" data-node-id="ki-batch" data-node-label="ki-batch" tabindex="0" role="button" aria-label="Focus ki-batch, change management · command, Work and delivery · Delivery cycle" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="change management · command" data-node-tag="R– · CM · F5" data-node-context="Work and delivery · Delivery cycle">
-          <title>ki-batch · change management · command · Work and delivery · Delivery cycle · R– · CM · F5</title>
+        <g id="node-ki-batch" data-node-id="ki-batch" data-node-label="ki-batch" tabindex="0" role="button" aria-label="Focus ki-batch, work · command, Work and delivery · Delivery cycle" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="work · command" data-node-tag="R– · CM · F5" data-node-context="Work and delivery · Delivery cycle">
+          <title>ki-batch · work · command · Work and delivery · Delivery cycle · R– · CM · F5</title>
           <rect x="44" y="64" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="44" y="64" width="208" height="76" rx="8" class="c-frontend" data-animate="node" style="--step: 0; --flow-node-name: archify-relay-node-0;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(50 70) scale(0.6875)">
@@ -714,12 +714,12 @@ rect.c-bg-rect { fill: var(--bg); }
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
           <text data-node-label="" x="148" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-batch</text>
-        <text x="148" y="116" class="t-muted" font-size="9" text-anchor="middle">change management · command</text>
+        <text x="148" y="116" class="t-muted" font-size="9" text-anchor="middle">work · command</text>
         <text x="148" y="132" class="t-frontend" font-size="7" text-anchor="middle">R– · CM · F5</text>
         </g>
 
-        <g id="node-ki-implement" data-node-id="ki-implement" data-node-label="ki-implement" tabindex="0" role="button" aria-label="Focus ki-implement, change management · command, Work and delivery · Delivery cycle" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="change management · command" data-node-tag="R– · CS · F2" data-node-context="Work and delivery · Delivery cycle">
-          <title>ki-implement · change management · command · Work and delivery · Delivery cycle · R– · CS · F2</title>
+        <g id="node-ki-implement" data-node-id="ki-implement" data-node-label="ki-implement" tabindex="0" role="button" aria-label="Focus ki-implement, work · command, Work and delivery · Delivery cycle" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="work · command" data-node-tag="R– · CS · F2" data-node-context="Work and delivery · Delivery cycle">
+          <title>ki-implement · work · command · Work and delivery · Delivery cycle · R– · CS · F2</title>
           <rect x="300" y="64" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="300" y="64" width="208" height="76" rx="8" class="c-frontend" data-animate="node" style="--step: 5; --flow-node-name: archify-relay-node-2;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(306 70) scale(0.6875)">
@@ -729,12 +729,12 @@ rect.c-bg-rect { fill: var(--bg); }
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
           <text data-node-label="" x="404" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-implement</text>
-        <text x="404" y="116" class="t-muted" font-size="9" text-anchor="middle">change management · command</text>
+        <text x="404" y="116" class="t-muted" font-size="9" text-anchor="middle">work · command</text>
         <text x="404" y="132" class="t-frontend" font-size="7" text-anchor="middle">R– · CS · F2</text>
         </g>
 
-        <g id="node-ki-plan" data-node-id="ki-plan" data-node-label="ki-plan" tabindex="0" role="button" aria-label="Focus ki-plan, change management · command, Work and delivery · Delivery cycle" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="change management · command" data-node-tag="R– · CS · F1" data-node-context="Work and delivery · Delivery cycle">
-          <title>ki-plan · change management · command · Work and delivery · Delivery cycle · R– · CS · F1</title>
+        <g id="node-ki-plan" data-node-id="ki-plan" data-node-label="ki-plan" tabindex="0" role="button" aria-label="Focus ki-plan, work · command, Work and delivery · Delivery cycle" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="work · command" data-node-tag="R– · CS · F1" data-node-context="Work and delivery · Delivery cycle">
+          <title>ki-plan · work · command · Work and delivery · Delivery cycle · R– · CS · F1</title>
           <rect x="556" y="64" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="556" y="64" width="208" height="76" rx="8" class="c-frontend" data-animate="node" style="--step: 6; --flow-node-name: archify-relay-node-3;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(562 70) scale(0.6875)">
@@ -744,7 +744,7 @@ rect.c-bg-rect { fill: var(--bg); }
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
           <text data-node-label="" x="660" y="100" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-plan</text>
-        <text x="660" y="116" class="t-muted" font-size="9" text-anchor="middle">change management · command</text>
+        <text x="660" y="116" class="t-muted" font-size="9" text-anchor="middle">work · command</text>
         <text x="660" y="132" class="t-frontend" font-size="7" text-anchor="middle">R– · CS · F1</text>
         </g>
 
@@ -763,8 +763,8 @@ rect.c-bg-rect { fill: var(--bg); }
         <text x="980" y="132" class="t-frontend" font-size="7" text-anchor="middle">R– · C0 · F3</text>
         </g>
 
-        <g id="node-ki-coordination" data-node-id="ki-coordination" data-node-label="ki-coordination" tabindex="0" role="button" aria-label="Focus ki-coordination, change management · opt-in, Coordination · 7 skills › Delegation and programme" aria-pressed="false" data-node-kind="database" data-node-sublabel="change management · opt-in" data-node-tag="R13 · CL · F17" data-node-context="Coordination · 7 skills › Delegation and programme">
-          <title>ki-coordination · change management · opt-in · Coordination · 7 skills › Delegation and programme · R13 · CL · F17</title>
+        <g id="node-ki-coordination" data-node-id="ki-coordination" data-node-label="ki-coordination" tabindex="0" role="button" aria-label="Focus ki-coordination, work · opt-in, Coordination · 7 skills › Delegation and programme" aria-pressed="false" data-node-kind="database" data-node-sublabel="work · opt-in" data-node-tag="R13 · CL · F17" data-node-context="Coordination · 7 skills › Delegation and programme">
+          <title>ki-coordination · work · opt-in · Coordination · 7 skills › Delegation and programme · R13 · CL · F17</title>
           <rect x="300" y="268" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="300" y="268" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 1; --flow-node-name: archify-relay-node-7;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(306 274) scale(0.6875)">
@@ -772,12 +772,12 @@ rect.c-bg-rect { fill: var(--bg); }
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
           <text data-node-label="" x="404" y="304" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-coordination</text>
-        <text x="404" y="320" class="t-muted" font-size="9" text-anchor="middle">change management · opt-in</text>
+        <text x="404" y="320" class="t-muted" font-size="9" text-anchor="middle">work · opt-in</text>
         <text x="404" y="336" class="t-database" font-size="7" text-anchor="middle">R13 · CL · F17</text>
         </g>
 
-        <g id="node-ki-delegation" data-node-id="ki-delegation" data-node-label="ki-delegation" tabindex="0" role="button" aria-label="Focus ki-delegation, governance · opt-in, Coordination · 7 skills › Delegation and programme" aria-pressed="false" data-node-kind="database" data-node-sublabel="governance · opt-in" data-node-tag="R6 · CM · F4" data-node-context="Coordination · 7 skills › Delegation and programme">
-          <title>ki-delegation · governance · opt-in · Coordination · 7 skills › Delegation and programme · R6 · CM · F4</title>
+        <g id="node-ki-delegation" data-node-id="ki-delegation" data-node-label="ki-delegation" tabindex="0" role="button" aria-label="Focus ki-delegation, agentic systems · opt-in, Coordination · 7 skills › Delegation and programme" aria-pressed="false" data-node-kind="database" data-node-sublabel="agentic systems · opt-in" data-node-tag="R6 · CM · F4" data-node-context="Coordination · 7 skills › Delegation and programme">
+          <title>ki-delegation · agentic systems · opt-in · Coordination · 7 skills › Delegation and programme · R6 · CM · F4</title>
           <rect x="44" y="268" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="44" y="268" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 1; --flow-node-name: archify-relay-node-6;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(50 274) scale(0.6875)">
@@ -785,12 +785,12 @@ rect.c-bg-rect { fill: var(--bg); }
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
           <text data-node-label="" x="148" y="304" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-delegation</text>
-        <text x="148" y="320" class="t-muted" font-size="9" text-anchor="middle">governance · opt-in</text>
+        <text x="148" y="320" class="t-muted" font-size="9" text-anchor="middle">agentic systems · opt-in</text>
         <text x="148" y="336" class="t-database" font-size="7" text-anchor="middle">R6 · CM · F4</text>
         </g>
 
-        <g id="node-ki-meeting" data-node-id="ki-meeting" data-node-label="ki-meeting" tabindex="0" role="button" aria-label="Focus ki-meeting, change management · command, Coordination · 7 skills › Delegation and programme" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="change management · command" data-node-tag="R– · C0 · F5" data-node-context="Coordination · 7 skills › Delegation and programme">
-          <title>ki-meeting · change management · command · Coordination · 7 skills › Delegation and programme · R– · C0 · F5</title>
+        <g id="node-ki-meeting" data-node-id="ki-meeting" data-node-label="ki-meeting" tabindex="0" role="button" aria-label="Focus ki-meeting, work · command, Coordination · 7 skills › Delegation and programme" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="work · command" data-node-tag="R– · C0 · F5" data-node-context="Coordination · 7 skills › Delegation and programme">
+          <title>ki-meeting · work · command · Coordination · 7 skills › Delegation and programme · R– · C0 · F5</title>
           <rect x="556" y="268" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="556" y="268" width="208" height="76" rx="8" class="c-frontend" data-animate="node" style="--step: 6;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(562 274) scale(0.6875)">
@@ -800,12 +800,12 @@ rect.c-bg-rect { fill: var(--bg); }
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
           <text data-node-label="" x="660" y="304" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-meeting</text>
-        <text x="660" y="320" class="t-muted" font-size="9" text-anchor="middle">change management · command</text>
+        <text x="660" y="320" class="t-muted" font-size="9" text-anchor="middle">work · command</text>
         <text x="660" y="336" class="t-frontend" font-size="7" text-anchor="middle">R– · C0 · F5</text>
         </g>
 
-        <g id="node-ki-trade" data-node-id="ki-trade" data-node-label="ki-trade" tabindex="0" role="button" aria-label="Focus ki-trade, governance · command, Coordination · 7 skills › Trades" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="governance · command" data-node-tag="R– · C0 · F1" data-node-context="Coordination · 7 skills › Trades">
-          <title>ki-trade · governance · command · Coordination · 7 skills › Trades · R– · C0 · F1</title>
+        <g id="node-ki-trade" data-node-id="ki-trade" data-node-label="ki-trade" tabindex="0" role="button" aria-label="Focus ki-trade, work · command, Coordination · 7 skills › Trades" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="work · command" data-node-tag="R– · C0 · F1" data-node-context="Coordination · 7 skills › Trades">
+          <title>ki-trade · work · command · Coordination · 7 skills › Trades · R– · C0 · F1</title>
           <rect x="844" y="392" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="844" y="392" width="208" height="76" rx="8" class="c-frontend" data-animate="node" style="--step: 7; --flow-node-name: archify-relay-node-4;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(850 398) scale(0.6875)">
@@ -815,12 +815,12 @@ rect.c-bg-rect { fill: var(--bg); }
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
           <text data-node-label="" x="948" y="428" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-trade</text>
-        <text x="948" y="444" class="t-muted" font-size="9" text-anchor="middle">governance · command</text>
+        <text x="948" y="444" class="t-muted" font-size="9" text-anchor="middle">work · command</text>
         <text x="948" y="460" class="t-frontend" font-size="7" text-anchor="middle">R– · C0 · F1</text>
         </g>
 
-        <g id="node-ki-trades" data-node-id="ki-trades" data-node-label="ki-trades" tabindex="0" role="button" aria-label="Focus ki-trades, governance · opt-in, Coordination · 7 skills › Trades" aria-pressed="false" data-node-kind="database" data-node-sublabel="governance · opt-in" data-node-tag="R16 · CL · F3" data-node-context="Coordination · 7 skills › Trades">
-          <title>ki-trades · governance · opt-in · Coordination · 7 skills › Trades · R16 · CL · F3</title>
+        <g id="node-ki-trades" data-node-id="ki-trades" data-node-label="ki-trades" tabindex="0" role="button" aria-label="Focus ki-trades, work · opt-in, Coordination · 7 skills › Trades" aria-pressed="false" data-node-kind="database" data-node-sublabel="work · opt-in" data-node-tag="R16 · CL · F3" data-node-context="Coordination · 7 skills › Trades">
+          <title>ki-trades · work · opt-in · Coordination · 7 skills › Trades · R16 · CL · F3</title>
           <rect x="844" y="268" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="844" y="268" width="208" height="76" rx="8" class="c-database" data-animate="node" style="--step: 8; --flow-node-name: archify-relay-node-8;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(850 274) scale(0.6875)">
@@ -828,12 +828,12 @@ rect.c-bg-rect { fill: var(--bg); }
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
           <text data-node-label="" x="948" y="304" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-trades</text>
-        <text x="948" y="320" class="t-muted" font-size="9" text-anchor="middle">governance · opt-in</text>
+        <text x="948" y="320" class="t-muted" font-size="9" text-anchor="middle">work · opt-in</text>
         <text x="948" y="336" class="t-database" font-size="7" text-anchor="middle">R16 · CL · F3</text>
         </g>
 
-        <g id="node-ki-work-design" data-node-id="ki-work-design" data-node-label="ki-work-design" tabindex="0" role="button" aria-label="Focus ki-work-design, change management · command, Coordination · 7 skills › Delegation and programme" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="change management · command" data-node-tag="R– · C0 · F2" data-node-context="Coordination · 7 skills › Delegation and programme">
-          <title>ki-work-design · change management · command · Coordination · 7 skills › Delegation and programme · R– · C0 · F2</title>
+        <g id="node-ki-work-design" data-node-id="ki-work-design" data-node-label="ki-work-design" tabindex="0" role="button" aria-label="Focus ki-work-design, work · command, Coordination · 7 skills › Delegation and programme" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="work · command" data-node-tag="R– · C0 · F2" data-node-context="Coordination · 7 skills › Delegation and programme">
+          <title>ki-work-design · work · command · Coordination · 7 skills › Delegation and programme · R– · C0 · F2</title>
           <rect x="44" y="392" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="44" y="392" width="208" height="76" rx="8" class="c-frontend" data-animate="node" style="--step: 8; --flow-node-name: archify-relay-node-5;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(50 398) scale(0.6875)">
@@ -843,31 +843,31 @@ rect.c-bg-rect { fill: var(--bg); }
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
           <text data-node-label="" x="148" y="428" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-work-design</text>
-        <text x="148" y="444" class="t-muted" font-size="9" text-anchor="middle">change management · command</text>
+        <text x="148" y="444" class="t-muted" font-size="9" text-anchor="middle">work · command</text>
         <text x="148" y="460" class="t-frontend" font-size="7" text-anchor="middle">R– · C0 · F2</text>
         </g>
 
-        <g id="node-ki-work-package" data-node-id="ki-work-package" data-node-label="ki-work-package" tabindex="0" role="button" aria-label="Focus ki-work-package, governance · automatic, Coordination · 7 skills › Delegation and programme" aria-pressed="false" data-node-kind="backend" data-node-sublabel="governance · automatic" data-node-tag="R13 · CL · F5" data-node-context="Coordination · 7 skills › Delegation and programme">
-          <title>ki-work-package · governance · automatic · Coordination · 7 skills › Delegation and programme · R13 · CL · F5</title>
+        <g id="node-ki-work-package" data-node-id="ki-work-package" data-node-label="ki-work-package" tabindex="0" role="button" aria-label="Focus ki-work-package, work · automatic, Coordination · 7 skills › Delegation and programme" aria-pressed="false" data-node-kind="backend" data-node-sublabel="work · automatic" data-node-tag="R13 · CL · F5" data-node-context="Coordination · 7 skills › Delegation and programme">
+          <title>ki-work-package · work · automatic · Coordination · 7 skills › Delegation and programme · R13 · CL · F5</title>
           <rect x="300" y="392" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="300" y="392" width="208" height="76" rx="8" class="c-backend" data-animate="node" style="--step: 3; --flow-node-name: archify-relay-node-10;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(306 398) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
           <text data-node-label="" x="404" y="428" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-work-package</text>
-        <text x="404" y="444" class="t-muted" font-size="9" text-anchor="middle">governance · automatic</text>
+        <text x="404" y="444" class="t-muted" font-size="9" text-anchor="middle">work · automatic</text>
         <text x="404" y="460" class="t-backend" font-size="7" text-anchor="middle">R13 · CL · F5</text>
         </g>
 
-        <g id="node-ki-decision-records" data-node-id="ki-decision-records" data-node-label="ki-decision-records" tabindex="0" role="button" aria-label="Focus ki-decision-records, governance · automatic, Records and code · Records" aria-pressed="false" data-node-kind="backend" data-node-sublabel="governance · automatic" data-node-tag="R37 · CL · F9" data-node-context="Records and code · Records">
-          <title>ki-decision-records · governance · automatic · Records and code · Records · R37 · CL · F9</title>
+        <g id="node-ki-decision-records" data-node-id="ki-decision-records" data-node-label="ki-decision-records" tabindex="0" role="button" aria-label="Focus ki-decision-records, authoring · automatic, Records and code · Records" aria-pressed="false" data-node-kind="backend" data-node-sublabel="authoring · automatic" data-node-tag="R37 · CL · F9" data-node-context="Records and code · Records">
+          <title>ki-decision-records · authoring · automatic · Records and code · Records · R37 · CL · F9</title>
           <rect x="44" y="596" width="208" height="76" rx="8" class="c-mask"/>
           <rect x="44" y="596" width="208" height="76" rx="8" class="c-backend" data-animate="node" style="--step: 9; --flow-node-name: archify-relay-node-9;" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(50 602) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
           <text data-node-label="" x="148" y="632" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">ki-decision-records</text>
-        <text x="148" y="648" class="t-muted" font-size="9" text-anchor="middle">governance · automatic</text>
+        <text x="148" y="648" class="t-muted" font-size="9" text-anchor="middle">authoring · automatic</text>
         <text x="148" y="664" class="t-backend" font-size="7" text-anchor="middle">R37 · CL · F9</text>
         </g>
 
