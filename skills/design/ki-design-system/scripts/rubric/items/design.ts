@@ -9,6 +9,9 @@ const FLOOR = 'standards-design-system.md#the-floor'
 const WORK = 'standards-design-system.md#design-work-from-brief-to-rule'
 const PROJECTIONS = 'standards-design-system.md#projections'
 const CONFIGURATION = 'standards-design-system.md#configuration'
+const COMPONENTS = 'standards-design-system.md#the-component-library'
+const SHELLS = 'standards-design-system.md#shells-and-their-state'
+const LEVELS = 'standards-design-levels.md'
 
 const DSYS_1: RubricItem<DesignRubricContext> = {
   code: 'DSYS-1',
@@ -227,11 +230,43 @@ const DSYS_8: RubricItem<DesignRubricContext> = {
   }
 }
 
+const DSYS_9: RubricItem<DesignRubricContext> = {
+  code: 'DSYS-9',
+  title: 'the component library is sorted by atomic level and documented once',
+  description:
+    'Every part sits at one level: tokens, atoms, molecules, organisms, templates or pages. One components document gives each component one row with its signature, what it owns, what it does not own and its hand-offs, in the code’s names; each shell says what state it owns.',
+  sources: [COMPONENTS, SHELLS],
+  judgment: {
+    scope: 'The component library, its components document, the shells and the design guide’s Components section.',
+    prompt:
+      'Does each part pass its level’s test, or does an atom know the product’s model or an organism lay out a page? Is there exactly one components document, with one row per component giving its signature, owns, does not own and hand-offs, under the names the code uses? Does each shell state which state it owns?',
+    outcomes: ['conforming', 'move', 'gap', 'owner question'],
+    guidance:
+      'Move a part to the level its test puts it at, add the missing rows or columns to the one components document, and record a part that fits no level, or two, as a question for the owner in that document.'
+  }
+}
+
+const DSYS_10: RubricItem<DesignRubricContext> = {
+  code: 'DSYS-10',
+  title: 'design rounds run through the three levels',
+  description:
+    'Interface design is drawn as information architecture, then wireframes, then mock-ups in every state, each level agreed before the next; new names stay proposals until the owner agrees them, and a board nobody has seen rendered says so.',
+  sources: [LEVELS],
+  judgment: {
+    scope: 'The current or most recent design round: its boards, their file names, names and review notes.',
+    prompt:
+      'Was the architecture agreed before wireframes, and wireframes before mock-ups? Do the mock-ups show loading, empty and failed states? Is any new name or icon used as if agreed? Was each board reviewed by a second reader, and seen rendered or marked as not seen?',
+    outcomes: ['conforming', 'redraw at a coarser level', 'gap'],
+    guidance:
+      'Return to the coarsest level that is not agreed and settle it with the owner; add the missing states; mark unagreed names as proposals; and say which boards nobody has seen rendered.'
+  }
+}
+
 export const DSYS: RubricFamily<DesignRubricContext, DesignRubricContext> = {
   code: 'DSYS',
   title: 'design system',
   description: "A repository's design knowledge sits in its homes and stays true through checks.",
   standard: PLACEMENT,
   selectContext: (context) => context,
-  items: [DSYS_1, DSYS_2, DSYS_3, DSYS_4, DSYS_5, DSYS_6, DSYS_7, DSYS_8]
+  items: [DSYS_1, DSYS_2, DSYS_3, DSYS_4, DSYS_5, DSYS_6, DSYS_7, DSYS_8, DSYS_9, DSYS_10]
 }

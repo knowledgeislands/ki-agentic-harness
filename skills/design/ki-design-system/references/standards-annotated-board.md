@@ -17,7 +17,7 @@ An annotated board is a standing [projection](standards-design-system.md#project
   - `0.x` is the shell, the chrome on every page, such as `0.1` Navigation and `0.2` a tray; a later shell takes the next number;
   - `1` is home;
   - then one number for each navigation group, with its views under it, such as `2.1` and `2.2`.
-- **Shells.** A shell's page shows the whole shell in each state worth discussing, such as expanded, contracted and at phone width for a navigation rail, or open and contracted for a tray.
+- **Shells.** A shell's page shows the whole shell in each state worth discussing, such as expanded, contracted and at phone width for a navigation rail, or open and contracted for a tray. Where the interface nests [shells like an onion](standards-design-system.md#shells-and-their-state), one artboard shows them all at once, each boxed with its `S` code, its atomic level and the state it owns.
 - **Components.** Under a **Components** title on each shell's page, one artboard per part of the shell, numbered beneath it (`0.1.1` Brand, `0.2.2` a panel), shows that part in every state side by side, such as expanded and contracted, open and contracted, or graph and list. These are crisp element screenshots, so each part's behaviour can be seen apart from the rest, and scrolling content appears at its full height.
 - **Artboards.** Where a page has several artboards, each takes a letter (`2.1a`, `2.1b`). With the region codes this makes every reference unique.
 - **Notes.** Each page opens with a short note saying what the page is for, and the date and source revision it was last refreshed from.
@@ -25,9 +25,9 @@ An annotated board is a standing [projection](standards-design-system.md#project
 
 ## Region codes
 
-- **Zones.** Each zone has its own prefix, numbered in reading order within each artboard: `N` for navigation, `T` for a tray or side panel and `P` for page content.
+- **Zones.** Each zone has its own prefix, numbered in reading order within each artboard: `N` for navigation, `T` for a tray or side panel and `P` for page content. `S` marks the nested shells, numbered from the outside in, so that `S0` is always the window and each shell keeps its code on every artboard.
 - **Marking.** A shell's page marks only its own zone, and a view's page marks only `P`.
-- **Whole shells.** The box drawn around a whole shell takes the code `0` (`N0`, `T0`), with its badge at the bottom right.
+- **Whole shells.** The box drawn around a whole shell takes the code `0` (`N0`, `T0`, and `S0`, the window), with its badge at the bottom right.
 - **Boxes.** Each box has a dashed border in its zone's colour and a solid badge, such as `P4 · Due next`, at its top right, so the badge does not cover the region's heading. Each box is its own element with `data-region` and a `title`, so a comment pinned to it anchors to that region.
 
 ## Measuring
@@ -43,7 +43,7 @@ An annotated board is a standing [projection](standards-design-system.md#project
 
 [`scripts/annotate-board.ts`](../scripts/annotate-board.ts) carries the parts that do not depend on the site: the in-page collector, the region codes, the overlay and a local preview. A site supplies a board plan and its own browser automation; the harness installs no browser driver for it.
 
-1. **Plan.** Write the board plan, a JSON file beside the board's working files, outside the repository: its shells and their parts, how page blocks are found and named, and one entry per artboard naming its number, title, screenshot and zones.
+1. **Plan.** Write the board plan, a JSON file beside the board's working files, outside the repository: its shells and their parts, with the nested shells as one `shell` zone whose whole is the window and whose parts are listed from the outside in, how page blocks are found and named, and one entry per artboard naming its number, title, screenshot and zones.
 2. **Screenshots.** With the interface running, the site's browser automation takes each view and shell state's screenshot, and each component's element screenshot in each of its states.
 3. **Regions.** In the same page and state as each screenshot, it evaluates the expression `bun scripts/annotate-board.ts collector <plan.json>` prints, and saves the results in one regions file keyed by each artboard's `shot`.
 4. **Annotate.** `bun scripts/annotate-board.ts annotate <plan.json> <regions.json> <out-dir> --revision <rev>` codes each artboard's regions and writes `board.json`, with each artboard's size, coded regions and legend stamped with the source revision and date, and a local preview of each artboard.
@@ -85,4 +85,4 @@ Refresh the board whenever the interface's code changes, from the running interf
 
 - **Quoting.** The owner quotes codes, such as "1 P6: …" or "2.1b P3: …", in conversation or in canvas comments. Where canvas comments do not reach the agent by themselves, the owner says when they have left some.
 - **Briefs.** At Review, the quoted findings become the design work's brief.
-- **Redesigns.** Options and mock-ups go on the board beside the screenshot they answer, one page at a time, and then follow Options and Decision as usual. Once a design is built, the next refresh shows it and its mock-ups are removed from the board.
+- **Redesigns.** Options, drawn at the [three design levels](standards-design-levels.md), go on the board beside the screenshot they answer, one page at a time, and then follow Options and Decision as usual. Once a design is built, the next refresh shows it and its mock-ups are removed from the board.

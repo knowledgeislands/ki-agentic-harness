@@ -191,7 +191,7 @@ Find website design inspiration in curated galleries and turn selected examples 
 
 #### `ki-design-system`
 
-Create, audit or refresh how a repository keeps its user-interface design: the token source, the design guide, design Specifications and Decision Records, the checks, and design work from brief to rule. Use for design-system method; use `ki-design-inspiration` for visual references and `ki-work design` for project shape.
+Create, audit or refresh how a repository keeps its user-interface design: the token source, the design guide, the component library sorted by atomic design, shells and their state, design Specifications and Decision Records, the checks, the annotated board, and design work from brief to rule, drawn as information architecture, wireframes and mock-ups. Use for visual design method; use `ki-design` for design of any kind, `ki-design-inspiration` for visual references, and `ki-repo-packages` for packaging a web component library.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only
@@ -526,7 +526,7 @@ Audit or scaffold KI MCP server code for source-release readiness, workspace-MCP
 
 #### `ki-repo-packages`
 
-Audit or conform a KI `packages-*` repository whose source tree consumers vendor whole: the vendored package, workbench, lock and vendoring tools, sync paragraph, consumers found by lock, and release and re-vendor rule. Use `ki-repo-tools` for installed CLIs, `ki-engineering` for the toolchain, and `ki-repo` for universal files.
+Audit or conform a KI `packages-*` repository whose source trees consumers vendor whole: the vendored packages, one per layer, the Storybook, the custom elements manifest, locks and vendoring tools, sync paragraphs, consumers found by lock, and the release and re-vendor rule. Use `ki-repo-tools` for installed CLIs, `ki-engineering` for the toolchain, `ki-design-system` for component design, and `ki-repo` for universal files.
 
 - **Kind:** Governance
 - **Applicability:** Declaration Only

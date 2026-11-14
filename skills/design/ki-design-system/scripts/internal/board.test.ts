@@ -140,6 +140,28 @@ test('the collector measures shells in plan order and page blocks in document or
   expect(regions[2]).toEqual({ zone: 'navigation', label: 'group: Knowledge', x: 0, y: 50, w: 200, h: 120 })
 })
 
+test('the onion of shells is numbered from the window inwards and still leaves the page its regions', () => {
+  const onion: CollectorPlan = {
+    shells: [
+      { zone: 'shell', whole: 'body', wholeLabel: 'Window', parts: [{ selector: '.app-main', label: 'Page frame' }] }
+    ],
+    page: PLAN.page
+  }
+  const regions = collectRegions(onion, page())
+  expect(regions.filter((r) => r.zone === 'shell').map((r) => [r.label, r.whole ?? false])).toEqual([
+    ['Window', true],
+    ['Page frame', false]
+  ])
+  expect(regions.filter((r) => r.zone === 'page').map((r) => r.label)).toContain('Page title')
+  expect(codeRegions(regions, ['shell'], 1440, 900).map((r) => r.code)).toEqual(['S0', 'S1'])
+  expect(
+    parsePlan({
+      collector: onion,
+      boards: [{ id: '0.1', title: 'Shells', shot: 'onion', image: 'onion.png', zones: ['shell'] }]
+    }).boards[0]?.zones
+  ).toEqual(['shell'])
+})
+
 test('the collector skips small boxes, keeps two nesting levels and stops at the region cap', () => {
   const labels = collectRegions(PLAN, page()).map((r) => r.label)
   expect(labels).not.toContain('group: Tiny')

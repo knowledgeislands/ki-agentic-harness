@@ -22,7 +22,8 @@ const fixture = (): string => {
   const repository = mkdtempSync(join(tmpdir(), 'ki-repo-packages-'))
   temporaryDirectories.push(repository)
   mkdirSync(join(repository, 'packages', 'demo'), { recursive: true })
-  mkdirSync(join(repository, 'apps', 'workbench'), { recursive: true })
+  mkdirSync(join(repository, 'apps', 'storybook'), { recursive: true })
+  writeFileSync(join(repository, 'apps', 'storybook', 'package.json'), '{"scripts":{"build":"storybook build"}}\n')
   writeFileSync(join(repository, 'packages', 'demo', 'package.json'), '{"name":"demo","version":"1.2.0"}\n')
   writeFileSync(join(repository, 'packages', 'demo', 'tsconfig.json'), '{"compilerOptions":{"checkJs":true}}\n')
   writeFileSync(join(repository, 'CHANGELOG.md'), '# Changelog\n\n## Unreleased\n\n## 1.2.0\n\n- Added.\n')
@@ -64,6 +65,7 @@ test('the catalogue declares its families and criteria in order', () => {
     'PKG-J2',
     'PKG-J3',
     'PKG-J4',
+    'PKG-J5',
     'RUBRIC-1'
   ])
 })
@@ -78,22 +80,55 @@ test('a conforming package repository passes every mechanical criterion and prop
 test('a missing or unset package fails CONFIG-1 and leaves the package checks not applicable', () => {
   const repository = fixture()
   expect(run(repository, {}).statuses('CONFIG-1')).toEqual(['VIOLATION'])
-  expect(run(repository, { package: '../demo' }).context.packageState).toBe('invalid')
+  expect(run(repository, { package: '../demo' }).context.declaration).toBe('invalid')
+  expect(run(repository, { package: 'demo', packages: ['demo'] }).statuses('CONFIG-1')).toEqual(['VIOLATION'])
+  expect(run(repository, { packages: [] }).context.declarationFault).toContain('non-empty list')
   const missing = run(repository, { package: 'absent' })
   expect(missing.statuses('CONFIG-1')).toEqual(['VIOLATION'])
   for (const code of ['PKG-1', 'PKG-2', 'PKG-4', 'PKG-5']) expect(missing.statuses(code)).toEqual(['NOT_APPLICABLE'])
   expect(run(repository, { package: 'demo', profile: 'x' }).statuses('CONFIG-2')).toEqual(['VIOLATION'])
+  expect(run(repository, { packages: ['demo'] }).statuses('CONFIG-2')).toEqual(['PASS'])
 })
 
-test('drift in the version, changelog, workbench, tsconfig and register is reported', () => {
+test('several packages, one per layer, are each checked and release together', () => {
+  const repository = fixture()
+  mkdirSync(join(repository, 'packages', 'demo-tokens'), { recursive: true })
+  writeFileSync(
+    join(repository, 'packages', 'demo-tokens', 'package.json'),
+    '{"name":"demo-tokens","version":"1.2.0"}\n'
+  )
+  const several = { packages: ['demo', 'demo-tokens'] }
+  const first = run(repository, several)
+  expect(first.statuses('CONFIG-1')).toEqual(['PASS', 'PASS'])
+  expect(first.statuses('PKG-1')).toEqual(['PASS', 'PASS'])
+  expect(first.statuses('PKG-2')).toEqual(['PASS'])
+  expect(first.statuses('PKG-4')).toEqual(['PASS', 'VIOLATION'])
+  expect(first.statuses('PKG-5')).toEqual(['PASS', 'NOT_APPLICABLE'])
+  writeFileSync(join(repository, 'AGENTS.md'), `# Working here\n\n${SYNC}\n${SYNC.replaceAll('demo', 'demo-tokens')}`)
+  expect(run(repository, several).statuses('PKG-4')).toEqual(['PASS', 'PASS'])
+  writeFileSync(
+    join(repository, 'packages', 'demo-tokens', 'package.json'),
+    '{"name":"demo-tokens","version":"1.3.0"}\n'
+  )
+  const drifted = run(repository, several)
+  expect(drifted.statuses('PKG-1')).toEqual(['PASS', 'PASS', 'VIOLATION'])
+  expect(drifted.statuses('PKG-2')).toEqual(['NOT_APPLICABLE'])
+  expect(run(repository, { packages: ['demo', 'absent'] }).statuses('CONFIG-1')).toEqual(['PASS', 'VIOLATION'])
+})
+
+test('drift in the version, changelog, Storybook, tsconfig and register is reported', () => {
   const repository = fixture()
   writeFileSync(join(repository, 'CHANGELOG.md'), '# Changelog\n\n## 1.1.0\n')
   writeFileSync(join(repository, 'packages', 'demo', 'tsconfig.json'), '{"extends":"../../tsconfig.json"}\n')
   writeFileSync(join(repository, 'consumers.json5'), '{}\n')
-  rmSync(join(repository, 'apps', 'workbench'), { recursive: true })
+  rmSync(join(repository, 'apps', 'storybook'), { recursive: true })
   const { statuses } = run(repository)
   expect(statuses('PKG-2')).toEqual(['VIOLATION'])
   expect(statuses('PKG-3')).toEqual(['VIOLATION'])
+  mkdirSync(join(repository, 'apps', 'storybook'), { recursive: true })
+  mkdirSync(join(repository, 'apps', 'workbench'), { recursive: true })
+  writeFileSync(join(repository, 'apps', 'storybook', 'package.json'), '{"scripts":{}}\n')
+  expect(run(repository).statuses('PKG-3')).toEqual(['VIOLATION', 'VIOLATION'])
   expect(statuses('PKG-5')).toEqual(['VIOLATION'])
   expect(statuses('PKG-6')).toEqual(['VIOLATION'])
   writeFileSync(join(repository, 'packages', 'demo', 'package.json'), '{"name":"demo"}\n')

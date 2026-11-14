@@ -10,25 +10,37 @@ const NO_PACKAGE: AuditOutcome = {
 
 const PKG_1: RubricItem<PackagesContext> = {
   code: 'PKG-1',
-  title: 'the vendored package carries its release version',
-  description: "The vendored package's own `package.json` carries a semantic version, the version consumers lock.",
+  title: 'each vendored package carries the release version',
+  description:
+    "Each vendored package's own `package.json` carries a semantic version, the version consumers lock, and where there are several they release together at one version.",
   sources: [`${STANDARD}#versions-and-releases`],
   mechanical: {
     level: 'FAIL',
     remediation: {
       class: 'diagnostic',
-      guidance: 'Give `packages/<package>/package.json` the current release version; the root stays unreleased.'
+      guidance:
+        'Give each `packages/<package>/package.json` the current release version, the same in every package; the root stays unreleased.'
     },
     audit: {
       phase: 'INSPECT',
-      run: ({ packageState, packageName, version }) => {
-        if (packageState !== 'physical') return [NO_PACKAGE]
-        const subject = `packages/${packageName}/package.json`
-        return [
-          version
-            ? { status: 'PASS', message: `The vendored package is at ${version}.`, subject }
+      run: ({ packages, releaseVersion }) => {
+        const present = packages.filter((entry) => entry.physical)
+        if (!present.length) return [NO_PACKAGE]
+        const outcomes: AuditOutcome[] = present.map(({ name, version }) => {
+          const subject = `packages/${name}/package.json`
+          return version
+            ? { status: 'PASS', message: `packages/${name}/ is at ${version}.`, subject }
             : { status: 'VIOLATION', message: 'The vendored package.json carries no semantic version.', subject }
-        ]
+        })
+        if (present.every((entry) => entry.version) && releaseVersion === null)
+          outcomes.push({
+            status: 'VIOLATION',
+            message: `The vendored packages release together, but their versions differ: ${present
+              .map(({ name, version }) => `${name} ${version}`)
+              .join(', ')}.`,
+            subject: 'packages/'
+          })
+        return outcomes
       }
     }
   }
@@ -37,7 +49,7 @@ const PKG_1: RubricItem<PackagesContext> = {
 const PKG_2: RubricItem<PackagesContext> = {
   code: 'PKG-2',
   title: 'the changelog records the current release',
-  description: '`CHANGELOG.md` has a section headed with the vendored package’s current version.',
+  description: '`CHANGELOG.md` has a section headed with the vendored packages’ current version.',
   sources: [`${STANDARD}#versions-and-releases`],
   mechanical: {
     level: 'WARN',
@@ -47,12 +59,16 @@ const PKG_2: RubricItem<PackagesContext> = {
     },
     audit: {
       phase: 'INSPECT',
-      run: ({ version, changelogHasVersion }) => {
-        if (!version) return [NO_PACKAGE]
+      run: ({ releaseVersion, changelogHasVersion }) => {
+        if (!releaseVersion) return [NO_PACKAGE]
         return [
           changelogHasVersion
-            ? { status: 'PASS', message: `CHANGELOG.md has a section for ${version}.`, subject: 'CHANGELOG.md' }
-            : { status: 'VIOLATION', message: `CHANGELOG.md has no section for ${version}.`, subject: 'CHANGELOG.md' }
+            ? { status: 'PASS', message: `CHANGELOG.md has a section for ${releaseVersion}.`, subject: 'CHANGELOG.md' }
+            : {
+                status: 'VIOLATION',
+                message: `CHANGELOG.md has no section for ${releaseVersion}.`,
+                subject: 'CHANGELOG.md'
+              }
         ]
       }
     }
@@ -61,48 +77,73 @@ const PKG_2: RubricItem<PackagesContext> = {
 
 const PKG_3: RubricItem<PackagesContext> = {
   code: 'PKG-3',
-  title: 'a workbench shows the units',
-  description: '`apps/workbench/` exists to show every unit alone before a release.',
+  title: 'a Storybook shows the units and builds to static files',
+  description:
+    '`apps/storybook/` exists to show every unit alone before a release, its `build` script writes it as static files, and the retired `apps/workbench/` is gone.',
   sources: [`${STANDARD}#layout`],
   mechanical: {
     level: 'WARN',
-    remediation: { class: 'diagnostic', guidance: 'Add the workbench app with one story per unit.' },
+    remediation: {
+      class: 'diagnostic',
+      guidance:
+        'Add the Storybook app at `apps/storybook/` with one story per unit and a `build` script that writes static files, then retire `apps/workbench/`.'
+    },
     audit: {
       phase: 'INSPECT',
-      run: ({ workbench }) => [
-        workbench
-          ? { status: 'PASS', message: 'The workbench is present.', subject: 'apps/workbench' }
-          : { status: 'VIOLATION', message: 'There is no apps/workbench/.', subject: 'apps/workbench' }
-      ]
+      run: ({ storybook, storybookBuild, workbench }) => {
+        const outcomes: AuditOutcome[] = [
+          !storybook
+            ? { status: 'VIOLATION', message: 'There is no apps/storybook/.', subject: 'apps/storybook' }
+            : storybookBuild
+              ? { status: 'PASS', message: 'The Storybook is present and builds.', subject: 'apps/storybook' }
+              : {
+                  status: 'VIOLATION',
+                  message: 'apps/storybook/package.json has no build script to write the static Storybook.',
+                  subject: 'apps/storybook/package.json'
+                }
+        ]
+        if (workbench)
+          outcomes.push({
+            status: 'VIOLATION',
+            message: 'apps/workbench/ is the retired workbench; the Storybook replaces it.',
+            subject: 'apps/workbench'
+          })
+        return outcomes
+      }
     }
   }
 }
 
 const PKG_4: RubricItem<PackagesContext> = {
   code: 'PKG-4',
-  title: 'AGENTS.md publishes the sync paragraph',
+  title: 'AGENTS.md publishes each sync paragraph',
   description:
-    'A block quotation in `AGENTS.md` names the vendored path and the `verify`, `drift`, `sync` and `defer` tools, for every consumer to carry word for word.',
+    'For each vendored package, a block quotation in `AGENTS.md` names its path and the `verify`, `drift`, `sync` and `defer` tools, for every consumer of it to carry word for word.',
   sources: [`${STANDARD}#the-sync-paragraph`],
   mechanical: {
     level: 'WARN',
     remediation: {
       class: 'diagnostic',
-      guidance: 'Publish the sync paragraph as a block quotation under its own heading in AGENTS.md.'
+      guidance: 'Publish each package’s sync paragraph as a block quotation under its own heading in AGENTS.md.'
     },
     audit: {
       phase: 'INSPECT',
-      run: ({ packageState, syncParagraph }) => {
-        if (packageState !== 'physical') return [NO_PACKAGE]
-        return [
+      run: ({ packages }) => {
+        const present = packages.filter((entry) => entry.physical)
+        if (!present.length) return [NO_PACKAGE]
+        return present.map(({ name, syncParagraph }) =>
           syncParagraph
-            ? { status: 'PASS', message: 'AGENTS.md publishes the sync paragraph.', subject: 'AGENTS.md' }
-            : {
-                status: 'VIOLATION',
-                message: 'AGENTS.md quotes no paragraph naming the vendored path and all four vendoring tools.',
+            ? {
+                status: 'PASS' as const,
+                message: `AGENTS.md publishes the sync paragraph for packages/${name}/.`,
                 subject: 'AGENTS.md'
               }
-        ]
+            : {
+                status: 'VIOLATION' as const,
+                message: `AGENTS.md quotes no paragraph naming packages/${name}/ and all four vendoring tools.`,
+                subject: 'AGENTS.md'
+              }
+        )
       }
     }
   }
@@ -110,9 +151,9 @@ const PKG_4: RubricItem<PackagesContext> = {
 
 const PKG_5: RubricItem<PackagesContext> = {
   code: 'PKG-5',
-  title: 'the vendored tsconfig stands alone',
+  title: 'each vendored tsconfig stands alone',
   description:
-    'The vendored package’s `tsconfig.json` extends no other configuration, which would resolve against each consumer’s root.',
+    'No vendored package’s `tsconfig.json` extends another configuration, which would resolve against each consumer’s root.',
   sources: [`${STANDARD}#code-form-and-the-engineering-standard`],
   mechanical: {
     level: 'WARN',
@@ -122,16 +163,17 @@ const PKG_5: RubricItem<PackagesContext> = {
     },
     audit: {
       phase: 'INSPECT',
-      run: ({ packageState, packageName, tsconfigExtends }) => {
-        if (packageState !== 'physical') return [NO_PACKAGE]
-        const subject = `packages/${packageName}/tsconfig.json`
-        if (tsconfigExtends === null)
-          return [{ status: 'NOT_APPLICABLE', message: 'The vendored package has no tsconfig.json.', subject }]
-        return [
-          tsconfigExtends
+      run: ({ packages }) => {
+        const present = packages.filter((entry) => entry.physical)
+        if (!present.length) return [NO_PACKAGE]
+        return present.map(({ name, tsconfigExtends }): AuditOutcome => {
+          const subject = `packages/${name}/tsconfig.json`
+          if (tsconfigExtends === null)
+            return { status: 'NOT_APPLICABLE', message: 'The vendored package has no tsconfig.json.', subject }
+          return tsconfigExtends
             ? { status: 'VIOLATION', message: 'The vendored tsconfig.json extends another configuration.', subject }
             : { status: 'PASS', message: 'The vendored tsconfig.json stands alone.', subject }
-        ]
+        })
       }
     }
   }
@@ -197,14 +239,30 @@ const PKG_J2: RubricItem<PackagesContext> = {
 
 const PKG_J3: RubricItem<PackagesContext> = {
   code: 'PKG-J3',
-  title: 'unit changes carry tests and a workbench story',
-  description: 'Every unit change has its tests in the vendored tree, and every unit has one workbench story.',
+  title: 'unit changes carry tests and a Storybook story',
+  description: 'Every unit change has its tests in the vendored tree, and every unit has one Storybook story.',
   sources: [`${STANDARD}#changing-the-package`],
   judgment: {
-    scope: 'Recent unit changes and the workbench stories against the unit manifest.',
-    prompt: 'Does each changed unit carry tests, and does every unit in the manifest have exactly one workbench story?',
-    outcomes: ['conforming', 'test coverage required', 'workbench story required'],
-    guidance: 'Add the missing tests beside the unit and the missing story to the workbench.'
+    scope: 'Recent unit changes and the Storybook stories against the unit manifest.',
+    prompt: 'Does each changed unit carry tests, and does every unit in the manifest have exactly one Storybook story?',
+    outcomes: ['conforming', 'test coverage required', 'story required'],
+    guidance: 'Add the missing tests beside the unit and the missing story to the Storybook.'
+  }
+}
+
+const PKG_J5: RubricItem<PackagesContext> = {
+  code: 'PKG-J5',
+  title: 'each web component package publishes its manifest',
+  description:
+    'A vendored package of custom elements ships `custom-elements.json`, generated by the Custom Elements Manifest analyser and named by its `package.json`, and the Storybook builds its controls and docs from it.',
+  sources: [`${STANDARD}#the-custom-elements-manifest`],
+  judgment: {
+    scope: 'Each vendored package that defines custom elements, its build of the manifest, and the Storybook.',
+    prompt:
+      'Does each web component package ship a current `custom-elements.json` from the analyser, named by `customElements` in its `package.json`, and does the Storybook read it rather than describing the elements by hand?',
+    outcomes: ['conforming', 'manifest required', 'not a web component package'],
+    guidance:
+      'Generate the manifest with the analyser as part of the package’s checks, name it in `package.json` under `customElements`, and point the Storybook at it.'
   }
 }
 
@@ -227,8 +285,8 @@ const PKG_J4: RubricItem<PackagesContext> = {
 export const PKG: RubricFamily<PackagesContext, PackagesContext> = {
   code: 'PKG',
   title: 'Package repository shape',
-  description: 'The vendored package, workbench, sync paragraph, consumers, releases and code form.',
+  description: 'The vendored packages, Storybook, sync paragraphs, consumers, releases, manifests and code form.',
   standard: STANDARD,
   selectContext: (context) => context,
-  items: [PKG_1, PKG_2, PKG_3, PKG_4, PKG_5, PKG_6, PKG_J1, PKG_J2, PKG_J3, PKG_J4]
+  items: [PKG_1, PKG_2, PKG_3, PKG_4, PKG_5, PKG_6, PKG_J1, PKG_J2, PKG_J3, PKG_J4, PKG_J5]
 }

@@ -5,23 +5,31 @@
  *
  * A board is a projection of a running interface: one artboard per view or shell state, each a screenshot with a
  * labelled box over every region worth talking about. The repository's own browser automation takes the screenshots
- * and runs the collector in the same page state; this module turns what it measured into codes (`N`, `T`, `P`, with
- * `0` for a whole shell) and draws the overlay. What a site supplies is only its plan: its pages, its shells and their
+ * and runs the collector in the same page state; this module turns what it measured into codes (`N`, `T`, `P` and
+ * `S`, with `0` for a whole shell) and draws the overlay. What a site supplies is only its plan: its pages, its shells and their
  * parts, and its own block names.
  */
 
-/** The three zones an artboard marks: navigation chrome, a tray or side panel, and page content. */
-export const ZONES = ['navigation', 'tray', 'page'] as const
+/**
+ * The zones an artboard marks: navigation chrome, a tray or side panel, page content, and the nested shells of an
+ * onion, numbered from the outside in so that the window is always `S0`.
+ */
+export const ZONES = ['navigation', 'tray', 'page', 'shell'] as const
 export type Zone = (typeof ZONES)[number]
 
 /** Each zone's code prefix. */
-export const ZONE_PREFIX: Record<Zone, string> = { navigation: 'N', tray: 'T', page: 'P' }
+export const ZONE_PREFIX: Record<Zone, string> = { navigation: 'N', tray: 'T', page: 'P', shell: 'S' }
 
 /**
  * The overlay's own colour for each zone's dashed border and badge. These belong to the board, not to the interface
  * under review, and were chosen to stay distinct from each other over a light screenshot.
  */
-export const ZONE_COLOUR: Record<Zone, string> = { navigation: '#c2410c', tray: '#0369a1', page: '#7e22ce' }
+export const ZONE_COLOUR: Record<Zone, string> = {
+  navigation: '#c2410c',
+  tray: '#0369a1',
+  page: '#7e22ce',
+  shell: '#047857'
+}
 
 /** One measured region, in screenshot pixels, as the collector returns it. */
 export interface Region {
@@ -47,9 +55,12 @@ export interface ShellPart {
   readonly each?: boolean
 }
 
-/** A shell, such as the navigation rail or a tray: the whole of it and its named parts. */
+/**
+ * A shell, such as the navigation rail or a tray: the whole of it and its named parts. A `shell` zone is the onion of
+ * nested shells: its whole is the window and its parts the shells inside it, from the outside in.
+ */
 export interface ShellPlan {
-  readonly zone: 'navigation' | 'tray'
+  readonly zone: 'navigation' | 'tray' | 'shell'
   readonly whole: string
   readonly wholeLabel?: string
   readonly parts: readonly ShellPart[]
@@ -126,8 +137,8 @@ export const parsePlan = (value: unknown): BoardPlan => {
   collector.shells.forEach((shell, i) => {
     const where = `collector.shells[${i}]`
     if (!isObject(shell)) throw new PlanError(`${where} must be an object`)
-    if (shell.zone !== 'navigation' && shell.zone !== 'tray')
-      throw new PlanError(`${where}.zone must be one of navigation, tray`)
+    if (shell.zone !== 'navigation' && shell.zone !== 'tray' && shell.zone !== 'shell')
+      throw new PlanError(`${where}.zone must be one of navigation, tray, shell`)
     text(shell.whole, `${where}.whole`)
     if (!Array.isArray(shell.parts)) throw new PlanError(`${where}.parts must be a list`)
     shell.parts.forEach((part, j) => {
@@ -173,7 +184,7 @@ export const codeRegions = (
   width: number,
   height: number
 ): CodedRegion[] => {
-  const counts: Record<Zone, number> = { navigation: 0, tray: 0, page: 0 }
+  const counts: Record<Zone, number> = { navigation: 0, tray: 0, page: 0, shell: 0 }
   const coded: CodedRegion[] = []
   for (const region of regions) {
     if (!zones.includes(region.zone)) continue
@@ -302,7 +313,8 @@ export function collectRegions(plan: CollectorPlan, doc: any = (globalThis as an
   for (const shell of plan.shells) {
     const root = doc.querySelector(shell.whole)
     if (!root) continue
-    shellRoots.push(root)
+    // The onion's shells hold the page, so only a rail or a tray keeps its content out of the page regions.
+    if (shell.zone !== 'shell') shellRoots.push(root)
     add(root, shell.zone, shell.wholeLabel ?? `Whole ${shell.zone}`, true)
     for (const part of shell.parts) {
       const found = part.each ? [...doc.querySelectorAll(part.selector)] : [doc.querySelector(part.selector)]

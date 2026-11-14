@@ -7,23 +7,26 @@ ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric]
 contributes: ['.ki.toml']
 description: >
-  Create, audit or refresh how a repository keeps its user-interface design: the token source, the design
-  guide, design Specifications and Decision Records, the checks, and design work from brief to rule. Use for
-  design-system method; use `ki-design-inspiration` for visual references and `ki-work design` for project shape.
+  Create, audit or refresh how a repository keeps its user-interface design: the token source, the design guide,
+  the component library sorted by atomic design, shells and their state, design Specifications and Decision Records,
+  the checks, the annotated board, and design work from brief to rule, drawn as information architecture, wireframes
+  and mock-ups. Use for visual design method; use `ki-design` for design of any kind, `ki-design-inspiration` for
+  visual references, and `ki-repo-packages` for packaging a web component library.
 argument-hint: 'audit [dir] | conform [dir] | help | educate [dir] | refresh'
 ---
 
 # Knowledge Islands Design System standard
 
-You are applying the **Knowledge Islands Design System standard** - one way to keep the knowledge behind a user interface: values in the token source, the practical how in a design guide, stable behaviour in Specifications, the why in Decision Records, and checks that keep them true. Read [the Design System standard](references/standards-design-system.md) before establishing, auditing or changing a design system; [the rubric](references/rubric.md) publishes its checkable criteria, [the annotated board](references/standards-annotated-board.md) gives the method for the interface's standing review board, [exemplars](references/exemplars.md) point at a conforming repository, and [sources](references/sources.md) records its provenance.
+You are applying the **Knowledge Islands Design System standard** - one way to keep the knowledge behind a user interface: values in the token source, the practical how in a design guide, stable behaviour in Specifications, the why in Decision Records, and checks that keep them true. Read [the Design System standard](references/standards-design-system.md) before establishing, auditing or changing a design system; [the rubric](references/rubric.md) publishes its checkable criteria, [the annotated board](references/standards-annotated-board.md) gives the method for the interface's standing review board, [the design levels](references/standards-design-levels.md) set how a round of design is drawn, [exemplars](references/exemplars.md) point at a conforming repository, and [sources](references/sources.md) records its provenance.
 
 ## What this skill owns
 
 1. **The placement model** - which home holds each kind of design knowledge: values, how, what, why, when and proof.
-2. **The design work method** - review, brief, options, decision, build, consolidate and retire, and what each stage leaves behind.
-3. **The annotated board** - the standing projection of the built interface, with numbered pages and coded regions the owner quotes, and [`scripts/annotate-board.ts`](scripts/annotate-board.ts), which prints the in-page region collector and builds the coded overlays and their local previews from a site's board plan and screenshots.
-4. **The floor** - four requirements every adopting design system meets: one home for values, readable contrast, meaning never by colour alone, and keyboard parity.
-5. **The mechanical checker** - `ki repo audit --skill ki-design-system` checks the `.ki.toml` declaration, that the token sources, design guide and design checks exist, that the guide names its token sources, and that the guide repeats no literal colour value.
+2. **The component library** - every component library sorted by atomic design into tokens, atoms, molecules, organisms, templates and pages, with one components document giving each component its signature, what it owns and does not own, and its hand-offs; and the shells, designed from the outside in, each owning its state.
+3. **The design work method** - review, brief, options, decision, build, consolidate and retire, and what each stage leaves behind, with options drawn at three levels: information architecture, wireframe and mock-up.
+4. **The annotated board** - the standing projection of the built interface, with numbered pages and coded regions the owner quotes, and [`scripts/annotate-board.ts`](scripts/annotate-board.ts), which prints the in-page region collector and builds the coded overlays and their local previews from a site's board plan and screenshots.
+5. **The floor** - four requirements every adopting design system meets: one home for values, readable contrast, meaning never by colour alone, and keyboard parity.
+6. **The mechanical checker** - `ki repo audit --skill ki-design-system` checks the `.ki.toml` declaration, that the token sources, design guide and design checks exist, that the guide names its token sources, and that the guide repeats no literal colour value.
 
 A repository's own design guide, tokens and decisions stay with that repository. The formats of guides, Specifications, Decision Records and work records stay with `ki-guides`, `ki-specs`, `ki-decision-records` and `ki-work-roadmap`; token build mechanics for content sites stay with `ki-repo-website-content`.
 

@@ -10,7 +10,7 @@ test('the catalogue exposes the ordered Design System criteria', () => {
     definition.families
       .filter((family) => family.code !== 'RUBRIC')
       .flatMap((family) => family.items.map((item) => item.code))
-  ).toEqual(['DSYS-1', 'DSYS-2', 'DSYS-3', 'DSYS-4', 'DSYS-5', 'DSYS-6', 'DSYS-7', 'DSYS-8'])
+  ).toEqual(['DSYS-1', 'DSYS-2', 'DSYS-3', 'DSYS-4', 'DSYS-5', 'DSYS-6', 'DSYS-7', 'DSYS-8', 'DSYS-9', 'DSYS-10'])
 })
 
 test('the catalogue and family modules keep their public surfaces narrow', async () => {
@@ -38,7 +38,7 @@ test('presence fails, guide drift warns, and placement, floor and retirement are
     'DSYS-4',
     'DSYS-5'
   ])
-  for (const code of ['DSYS-6', 'DSYS-7', 'DSYS-8']) {
+  for (const code of ['DSYS-6', 'DSYS-7', 'DSYS-8', 'DSYS-9', 'DSYS-10']) {
     expect(items.find((item) => item.code === code)?.mechanical).toBeUndefined()
     expect(items.find((item) => item.code === code)?.judgment?.prompt).toBeString()
   }
