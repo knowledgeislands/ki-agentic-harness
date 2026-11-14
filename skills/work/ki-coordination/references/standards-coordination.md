@@ -17,6 +17,7 @@ This is the core of the coordinating-work standard: the rules every coordinating
 - [Working rules](#working-rules)
   - [Committing the work folder](#committing-the-work-folder)
   - [Refreshing this guidance](#refreshing-this-guidance)
+  - [Recording times](#recording-times)
 - [Mechanical boundary](#mechanical-boundary)
 - [Moved sections](#moved-sections)
 
@@ -450,6 +451,12 @@ To detect a change, it compares the latest commit touching `skills/work/ki-coord
 This is the selected coordinator's own check. The hook reads no packages or method history, because its payload does not prove session selection and role. A changed delegation contract or output style still needs the coordinator's own revision check and the [targeted refresh](standards-bootstrap.md#targeted-refresh-and-landed-notices); full session-sensitive detection stays deferred.
 
 Sources: METHOD-NUDGE and QUIET-HOOK in [the decision register](sources.md#decision-register).
+
+### Recording times
+
+Every time a session records, in a report, a log, a message or a record, comes from `date -u` or from Git, never from memory; any other time is marked "about". Taken overnight under TIMES-CLOCK for the owner's review.
+
+Sources: TIMES-CLOCK in [the decision register](sources.md#decision-register).
 
 ## Mechanical boundary
 
