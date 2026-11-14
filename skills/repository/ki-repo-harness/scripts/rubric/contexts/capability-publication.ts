@@ -249,8 +249,8 @@ export const prepareCapabilityPublication = (
     .filter((entry) => entry.applicability === 'baseline')
     .map((entry) => entry.name)
     .sort()
-  if (prefix === 'ki' && baseline.join(',') !== 'ki-authoring,ki-repo')
-    issues.push('baseline applicability must contain exactly ki-authoring and ki-repo')
+  if (prefix === 'ki' && baseline.join(',') !== 'ki-authoring,ki-keystone,ki-repo')
+    issues.push('baseline applicability must contain exactly ki-authoring, ki-keystone and ki-repo')
   if (prefix !== 'ki' && baseline.length > 0)
     issues.push('baseline applicability is reserved for the ki source harness')
 

@@ -1,6 +1,6 @@
 ---
 type: standard@2026-11-09T21:36:32Z
-revised: 2026-11-14T03:12:34Z
+revised: 2026-11-14T03:24:34Z
 status: in force
 ---
 
@@ -71,7 +71,7 @@ Knowledge Islands skills survive relocation and symlinking. Internal links are *
 
 ### 4.2 Skill shape
 
-Every KI skill declares one orthogonal repository-applicability value in exact frontmatter: `ki-applicability: baseline | detected | declaration-only | invocation-only`. The complete baseline is exactly `ki-repo` and `ki-authoring`. Every process skill and every knowledge skill is `invocation-only`; a governance skill must not be `invocation-only`. `detected` means `ki-repo` has executable repository evidence for the capability, while `declaration-only` requires explicit selection without repository-shape inference. Applicability does not replace kind, dependency composition, runtime compatibility, or host activation. Only `ki-repo` may declare `ki-detects`, and every other skill must omit it. (ADR-KI-HARNESS-SKILLS-014)
+Every KI skill declares one orthogonal repository-applicability value in exact frontmatter: `ki-applicability: baseline | detected | declaration-only | invocation-only`. The complete baseline is exactly `ki-repo`, `ki-authoring` and `ki-keystone`, the guild map every session starts from (KEYSTONE-BASELINE). Every process skill and every knowledge skill is `invocation-only`; a governance skill must not be `invocation-only`. `detected` means `ki-repo` has executable repository evidence for the capability, while `declaration-only` requires explicit selection without repository-shape inference. Applicability does not replace kind, dependency composition, runtime compatibility, or host activation. Only `ki-repo` may declare `ki-detects`, and every other skill must omit it. (ADR-KI-HARNESS-SKILLS-014)
 
 A **standard** Knowledge Islands skill carries reusable mode logic and resolves base-level bindings (store aliases, scope, writing standards) at runtime — base-specific **data** from the host repo's `.ki.toml` table, base-specific **prose** from its `CLAUDE.md` and memory index — so it hard-codes **no single base**. Every KI skill declares its kind in exact frontmatter: `ki-kind: governance` for a standard, `ki-kind: process` for an operational procedure, or `ki-kind: knowledge` for a body of knowledge. Kind is never inferred from its directory or prose. (ADR-KI-HARNESS-SKILLS-006; KNOWLEDGE-KIND)
 

@@ -43,6 +43,7 @@ const estate = (sources: readonly CapabilitySource[]): readonly CapabilitySource
   })
   return [
     source('ki-authoring', { applicability: 'baseline' }),
+    source('ki-keystone', { applicability: 'baseline' }),
     source('ki-repo', { applicability: 'baseline', detects: ['ki-detected', ...detected] }),
     source('ki-detected', { applicability: 'detected' }),
     ...sources

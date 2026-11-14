@@ -19,7 +19,7 @@ Use the website-owned [skills-by-outcome guide](https://knowledgeislands.info/gu
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 70 skills: 56 governance skills, 13 process skills and 1 knowledge skill. The entries below are generated from canonical `SKILL.md` frontmatter, grouped by each skill's declared guild; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 71 skills: 57 governance skills, 13 process skills and 1 knowledge skill. The entries below are generated from canonical `SKILL.md` frontmatter, grouped by each skill's declared guild; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Acquire
 
@@ -343,6 +343,17 @@ Explain first-time KI activation through the `ki` CLI: user bootstrap, verified 
 - **Kind:** Process
 - **Applicability:** Invocation Only
 - **Arguments:** `help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-keystone`
+
+Lead the Keystone guild, the guild of guilds: the guild map of every KI skill by guild and lead, where a session starts in a repository, and the rule for joining Keystone. Use to find which guild and lead skill own a piece of work, or to audit a skill collection's guild tree; `ki-skills` owns the guild rules and skill shape.
+
+- **Kind:** Governance
+- **Leads:** Keystone
+- **Applicability:** Baseline
+- **Arguments:** `audit <repo> | conform <repo> | educate <repo> | help | refresh`
 - **Dependencies:** None
 - **Runtime:** Portable
 

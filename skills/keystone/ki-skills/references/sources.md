@@ -1,6 +1,6 @@
 ---
 type: sources@2026-11-09T21:36:32Z
-revised: 2026-11-14T03:12:34Z
+revised: 2026-11-14T03:24:34Z
 refresh: external-spec · monthly
 ---
 
@@ -168,6 +168,7 @@ The OpenAI News page is a discovery source, not a normative standard. On each RE
 | PROCESS-SUBCOMMANDS | Kris's decision, 13 November 2026, in the Cairn summit's change 25: process skills that form one lifecycle become subcommands of their guild's lead, each with a reference loaded only when called, keeping the separate skills' boundaries as rules. | 2026-11-13 | [Guilds](standard-guilds.md#45-how-a-lead-discloses-its-guild) | In force |
 | BOOTSTRAP-FOLD | Kris's decision, 13 November 2026, in the Cairn summit's change 25: `ki-bootstrap` becomes `ki-keystone bootstrap`. | 2026-11-13 | [Guilds](standard-guilds.md#45-how-a-lead-discloses-its-guild) | In force |
 | KEYSTONE-SKILL | Kris's decision, 13 November 2026, in the Cairn summit's change 25: `ki-keystone` holds the guild map, generated from frontmatter, where a session starts in a repository, and Keystone's joining rule. | 2026-11-13 | [Guilds](standard-guilds.md#46-the-guild-map) | In force |
+| KEYSTONE-BASELINE | Kris's decision, 13 November 2026, in the Cairn summit's change 25's guild tree: `ki-keystone` is a baseline governance skill, so the complete baseline becomes `ki-repo`, `ki-authoring` and `ki-keystone`, widening ADR-KI-HARNESS-SKILLS-014's two. | 2026-11-13 | [Skill shape](standard-knowledge-islands.md#42-skill-shape), KI-SHAPE-19 | In force |
 
 [Back to contents](#contents)
 

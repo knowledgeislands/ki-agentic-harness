@@ -106,7 +106,7 @@ _Evidence:_ the `ki-skills` catalogue tests cover phase ordering and invalid pla
 
 ### GOV-010 — Explicit skill applicability
 
-Every canonical skill MUST declare exactly one `ki-applicability` value from `baseline`, `detected`, `declaration-only`, or `invocation-only`. The baseline set MUST contain exactly `ki-repo` and `ki-authoring`. Every process skill MUST be invocation-only, and a governance skill MUST NOT be invocation-only.
+Every canonical skill MUST declare exactly one `ki-applicability` value from `baseline`, `detected`, `declaration-only`, or `invocation-only`. The baseline set MUST contain exactly `ki-repo`, `ki-authoring` and `ki-keystone`, the last added by the Cairn summit's change 25 (KEYSTONE-BASELINE). Every process skill MUST be invocation-only, and a governance skill MUST NOT be invocation-only.
 
 _Conformance:_ conforming
 

@@ -32,7 +32,7 @@ export const FUNCTIONAL_AREAS: readonly FunctionalArea[] = [
       { title: 'Repository and writing', skills: ['ki-repo', 'ki-authoring', 'ki-diagrams', 'ki-git'] },
       { title: 'Skills and harness', skills: ['ki-skills', 'ki-repo-harness'] },
       { title: 'Knowledge', skills: ['ki-knowledge-graph', 'ki-agentic-systems'] },
-      { skills: ['ki-bootstrap'] }
+      { skills: ['ki-keystone', 'ki-bootstrap'] }
     ]
   },
   {

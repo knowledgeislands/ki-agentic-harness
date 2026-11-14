@@ -612,7 +612,7 @@ const KI_SHAPE_18: RubricItem<KiShapeRubricContext> = {
 }
 
 const APPLICABILITY = new Set(['baseline', 'detected', 'declaration-only', 'invocation-only'])
-const BASELINE_SKILLS = new Set(['ki-repo', 'ki-authoring'])
+const BASELINE_SKILLS = new Set(['ki-repo', 'ki-authoring', 'ki-keystone'])
 
 const flowList = (value: string): string[] | null => {
   if (!/^\[[^\]]*]$/.test(value)) return null
@@ -628,8 +628,8 @@ const KI_SHAPE_19: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-19',
   title: 'repository applicability is explicit',
   description:
-    'Every canonical Knowledge Islands skill declares one orthogonal `ki-applicability: baseline | detected | declaration-only | invocation-only`. Only `ki-repo` and `ki-authoring` are baseline; every process and knowledge skill is invocation-only; governance skills are detected or declaration-only. `ki-repo` alone declares a non-empty, duplicate-free `ki-detects:` flow list.',
-  sources: ['ADR-KI-HARNESS-SKILLS-014', 'standard-knowledge-islands.md §4.2'],
+    'Every canonical Knowledge Islands skill declares one orthogonal `ki-applicability: baseline | detected | declaration-only | invocation-only`. Only `ki-repo`, `ki-authoring` and `ki-keystone` are baseline; every process and knowledge skill is invocation-only; governance skills are detected or declaration-only. `ki-repo` alone declares a non-empty, duplicate-free `ki-detects:` flow list.',
+  sources: ['ADR-KI-HARNESS-SKILLS-014', 'KEYSTONE-BASELINE', 'standard-knowledge-islands.md §4.2'],
   mechanical: {
     level: 'FAIL',
     remediation: {
@@ -661,7 +661,7 @@ const KI_SHAPE_19: RubricItem<KiShapeRubricContext> = {
         if (!baseline && skill.applicability === 'baseline')
           violations.push({
             status: 'VIOLATION',
-            message: 'baseline applicability is reserved for ki-repo and ki-authoring'
+            message: 'baseline applicability is reserved for ki-repo, ki-authoring and ki-keystone'
           })
         if (skill.kiKind === 'process' && skill.applicability !== 'invocation-only')
           violations.push({
